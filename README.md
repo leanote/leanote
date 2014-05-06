@@ -21,6 +21,13 @@ leanote build with golang(revel) and mongodb. so you must install mongodb at fir
 ### Install mongodb
 go http://www.mongodb.org to download and install it.
 
+
+### Export initial mongodb data
+the mongodb data in leante/mongodb_backup/leanote_install_data
+```
+mongorestore -h localhost -d leanote --directoryperdb path_to_leanote_install_data
+```
+
 ### Configure conf/app.conf
 
 ``mongodb``  **required**
