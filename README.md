@@ -1,3 +1,5 @@
+We will upload leanote as soon as possible. Thanks for watching leanote.
+
 ## Introduction
 
 leanote, it's a cloud note. You can create your own cloud note in leanote. 
