@@ -18,16 +18,16 @@ Well, to be honest, our inspiration comes from evernote, and we use evenote to m
 ## How to use it
 leanote build with golang(revel) and mongodb. so you must install mongodb at first.
 
-1. Install mongodb, http://www.mongodb.org
+### Install mongodb
+go http://www.mongodb.org to download and install it.
 
-2. Configure conf/app.conf
-
+### Configure conf/app.conf
 
 ``mongodb``  **required**
 
 the mongodb info
 
-```shell
+```Shell
 db.host=localhost
 db.port=27017
 db.dbname=leanote # required
@@ -51,7 +51,12 @@ default is admin. The index site is the adminUsername's blog
 
 for more infomation please see app/app.conf and revel manuals http://revel.github.io/
 
-3. Run leanote
+### Run leanote
+```
+leanote/bin/leanote  -importPath=github.com/leanote/leanote
+```
+
+## How to develop leanote
 
 ## License
 leanote is released as open-source software under the GNU General Public License (GPL), version 2 or later. 
