@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript">
+
+<!-- 上传之后跳转至该页面 -->
+window.parent.leanoteImagesDialog.uploadFinish({
+	filename: '{{.fileUrlPath}}', // 文件路径
+	result: '{{.resultMsg}}', // 描述
+	resultCode: '{{.resultCode}}' // 1成功, 0失败
+});
+</script>
+</head>
+</html>

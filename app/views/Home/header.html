@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="keywords" content="leanote,leanote.com">
+<meta name="description" content="leanote, your own cloud note!">
+<meta name="author" content="leanote">
+<title>{{.title}}</title>
+
+<link href="/css/bootstrap.css" rel="stylesheet">
+<link href="/css/font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet">
+<link href="/css/index.css" rel="stylesheet">
+<style>
+</style>
+
+<script>
+function log(o) {
+}
+</script>
+</head>
+
+<body>
+<div id="headerContainer" style="background-color:#fff" class="navbar-fixed-top">
+	<div class="container" style="clearfix" id="header">
+		<div class="pull-left">
+			<h1>
+				<a href="/index">
+					<img src="/images/logo.png" id="" style="height: 40px" title="leanote, Your own cloud note!"/>
+				</a>
+			</h1>
+		</div>
+	
+		<div class="pull-right" id="loginBtns">
+			{{if .userInfo.Email}}
+				{{msg . "hi"}}, {{.userInfo.Username}}
+				<a href="/note">{{msg . "myNote"}}</a>
+				<a href="/logout">{{msg . "logout"}}</a>
+			{{else}}
+			<a href="/login">{{msg . "login"}}</a>
+			<a href="/register" class="btn-register">{{msg . "register"}}</a>
+			{{end}}
+		</div>
+			
+		<ul id="blogNav" class="pull-right">
+			<li><a href="/index#" target="body" class="smooth-scroll">{{msg . "home"}}</a></li>
+			<li><a href="/index#aboutLeanote" target="#aboutLeanote" class="smooth-scroll">{{msg . "aboutLeanote"}}</a> </li>
+			<li><a id="leanoteBlog" href="http://leanote.com/blog/leanote" target="_blank" class="">{{msg . "leanoteBlog"}}</a></li>
+		</ul>
+		
+	</div>
+</div>

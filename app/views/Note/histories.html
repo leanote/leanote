@@ -1,0 +1,29 @@
+<div class="modal-dialog modal-sm">
+<div class="modal-content">
+
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title" id="modalTitle">历史记录</h4>
+  </div>
+      
+  <div class="modal-body">
+		<div id="shareMsg" class="alert alert-danger" style="display: none; margin: 5px 0 0 0;"></div>
+      	<table class="table table-hover" id="shareNotebookTable">
+	        <tbody>
+      		{{range $i, $v := .histories}}
+	          <tr>
+	          	<td>
+	          	{{raw $v.Content}}
+	          	</td>
+	          </tr>
+      		{{end}}
+  			</tbody>
+        </table> 
+  </div>
+      
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+  </div>
+      
+</div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->

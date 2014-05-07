@@ -1,0 +1,110 @@
+
+#mdEditorPreview {
+	position: absolute;	
+	top: 35px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+
+#left-column, #right-column
+{
+	height: 100%;
+}
+#left-column {
+	width: 60%;
+}
+#right-column {
+	width: 40%;
+}
+
+#right-column {
+	overflow: hidden;
+}
+
+.wmd-panel-editor, .preview-container, #wmd-input {
+	height: 100%;
+}
+
+.wmd-panel-editor, .wmd-panel-preview {
+}
+
+.wmd-input, .wmd-input:focus, #md-section-helper /* helper必须在这里 */
+{
+	width: 100%;
+	border: 1px #eee solid;
+	border-radius: 5px;
+	outline: none;
+    font-size: 14px;
+    resize: none;
+    overflow-x: hidden;
+}
+
+/* 不能为display: none */
+#md-section-helper {
+	position: absolute;
+    height: 0;
+    overflow-y: scroll;
+    padding: 0 6px;
+    top:10px; /*一条横线....*/
+    z-index: -1;
+    opacity: none;
+}
+
+#right-column {
+	border: 1px dashed #BBBBBB;
+    border-radius: 5px;
+    padding-left: 5px;
+}
+.preview-container {
+    overflow: auto;
+    
+}
+
+.wmd-preview { 
+	width: 100%;
+    font-size: 14px;
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+.wmd-button-row, .preview-button-row
+{
+	padding: 0px;  
+	height: auto;
+	margin: 0;
+}
+
+.wmd-spacer
+{
+	width: 0px; 
+	height: 20px; 
+	margin-left: 10px;
+
+	background-color: Silver;
+	display: inline-block; 
+	list-style: none;
+}
+
+.wmd-button, .preview-button {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    list-style: none;
+    cursor: pointer;
+    font-size: 17px;
+}
+
+.wmd-button {
+    margin-left: 10px;
+}
+
+.preview-button {
+    margin-right: 10px;
+}
+
+.wmd-button > span, .preview-button > span {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+}

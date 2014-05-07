@@ -1,0 +1,21 @@
+{{template "Blog/header.html" .}}
+
+<div id="postsContainer">
+	<div id="posts">
+		<div class="each-post">
+			<div class="title">
+				关于我
+			</div>
+			<div class="created-time">
+			</div>
+			<div class="desc">
+				{{.userBlog.AboutMe | raw}}
+			</div>
+			
+			<!-- comment -->
+			{{template "blog/comment.html" .}}
+		</div>
+	</div>
+</div>
+
+{{template "Blog/footer.html" .}}

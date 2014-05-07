@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>上传图片</title>
+
+<!-- 本插件使用了bootstrap插件, 请修改地址 -->
+<link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
+
+<style>
+html,
+body {
+	height: 100%;
+}
+
+body {
+	position: relative;
+	padding: 0 5px;
+}
+
+#bottomBtns {
+	border-top: 1px solid #ccc;
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	padding: 5px 10px 2px 0;
+}
+
+#bottomBtns div {
+	text-align: right;
+}
+
+#upload {
+	margin-top: 10px;
+}
+#uploadTarget {
+	border: 0;
+	margin: 0;
+	padding: 0;
+	width: 0;
+	height: 0;
+	display: none;
+}
+
+.uploadInfobar {
+	display: none;
+	font-size: 12pt;
+	background: #fff;
+	margin: 0;
+	margin-bottom: 5px;
+}
+
+.uploadInfobar img {
+	margin-right: 10px;
+}
+
+#uploadAdditionalInfo {
+	padding-left: 26px;
+	font-size: 12px;
+}
+
+/* 拖拽 */
+
+#dropbox {
+	border-radius: 3px;
+	position: relative;
+	min-height: 200px;
+	overflow: hidden;
+	padding-bottom: 40px;
+	border: 1px solid #ccc;
+	width: 100%;
+	background-color: #eee;
+}
+
+#dropbox .message {
+	font-size: 12px;
+	text-align: center;
+	padding-top: 80px;
+	display: block;
+}
+
+#dropbox .message i {
+	color: #ccc;
+	font-size: 10px;
+}
+
+#dropbox:before {
+	border-radius: 3px 3px 0 0;
+}
+
+</style>
+</head>
+
+<body>
+	<ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a href="#upload" data-toggle="tab">上传图片</a></li>
+        <li class=""><a href="#url" data-toggle="tab">图片URL</a></li>
+	</ul>
+	<!-- Tab panes -->
+	<div class="tab-content">
+
+	  <div class="tab-pane active" id="upload">
+		<!-- 请修改图片接收地址 -->
+		<form class="form-inline" id="upl" name="upl" 
+			action="/file/uploadImage" 
+			method="post" enctype="multipart/form-data" 
+			target="uploadTarget" 
+		>
+			<div id="uploadInProgress" class="alert alert-warning uploadInfobar">
+				<img src="img/loading-24.gif" /> 正在上传...
+			</div>
+			
+			<p id="uploadFormContainer">
+				<input id="uploader" name="file" type="file" class="form-control" />
+			</p>
+		</form>
+		<iframe id="uploadTarget" name="uploadTarget" src="#"></iframe>
+		
+		<!-- 
+			拖拽上传 
+			TODO 判断浏览器是否支持, 若不支持则不显示
+		-->
+		<div id="dropbox">
+			<div class="message">
+				或将图片拖到这里上传.
+				<div class="progress">
+				  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0"  aria-valuemin="0" aria-valuemax="100">
+				  </div>
+				</div>
+			</div>
+		</div>
+	  </div>
+
+	 <!-- tinymce 自带的image插件 -->
+	 <div class="tab-pane" id="url" style="margin-top: 10px;">
+	  	<form class="form-inline" id="imageSrc2">
+		  	<table style="width: 100%">
+		  		<tr>
+			  		<th style="width: 50px"><label for="imageSrc">地址</label></th>
+			  		<td><input type="url" id="imageSrc" name="src" class="form-control"></td>
+			  	</tr>
+	  	  		<tr>
+			  		<th><label for="imageWidth">大小</label></th>
+			  		<td>
+				      	<input type="text" class="form-control" id="imageWidth" name="width" style="width: 100px; display: inline-block"/>
+				      	X
+				      	<input type="text" class="form-control" id="imageHeight" name="height" style="width: 100px; display: inline-block"/>
+				      	<label>
+					      	<input type="checkbox" checked="checked" id="autoScale"/>
+					      	按比例缩放
+				      	</label>
+			  		</td>
+			  	</tr>
+		  	</table>
+		</form>
+	  </div>
+	</div>
+	
+	<div id="bottomBtns">
+		<div>
+			<button class="btn btn-success" id="insertImageBtn">确定</button>
+			<button class="btn btn-default" id="closeBtn" onclick="">关闭</button>
+		</div>
+	</div>
+	
+	<!-- 本插件使用了jquery和bottstrap, 请修改地址 -->
+	<script src="/js/jquery-1.9.0.min.js"></script>
+	<script src="/js/bootstrap.js"></script>	
+	
+	<!-- locale -->
+	<script type="text/javascript" src="js/dialog.js"></script>
+	<script type="text/javascript" src="js/jquery.filedrop.js"></script>
+	<script type="text/javascript" src="js/drop.js"></script>
+</body>
+</html>
