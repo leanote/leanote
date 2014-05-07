@@ -6,12 +6,12 @@ module:testrunner
 
 # Home is My Blog
 Get 	/											Blog.Index
-GET     /note   	                                Note.index
+GET     /note   	                                Note.Index
 # leanote home
-GET     /index   	                                Index.index
+GET     /index   	                                Index.Index
 
 GET     /login                                     	Auth.Login
-POST     /doLogin                                   Auth.doLogin
+POST     /doLogin                                   Auth.DoLogin
 GET     /logout                                     Auth.Logout
 Get     /demo                                   	Auth.Demo
 

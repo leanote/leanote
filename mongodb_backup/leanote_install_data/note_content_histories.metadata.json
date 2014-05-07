@@ -1,0 +1,1 @@
+{ "indexes" : [ { "v" : 1, "key" : { "_id" : 1 }, "ns" : "leanote_public.note_content_histories", "name" : "_id_" } ] }
