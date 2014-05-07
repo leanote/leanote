@@ -67,13 +67,15 @@ for more infomation please see app/app.conf and revel manuals http://revel.githu
 
 ### Run leanote
 consume the leanote' path is LP
-1. cd LP/bin
-2. set GOPATH
+
+* cd LP/bin
+* set GOPATH
 ```
 export GOPATH=$GOPATH:`pwd`
 ```
-3. run 
-./leanote  -importPath=github.com/leanote/leanote
+* run leanote
+```
+./leanote -importPath=github.com/leanote/leanote
 ```
 
 ## How to develop leanote
