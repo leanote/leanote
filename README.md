@@ -36,6 +36,7 @@ user2 username: admin, password: abc123
 ```
 
 ### Configure conf/app.conf
+rename conf/app-default.conf to conf/app.conf
 
 ``mongodb``  **required**
 
@@ -66,16 +67,9 @@ default is admin. The index site is the adminUsername's blog
 for more infomation please see app/app.conf and revel manuals http://revel.github.io/
 
 ### Run leanote
-consume the leanote' path is LP
-
-* cd LP/bin
-* set GOPATH
 ```
-export GOPATH=$GOPATH:`pwd`
-```
-* run leanote
-```
-./leanote -importPath=github.com/leanote/leanote
+cd path_to_leanote/bin
+sh run.sh
 ```
 
 ## How to develop leanote
