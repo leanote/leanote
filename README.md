@@ -1,5 +1,3 @@
-We will upload leanote as soon as possible. Thanks for watching leanote.
-
 ## Introduction
 
 leanote, it's a cloud note. You can create your own cloud note in leanote. 
@@ -25,9 +23,9 @@ go http://www.mongodb.org to download and install it.
 
 
 ### Export initial mongodb data
-the mongodb data in leante/mongodb_backup/leanote_install_data
+the mongodb data in path_to_leante/mongodb_backup/leanote_install_data
 ```
-mongorestore -h localhost -d leanote --directoryperdb path_to_leanote_install_data
+mongorestore -h localhost -d leanote --directoryperdb path_to_leante/mongodb_backup/leanote_install_data
 ```
 the initial data contains two users
 ```
@@ -35,8 +33,8 @@ user1 username: leanote, password: abc123
 user2 username: admin, password: abc123
 ```
 
-### Configure conf/app.conf
-rename conf/app-default.conf to conf/app.conf
+### Configuration
+rename path_to_leante/conf/app-default.conf to path_to_leante/conf/app.conf
 
 ``mongodb``  **required**
 
