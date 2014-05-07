@@ -25,13 +25,17 @@
 						<button id="loginBtn" class="btn btn-success" style="width: 100%">{{msg . "login"}}</button> 
 						<br />
 						<a href="/findPassword">{{msg . "forgetPassword"}}</a>
+						{{if .openRegister}}
 						<br />
-						<a href="/register">{{msg . "register"}}</a> {{msg . "or"}}
-						  <a href="/demo">{{msg . "try"}}</a>
-						  <div style="border-top: 1px dashed #666;margin:2px 0">
+						<a href="/register">{{msg . "register"}}</a> 
+						{{msg . "or"}}
+						<a href="/demo">{{msg . "try"}}</a>
+						<div style="border-top: 1px dashed #666;margin:2px 0">
 						  {{msg . "3th"}}: <a id="github">github<i class="fa fa-github"></i></a>
 						  <span id="thirdLoginLoading" style="display: none"> <img src="/images/loading-a-20-2.gif" />正在登录...</span> 
-						  </div>
+						</div>
+						{{end}}
+						
 					</td>
 				</tr>
 			</table>

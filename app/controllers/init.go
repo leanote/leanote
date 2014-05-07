@@ -27,6 +27,7 @@ var pageSize = 1000
 var defaultSortField = "UpdatedTime"
 var leanoteUserId = "52d26b4e99c37b609a000001"
 var siteUrl = "http://leanote.com"
+var openRegister = true
 
 // 拦截器
 // 不需要拦截的url
@@ -71,6 +72,7 @@ func AuthInterceptor(c *revel.Controller) revel.Result {
 	// 全部变成首字大写
 	var controller = strings.Title(c.Name)
 	var method = strings.Title(c.MethodName)
+	
 	
 	// 是否需要验证?
 	if !needValidate(controller, method) {
@@ -122,5 +124,6 @@ func init() {
 	revel.OnAppStart(func() {
 		leanoteUserId, _ = revel.Config.String("adminUsername")
 		siteUrl, _ = revel.Config.String("site.url")
+		openRegister, _ = revel.Config.Bool("register.open")
 	})
 }

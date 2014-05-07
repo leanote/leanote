@@ -12,12 +12,14 @@
 			&nbsp;
 			&nbsp;
 			<a class="btn btn-default" href="/demo">Try it</a>
+			{{if .openRegister}}
 			&nbsp;
 			&nbsp;
 			OR			
 			&nbsp;
 			&nbsp;
 			<a class="btn btn-default" href="/register">{{msg . "register"}}</a> 
+			{{end}}
 		</div>
 	</div>
 	

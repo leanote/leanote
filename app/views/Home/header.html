@@ -39,7 +39,9 @@ function log(o) {
 				<a href="/logout">{{msg . "logout"}}</a>
 			{{else}}
 			<a href="/login">{{msg . "login"}}</a>
-			<a href="/register" class="btn-register">{{msg . "register"}}</a>
+				{{if .openRegister}}
+				<a href="/register" class="btn-register">{{msg . "register"}}</a>
+				{{end}}
 			{{end}}
 		</div>
 			

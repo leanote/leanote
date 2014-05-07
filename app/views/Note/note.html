@@ -97,10 +97,13 @@ function log(o) {
 				<div class="pull-left" style="line-height: 40px; margin-top: 10px; margin-left: 10px;" id="leanoteMsg">
 					<span id="msg" style="display: inline-block;"></span>
 					<img id="loading" style="visibility: hidden" src="/images/loading-a-20.gif" />
-					{{if eq .userInfo.Email "demo@leanote.com"}}
-					<span>
-						{{msg . "demoRegister"}}
-					</span>
+					
+					{{if .openRegister}}					
+						{{if eq .userInfo.Email "demo@leanote.com"}}
+						<span>
+							{{msg . "demoRegister"}}
+						</span>
+						{{end}}
 					{{end}}
 				</div>
 				

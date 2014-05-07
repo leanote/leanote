@@ -18,6 +18,8 @@ func (c Auth) Login(email string) revel.Result {
 	c.RenderArgs["title"] = c.Message("login")
 	c.RenderArgs["subTitle"] = c.Message("login")
 	c.RenderArgs["email"] = email
+	c.RenderArgs["openRegister"] = openRegister
+	
 	if c.Has("demo") {
 		c.RenderArgs["demo"] = true
 		c.RenderArgs["email"] = "demo@leanote.com"
@@ -38,8 +40,9 @@ func (c Auth) DoLogin(email, pwd string) revel.Result {
 // 注销
 func (c Auth) Logout() revel.Result {
 	c.ClearSession()
-	return c.Redirect("login")
+	return c.Redirect("/login")
 }
+
 // 体验一下
 func (c Auth) Demo() revel.Result {
 	c.DoLogin("demo@leanote.com", "demo@leanote.com")
@@ -49,11 +52,19 @@ func (c Auth) Demo() revel.Result {
 //--------
 // 注册
 func (c Auth) Register() revel.Result {
+	if !openRegister {
+		return c.Redirect("/index")
+	}
+	
 	c.RenderArgs["title"] = c.Message("register")
 	c.RenderArgs["subTitle"] = c.Message("register")
 	return c.RenderTemplate("home/register.html")
 }
 func (c Auth) DoRegister(email, pwd string) revel.Result {
+	if !openRegister {
+		return c.Redirect("/index")
+	}
+	
 	re := info.NewRe();
 	
 	if email == "" {

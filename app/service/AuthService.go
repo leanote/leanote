@@ -4,6 +4,7 @@ import (
 	"labix.org/v2/mgo/bson"
 //	"github.com/leanote/leanote/app/db"
 	"github.com/leanote/leanote/app/info"
+	"github.com/revel/revel"
 	. "github.com/leanote/leanote/app/lea"
 	"fmt"
 )
@@ -53,20 +54,23 @@ func (this *AuthService) register(user info.User) (bool, string) {
 		}
 		
 		email := user.Email
+		
 		// 添加leanote -> 该用户的共享
-		leanoteUserId := "5368c1aa99c37b029d000001";
-		nk1 := "5368c1aa99c37b029d000002" // leanote
-		welcomeNoteId := "5368c1b919807a6f95000000" // 欢迎来到leanote
+		leanoteUserId, _ := revel.Config.String("register.sharedUserId"); // "5368c1aa99c37b029d000001";
+		nk1, _ := revel.Config.String("register.sharedUserShareNotebookId"); // 5368c1aa99c37b029d000002" // leanote
+		welcomeNoteId, _ := revel.Config.String("register.welcomeNoteId") // "5368c1b919807a6f95000000" // 欢迎来到leanote
 		
-		shareService.AddShareNotebook(nk1, 0, leanoteUserId, email);
-		shareService.AddShareNote(welcomeNoteId, 0, leanoteUserId, email);
-		
-		// 将welcome copy给我
-		note := noteService.CopySharedNote(welcomeNoteId, title2Id["life"].Hex(), leanoteUserId, user.UserId.Hex());
-		
-		// 公开为博客
-		noteUpdate := bson.M{"IsBlog": true}
-		noteService.UpdateNote(user.UserId.Hex(), user.UserId.Hex(), note.NoteId.Hex(), noteUpdate)
+		if leanoteUserId != "" && nk1 != "" && welcomeNoteId != "" {
+			shareService.AddShareNotebook(nk1, 0, leanoteUserId, email);
+			shareService.AddShareNote(welcomeNoteId, 0, leanoteUserId, email);
+			
+			// 将welcome copy给我
+			note := noteService.CopySharedNote(welcomeNoteId, title2Id["life"].Hex(), leanoteUserId, user.UserId.Hex());
+			
+			// 公开为博客
+			noteUpdate := bson.M{"IsBlog": true}
+			noteService.UpdateNote(user.UserId.Hex(), user.UserId.Hex(), note.NoteId.Hex(), noteUpdate)
+		}
 		
 		//---------------
 		// 添加一条userBlog

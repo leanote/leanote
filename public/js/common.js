@@ -706,7 +706,7 @@ function hideLoading() {
 
 // 注销, 先清空cookie
 function logout() {
-	$.removeCookie("REVEL_SESSION");
+	$.removeCookie("LEANOTE_SESSION");
 	location.href = "/logout?id=1";
 }
 
