@@ -110,4 +110,4 @@ Now you can modify leanote source and build/run with revel
 revel run github.com/leanote/leanote
 ```
 
-Welcome join with us and contribute your code to leanote! Thanks.
+Welcome to join with us and contribute your code to leanote! Thanks.
