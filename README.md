@@ -29,6 +29,11 @@ the mongodb data in leante/mongodb_backup/leanote_install_data
 ```
 mongorestore -h localhost -d leanote --directoryperdb path_to_leanote_install_data
 ```
+the initial data contains two users
+```
+user1 username: leanote, password: abc123
+user2 username: admin, password: abc123
+```
 
 ### Configure conf/app.conf
 
