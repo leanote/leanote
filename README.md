@@ -66,8 +66,14 @@ default is admin. The index site is the adminUsername's blog
 for more infomation please see app/app.conf and revel manuals http://revel.github.io/
 
 ### Run leanote
+consume the leanote' path is LP
+1. cd LP/bin
+2. set GOPATH
 ```
-leanote/bin/leanote  -importPath=github.com/leanote/leanote
+export GOPATH=$GOPATH:`pwd`
+```
+3. run 
+./leanote  -importPath=github.com/leanote/leanote
 ```
 
 ## How to develop leanote
