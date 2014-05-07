@@ -8,3 +8,4 @@ conf/app.conf
 conf/routes
 public/upload
 .DS_Store
+.settings
