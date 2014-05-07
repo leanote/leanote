@@ -4,4 +4,7 @@ bin/i18n
 bin/release
 bin/tmp
 bin/test
+conf/app.conf
+conf/routes
+public/upload/* 
 .DS_Store
