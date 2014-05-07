@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>leanote-leanote</name>
-	<comment></comment>
+	<comment>leanote, your own cloud note!</comment>
 	<projects>
 	</projects>
 	<buildSpec>
