@@ -22,7 +22,7 @@ func (c File) UploadImage(renderHtml string) revel.Result {
 	
 	re := c.uploadImage();
 	
-	c.RenderArgs["fileUrlPath"] = "http://leanote.com" + re.Id
+	c.RenderArgs["fileUrlPath"] = siteUrl + re.Id
 	c.RenderArgs["resultCode"] = re.Code
 	c.RenderArgs["resultMsg"] = re.Msg
 
@@ -37,7 +37,7 @@ func (c File) UploadBlogLogo() revel.Result {
 // 拖拉上传
 func (c File) UploadImageJson(renderHtml string) revel.Result {
 	re := c.uploadImage();
-	re.Id = "http://leanote.com" + re.Id
+	re.Id = siteUrl + re.Id
 //	re.Id = re.Id
 	return c.RenderJson(re)
 }
