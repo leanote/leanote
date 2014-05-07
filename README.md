@@ -58,6 +58,10 @@ for find password
 
 default is 80
 
+``site.url``
+
+default is http://localhost, you must config it when your domain isn't it, it is used when upload images.
+
 ``adminUsername``
 
 default is admin. The index site is the adminUsername's blog
