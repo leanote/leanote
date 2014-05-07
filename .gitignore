@@ -1,0 +1,6 @@
+src
+pkg
+bin/i18n
+bin/release
+bin/tmp
+bin/test
