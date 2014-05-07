@@ -1,5 +1,6 @@
 package html2image
 
+/*
 import (
 	"github.com/leanote/leanote/app/lea"
 	"github.com/leanote/leanote/app/lea/netutil"
@@ -219,11 +220,9 @@ func (this *Html2Image) IsOver(r []rune) bool {
 	// 还有多宽
 	// 就算全拿汉字来说
 	// 这里是优化，速度有提升
-	/*
-	if this.painWidth - this.x > 17.875 * float64(len(r)) {
-		return false
-	}
-	*/
+//	if this.painWidth - this.x > 17.875 * float64(len(r)) {
+//		return false
+//	}
 
 //	println(text)
 	width2 := this.gc2.FillStringAt(string(r), 0, 0)
@@ -332,11 +331,9 @@ func (this *Html2Image) InsertText(text string, needTest bool, prefix string) {
 					} else {
 						// 没超出, 不用计算, 但出要看是否是结尾了
 						// 怎么可能会出现这种情况呢?, 第一步就试了
-						/*
-						if i+1 == len(text) {
-							println("不可能")
-						}
-						*/
+//						if i+1 == len(text) {
+//							println("不可能")
+//						}
 					}
 				}
 			}
@@ -394,20 +391,18 @@ func (this *Html2Image) SetBottom(username, url string) {
     this.InsertA(siteUrl + "/blog/" + username, false)
     
 	this.setLogo()
-    /*
-    this.painWidth = this.width - 100
-    this.NewP()
-    this.InsertText("leanote, 不一样的笔记.", false, "  ") 
-    this.NewBr()
-    this.InsertText("在这里你可以管理自己的知识", false, "  ")
-    this.NewBr()
-    this.InsertText("将知识分享给好友, 与好友一起协作知识", false, "  ")
-    this.NewBr()
-    this.InsertText("并且还可以将笔记设为博客公开", false, "  ")
-    this.InsertText(". 赶紧加入吧! leanote.com", false, "")
-    
+//    this.painWidth = this.width - 100
+//    this.NewP()
+//    this.InsertText("leanote, 不一样的笔记.", false, "  ") 
+//    this.NewBr()
+//    this.InsertText("在这里你可以管理自己的知识", false, "  ")
+//    this.NewBr()
+//    this.InsertText("将知识分享给好友, 与好友一起协作知识", false, "  ")
+//    this.NewBr()
+//    this.InsertText("并且还可以将笔记设为博客公开", false, "  ")
+//    this.InsertText(". 赶紧加入吧! leanote.com", false, "")
+//    
     // Logo
-	*/
 }
 
 func (this *Html2Image) setImage(path string, x, y float64) {
@@ -443,11 +438,9 @@ func (this *Html2Image) setLogo() {
 	println(path)
 	this.setImage(path, 320, 10)
 
-	/*
 	// 右下角设置Logo
-	path = revel.BasePath + "/public/images/leanote/logo-60-a-6.png"
-	this.setImage(path, 320, this.y - 75)
-	*/
+//	path = revel.BasePath + "/public/images/leanote/logo-60-a-6.png"
+//	this.setImage(path, 320, this.y - 75)
 }
 
 // 插入链接
@@ -698,7 +691,7 @@ func (this *Html2Image) InsertBody(htmlStr string) (ok bool) {
 			}
 			
 			// 空行
-			if n.Data == "br"/* || n.Data == "div"*/ {
+			if n.Data == "br" { // || n.Data == "div"
 				this.NewBr()
 			}
 		}
@@ -759,4 +752,9 @@ func TestFillString() {
 	h.InsertText(str, true, "")
 //	h.InsertImage("/Users/life/Desktop/share.png")
 	h.SaveToPngFile("/Users/life/Desktop/TestPath3.png")
+}
+*/
+
+func ToImage(uid, username, noteId, title, htmlStr, toPath string) (ok bool) {
+	return false
 }
