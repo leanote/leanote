@@ -62,7 +62,7 @@ default is 80
 
 default is admin. The index site is the adminUsername's blog
 
-for more infomation please see app/app.conf and revel manuals http://revel.github.io/
+for more infomation please see app/app.conf and revel manuals http://revel.github.io
 
 ### Run leanote
 ```
@@ -72,5 +72,29 @@ sh run.sh
 
 ## How to develop leanote
 
+leanote is a app based on revel(http://revel.github.io), so if you want to develop leanote as you want, you must be familar with revel.
+
+### install golang
+
+install golang and set GOPATH
+
+### install revel
+* go get github.com/revel/revel
+* go get github.com/revel/cmd/revel
+
+### get leanote
+* go get github.com/leanote/leanote/app
+
+### build/run leanote via revel
+
+now you can modify leanote source and build/run with revel
+
+```
+revel run github.com/leanote/leanote
+```
+
+Welcome contribute your code to leanote! Thanks.
+
 ## License
+
 leanote is released as open-source software under the GNU General Public License (GPL), version 2 or later. 
