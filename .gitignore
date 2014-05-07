@@ -6,5 +6,5 @@ bin/tmp
 bin/test
 conf/app.conf
 conf/routes
-public/upload/* 
+public/upload
 .DS_Store
