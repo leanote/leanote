@@ -1,5 +1,6 @@
 package lea
 
+/*
 import (
 	"github.com/Terry-Mao/paint"
     "github.com/Terry-Mao/paint/wand"
@@ -103,4 +104,9 @@ func Reset(path string, maxWidth uint) (ok bool, transPath string){
     transPath = toPath
     
     return
+}
+*/
+
+func TransToGif(path string, maxWidth uint, afterDelete bool) (ok bool, transPath string) {
+	return ok, path
 }
