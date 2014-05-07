@@ -14,7 +14,9 @@ export GOPATH=$GOPATH:$SCRIPTPATH
 # run
 osName=`uname`
 if [ $osName == "Darwin" ]; then
+	chmod 777 "$SCRIPTPATH/leanote-mac"
 	"$SCRIPTPATH/leanote-mac" -importPath github.com/leanote/leanote
 else
+	chmod 777 "$SCRIPTPATH/leanote-linux"
 	"$SCRIPTPATH/leanote-linux" -importPath github.com/leanote/leanote
 fi
