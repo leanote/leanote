@@ -1,6 +1,6 @@
 ## Introduction
 
-Leanote, it's a cloud note. You can create your own cloud note in leanote. 
+Leanote, a cloud note. You can create your own cloud note by leanote. 
 
 ## Features
 * Knowledge: manage your knowledge in leanote. leanote contains tinymce editor and markdown editor, just enjoy yourself in writting.

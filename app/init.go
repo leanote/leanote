@@ -58,7 +58,8 @@ func init() {
 		if tags == nil || len(tags) == 0 {
 			return ""
 		}
-		tagMap := map[string]string{"red": "红色", "yellow": "黄色", "blue": "蓝色", "green": "绝色"}
+		// TODO 这里判断语言, 从语言包中拿
+		tagMap := map[string]string{"red": "红色", "yellow": "黄色", "blue": "蓝色", "green": "绿色"}
 		tagStr := ""
 		lenTags := len(tags)
 		for i, tag := range tags {
