@@ -152,7 +152,7 @@ $(function() {
 				
 		    		if(!e.shiftKey) {
 //		                ed.execCommand('Indent');
-		    			
+		    			// TODO 如果当前在li, ul, ol下不执行!!
 		    			// 如果在pre下就加tab
 			    		var node = ed.selection.getNode();
 						if(node.nodeName == "PRE") {

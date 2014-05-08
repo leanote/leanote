@@ -16,35 +16,6 @@ func (_ tBaseController) E404(
 }
 
 
-type tStatic struct {}
-var Static tStatic
-
-
-func (_ tStatic) Serve(
-		prefix string,
-		filepath string,
-		) string {
-	args := make(map[string]string)
-	
-	revel.Unbind(args, "prefix", prefix)
-	revel.Unbind(args, "filepath", filepath)
-	return revel.MainRouter.Reverse("Static.Serve", args).Url
-}
-
-func (_ tStatic) ServeModule(
-		moduleName string,
-		prefix string,
-		filepath string,
-		) string {
-	args := make(map[string]string)
-	
-	revel.Unbind(args, "moduleName", moduleName)
-	revel.Unbind(args, "prefix", prefix)
-	revel.Unbind(args, "filepath", filepath)
-	return revel.MainRouter.Reverse("Static.ServeModule", args).Url
-}
-
-
 type tTestRunner struct {}
 var TestRunner tTestRunner
 
@@ -72,6 +43,35 @@ func (_ tTestRunner) List(
 	args := make(map[string]string)
 	
 	return revel.MainRouter.Reverse("TestRunner.List", args).Url
+}
+
+
+type tStatic struct {}
+var Static tStatic
+
+
+func (_ tStatic) Serve(
+		prefix string,
+		filepath string,
+		) string {
+	args := make(map[string]string)
+	
+	revel.Unbind(args, "prefix", prefix)
+	revel.Unbind(args, "filepath", filepath)
+	return revel.MainRouter.Reverse("Static.Serve", args).Url
+}
+
+func (_ tStatic) ServeModule(
+		moduleName string,
+		prefix string,
+		filepath string,
+		) string {
+	args := make(map[string]string)
+	
+	revel.Unbind(args, "moduleName", moduleName)
+	revel.Unbind(args, "prefix", prefix)
+	revel.Unbind(args, "filepath", filepath)
+	return revel.MainRouter.Reverse("Static.ServeModule", args).Url
 }
 
 
@@ -198,113 +198,108 @@ func (_ tFile) UploadImageJson(
 }
 
 
-type tUser struct {}
-var User tUser
+type tIndex struct {}
+var Index tIndex
 
 
-func (_ tUser) UpdateUsername(
-		username string,
+func (_ tIndex) Index(
 		) string {
 	args := make(map[string]string)
 	
-	revel.Unbind(args, "username", username)
-	return revel.MainRouter.Reverse("User.UpdateUsername", args).Url
+	return revel.MainRouter.Reverse("Index.Index", args).Url
 }
 
-func (_ tUser) UpdatePwd(
-		oldPwd string,
-		pwd string,
+func (_ tIndex) Suggestion(
+		addr string,
+		suggestion string,
 		) string {
 	args := make(map[string]string)
 	
-	revel.Unbind(args, "oldPwd", oldPwd)
-	revel.Unbind(args, "pwd", pwd)
-	return revel.MainRouter.Reverse("User.UpdatePwd", args).Url
+	revel.Unbind(args, "addr", addr)
+	revel.Unbind(args, "suggestion", suggestion)
+	return revel.MainRouter.Reverse("Index.Suggestion", args).Url
 }
 
-func (_ tUser) UpdateTheme(
-		theme string,
+
+type tMobile struct {}
+var Mobile tMobile
+
+
+func (_ tMobile) Index(
 		) string {
 	args := make(map[string]string)
 	
-	revel.Unbind(args, "theme", theme)
-	return revel.MainRouter.Reverse("User.UpdateTheme", args).Url
+	return revel.MainRouter.Reverse("Mobile.Index", args).Url
 }
 
-func (_ tUser) SendRegisterEmail(
-		content string,
-		toEmail string,
+func (_ tMobile) Logout(
 		) string {
 	args := make(map[string]string)
 	
-	revel.Unbind(args, "content", content)
-	revel.Unbind(args, "toEmail", toEmail)
-	return revel.MainRouter.Reverse("User.SendRegisterEmail", args).Url
+	return revel.MainRouter.Reverse("Mobile.Logout", args).Url
 }
 
-func (_ tUser) ReSendActiveEmail(
+
+type tNotebook struct {}
+var Notebook tNotebook
+
+
+func (_ tNotebook) Index(
+		notebook interface{},
+		i int,
+		name string,
 		) string {
 	args := make(map[string]string)
 	
-	return revel.MainRouter.Reverse("User.ReSendActiveEmail", args).Url
+	revel.Unbind(args, "notebook", notebook)
+	revel.Unbind(args, "i", i)
+	revel.Unbind(args, "name", name)
+	return revel.MainRouter.Reverse("Notebook.Index", args).Url
 }
 
-func (_ tUser) UpdateEmailSendActiveEmail(
-		email string,
+func (_ tNotebook) DeleteNotebook(
+		notebookId string,
 		) string {
 	args := make(map[string]string)
 	
-	revel.Unbind(args, "email", email)
-	return revel.MainRouter.Reverse("User.UpdateEmailSendActiveEmail", args).Url
+	revel.Unbind(args, "notebookId", notebookId)
+	return revel.MainRouter.Reverse("Notebook.DeleteNotebook", args).Url
 }
 
-func (_ tUser) UpdateEmail(
-		token string,
+func (_ tNotebook) AddNotebook(
+		notebookId string,
+		title string,
 		) string {
 	args := make(map[string]string)
 	
-	revel.Unbind(args, "token", token)
-	return revel.MainRouter.Reverse("User.UpdateEmail", args).Url
+	revel.Unbind(args, "notebookId", notebookId)
+	revel.Unbind(args, "title", title)
+	return revel.MainRouter.Reverse("Notebook.AddNotebook", args).Url
 }
 
-func (_ tUser) ActiveEmail(
-		token string,
+func (_ tNotebook) UpdateNotebookTitle(
+		notebookId string,
+		title string,
 		) string {
 	args := make(map[string]string)
 	
-	revel.Unbind(args, "token", token)
-	return revel.MainRouter.Reverse("User.ActiveEmail", args).Url
+	revel.Unbind(args, "notebookId", notebookId)
+	revel.Unbind(args, "title", title)
+	return revel.MainRouter.Reverse("Notebook.UpdateNotebookTitle", args).Url
 }
 
-func (_ tUser) AddAccount(
-		email string,
-		pwd string,
-		) string {
-	args := make(map[string]string)
-	
-	revel.Unbind(args, "email", email)
-	revel.Unbind(args, "pwd", pwd)
-	return revel.MainRouter.Reverse("User.AddAccount", args).Url
-}
 
-func (_ tUser) UpdateColumnWidth(
-		notebookWidth int,
-		noteListWidth int,
-		) string {
-	args := make(map[string]string)
-	
-	revel.Unbind(args, "notebookWidth", notebookWidth)
-	revel.Unbind(args, "noteListWidth", noteListWidth)
-	return revel.MainRouter.Reverse("User.UpdateColumnWidth", args).Url
-}
+type tNoteContentHistory struct {}
+var NoteContentHistory tNoteContentHistory
 
-func (_ tUser) UpdateLeftIsMin(
-		leftIsMin bool,
+
+func (_ tNoteContentHistory) ListHistories(
+		noteId string,
 		) string {
 	args := make(map[string]string)
 	
-	revel.Unbind(args, "leftIsMin", leftIsMin)
-	return revel.MainRouter.Reverse("User.UpdateLeftIsMin", args).Url
+	revel.Unbind(args, "noteId", noteId)
+	return revel.MainRouter.Reverse("NoteContentHistory.ListHistories", args).Url
 }
 
 
@@ -408,111 +403,6 @@ func (_ tBlog) AboutMe(
 	
 	revel.Unbind(args, "userId", userId)
 	return revel.MainRouter.Reverse("Blog.AboutMe", args).Url
-}
-
-
-type tIndex struct {}
-var Index tIndex
-
-
-func (_ tIndex) Index(
-		) string {
-	args := make(map[string]string)
-	
-	return revel.MainRouter.Reverse("Index.Index", args).Url
-}
-
-func (_ tIndex) Suggestion(
-		addr string,
-		suggestion string,
-		) string {
-	args := make(map[string]string)
-	
-	revel.Unbind(args, "addr", addr)
-	revel.Unbind(args, "suggestion", suggestion)
-	return revel.MainRouter.Reverse("Index.Suggestion", args).Url
-}
-
-
-type tMobile struct {}
-var Mobile tMobile
-
-
-func (_ tMobile) Index(
-		) string {
-	args := make(map[string]string)
-	
-	return revel.MainRouter.Reverse("Mobile.Index", args).Url
-}
-
-func (_ tMobile) Logout(
-		) string {
-	args := make(map[string]string)
-	
-	return revel.MainRouter.Reverse("Mobile.Logout", args).Url
-}
-
-
-type tNotebook struct {}
-var Notebook tNotebook
-
-
-func (_ tNotebook) Index(
-		notebook interface{},
-		i int,
-		name string,
-		) string {
-	args := make(map[string]string)
-	
-	revel.Unbind(args, "notebook", notebook)
-	revel.Unbind(args, "i", i)
-	revel.Unbind(args, "name", name)
-	return revel.MainRouter.Reverse("Notebook.Index", args).Url
-}
-
-func (_ tNotebook) DeleteNotebook(
-		notebookId string,
-		) string {
-	args := make(map[string]string)
-	
-	revel.Unbind(args, "notebookId", notebookId)
-	return revel.MainRouter.Reverse("Notebook.DeleteNotebook", args).Url
-}
-
-func (_ tNotebook) AddNotebook(
-		notebookId string,
-		title string,
-		) string {
-	args := make(map[string]string)
-	
-	revel.Unbind(args, "notebookId", notebookId)
-	revel.Unbind(args, "title", title)
-	return revel.MainRouter.Reverse("Notebook.AddNotebook", args).Url
-}
-
-func (_ tNotebook) UpdateNotebookTitle(
-		notebookId string,
-		title string,
-		) string {
-	args := make(map[string]string)
-	
-	revel.Unbind(args, "notebookId", notebookId)
-	revel.Unbind(args, "title", title)
-	return revel.MainRouter.Reverse("Notebook.UpdateNotebookTitle", args).Url
-}
-
-
-type tNoteContentHistory struct {}
-var NoteContentHistory tNoteContentHistory
-
-
-func (_ tNoteContentHistory) ListHistories(
-		noteId string,
-		) string {
-	args := make(map[string]string)
-	
-	revel.Unbind(args, "noteId", noteId)
-	return revel.MainRouter.Reverse("NoteContentHistory.ListHistories", args).Url
 }
 
 
@@ -807,6 +697,116 @@ func (_ tShare) DeleteUserShareNoteAndNotebook(
 	
 	revel.Unbind(args, "fromUserId", fromUserId)
 	return revel.MainRouter.Reverse("Share.DeleteUserShareNoteAndNotebook", args).Url
+}
+
+
+type tUser struct {}
+var User tUser
+
+
+func (_ tUser) UpdateUsername(
+		username string,
+		) string {
+	args := make(map[string]string)
+	
+	revel.Unbind(args, "username", username)
+	return revel.MainRouter.Reverse("User.UpdateUsername", args).Url
+}
+
+func (_ tUser) UpdatePwd(
+		oldPwd string,
+		pwd string,
+		) string {
+	args := make(map[string]string)
+	
+	revel.Unbind(args, "oldPwd", oldPwd)
+	revel.Unbind(args, "pwd", pwd)
+	return revel.MainRouter.Reverse("User.UpdatePwd", args).Url
+}
+
+func (_ tUser) UpdateTheme(
+		theme string,
+		) string {
+	args := make(map[string]string)
+	
+	revel.Unbind(args, "theme", theme)
+	return revel.MainRouter.Reverse("User.UpdateTheme", args).Url
+}
+
+func (_ tUser) SendRegisterEmail(
+		content string,
+		toEmail string,
+		) string {
+	args := make(map[string]string)
+	
+	revel.Unbind(args, "content", content)
+	revel.Unbind(args, "toEmail", toEmail)
+	return revel.MainRouter.Reverse("User.SendRegisterEmail", args).Url
+}
+
+func (_ tUser) ReSendActiveEmail(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("User.ReSendActiveEmail", args).Url
+}
+
+func (_ tUser) UpdateEmailSendActiveEmail(
+		email string,
+		) string {
+	args := make(map[string]string)
+	
+	revel.Unbind(args, "email", email)
+	return revel.MainRouter.Reverse("User.UpdateEmailSendActiveEmail", args).Url
+}
+
+func (_ tUser) UpdateEmail(
+		token string,
+		) string {
+	args := make(map[string]string)
+	
+	revel.Unbind(args, "token", token)
+	return revel.MainRouter.Reverse("User.UpdateEmail", args).Url
+}
+
+func (_ tUser) ActiveEmail(
+		token string,
+		) string {
+	args := make(map[string]string)
+	
+	revel.Unbind(args, "token", token)
+	return revel.MainRouter.Reverse("User.ActiveEmail", args).Url
+}
+
+func (_ tUser) AddAccount(
+		email string,
+		pwd string,
+		) string {
+	args := make(map[string]string)
+	
+	revel.Unbind(args, "email", email)
+	revel.Unbind(args, "pwd", pwd)
+	return revel.MainRouter.Reverse("User.AddAccount", args).Url
+}
+
+func (_ tUser) UpdateColumnWidth(
+		notebookWidth int,
+		noteListWidth int,
+		) string {
+	args := make(map[string]string)
+	
+	revel.Unbind(args, "notebookWidth", notebookWidth)
+	revel.Unbind(args, "noteListWidth", noteListWidth)
+	return revel.MainRouter.Reverse("User.UpdateColumnWidth", args).Url
+}
+
+func (_ tUser) UpdateLeftIsMin(
+		leftIsMin bool,
+		) string {
+	args := make(map[string]string)
+	
+	revel.Unbind(args, "leftIsMin", leftIsMin)
+	return revel.MainRouter.Reverse("User.UpdateLeftIsMin", args).Url
 }
 
 

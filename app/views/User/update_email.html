@@ -1,13 +1,12 @@
-{{template "header.html" .}}
-<div id="postsContainer">
-	<div id="posts">
-		<form class="form-inline" id="registerForm" style="width: 400px; margin: auto;">
-			
-			<h1 style="margin-top:10px">
-				验证邮箱 - 
-				{{if .ok}}成功{{else}}失败{{end}}
-			</h1>
-			
+{{template "home/header_box.html" .}}
+<section id="box">
+	<div>
+		<h1>
+			leanote 验证邮箱 - 
+			{{if .ok}}成功{{else}}失败{{end}}
+		</h1>
+	
+		<form class="form-inline" id="boxForm">
 			您的邮箱 {{.email}} 验证 
 			{{if .ok}}成功{{else}}失败{{end}}
 			{{if .ok}}
@@ -18,13 +17,9 @@
 			{{if .msg}}<br />{{.msg}}{{end}}
 			
 			<br />
-			<a href="/">回到我的笔记</a>
+			<a href="/note">回到我的笔记</a>
 		</form>		
     </div>
-</div>
-
-{{template "footer.html"}}
-<script>
-</script>
+</section>
 </body>
 </html>
