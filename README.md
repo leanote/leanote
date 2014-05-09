@@ -1,47 +1,45 @@
 ## 1. Introduction
 
-Leanote, a cloud note. You can create your own cloud note by leanote. 
+Leanote, your cloud notepad.
 
 **Some Features**
 
-* Knowledge: manage your knowledge in leanote. leanote contains tinymce editor and markdown editor, just enjoy yourself in writting.
-* Share: share your knowledge to your friends in leanote. Well, you are not alone, you can invite your friends to join your cloud note and share your knowledge each other.
-* Cooperation: collaborate with friends to improve your knowledge.
-* Blog: public your knowledge and leanote be your blog.
+* Knowledge: Manage your knowledge in leanote. leanote contains the tinymce editor and a markdown editor, just enjoy yourself writing.
+* Share: Share your knowledge with your friends in leanote. You can invite your friends to join your notepad in the cloud so you can share knowledge.
+* Cooperation: Collaborate with friends to improve your skills.
+* Blog: Publish your knowledge and make leanote your blog.
 
-## 2. Why we create leanote
-To be honest, our inspiration comes from evernote, and we use evenote to manage our knowledge everyday. But we find that:
-* Evernote's editor can't meet our needs, it hasn't document navigation, can't put our codes(as a programmer, put codes is the basic needs), can't resize images...)
-* We like markdown, but evernote don't support it.
-* We want to public our knowledge, so we have our blog(such as wordpress) and evernote, but why can't be the one!
+## 2. Why we created leanote
+To be honest, our inspiration comes from Evernote. We use Evernote to manage our knowledge everyday. But we find that:
+* Evernote's editor can't meet our needs, it does not have document navigation, it does not render code properly (as a programmer, syntax highlighted code rendering is a basic need), it cannot resize images and so forth
+* We like markdown, but Evernote does not support it.
+* We want to share our knowledge, so all of us have our blogs (e.g. on Wordpress) and our Evernote accounts, but why can not those two be one!
 * ......
 
 ## 3. How to install leanote
 
 ### 3.1. Download leanote
 
-Leanote v0.1 has released. Binaries:
+Leanote v0.1 has been released. Binaries:
 
-* linux: https://github.com/leanote/leanote/releases/download/0.1/leanote-linux-v0.1.bin.tar.gz
-* mac ox: https://github.com/leanote/leanote/releases/download/0.1/leanote-mac-v0.1.bin.tar.gz
+* Linux: https://github.com/leanote/leanote/releases/download/0.1/leanote-linux-v0.1.bin.tar.gz
+* MacOS X: https://github.com/leanote/leanote/releases/download/0.1/leanote-mac-v0.1.bin.tar.gz
 
-### 3.2. Install mongodb
+### 3.2. Install MongoDB
 
-Leanote build with golang(revel) and mongodb. so you must install mongodb at first.
+Leanote is written in go using [revel](https://revel.github.io/) and [MongoDB](https://www.mongodb.org). Thus, you need to first install MongoDB.
 
-For more tips please go https://github.com/leanote/leanote/wiki/mongodb-in-leanote
+For more tips please have a look at [our wiki](https://github.com/leanote/leanote/wiki/mongodb-in-leanote)
 
-Go http://www.mongodb.org to download and install it.
+### 3.3. Import initial MongoDB data
 
-### 3.3. Export initial mongodb data
-
-The mongodb data is in path_to_leante/mongodb_backup/leanote_install_data
+The mongodb data is in `[path_to_leanote]/mongodb_backup/leanote_install_data`
 
 ```
-$> mongorestore -h localhost -d leanote --directoryperdb path_to_leante/mongodb_backup/leanote_install_data
+$> mongorestore -h localhost -d leanote --directoryperdb PATH_TO_LEANOTE/mongodb_backup/leanote_install_data
 ```
 
-The initial data contains two users:
+The initial database contains two users:
 
 ```
 user1 username: leanote, password: abc123
@@ -50,7 +48,7 @@ user2 username: admin, password: abc123
 
 ### 3.4. Configuration
 
-Modify path_to_leanote/conf/app.conf, the configuration options contains:
+Modify `[path_to_leanote]/conf/app.conf`. Available configuration options are:
 
 ``mongodb``  **required**
 
@@ -68,34 +66,34 @@ Default is 80
 
 ``site.url``
 
-Default is http://localhost, you must config it when your domain isn't it, it is used when upload images.
+Default is `http://localhost`, you must edit this when hosting leanote anywhere else. This is used when uploading images.
 
 ``email``
 
-for find password
+For password recovery mails
 
 ``adminUsername``
 
-Default is admin. The index site is the adminUsername's blog
+Default is `admin`. The landing page is the admin user's blog.
 
-For more infomation please see app/app.conf and revel manuals http://revel.github.io
+For more infomation please see `app/app.conf` and the [revel manuals](https://revel.github.io/)
 
 ### 3.5. Run leanote
 
 ```
-$> cd path_to_leanote/bin
+$> cd PATH_TO_LEANOTE/bin
 $> sudo sh run.sh
 ```
 
 ## 4. How to develop leanote
 
-For more tips please go https://github.com/leanote/leanote/wiki/How-to-develop-leanote
+For more tips please see [our wiki](https://github.com/leanote/leanote/wiki/How-to-develop-leanote)
 
-Leanote is a app based on revel(http://revel.github.io), so if you want to develop leanote as you want, you must be familar with revel.
+Leanote is a app based on [revel](https://revel.github.io/), so if you want to work on leanote, you should be familar with revel.
 
 ### 4.1 Install golang
 
-Install golang and set GOPATH
+Install golang and set the `GOPATH` environment variable
 
 ### 4.2 Install revel
 ```
@@ -116,10 +114,10 @@ $> cp conf/app.conf-default conf/app.conf
 $> cp conf/routes-default conf/routes
 ```
 
-Now you can modify leanote source and build/run with revel
+Now you can modify the leanote source and build/run using `revel`
 
 ```
 $> revel run github.com/leanote/leanote
 ```
 
-Welcome to join with us and contribute your code to leanote! Thanks.
+You are welcome to join us and contribute code to leanote! Thanks.
