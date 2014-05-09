@@ -45,7 +45,11 @@ func Init() {
 		port, _ := revel.Config.String("db.port")
 		username, _ := revel.Config.String("db.username")
 		password, _ := revel.Config.String("db.password")
-		url = "mongodb://" + username + ":" + password + "@" + host + ":" + port + "/" + dbname
+		usernameAndPassword := username + ":" + password + "@"
+		if username == "" || password == "" {
+			usernameAndPassword = ""
+		}
+		url = "mongodb://" + usernameAndPassword  + host + ":" + port + "/" + dbname
 	}
 	
 	// [mongodb://][user:pass@]host1[:port1][,host2[:port2],...][/database][?options]
