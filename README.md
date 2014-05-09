@@ -20,10 +20,10 @@ To be honest, our inspiration comes from evernote, and we use evenote to manage 
 
 ### 3.1. Download leanote
 
-Leanote v0.1 has released.
+Leanote v0.1 has released. Binaries:
 
 * linux: https://github.com/leanote/leanote/releases/download/0.1/leanote-linux-v0.1.bin.tar.gz
-* mac ox: https://github.com/leanote/leanote/releases/download/0.1/leanote-mac-v0.1.tar.gz
+* mac ox: https://github.com/leanote/leanote/releases/download/0.1/leanote-mac-v0.1.bin.tar.gz
 
 ### 3.2. Install mongodb
 
