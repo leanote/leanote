@@ -1,0 +1,88 @@
+{{template "home/header.html" .}}
+<style>
+
+</style>
+<section>
+	<div class="header">
+		<h2>leanote, Your own cloud note!</h2>
+		<p>Knowledge, Sharing, Cooperation, Blog... all just in leanote</p>
+		
+		<div>
+			<a class="btn btn-primary" href="https://github.com/leanote/leanote">Fork leanote from Github</a> 
+			&nbsp;
+			&nbsp;
+			<a class="btn btn-default" href="/demo">Try it</a>
+			{{if .openRegister}}
+			&nbsp;
+			&nbsp;
+			OR			
+			&nbsp;
+			&nbsp;
+			<a class="btn btn-default" href="/register">{{msg . "register"}}</a> 
+			{{end}}
+		</div>
+	</div>
+	
+	<div class="preview" style="position: relative;">
+		<div>
+			<div class="img-header">
+				<img src="/images/home/mac-btns.png"/>
+			</div>
+			<img src="/images/home/preview2.png" style="width: 750px;" />
+		</div>
+		<div class="mobile">
+			<div class="mobile-header">
+				<img src="/images/home/mac-dot.png" />
+			</div>
+			<img class="mobile-image" src="/images/home/mobile.png" />
+		</div>
+	</div>
+</section>
+
+<div class="container" id="aboutLeanote">
+	<h2>{{msg . "aboutLeanote"}}</h2>
+     <div class="row">
+        <div class="col-md-3">
+          <h3>{{msg . "knowledge"}}</h3>
+          <p>{{msg . "knowledgeInfo"}}</p>
+        </div>
+        <div class="col-md-3">
+          <h3>{{msg . "share"}}</h3>
+          <p>{{msg . "shareInfo"}}</p>
+       </div>
+        <div class="col-md-3">
+          <h3>{{msg . "cooperation"}}</h3>
+          <p>{{msg . "cooperationInfo"}}</p>
+        </div>
+        <div class="col-md-3">
+          <h3>{{msg . "blog"}}</h3>
+          <p>{{msg . "blogInfo"}}</p>
+        </div>
+      </div>
+</div>
+
+{{template "home/footer.html"}}
+
+<script src="/js/jquery-1.9.0.min.js"></script>
+<script src="/js/bootstrap.js"></script>
+
+<script>
+$(function() {
+	/*
+	var u = navigator.userAgent;
+	var isMobile = u.indexOf('Android')>-1 || u.indexOf('Linux')>-1;
+	if(isMobile || $("body").width() < 600) {
+		location.href = "/mobile/index";
+	}
+	*/
+	// 平滑滚动
+	$(".smooth-scroll").click(function(e) {
+		e.preventDefault();
+		var t = $(this).attr("target");
+		var targetOffset = $(t).offset().top - 80;
+		$('html,body').animate({scrollTop: targetOffset}, 300);
+	});
+});
+</script>
+</body>
+</html>

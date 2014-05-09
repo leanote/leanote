@@ -1,0 +1,45 @@
+{{template "Blog/header.html" .}}
+
+<div id="postsContainer">
+	<div class="container">
+	<h2>搜索  {{.key}} </h2>
+	</div>
+
+	<div id="posts">
+		{{range .blogs}}
+		<div class="each-post">
+			<div class="title">
+				<a href="/blog/view/{{.NoteId.Hex}}" title="全文">
+					{{.Title}}
+				</a>
+			</div>
+			<div class="created-time">
+				<i class="fa fa-bookmark-o" style="color: #666"></i>
+				{{if .Tags}} 
+					{{blogTags .Tags}}
+				{{else}}
+				无
+				{{end}}
+				|
+				<i class="fa fa-calendar" style="color: #666"></i> 更新 {{.UpdatedTime | datetime}} | 
+				<i class="fa fa-calendar" style="color: #666"></i> 创建 {{.CreatedTime | datetime}}
+			</div>
+			<div class="desc">
+				{{.Content | raw}}
+			</div>
+			<a class="more" href="/blog/view/{{.NoteId.Hex}}" title="更多">More...</a>
+		</div>
+		{{end}}
+		
+		{{if not .blogs }}
+			<div class="each-post">
+				无			
+			</div>
+		{{end}}
+	</div>
+</div>
+
+{{template "Blog/footer.html" .}}
+{{template "Blog/highlight.html"}}
+</body>
+</html>

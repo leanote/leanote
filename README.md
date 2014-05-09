@@ -16,9 +16,18 @@ To be honest, our inspiration comes from evernote, and we use evenote to manage 
 * ......
 
 ## How to use it
-Leanote build with golang(revel) and mongodb. so you must install mongodb at first.
+
+## Download leanote
+
+Leanote v0.1 has released.
+
+* linux: https://github.com/leanote/leanote/releases/download/0.1/leanote-linux-v0.1.bin.tar.gz
+* mac ox: https://github.com/leanote/leanote/releases/download/0.1/leanote-mac-v0.1.tar.gz
 
 ### Install mongodb
+
+Leanote build with golang(revel) and mongodb. so you must install mongodb at first.
+
 For more tips please go https://github.com/leanote/leanote/wiki/mongodb-in-leanote
 
 Go http://www.mongodb.org to download and install it.
@@ -40,7 +49,7 @@ user2 username: admin, password: abc123
 
 ### Configuration
 
-Copy path_to_leante/conf/app-default.conf to path_to_leante/conf/app.conf, the options contains:
+Modify path_to_leanote/conf/app.conf, the configuration options contains:
 
 ``mongodb``  **required**
 
@@ -101,6 +110,7 @@ go get github.com/leanote/leanote/app
 
 ### Build/Run leanote via revel
 
+cp conf/app.conf-default to conf/app.conf
 cp conf/routes-default to conf/routes
 
 Now you can modify leanote source and build/run with revel

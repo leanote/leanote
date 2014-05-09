@@ -1,0 +1,62 @@
+<div id="footerContainer">
+	{{$userId := .userBlog.UserId.Hex}}
+	<div class="container" id="footer">
+        <div class="col-md-4">
+          <h3>导航</h3>
+          <ul>
+          	<li><a href="/blog/{{$userId}}">首页</a></li>
+          	{{range .notebooks}}
+			<li>
+				<a href="/blog/{{$userId}}/{{.NotebookId.Hex}}">{{.Title}}</a>
+			</li>
+			{{end}}
+          	<li><a href="/blog/aboutMe/{{$userId}}">关于我</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h3>最近发表</h3>
+          <ul>
+          	{{range .recentBlogs}}
+          	<li title="{{.Title}}"><a href="/blog/view/{{.NoteId.Hex}}/">{{.Title}}</a></li>
+          	{{end}}
+          </ul>
+       </div>
+        <div class="col-md-4">
+          <h3>快速链接</h3>
+          <ul>
+			<li><a href="/note">我的笔记</a></li>
+			<li><a href="/login">登录</a></li>
+			<li><a href="http://leanote.com" target="_blank">leanote</a></li>
+			<li><a href="https://github.com/leanote/leanote" target="_blank">leanote github</a></li>
+		 </ul>
+        </div>
+    </div>
+</div>
+<script src="/js/jquery-1.9.0.min.js"></script>
+<script src="/js/bootstrap-min.js"></script>
+
+<script>
+$(function() {
+	/*
+	$("#searchInput").click(function() {
+		$("#search").width("130px");
+		$("#searchInput").width("100px");
+	});
+	$("#searchInput").blur(function() {
+		$("#search").width(0);
+		$("#searchInput").width(0);
+	});
+	*/
+});
+// 搜索
+function search(e) {
+	var key = $("#searchInput").val();
+	if(!key) {
+		location.href = "/blog/" + UserInfo.Username;
+	} else {
+		var tpl = '<form action="/blog/searchBlog/' + UserInfo.Username +'" method="get">';
+		tpl += '<input name="key" value="' + key + '" />';
+		tpl += "</form";
+		$(tpl).submit();
+	}
+}</script>

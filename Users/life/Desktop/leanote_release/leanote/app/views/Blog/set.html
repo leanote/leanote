@@ -1,0 +1,301 @@
+{{template "Blog/header.html" .}}
+
+<!--  -->
+<link rel="stylesheet" href="/tinymce/skins/custom/skin.min.css"
+	type="text/css">
+<style>
+.tab-pane {
+	padding-top: 10px;
+}
+</style>
+<div id="postsContainer">
+	<div id="posts">
+		<ul id="myTab" class="nav nav-tabs">
+			<li class="active"><a href="#baseInfo" data-toggle="tab">基本设置</a></li>
+			<li class=""><a href="#commentInfo" data-toggle="tab">评论设置</a></li>
+			<li class=""><a href="#styleInfo" data-toggle="tab">主题设置</a></li>
+		</ul>
+
+		<!-- Tab panes -->
+		<div class="tab-content">
+			<div class="tab-pane" id="styleInfo">
+				<form class="form-horizontal" role="form">
+					<div class="form-group">
+						<label for="Style" class="col-sm-2 control-label">主题</label>
+						<div class="col-sm-10">
+							<label><input type="radio" name="Style"
+								value="blog_default" 
+								{{if not .userBlog.Style}}
+									checked="checked"
+								{{else}} 
+									{{if eq .userBlog.Style "blog_default"}}
+										checked="checked"
+									{{end}}
+								{{end}}>
+								默认 </label> 
+								<label><input type="radio" name="Style"
+								value="blog_daqi" 
+								{{if eq .userBlog.Style "blog_daqi"}}checked="checked"{{end}}>
+								大气</label>
+								<label><input type="radio" name="Style"
+								value="blog_left_fixed" 
+								{{if eq .userBlog.Style "blog_left_fixed"}}checked="checked"{{end}}>
+								左侧导航固定</label>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+								<button class="btn btn-success">保存</button>
+								<span class="msg"></span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="tab-pane" id="commentInfo">
+				<form class="form-horizontal" role="form">
+					<div class="form-group">
+						<label for="subTitle" class="col-sm-2 control-label">开启评论</label>
+						<div class="col-sm-10">
+							<input type="checkbox" id="CanComment" name="CanComment"
+								{{if .userBlog.CanComment}}checked="checked"{{end}} >
+							<br />
+							leanote采用 <a href="http://disqus.com" target="_blank">Disqus</a>
+							作为评论系统
+							<div id="disqusSet">
+								<label for="DisqusId">Disqus Id</label> <input type="text"
+									class="form-control" style="display: inline; width: 50%"
+									id="DisqusId" name="DisqusId"
+									value="{{if .userBlog.DisqusId}}{{.userBlog.DisqusId}}{{else}}leanote{{end}}">
+								<br /> (请填写您申请的Disqus唯一url前缀, 建议您申请Disqus帐号, 这样可以自己管理评论.
+								或使用leanote的默认Disqus Id. <a target="_blank"
+									href="/blog/view/52db8463e01c530ef8000001">需要帮助?</a>)
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+								<button class="btn btn-success">保存</button>
+								<span class="msg"></span>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="tab-pane active" id="baseInfo">
+				<div class="form-horizontal" role="form" id="userBlogForm">
+					<div class="form-group">
+						<label class="col-sm-2 control-label"></label>
+						<div class="col-sm-10">
+							<div class="alert alert-success" id="msg"
+								style="display: none; margin-bottom: 3px;"></div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="title" class="col-sm-2 control-label">博客名称</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="Title" name="Title"
+								placeholder="比如: leanote的博客"
+								value="{{if .userBlog.Title}}{{.userBlog.Title}}{{else}}{{.userInfo.Email}} 的博客{{end}}">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="logo" class="col-sm-2 control-label">博客Logo</label>
+						<div class="col-sm-10">
+							<input type="hidden" name="Logo" id="Logo"
+								value="{{.userBlog.Logo}}" />
+							<form id="formLogo" action="/file/uploadBlogLogo" method="post"
+								enctype="multipart/form-data" target="logoTarget"
+								onsubmit="inProgress()">
+								<input type="file" class="form-control" id="logo2" name="file"
+									onChange='$("#formLogo").submit();' /> 上传logo将显示logo(替代博客标题)
+								<div id="logoImg"
+									{{if .userBlog.Logo }}	
+						{{else}}
+						style="display: none"{{end}}
+						>
+									<img src="{{.userBlog.Logo}}" style="height: 40px" /> <a
+										href="#" id="deleteLogo">删除</a>
+								</div>
+							</form>
+							<iframe id="logoTarget" name="logoTarget" src="#"
+								style="display: none"></iframe>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="subTitle" class="col-sm-2 control-label">博客描述</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="SubTitle"
+								name="SubTitle" value="{{.userBlog.SubTitle}}"
+								placeholder="比如: leanote, 不只是笔记">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="aboutMe" class="col-sm-2 control-label"></label>
+						<div class="col-sm-10">
+							<div id="popularToolbar"></div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="aboutMe" class="col-sm-2 control-label">关于我</label>
+						<div class="col-sm-10">
+							<textarea id="AboutMe" name="AboutMe">{{.userBlog.AboutMe}}</textarea>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<button class="btn btn-success">保存</button>
+							<span class="msg"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	{{template "Blog/footer.html" .}}
+	
+	<script src="/js/common-min.js"></script>
+	
+	<script type="text/javascript" src="/tinymce/tinymce.min.js"></script>
+
+<script>
+$(function() {
+	tinymce.init({
+		selector : "#AboutMe",
+		content_css : [ "/css/bootstrap.css", "/css/editor.css" ],
+		skin : "custom",
+		language : "zh_CN",
+		height : 300,
+		width : "100%",
+		plugins : [
+				"advlist autolink link image lists charmap hr ",
+				"searchreplace visualblocks visualchars code tabfocus",
+				"table contextmenu directionality textcolor paste fullpage textcolor" ],
+
+		toolbar1 : "formatselect fontselect fontsizeselect | forecolor backcolor | bold italic underline strikethrough | image |  bullist numlist | alignleft aligncenter alignright alignjustify",
+		toolbar2 : "outdent indent blockquote | link unlink | table | hr removeformat | subscript superscript | visualchars visualblocks | searchreplace | code",
+
+		menubar : false,
+		toolbar_items_size : 'small',
+		statusbar : false,
+		font_formats : "Arial=arial,helvetica,sans-serif;"
+				+ "Arial Black=arial black,avant garde;"
+				+ "Times New Roman=times new roman,times;"
+				+ "Courier New=courier new,courier;"
+				+ "Tahoma=tahoma,arial,helvetica,sans-serif;"
+				+ "Verdana=verdana,geneva;" + "宋体=SimSun;"
+				+ "新宋体=NSimSun;" + "黑体=SimHei;"
+				+ "微软雅黑=Microsoft YaHei",
+		block_formats : "Header 1=h1;Header 2=h2;Header 3=h3; Header 4=h4;Pre=pre;Paragraph=p"
+	});
+	$("#deleteLogo").click(function() {
+		$("#Logo").val("");
+		$("#logoImg").hide();
+	});
+
+	$("#CanComment").click(function() {
+		if ($(this).is(":checked")) {
+			$("#disqusSet").show();
+		} else {
+			$("#disqusSet").hide();
+		}
+	});
+	$("#CanComment").trigger("click").trigger("click"); // 恶心的想法
+	
+	
+	// 基本设置
+	$("#baseInfo .btn-success").click(function() {
+		var data = {
+			Title : $("#Title").val(),
+			SubTitle : $("#SubTitle").val(),
+			Logo : $("#Logo").val(),
+			AboutMe : getEditorContent()
+		}
+		
+		post("/blog/setUserBlogBase", data, function(ret) {
+			showMsg2($("#baseInfo .msg"), "保存成功", 2000);
+			$("#blogDesc").html(data.SubTitle);
+			$("#logo").html(data.Title);
+			if(data.Logo) {
+				$("#logo").html(t('<img src="?" />', data.Logo));
+			}
+		}, this);
+	});
+	// 评论
+	$("#commentInfo .btn-success").click(function(e) {
+		e.preventDefault();
+		var data = {
+			CanComment : $("#CanComment").is(":checked"),
+			DisqusId : $("#DisqusId").val(),
+		}	
+		post("/blog/setUserBlogComment", data, function(ret) {
+			showMsg2($("#commentInfo .msg"), "保存成功", 2000);
+		}, this);
+	});
+	// 主题
+	$("#styleInfo .btn-success").click(function(e) {
+		e.preventDefault();
+		var data = {
+			Style : $("input[name='Style']:checked").val()
+		}	
+		post("/blog/setUserBlogStyle", data, function(ret) {
+			showMsg2($("#styleInfo .msg"), "保存成功", 2000);
+		}, this);
+	});
+	$("input[name='Style']").click(function() {
+		$("#styleLink").attr("href", "/css/blog/" + $(this).val() + ".css");
+	});
+});
+
+function inProgress() {
+}
+
+// filename, result, resultCode
+function uploadFinish(ret) {
+	if (ret) {
+		if (ret.resultCode == '1') {
+			$("#logoImg img").attr("src", ret.filename).parent().show();
+			$("#Logo").val(ret.filename);
+			return;
+		}
+		alert(ret.result);
+		return;
+	}
+	// 上传出错
+	alert("上传出错");
+}
+
+function submit() {
+	var tpl = '<form action="/blog/setBlog" method="post"><input name="Title" value="?" />';
+	tpl += '<input name="SubTitle" value="?" />';
+	tpl += '<input name="Logo" value="?" />';
+	tpl += '<input name="CanComment" value="?" />';
+	tpl += '<input name="DisqusId" value="?" />';
+	tpl += '<input name="Style" value="?" />';
+	tpl += '<textarea name="AboutMe">?</textarea>';
+	tpl += "</form";
+	var data = {
+		Title : $("#Title").val(),
+		SubTitle : $("#SubTitle").val(),
+		Logo : $("#Logo").val(),
+		AboutMe : getEditorContent(),
+		CanComment : $("#CanComment").is(":checked"),
+		DisqusId : $("#DisqusId").val(),
+		Style : $("input[name='Style']:checked").val()
+	}
+	if (!data.DisqusId) {
+		data.DisqusId = "leanote";
+	}
+	$(t(tpl, data.Title, data.SubTitle, data.Logo,
+					data.CanComment, data.DisqusId, data.Style,
+					data.AboutMe)).submit();
+}
+</script>
+</div>
+</body>
+</html>

@@ -1,0 +1,4 @@
+
+= modal =
+bootstrap.js modal 缓存修改, 不缓存remote的数据
+添加postShow

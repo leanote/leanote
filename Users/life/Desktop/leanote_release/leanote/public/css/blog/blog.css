@@ -1,0 +1,133 @@
+*,
+body {
+  font-family: 'Open Sans', '微软雅黑', Arial, Tahoma, sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+}
+h1,
+h2,
+h3 {
+  font-family: 'Open Sans', '微软雅黑', Arial, Tahoma, sans-serif;
+  font-weight: 300 !important;
+}
+a {
+  cursor: pointer;
+}
+a:hover {
+  text-decoration: underline !important;
+}
+#headerContainer {
+  height: 230px;
+  background-color: #fff;
+}
+#posts {
+  width: 745px;
+  margin: auto;
+}
+#postsContainer {
+  background: #f5f5f5 url("../images/noise.png");
+  padding-bottom: 5px;
+}
+/* header */
+#header {
+  color: #000000;
+  position: relative;
+  padding: 0 0 20px 0;
+  margin-top: 65px;
+}
+#header h1 {
+  margin: 0;
+}
+#header h1 a {
+  font-size: 48px;
+  font-weight: bold;
+  color: #000000;
+}
+#header #blogDesc {
+  font-size: 32px;
+  font-style: italic;
+  margin-top: 10px;
+}
+.navbar {
+  background-color: #f7f5e7;
+  margin-bottom: 0;
+  border-radius: 0;
+  border: none;
+}
+.nav li a:hover {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+.nav li.active a {
+  background-color: #f7f5e7 !important;
+  color: #bc360a !important;
+}
+.navbar-collapse {
+  padding-left: 0;
+  padding-right: 0;
+}
+.navbar-form {
+  padding: 0;
+}
+/* posts */
+#posts {
+  padding-top: 10px;
+}
+#posts .each-post {
+  border-bottom: 1px solid #ebeff2;
+  margin-bottom: 10px;
+  padding: 30px;
+  background-color: #fff;
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+#posts .each-post .title {
+  font-size: 48px;
+  color: #000000;
+  padding: 0 0 15px 0;
+}
+#posts .each-post .title a {
+  font-size: 48px;
+  color: #000000;
+  padding: 0 0 15px 0;
+}
+#posts .each-post .title a:hover {
+  color: #ea9629;
+}
+#posts .each-post .created-time {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 3px;
+  margin-bottom: 5px;
+}
+#posts .each-post .more {
+  background: #000000;
+  padding: 9px 10px;
+  border-radius: 2px;
+  line-height: 1;
+  font-size: 13px;
+  display: inline-block;
+  text-transform: uppercase;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  color: #fff;
+}
+#disqus_thread {
+  border-top: 1px solid #eee;
+  padding: 5px 0 0 0;
+}
+#search {
+  width: 200px;
+}
+#footerContainer {
+  background-color: #ffffff;
+  color: #666666;
+}
+#footerContainer #footer a {
+  color: #666666;
+}
+#footerContainer #footer ul {
+  list-style: none;
+  margin-bottom: 10px ;
+  padding-left: 20px;
+}

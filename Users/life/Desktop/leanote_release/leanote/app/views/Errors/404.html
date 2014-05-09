@@ -1,0 +1,18 @@
+{{if eq .RunMode "dev"}}
+{{template "errors/404-dev.html" .}}
+{{else}}
+{{template "home/header_box.html" .}}
+
+<section id="box">
+	<div>
+		<h1>error-404</h1>
+		<form class="form-inline" id="boxForm">
+			This page cann't found.
+			<br />
+			<a href="javascript:history.go(-1)">Back</a>
+		</form>		
+    </div>
+</section>
+</body>
+</html>
+{{end}}

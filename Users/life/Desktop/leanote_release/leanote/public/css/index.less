@@ -1,0 +1,329 @@
+
+@bgColor: #fff;
+@headerBgColor: #fff;
+@fontFamily:  'Open Sans', '微软雅黑', Arial, Tahoma, sans-serif;
+@aWhiteColor: #fff;
+@aBlackColor: #000;
+@borderColor: #EBEFF2;
+@border: 1px solid #EBEFF2;
+@borderMore: 1px solid #ccc; // 颜色更深
+@headerHeight: 60px;
+@hColor: #0fb264;
+@fontSize: 14px;
+@containerWidth: 945px;
+@titleColor: #5AD4A0;
+
+// font
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Open Sans Light'), local('OpenSans-Light'), url('../fonts/open-sans2/DXI1ORHCpsQm3Vp6mXoaTXhCUOGz7vYGh680lGh-uXM.woff') format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url('../fonts/open-sans2/cJZKeOuBrn4kERxqtaUH3T8E0i7KZn-EPnyo3HZu7kw.woff') format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Open Sans Bold'), local('OpenSans-Bold'), url('../fonts/open-sans2/k3k702ZOKiLJc3WVjuplzHhCUOGz7vYGh680lGh-uXM.woff') format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Open Sans Italic'), local('OpenSans-Italic'), url('../fonts/open-sans2/xjAJXh38I15wypJXxuGMBobN6UDyHWBl620a-IRfuBk.woff') format('woff');
+}
+
+/*"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue", Helvetica, "Microsoft Yahei", Verdana, Simsun, "Segoe UI", "Segoe UI Web Regular", "Segoe UI Symbol",  "BBAlpha Sans", "S60 Sans", Arial, sans-serif;*/
+@selectionBg: @aBlackColor;
+@selectionColor: #fff;
+::selection { background:@selectionBg; color:@selectionColor; } 
+::-moz-selection { background:@selectionBg; color:@selectionColor; } 
+::-webkit-selection { background:@selectionBg; color:@selectionColor; }
+html,body {
+}
+*, body {
+  font-family: @fontFamily;
+  font-weight: 300;
+  font-size: @fontSize;
+}
+h1, h2, h3 {
+  font-family: @fontFamily;
+}
+a {
+  // color: @aBlackColor;
+  cursor: pointer;
+}
+
+
+a:hover {
+  text-decoration: none !important;
+  // color: @aBlackColor;
+}
+@headerHeight: 60px;
+#headerContainer {
+	height: @headerHeight;
+	background-color: #fff;
+	-webkit-box-shadow: 1px 1px 8px -1px rgba(0, 0, 0, 0.1);
+	box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.1);
+}
+#header, #posts, #loginContainer {
+}
+#postsContainer, #suggestion {
+	background: #f5f5f5 url("../images/noise.png");
+}
+#postsContainer {
+	 margin-top: @headerHeight;
+}
+section {
+	background-color: #65bd77;
+	color: #e2f3e5;
+	margin-top: @headerHeight;
+}
+.header {
+	text-align: center;
+	padding: 30px;
+	p {
+		color: rgb(208, 235, 214);
+		font-size: 16px;
+	}
+	.btn {
+		padding: 10px 16px;
+		font-size: 14px;
+		font-size: 18px;
+		line-height: 1.33;
+		border-radius: 2px;
+		margin: 20px 0;
+	}
+	.btn-primary {
+		background-color: #25313e;
+		border-color: #1f2a34;
+	}
+	.btn-default {
+	}
+	h2 {
+		font-size: 32px;
+		color: #fff;
+	}
+}
+
+.preview {
+	margin: auto;
+	width: 850px;	
+	text-align: center;
+	img {
+		// box-shadow: -15px 10px 0 rgba(0, 0, 0, 0.15);
+	}
+	
+	.img-header {
+		height: 40px;
+		width: 750px;
+		margin: auto;
+		border-radius: 5px 5px 0 0;
+		text-align: left;
+		background-color: #F4F4F4;
+		img {
+			box-shadow: none;
+			margin: 10px;
+			width: 50px;
+		}
+	}
+	.mobile {
+		position: absolute; bottom: 0px; right: 0;
+		.mobile-header {
+			padding: 8px 15px;
+			border-radius: 14px 14px 0 0;
+			text-align: center;
+			background-color: rgb(46, 62, 78);
+			img {
+				width: 30px;
+			}
+		}
+		img {
+			border: 3px solid rgb(46, 62, 78);
+			border-bottom: 0;
+			width: 160px;
+		}
+	}
+}
+
+/* header */
+#header {
+  color: #000000;
+  position: relative;
+  h1 {
+  	margin: 0;
+  	padding: 0;
+	line-height: 45px;
+  }
+  background-color: #fff;
+}
+#blogNav {
+	margin: 0;
+	padding: 0;
+	line-height: @headerHeight;
+	li {
+		display: inline-block;
+		a {
+			display: inline-block;
+			padding: 0 10px;
+			color: #1b252e;
+			&:hover {
+				background-color: #eee;
+			}
+		}
+		a.active {
+			// font-weight: bold;
+		}
+	}
+}
+
+#loginBtns {
+	border-left: 1px solid #eee;
+	border-color: rgba(200, 200, 200, 0.5);
+	padding-left: 10px;
+	line-height: 30px;
+	margin-top: 15px;
+	a {
+		display: inline-block;
+		color: #1b252e;
+		padding: 0 10px;
+	}
+	.btn-register {
+		color: #fff;
+		background-color: #8ec165;
+		border-color: #8ec165;
+		border-radius: 2px;
+	}
+}
+
+/* posts */
+#posts {
+	padding-top: 10px;
+}
+
+.btn {
+	border-radius: 0px;
+	border: none;
+}
+.btn-primary {
+	background-color: green;
+}
+
+#loginContainer {
+	position: relative;
+}
+	
+input {
+	border-radius: 0 !important;
+	border: none;
+}
+.alert {
+	border-radius: 0;
+	border: none;
+	margin:0 0 5px 0; 
+	padding:5px;
+	display: none;
+}
+#loginForm {
+	width: 320px; 
+	position: absolute; 
+	right: 0; 
+	top: 100px;
+	// background-color: #666; 
+	background-color: #30373f;
+	z-index: 999;
+	padding: 10px 20px;
+	color: #fff;
+	border-radius: 5px;
+	a {
+		// color: #fff;
+	}
+}
+
+#registerForm {
+	padding-bottom: 20px;
+	.alert {
+	}
+}
+
+@footerColor: rgb(157, 177, 197);
+@footerBgColor: #1b252e;
+#footer {
+	background-color: @footerBgColor;
+	color: @footerColor;
+	border-top: 1px solid #ccc;
+	padding: 30px 0;
+	a {
+		color: @footerColor;
+	}
+	.col-md-6 {
+		text-align: center;
+	}
+	#beian {
+		a {
+			font-size: 8px;		
+		}
+	}
+}
+#aboutLeanote h2 {
+	margin: 20px 0;
+	text-align: center;
+}
+#aboutLeanote {
+	padding: 30px;
+}
+//-------------
+@boxWidth: 500px;
+#box {
+	margin: 0;
+	color: #000;
+	height: 100%;
+	padding-top: 30px;
+	h1 {
+		width: @boxWidth;; 
+		margin: auto; 
+		margin-bottom: 20px;
+		width: @boxWidth;; 
+		color: #eee;
+	}
+}
+#boxForm {
+	background-color: #fff;
+	width: @boxWidth;; 
+	margin: auto;
+	padding: 20px;
+	padding-top: 15px;
+	border-radius: 5px;
+	table {
+		width: 100%;
+		td {
+			padding: 5px 10px;
+		}
+	}
+}
+.back {
+	position: absolute;
+	color: #fff;
+	display: inline-block;
+	font-size: 20px;
+	&:hover {
+		color: #eee;
+	}
+}
+#quickLinks {
+	width: @boxWidth;; 
+	margin: auto;
+	text-align: right;
+	a {
+		color: #fff;
+		&:hover {
+			color: #eee;
+		}
+	}
+}

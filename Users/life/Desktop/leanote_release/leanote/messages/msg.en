@@ -1,0 +1,120 @@
+# leanote
+moto=Not just a note!
+# 首页
+forgetPassword = Forget password?
+or=or
+try=Try it
+3th=Third-party accounts
+usernameOrEmail=Username or email
+password=Password
+home=Home
+aboutLeanote=About leanote
+suggestions=Suggestions
+yourSuggestions=Suggestions
+leanoteBlog=Blog
+knowledge=Knowledge
+knowledgeInfo=Use leanote as a note, manage your knowledge in leanote.
+share=Share
+shareInfo=Share your knowledge to your friends in leanote.
+cooperation=Cooperation
+cooperationInfo=Collaborate with friends to improve your knowledge.
+blog=Blog
+blogInfo=You can public your knowledge and leanote is your blog!
+suggestionsInfo=help us to improve our service.
+yourContact=Your contact
+emailOrOthers=Email or other contact way
+
+hi=Hi
+welcomeUseLeanote=Welcome!
+myNote=Enter to my note
+curUser=Email
+
+# form
+submit=submit
+register=Sign up
+login=Sign in
+password2=Confirm your password
+email=Email
+inputUsername=Username(email) is required
+inputEmail=Email is required
+wrongEmail=Wrong email
+wrongUsernameOrPassword=Wrong username or password
+inputPassword=Password is required
+wrongPassword=Wrong password
+logining=Sign in
+loginSuccess=login success
+ing=processing
+
+# 注册
+registerSuccessAndRdirectToNote=register success, now redirect to my note...
+
+# 找回密码
+passwordTips=The length is at least 6
+findPassword=Find password
+findPasswordSendEmailOver=We have already send the find password link to your email, please check out your email
+checkEmai=Check email
+findPasswordTimeout=time out
+reFindPassword=find password again
+updatePassword=Update password
+updatePasswordSuccessRedirectToLogin=update password success and redirect to login page...
+inputPassword2=Please input your password again
+confirmPassword=Please confirm your password
+notGoodPassword=Tt's not a good password, the length is at least 6
+
+# 笔记主页
+myBlog=Blog
+history=Histories
+save=Save
+editorTips=Editor Tips
+editorTipsInfo=<h4>1. Short Cuts</h4>ctrl+shift+c Toggle code <br /> ctrl+shift+i Insert/edit image <h4>2. shift+enter Get out of current block</h4> eg. <img src="/images/outofcode.png" style="width: 90px"/> in this situation you can use shift+enter to get out of current code block.
+newNote=New Note
+newMarkdown=New Markdown Note
+clickAddTag=Click to add Tag
+notebook=Notebook
+myNotebook=My Notebook
+addNotebook=Add Notebook
+all=Newest
+trash=Trash
+unTitled=UnTitled
+defaultShare=Default sharing
+leftHidden=Hidden slide bar
+leftShow=Show slide bar
+nav=Note Nav
+
+update=Update
+create=Create
+
+demoRegister=您现在使用的是体验帐号, <a href="/register">立即注册?</a>
+
+close=Close
+cancel=Cancel
+send=Send
+
+# 标签
+tag=Tag
+myTag=My Tag
+red=red
+yellow=yellow
+blue=blue
+green=green
+
+# 设置
+accountSetting=Account
+themeSetting=Theme
+logout=Logout
+basicInfo=Basic
+updateEmail=Update Email
+usernameSetting=Update Username
+oldPassword=Old Password
+newPassword=New Password
+
+default=Default
+simple=Simple
+
+# tinymce
+uploadImage=Upload Image
+
+# error 
+notFound=This page cann't found.
+
+a=a
