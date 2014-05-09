@@ -8,5 +8,7 @@ bin/test
 conf/app.conf
 conf/routes
 public/upload
+app/routes/routes.go
+app/tmp/main.go
 .DS_Store
 .settings
