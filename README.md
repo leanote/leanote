@@ -122,4 +122,5 @@ $> revel run github.com/leanote/leanote
 
 You are welcome to join us and contribute code to leanote! Thanks.
 
+## Discussion
 [leanote google group](https://groups.google.com/forum/#!forum/leanote)
