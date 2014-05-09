@@ -1,1 +1,0 @@
-{ "indexes" : [ { "v" : 1, "key" : { "_id" : 1 }, "ns" : "leanote_public.system.users", "name" : "_id_" }, { "v" : 1, "key" : { "user" : 1, "userSource" : 1 }, "unique" : true, "ns" : "leanote_public.system.users", "name" : "user_1_userSource_1" } ] }

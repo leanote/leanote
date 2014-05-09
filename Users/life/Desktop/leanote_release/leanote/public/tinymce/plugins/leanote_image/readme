@@ -1,5 +1,0 @@
-leanote image插件安装
-
-1. 依赖 jquery, bootstrap. 请修改dialog.html的jquery, boostrap, js和css路径
-2. 传统input上传后返回的是html页面, 返回的结果请参考result.html. 服务器地址修改在dialog.html
-3. 拖拽上传返回的json数据, 用户请参考js/drop.js. 服务器地址修改在js/drop.js
