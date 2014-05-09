@@ -100,6 +100,7 @@ go get github.com/leanote/leanote/app
 ```
 
 ### Build/Run leanote via revel
+
 cp conf/routes-default to conf/routes
 
 Now you can modify leanote source and build/run with revel
