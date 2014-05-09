@@ -29,7 +29,7 @@ Leanote v0.1 has been released. Binaries:
 
 Leanote is written in go using [revel](https://revel.github.io/) and [MongoDB](https://www.mongodb.org). Thus, you need to first install MongoDB.
 
-For more tips please have a look at [our wiki](https://github.com/leanote/leanote/wiki/mongodb-in-leanote)
+For more tips please have a look at [our wiki](https://github.com/leanote/leanote/wiki/Install-Mongodb)
 
 ### 3.3. Import initial MongoDB data
 
