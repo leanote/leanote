@@ -47,12 +47,9 @@ Copy path_to_leante/conf/app-default.conf to path_to_leante/conf/app.conf, the o
 ```Shell
 db.host=localhost
 db.port=27017
-db.dbname=leanote # required
-db.username=root
-db.password=root123
-# or you can set the mongodb url for more complex needs
-# mongodb://myuser:mypass@localhost:40001,otherhost:40001/mydb
-db.url=mongodb://root:root123@localhost:27017/leanote
+db.dbname=leanote
+db.username=
+db.password=
 ```
 
 ``http.port``
@@ -103,6 +100,7 @@ go get github.com/leanote/leanote/app
 ```
 
 ### Build/Run leanote via revel
+cp conf/routes-default to conf/routes
 
 Now you can modify leanote source and build/run with revel
 
