@@ -28,7 +28,7 @@ Go http://www.mongodb.org to download and install it.
 The mongodb data is in path_to_leante/mongodb_backup/leanote_install_data
 
 ```
-mongorestore -h localhost -d leanote --directoryperdb path_to_leante/mongodb_backup/leanote_install_data
+$> mongorestore -h localhost -d leanote --directoryperdb path_to_leante/mongodb_backup/leanote_install_data
 ```
 
 The initial data contains two users:
@@ -73,8 +73,8 @@ For more infomation please see app/app.conf and revel manuals http://revel.githu
 ### Run leanote
 
 ```
-cd path_to_leanote/bin
-sh run.sh
+$> cd path_to_leanote/bin
+$> sh run.sh
 ```
 
 ## How to develop leanote
