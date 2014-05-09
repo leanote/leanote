@@ -74,7 +74,7 @@ For more infomation please see app/app.conf and revel manuals http://revel.githu
 
 ```
 $> cd path_to_leanote/bin
-$> sh run.sh
+$> sudo sh run.sh
 ```
 
 ## How to develop leanote
