@@ -98,25 +98,27 @@ Install golang and set GOPATH
 
 ### Install revel
 ```
-go get github.com/revel/revel
-go get github.com/revel/cmd/revel
+$> go get github.com/revel/revel
+$> go get github.com/revel/cmd/revel
 ```
 
 ### Get leanote
 
 ```
-go get github.com/leanote/leanote/app
+$> go get github.com/leanote/leanote/app
 ```
 
 ### Build/Run leanote via revel
 
-cp conf/app.conf-default to conf/app.conf
-cp conf/routes-default to conf/routes
+```
+$> cp conf/app.conf-default to conf/app.conf
+$> cp conf/routes-default to conf/routes
+```
 
 Now you can modify leanote source and build/run with revel
 
 ```
-revel run github.com/leanote/leanote
+$> revel run github.com/leanote/leanote
 ```
 
 Welcome to join with us and contribute your code to leanote! Thanks.

@@ -2,6 +2,8 @@
 pkg
 bin2
 bin/i18n
+bin/leanote-linux
+bin/leanote-mac
 bin/release
 bin/tmp
 bin/test
