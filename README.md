@@ -2,7 +2,8 @@
 
 Leanote, a cloud note. You can create your own cloud note by leanote. 
 
-## Features
+**Some Features**
+
 * Knowledge: manage your knowledge in leanote. leanote contains tinymce editor and markdown editor, just enjoy yourself in writting.
 * Share: share your knowledge to your friends in leanote. Well, you are not alone, you can invite your friends to join your cloud note and share your knowledge each other.
 * Cooperation: collaborate with friends to improve your knowledge.
