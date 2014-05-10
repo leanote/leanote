@@ -7,6 +7,7 @@ bin/leanote-mac
 bin/release
 bin/tmp
 bin/test
+bin/src
 conf/app.conf
 conf/routes
 public/upload
