@@ -224,7 +224,7 @@ Note.curHasChanged = function(force) {
 		hasChanged.hasChanged = true; // 本页使用用小写
 		hasChanged.Title = title; // 要传到后台的用大写
 		if(!hasChanged.Title) {
-			alert(1);
+//			alert(1);
 		}
 	}
 	
