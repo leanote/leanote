@@ -86,7 +86,7 @@ nav=文档导航
 update=更新
 create=创建
 
-demoRegister=您现在使用的是体验帐号, <a href="/register">立即注册?</a>
+demoRegister=<a href="/register">立即注册</a>
 
 close=关闭
 cancel=取消

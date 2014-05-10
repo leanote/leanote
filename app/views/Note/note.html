@@ -98,13 +98,7 @@ function log(o) {
 					<span id="msg" style="display: inline-block;"></span>
 					<img id="loading" style="visibility: hidden" src="/images/loading-a-20.gif" />
 					
-					{{if .openRegister}}					
-						{{if eq .userInfo.Email "demo@leanote.com"}}
-						<span>
-							{{msg . "demoRegister"}}
-						</span>
-						{{end}}
-					{{end}}
+					
 				</div>
 				
 				<!-- 
@@ -158,6 +152,16 @@ function log(o) {
 						{{msg . "myBlog"}}
 					</a>
 				</div>
+				
+				{{if eq .userInfo.Email "demo@leanote.com"}}
+				{{if .openRegister}}					
+				<div class="pull-right" style="line-height: 60px; margin-right:10px">
+					<span>
+						{{msg . "demoRegister"}}
+					</span>
+				</div>
+				{{end}}
+				{{end}}
 				
 				<!--
 				<ul id="setting" class="pull-right">
@@ -707,7 +711,7 @@ function log(o) {
 					</div>
 			    </div>
 			    
-			    <!-- 长微博 -->
+			    <!-- 激活邮件 -->
 				<div id="reSendActiveEmailDialog">
 				    <div class="modal-body">
 				    	<div style="max-height: 300px; padding: 5px 0; text-align: center; overflow: scroll;" class="weibo">
