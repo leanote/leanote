@@ -33,7 +33,7 @@ For more tips please have a look at [our wiki](https://github.com/leanote/leanot
 
 ### 3.3. Import initial MongoDB data
 
-The mongodb data is in `[path_to_leanote]/mongodb_backup/leanote_install_data`
+The mongodb data is in `[PATH_TO_LEANOTE]/mongodb_backup/leanote_install_data`
 
 ```
 $> mongorestore -h localhost -d leanote --directoryperdb PATH_TO_LEANOTE/mongodb_backup/leanote_install_data
@@ -48,7 +48,7 @@ user2 username: admin, password: abc123
 
 ### 3.4. Configuration
 
-Modify `[path_to_leanote]/conf/app.conf`. Available configuration options are:
+Modify `[PATH_TO_LEANOTE]/conf/app.conf`. Available configuration options are:
 
 ``mongodb``  **required**
 
