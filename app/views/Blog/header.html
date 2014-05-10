@@ -58,7 +58,7 @@ function log(o) {
 	    <div class="navbar-collapse collapse">
 	      <ul class="nav navbar-nav">
 	      	{{$navNotebookId := .notebookId}}
-				<li class="{{if .index}}active{{end}}"><a href="/blog/{{$username}}">首页</a></li>
+				<li class="{{if .index}}active{{end}}"><a href="/blog/{{$username}}">{{msg . "home"}}</a></li>
 			{{range .notebooks}}
 			{{$notebookId := .NotebookId.Hex}}
 				<li class="{{if eq $navNotebookId $notebookId}}active{{else}}{{end}}">
@@ -66,9 +66,9 @@ function log(o) {
 					>{{.Title}}</a>
 				</li>
 			{{end}}
-				<li class="{{if .aboutMe}}active{{end}}"><a href="/blog/aboutMe/{{$username}}">关于我</a></li>
+				<li class="{{if .aboutMe}}active{{end}}"><a href="/blog/aboutMe/{{$username}}">{{msg . "aboutMe"}}</a></li>
 				{{if .isMe}}
-				<li class="{{if .set}}active{{end}}"><a href="/blog/set" >博客设置</a></li>
+				<li class="{{if .set}}active{{end}}"><a href="/blog/set">{{msg . "blogSet"}}</a></li>
 				<li><a href="/note" >{{msg . "myNote"}}</a></li>
 				{{end}}
 	      </ul>

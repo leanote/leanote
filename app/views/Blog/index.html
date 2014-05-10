@@ -3,14 +3,15 @@
 <div id="postsContainer">
 	<div class="container">
 		{{if .notebookId}}
-		<h2>分类 {{.notebook.Title}}</h2>
+		<h2>{{msg . "blogClass"}}: {{.notebook.Title}}</h2>
 		{{end}}
 	</div>
 	<div id="posts">
+		{{$G := .}}
 		{{range .blogs}}
 		<div class="each-post">
 			<div class="title">
-				<a href="/blog/view/{{.NoteId.Hex}}" title="全文">
+				<a href="/blog/view/{{.NoteId.Hex}}" title="{{msg $G "fullBlog"}}">
 					{{.Title}}
 				</a>
 			</div>
@@ -19,16 +20,16 @@
 				{{if .Tags}} 
 					{{blogTags .Tags}}
 				{{else}}
-				无
+					{{msg $G "noTag"}}
 				{{end}}
 				|
-				<i class="fa fa-calendar" style="color: #666"></i> 更新 {{.UpdatedTime | datetime}} | 
-				<i class="fa fa-calendar" style="color: #666"></i> 创建 {{.CreatedTime | datetime}}
+				<i class="fa fa-calendar" style="color: #666"></i> {{msg $G "updatedTime"}} {{.UpdatedTime | datetime}} | 
+				<i class="fa fa-calendar" style="color: #666"></i> {{msg $G "createdTime"}} {{.CreatedTime | datetime}}
 			</div>
 			<div class="desc">
 				{{.Content | raw}}
 			</div>
-			<a class="more" href="/blog/view/{{.NoteId.Hex}}" title="更多">More...</a>
+			<a class="more" href="/blog/view/{{.NoteId.Hex}}" title="{{msg $G "fullBlog"}}">More...</a>
 		</div>
 		{{end}}
 		<!-- 分页 -->

@@ -2,19 +2,19 @@
 	{{$userId := .userBlog.UserId.Hex}}
 	<div class="container" id="footer">
         <div class="col-md-4">
-          <h3>导航</h3>
+          <h3>{{msg . "blogNavs"}}</h3>
           <ul>
-          	<li><a href="/blog/{{$userId}}">首页</a></li>
+          	<li><a href="/blog/{{$userId}}">{{msg . "home"}}</a></li>
           	{{range .notebooks}}
 			<li>
 				<a href="/blog/{{$userId}}/{{.NotebookId.Hex}}">{{.Title}}</a>
 			</li>
 			{{end}}
-          	<li><a href="/blog/aboutMe/{{$userId}}">关于我</a></li>
+          	<li><a href="/blog/aboutMe/{{$userId}}">{{msg . "aboutMe"}}</a></li>
           </ul>
         </div>
         <div class="col-md-4">
-          <h3>最近发表</h3>
+          <h3>{{msg . "latestPosts"}}</h3>
           <ul>
           	{{range .recentBlogs}}
           	<li title="{{.Title}}"><a href="/blog/view/{{.NoteId.Hex}}/">{{.Title}}</a></li>
@@ -22,10 +22,10 @@
           </ul>
        </div>
         <div class="col-md-4">
-          <h3>快速链接</h3>
+          <h3>{{msg . "quickLinks"}}</h3>
           <ul>
-			<li><a href="/note">我的笔记</a></li>
-			<li><a href="/login">登录</a></li>
+			<li><a href="/note">{{msg . "myNote"}}</a></li>
+			<li><a href="/login">{{msg . "login"}}</a></li>
 			<li><a href="http://leanote.com" target="_blank">leanote</a></li>
 			<li><a href="https://github.com/leanote/leanote" target="_blank">leanote github</a></li>
 		 </ul>

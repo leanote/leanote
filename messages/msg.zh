@@ -27,7 +27,7 @@ emailOrOthers=Email或其它联系方式
 
 hi=Hi
 welcomeUseLeanote=欢迎使用leanote
-myNote=进入我的笔记
+myNote=我的笔记
 curUser=当前登录帐户
 
 # form
@@ -116,8 +116,14 @@ simple=简约
 # tinymce
 uploadImage=上传图片
 
+# blog
+aboutMe=关于我
+blogSet=博客设置
+
 # error 
 notFound=该页面不存在
+
+
 
 # 必须要加这个, 奇怪
 [CN]

@@ -1,0 +1,41 @@
+# blog
+blog=博客
+aboutMe=关于我
+blogSet=博客设置
+
+blogNavs=导航
+quickLinks=快速链接
+latestPosts=最近发表
+
+noBlog=无博客
+noTag=无
+blogClass=分类
+updatedTime=更新
+createdTime=创建
+fullBlog=全文
+blogNav=导航
+
+#
+# set blog
+#
+baseInfoSet=基本设置
+commentSet=评论设置
+themeSet=主题设置
+theme=主题
+blogName=博客标题
+blogLogo=博客Logo
+blogDesc=博客描述
+
+# theme
+elegant=大气
+navFixed=导航左侧固定
+
+openComment=开启评论?
+commentSys=leanote 使用 <a href="http://disqus.com" target="_blank">Disqus</a> 作为评论系统
+disqusHelp=请填写您申请的Disqus唯一url前缀. 建议您申请Disqus帐号, 这样可以自己管理评论. 或使用leanote的默认Disqus Id. 
+needHelp=需要帮助?
+blogLogoTips=上传logo将显示logo(替代博客标题)
+saveSuccess=保存成功
+
+
+a=a

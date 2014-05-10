@@ -1,8 +1,7 @@
 {{template "Blog/header.html" .}}
 
 <!--  -->
-<link rel="stylesheet" href="/tinymce/skins/custom/skin.min.css"
-	type="text/css">
+<link rel="stylesheet" href="/tinymce/skins/custom/skin.min.css" type="text/css">
 <style>
 .tab-pane {
 	padding-top: 10px;
@@ -11,9 +10,9 @@
 <div id="postsContainer">
 	<div id="posts">
 		<ul id="myTab" class="nav nav-tabs">
-			<li class="active"><a href="#baseInfo" data-toggle="tab">基本设置</a></li>
-			<li class=""><a href="#commentInfo" data-toggle="tab">评论设置</a></li>
-			<li class=""><a href="#styleInfo" data-toggle="tab">主题设置</a></li>
+			<li class="active"><a href="#baseInfo" data-toggle="tab">{{msg . "baseInfoSet"}}</a></li>
+			<li class=""><a href="#commentInfo" data-toggle="tab">{{msg . "commentSet"}}</a></li>
+			<li class=""><a href="#styleInfo" data-toggle="tab">{{msg . "themeSet"}}</a></li>
 		</ul>
 
 		<!-- Tab panes -->
@@ -21,7 +20,7 @@
 			<div class="tab-pane" id="styleInfo">
 				<form class="form-horizontal" role="form">
 					<div class="form-group">
-						<label for="Style" class="col-sm-2 control-label">主题</label>
+						<label for="Style" class="col-sm-2 control-label">{{msg . "theme"}}</label>
 						<div class="col-sm-10">
 							<label><input type="radio" name="Style"
 								value="blog_default" 
@@ -32,19 +31,19 @@
 										checked="checked"
 									{{end}}
 								{{end}}>
-								默认 </label> 
+								{{msg . "default"}} </label> 
 								<label><input type="radio" name="Style"
 								value="blog_daqi" 
 								{{if eq .userBlog.Style "blog_daqi"}}checked="checked"{{end}}>
-								大气</label>
+								{{msg . "elegant"}}</label>
 								<label><input type="radio" name="Style"
 								value="blog_left_fixed" 
 								{{if eq .userBlog.Style "blog_left_fixed"}}checked="checked"{{end}}>
-								左侧导航固定</label>
+								{{msg . "navFixed"}}</label>
 						</div>
 						<div class="form-group">
 							<div class="col-sm-offset-2 col-sm-10">
-								<button class="btn btn-success">保存</button>
+								<button class="btn btn-success">{{msg . "save"}}</button>
 								<span class="msg"></span>
 							</div>
 						</div>
@@ -54,26 +53,25 @@
 			<div class="tab-pane" id="commentInfo">
 				<form class="form-horizontal" role="form">
 					<div class="form-group">
-						<label for="subTitle" class="col-sm-2 control-label">开启评论</label>
+						<label for="subTitle" class="col-sm-2 control-label">{{msg . "openComment"}}</label>
 						<div class="col-sm-10">
 							<input type="checkbox" id="CanComment" name="CanComment"
 								{{if .userBlog.CanComment}}checked="checked"{{end}} >
 							<br />
-							leanote采用 <a href="http://disqus.com" target="_blank">Disqus</a>
-							作为评论系统
+							{{msg . "commentSys"}}
 							<div id="disqusSet">
 								<label for="DisqusId">Disqus Id</label> <input type="text"
 									class="form-control" style="display: inline; width: 50%"
 									id="DisqusId" name="DisqusId"
 									value="{{if .userBlog.DisqusId}}{{.userBlog.DisqusId}}{{else}}leanote{{end}}">
-								<br /> (请填写您申请的Disqus唯一url前缀, 建议您申请Disqus帐号, 这样可以自己管理评论.
-								或使用leanote的默认Disqus Id. <a target="_blank"
-									href="/blog/view/52db8463e01c530ef8000001">需要帮助?</a>)
+								<br /> 
+								{{msg . "disqusHelp"}}
+								<a target="_blank" href="http://leanote.com/blog/view/52db8463e01c530ef8000001">{{msg . "needHelp"}}</a>)
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="col-sm-offset-2 col-sm-10">
-								<button class="btn btn-success">保存</button>
+								<button class="btn btn-success">{{msg . "save"}}</button>
 								<span class="msg"></span>
 							</div>
 						</div>
@@ -90,16 +88,16 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="title" class="col-sm-2 control-label">博客名称</label>
+						<label for="title" class="col-sm-2 control-label">{{msg . "blogName"}}</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="Title" name="Title"
-								placeholder="比如: leanote的博客"
-								value="{{if .userBlog.Title}}{{.userBlog.Title}}{{else}}{{.userInfo.Email}} 的博客{{end}}">
+								placeholder="eg: leanote's blog"
+								value="{{if .userBlog.Title}}{{.userBlog.Title}}{{else}}{{.userInfo.Email}} 's blog{{end}}">
 						</div>
 					</div>
 
 					<div class="form-group">
-						<label for="logo" class="col-sm-2 control-label">博客Logo</label>
+						<label for="logo" class="col-sm-2 control-label">{{msg . "blogLogo"}}</label>
 						<div class="col-sm-10">
 							<input type="hidden" name="Logo" id="Logo"
 								value="{{.userBlog.Logo}}" />
@@ -107,14 +105,15 @@
 								enctype="multipart/form-data" target="logoTarget"
 								onsubmit="inProgress()">
 								<input type="file" class="form-control" id="logo2" name="file"
-									onChange='$("#formLogo").submit();' /> 上传logo将显示logo(替代博客标题)
+									onChange='$("#formLogo").submit();' /> 
+									{{msg . "blogLogoTips"}}
 								<div id="logoImg"
 									{{if .userBlog.Logo }}	
 						{{else}}
 						style="display: none"{{end}}
 						>
 									<img src="{{.userBlog.Logo}}" style="height: 40px" /> <a
-										href="#" id="deleteLogo">删除</a>
+										href="#" id="deleteLogo">{{msg . "delete"}}</a>
 								</div>
 							</form>
 							<iframe id="logoTarget" name="logoTarget" src="#"
@@ -123,11 +122,11 @@
 					</div>
 
 					<div class="form-group">
-						<label for="subTitle" class="col-sm-2 control-label">博客描述</label>
+						<label for="subTitle" class="col-sm-2 control-label">{{msg . "blogDesc"}}</label>
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="SubTitle"
 								name="SubTitle" value="{{.userBlog.SubTitle}}"
-								placeholder="比如: leanote, 不只是笔记">
+								placeholder="eg: leanote, your own cloud note">
 						</div>
 					</div>
 
@@ -139,7 +138,7 @@
 					</div>
 
 					<div class="form-group">
-						<label for="aboutMe" class="col-sm-2 control-label">关于我</label>
+						<label for="aboutMe" class="col-sm-2 control-label">{{msg . "aboutMe"}}</label>
 						<div class="col-sm-10">
 							<textarea id="AboutMe" name="AboutMe">{{.userBlog.AboutMe}}</textarea>
 						</div>
@@ -147,7 +146,7 @@
 
 					<div class="form-group">
 						<div class="col-sm-offset-2 col-sm-10">
-							<button class="btn btn-success">保存</button>
+							<button class="btn btn-success">{{msg . "save"}}</button>
 							<span class="msg"></span>
 						</div>
 					</div>
@@ -218,7 +217,7 @@ $(function() {
 		}
 		
 		post("/blog/setUserBlogBase", data, function(ret) {
-			showMsg2($("#baseInfo .msg"), "保存成功", 2000);
+			showMsg2($("#baseInfo .msg"), "{{msg . "saveSuccess"}}", 2000);
 			$("#blogDesc").html(data.SubTitle);
 			$("#logo").html(data.Title);
 			if(data.Logo) {
@@ -234,7 +233,7 @@ $(function() {
 			DisqusId : $("#DisqusId").val(),
 		}	
 		post("/blog/setUserBlogComment", data, function(ret) {
-			showMsg2($("#commentInfo .msg"), "保存成功", 2000);
+			showMsg2($("#commentInfo .msg"), "{{msg . "saveSuccess"}}", 2000);
 		}, this);
 	});
 	// 主题
@@ -244,7 +243,7 @@ $(function() {
 			Style : $("input[name='Style']:checked").val()
 		}	
 		post("/blog/setUserBlogStyle", data, function(ret) {
-			showMsg2($("#styleInfo .msg"), "保存成功", 2000);
+			showMsg2($("#styleInfo .msg"), "{{msg . "saveSuccess"}}", 2000);
 		}, this);
 	});
 	$("input[name='Style']").click(function() {

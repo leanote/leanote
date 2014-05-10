@@ -12,11 +12,11 @@
 				{{if .blog.Tags}} 
 					{{blogTags .blog.Tags}}
 				{{else}}
-				无
+					{{msg . "noTag"}}
 				{{end}}
 				|
-				<i class="fa fa-calendar" style="color: #666"></i> 更新 {{.blog.UpdatedTime | datetime}} | 
-				<i class="fa fa-calendar" style="color: #666"></i> 创建 {{.blog.CreatedTime | datetime}}
+				<i class="fa fa-calendar" style="color: #666"></i> {{msg . "updatedTime"}} {{.blog.UpdatedTime | datetime}} | 
+				<i class="fa fa-calendar" style="color: #666"></i> {{msg . "createdTime"}} {{.blog.CreatedTime | datetime}}
 			</div>
 			
 			<div class="desc" id="content">
@@ -93,7 +93,7 @@
 <div id="blogNav">
 	<div id="blogNavNav">
 		<i class="fa fa-align-justify" title="文档导航"></i>
-		<span>{{msg . "nav"}}</span>
+		<span>{{msg . "blogNav"}}</span>
 	</div>
 	<div id="blogNavContent" style="max-width: 200px">
 	</div>

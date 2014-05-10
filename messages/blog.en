@@ -1,0 +1,41 @@
+# blog
+
+blog=Blog
+aboutMe=About me
+blogSet=Set blog
+
+blogNavs=Navs
+quickLinks=Quick links
+latestPosts=Latest posts
+
+noBlog=No blog
+noTag=No tag
+blogClass=Classification
+updatedTime=Updated at
+createdTime=Created at
+fullBlog=Full blog
+blogNav=Blog nav
+
+#
+# set blog
+#
+baseInfoSet=Base info
+commentSet=Comment
+themeSet=Theme
+theme=Theme
+blogName=Title
+blogLogo=Logo
+blogDesc=Description
+
+# theme
+elegant=Elegant
+navFixed=Nav fixed at left side
+
+openComment=Open comment?
+commentSys=leanote use <a href="http://disqus.com" target="_blank">Disqus</a> as comment system
+disqusHelp=Please input your Disqus Id or use "leanote"
+needHelp=Need help?
+blogLogoTips=Upload image to replace blog title
+saveSuccess=Save success
+
+a=a

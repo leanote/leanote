@@ -1,5 +1,6 @@
 # leanote
-moto=Not just a note!
+moto=your own cloud note!
+
 # 首页
 forgetPassword = Forget password?
 or=or
@@ -26,7 +27,7 @@ emailOrOthers=Email or other contact way
 
 hi=Hi
 welcomeUseLeanote=Welcome!
-myNote=Enter to my note
+myNote=My note
 curUser=Email
 
 # form
@@ -65,21 +66,21 @@ notGoodPassword=Tt's not a good password, the length is at least 6
 myBlog=Blog
 history=Histories
 save=Save
-editorTips=Editor Tips
-editorTipsInfo=<h4>1. Short Cuts</h4>ctrl+shift+c Toggle code <br /> ctrl+shift+i Insert/edit image <h4>2. shift+enter Get out of current block</h4> eg. <img src="/images/outofcode.png" style="width: 90px"/> in this situation you can use shift+enter to get out of current code block.
-newNote=New Note
-newMarkdown=New Markdown Note
+editorTips=Tips
+editorTipsInfo=<h4>1. Short cuts</h4>ctrl+shift+c Toggle code <br /> ctrl+shift+i Insert/edit image <h4>2. shift+enter Get out of current block</h4> eg. <img src="/images/outofcode.png" style="width: 90px"/> in this situation you can use shift+enter to get out of current code block.
+newNote=New note
+newMarkdown=New markdown note
 clickAddTag=Click to add Tag
 notebook=Notebook
-myNotebook=My Notebook
-addNotebook=Add Notebook
+myNotebook=My notebook
+addNotebook=Add notebook
 all=Newest
 trash=Trash
 unTitled=UnTitled
 defaultShare=Default sharing
 leftHidden=Hidden slide bar
 leftShow=Show slide bar
-nav=Note Nav
+nav=Note nav
 
 update=Update
 create=Create
@@ -92,7 +93,7 @@ send=Send
 
 # 标签
 tag=Tag
-myTag=My Tag
+myTag=My tag
 red=red
 yellow=yellow
 blue=blue
@@ -103,18 +104,20 @@ accountSetting=Account
 themeSetting=Theme
 logout=Logout
 basicInfo=Basic
-updateEmail=Update Email
-usernameSetting=Update Username
-oldPassword=Old Password
-newPassword=New Password
+updateEmail=Update email
+usernameSetting=Update username
+oldPassword=Old password
+newPassword=New password
 
 default=Default
 simple=Simple
 
 # tinymce
-uploadImage=Upload Image
+uploadImage=Upload image
+
+# blog
+aboutMe=About me
+blogSet=Set blog
 
 # error 
 notFound=This page cann't found.
-
-a=a
