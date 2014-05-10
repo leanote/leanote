@@ -186,7 +186,7 @@ $(function() {
 		// parentHeight: $("#content").height(),
 		content_css : ["css/bootstrap.css", "css/editor.css"],
 		skin : "custom",
-		language: "zh_CN",
+		language: LEA.locale, // 语言
 		plugins : [
 				"autolink link leanote_image lists charmap hr", "paste",
 				"searchreplace leanote_nav leanote_code tabfocus",

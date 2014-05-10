@@ -1,3 +1,9 @@
+/**
+ * leanote code plugin
+ */
+
+tinymce.PluginManager.requireLangPack('leanote_code');
+
 tinymce.PluginManager.add('leanote_code', function(editor, url) {
 	var ed = editor;
 	
@@ -75,8 +81,8 @@ tinymce.PluginManager.add('leanote_code', function(editor, url) {
     	}
 		return {
 			type: 'listbox',
-			text: "代码语言",
-			tooltip: "ctrl+shift+c 切换代码",
+			text: "codeLang",
+			tooltip: "toggleCode",
 			values: items,
 			fixedWidth: true,
 			onselect: function(e) {
