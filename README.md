@@ -22,8 +22,8 @@ To be honest, our inspiration comes from Evernote. We use Evernote to manage our
 
 Leanote v0.1 has been released. Binaries:
 
-* Linux: https://github.com/leanote/leanote/releases/download/0.1/leanote-linux-v0.1.bin.tar.gz
-* MacOS X: https://github.com/leanote/leanote/releases/download/0.1/leanote-mac-v0.1.bin.tar.gz
+* Linux: [leanote-linux-v0.1.bin.tar.gz](https://github.com/leanote/leanote/releases/download/0.1/leanote-linux-v0.1.bin.tar.gz)
+* MacOS X: [leanote-mac-v0.1.bin.tar.gz](https://github.com/leanote/leanote/releases/download/0.1/leanote-mac-v0.1.bin.tar.gz)
 
 ### 3.2. Install MongoDB
 
