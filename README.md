@@ -1,6 +1,6 @@
 ## 1. Introduction
 
-Leanote, your cloud notepad.
+Leanote, your cloud note.
 
 **Some Features**
 
