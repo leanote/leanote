@@ -1,6 +1,6 @@
 ## 1. Introduction
 
-Leanote, your cloud note.
+Leanote, your own cloud note.
 
 **Some Features**
 
