@@ -751,7 +751,9 @@ body {
 #newShareNoteMarkdownBtn,
 .new-split,
 #editorMask,
-#sortType {
+#sortType,
+#myProfile,
+#demoRegister {
   display: none;
 }
 #mainMask {

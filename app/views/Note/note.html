@@ -166,19 +166,19 @@ function log(o) {
 					</a>
 				</div>
 				
+				<div class="pull-right" style="line-height: 60px; margin-right:10px" id="toggleEditorMode">
+					<a href="#writing">{{msg . "writingMode"}}</a>
+				</div>
+				
 				{{if eq .userInfo.Email "demo@leanote.com"}}
 				{{if .openRegister}}					
-				<div class="pull-right" style="line-height: 60px; margin-right:10px">
+				<div class="pull-right" style="line-height: 60px; margin-right:10px" id="demoRegister">
 					<span>
 						{{msg . "demoRegister"}}
 					</span>
 				</div>
 				{{end}}
 				{{end}}
-				
-				<div class="pull-right" style="line-height: 60px; margin-right:10px" id="toggleEditorMode">
-					<a href="#writing">{{msg . "writingMode"}}</a>
-				</div>
 				
 				<!--
 				<ul id="setting" class="pull-right">
