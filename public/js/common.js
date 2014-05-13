@@ -270,15 +270,33 @@ ajaxPostJson(
 */
 
 //-----------------
+
+// 切换编辑器时要修改tabIndex
+function editorIframeTabindex(index) {
+	var $i = $("#editorContent_ifr");
+	if($i.size() == 0) {
+		setTimeout(function() {
+			editorIframeTabindex(index);
+		}, 100);
+	} else {
+		$i.attr("tabindex", index);
+	}
+}
 //切换编辑器
 function switchEditor(isMarkdown) {
 	// 富文本永远是2
-	
 	if(!isMarkdown) {
 		$("#editor").show();
 		$("#mdEditor").css("z-index", 1);
+		
+		// 刚开始没有
+		editorIframeTabindex(2);
+		$("#wmd-input").attr("tabindex", 3);
 	} else {
 		$("#mdEditor").css("z-index", 3).show();
+		
+		editorIframeTabindex(3);
+		$("#wmd-input").attr("tabindex", 2);
 	}
 }
 

@@ -464,7 +464,7 @@ function log(o) {
 						</div>
 
 						<div id="noteTitleDiv">
-							<input name="noteTitle" id="noteTitle" value="" placeholder="{{msg . "unTitled"}}">
+							<input name="noteTitle" id="noteTitle" value="" placeholder="{{msg . "unTitled"}}" tabindex="1" />
 						</div>
 					</div>
 
@@ -488,7 +488,7 @@ function log(o) {
 							</div>
 						</div>
 						<!-- 由此可以算高度 -->
-						<div id="editorContent" name="editorContent">
+						<div id="editorContent" name="editorContent" tabindex="2" />
 							{{.noteContent}}
 				       </div>
 					</div>
@@ -501,7 +501,7 @@ function log(o) {
 						<div class="clearfix" id="mdEditorPreview">
 							<div id="left-column" class="pull-left">
 				                <div id="wmd-panel-editor" class="wmd-panel-editor">
-				                    <textarea class="wmd-input theme" id="wmd-input" spellcheck="false"></textarea>
+				                    <textarea class="wmd-input theme" id="wmd-input" spellcheck="false" tabindex="3"></textarea>
 				                </div>
 				            </div>
 				            <div id="right-column" class="pull-right">
