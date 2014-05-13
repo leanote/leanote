@@ -729,6 +729,8 @@ editorMode.prototype.changeMode = function(isWritingMode) {
 	} else {
 		this.normalMode();
 	}
+	
+	$("#moreBtn i").removeClass("fa-angle-up").addClass("fa-angle-down");
 }
 editorMode.prototype.normalMode = function() {
 	var $c = $("#editorContent_ifr").contents();
@@ -743,7 +745,7 @@ editorMode.prototype.normalMode = function() {
 	theme += ".css";
 	$("#themeLink").attr("href", "/css/theme/" + theme);
 	
-	
+	$("#mceToolbar").css("height", "30px");
 }
 editorMode.prototype.writtingMode = function() {
 //	$("body").fadeOut();
@@ -762,6 +764,8 @@ editorMode.prototype.writtingMode = function() {
 		$("#noteItemListWrap, #notesAndSort").fadeOut();
 	});
 	
+	// 点击扩展会使html的height生成, 切换后会覆盖css文件的
+	$("#mceToolbar").css("height", "40px");
 //	$("body").fadeIn();
 }
 

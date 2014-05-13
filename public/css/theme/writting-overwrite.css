@@ -958,3 +958,6 @@ body {
   margin-top: 10px;
   visibility: hidden;
 }
+#moreBtn {
+  right: 0 !important;
+}
