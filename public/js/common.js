@@ -324,7 +324,9 @@ function setEditorContent(content, isMarkdown, preview) {
 		$("#wmd-preview").html(""); // 防止先点有的, 再点tinymce再点没内容的
 		if(!content || preview) { // 没有内容就不要解析了
 			$("#wmd-preview").html(preview).css("height", "auto");
-			ScrollLink.onPreviewFinished(); // 告诉scroll preview结束了
+			if(ScrollLink) {
+				ScrollLink.onPreviewFinished(); // 告诉scroll preview结束了
+			}
 		} else {
 			// 还要清空preview
 			if(MarkdownEditor) {
