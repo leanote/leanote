@@ -35,11 +35,15 @@
   background: #000000;
   color: #ffffff;
 }
+html,
+body {
+  background-color: #fbfcf7;
+}
 *,
 body {
   font-family: 'Open Sans', 'Helvetica Neue', Arial, 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;
   font-weight: 300;
-  font-size: 14px;
+  font-size: 16px;
 }
 h1,
 h2,
@@ -64,7 +68,7 @@ a.raw:hover {
 /* header */
 #header {
   height: 60px;
-  background-color: #25313e;
+  background-color: #fbfcf7;
   color: #ffffff;
   border-bottom: 1px solid #ebeff2;
   /* for app */
@@ -85,71 +89,12 @@ a.raw:hover {
 #header li a {
   color: #000000;
 }
+#searchWrap,
 #logo,
-#logo span {
-  line-height: 50px;
-  font-size: 28px;
-}
-#logo {
-  width: 140px;
-  height: 59px;
-  padding-left: 10px;
-  padding-top: 0px;
-  border-bottom: 1px solid transparent;
-  border-color: rgba(255, 255, 255, 0.1);
-}
-#logo span,
-#switcher span {
-  background-color: #000;
-  border-radius: 10px;
-  display: inline-block;
-  padding: 4px 0;
-  line-height: 1.0;
-}
-#switcher {
-  line-height: 50px;
-  padding-top: 6px;
-  padding-right: 5px;
-  width: 30px;
-  text-align: center;
-}
-#switcher i {
-  font-size: 16px;
-  cursor: pointer;
-}
-#switcher i:hover {
-  color: #0fb264;
-}
-#switcher span {
-  border-radius: 5px;
-  padding: 8px 4px;
-  cursor: pointer;
-  font-size: 16px;
-}
-#switcher span:hover {
-  color: #0fb264;
-}
-#searchNote {
-  padding-left: 0;
-  line-height: 60px;
-  margin: 0;
-}
-#searchNote input {
-  background-size: 18px 13px;
-  border-color: #ebeff2;
-  border: none;
-  color: #ccc;
-  background-color: #000;
-  padding-left: 14px;
-  border-radius: 5px;
-  width: 250px;
-  line-height: 20px;
-  box-shadow: none;
-}
-#searchNote input:focus {
-  outline: none !important;
-  border-color: #0fb264;
-  box-shadow: none;
+#switcher,
+#leftNotebook,
+.noteSplit {
+  display: none;
 }
 #header ul {
   margin: 0;
@@ -225,288 +170,13 @@ a.raw:hover {
 }
 #mainContainer {
   position: absolute;
-  top: 59px;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   overflow: auto;
   zoom: 1;
 }
-#mainMask {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: 0;
-  background-color: #fff;
-  text-align: center;
-  padding-top: 100px;
-  z-index: 1000;
-}
-.noteSplit {
-  position: absolute;
-  top: 0;
-  width: 5px;
-  height: 100%;
-  overflow: hidden;
-  z-index: 5;
-  cursor: col-resize;
-}
-#notebookSplitter {
-  left: 170px;
-}
-#noteSplitter {
-  left: 250px;
-}
-#leftNotebook {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 170px;
-}
-#notebook,
-#notebookMin {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  top: 0;
-  right: 0;
-  /*border: 1px solid #ccc;*/
-
-  background-color: #41586e;
-  /*
-  overflow-y: auto;
-  overflow-x: auto;
-  */
-
-  z-index: 2;
-}
-#notebookMin {
-  z-index: 1;
-  overflow-y: visible;
-  overflow-x: visible;
-  background-color: #41586e;
-}
-#notebookMin div.minContainer {
-  border-bottom: 1px solid transparent;
-  border-color: rgba(255, 255, 255, 0.3);
-  padding: 5px;
-  position: relative;
-}
-#notebookMin div.minContainer i {
-  font-size: 20px;
-  color: #fff;
-}
-#notebookMin div.minContainer:hover i {
-  color: #0fb264;
-}
-#notebookMin div.minContainer ul {
-  background-color: #fff;
-  opacity: 0.8;
-  display: none;
-  list-style: none;
-  margin: 0;
-  margin-left: 20px;
-  padding: 5px 0px;
-  border: 1px solid #0fb264;
-  position: absolute;
-  z-index: 1000;
-  top: 0;
-  left: 10px;
-  width: 150px;
-}
-#notebookMin div.minContainer ul li {
-  padding: 0 5px;
-  cursor: pointer;
-}
-#notebookMin div.minContainer ul li span {
-  cursor: pointer;
-}
-#notebookMin div.minContainer ul li a {
-  cursor: pointer;
-}
-#notebookBottom {
-  position: absolute;
-  bottom: 0px;
-  height: 30px;
-  right: 0;
-  left: 0;
-  line-height: 30px;
-  text-align: right;
-  padding-right: 5px;
-  background-color: #eee;
-}
-#notebookBottom #leftSwitcher {
-  border: 1px solid #ccc;
-  padding: 3px 8px;
-  cursor: pointer;
-}
-#noteAndEditor {
-  position: absolute;
-  bottom: 0;
-  top: 0;
-  right: 0;
-  left: 170px;
-}
-#noteList {
-  position: absolute;
-  bottom: 0;
-  top: 0;
-  width: 250px;
-  overflow-x: hidden;
-  overflow-y: hidden;
-  border-right: 1px solid #cfcfcf;
-  border-left: 1px solid #cfcfcf;
-}
-#note {
-  position: absolute;
-  bottom: 0;
-  top: 0;
-  left: 250px;
-  right: 0;
-  padding-left: 5px;
-  overflow-y: hidden;
-  overflow-x: auto;
-  background-color: #ffffff;
-}
-.folderHeader {
-  min-height: 35px;
-  line-height: 35px;
-  cursor: pointer;
-  border-bottom: 1px solid transparent;
-  border-color: rgba(255, 255, 255, 0.05);
-}
-.folderHeader span {
-  display: inline-block;
-  line-height: 35px;
-  color: #fff;
-  font-size: 16px;
-}
-.folderHeader .fa-left,
-.each-user .fa {
-  display: inline-block;
-  line-height: 35px;
-  font-size: 16px;
-  width: 35px;
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
-  text-align: center;
-  color: #fff;
-}
-.each-user div {
-  cursor: pointer;
-  border-bottom: 1px solid transparent;
-  border-color: rgba(255, 255, 255, 0.05);
-}
-.each-user div span {
-  display: inline-block;
-  line-height: 35px;
-  color: #fff;
-  padding-left: 3px;
-  font-size: 14px;
-}
-.each-user div .fa {
-  width: 20px;
-  border-right: none;
-}
-.each-user ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.each-user ul a {
-  padding-left: 20px;
-  font-size: 12px;
-}
-#myNotebooks.opened .fa-left {
-  /*
-	background-color: #65bd77;
-	color: #e2f3e5;
-*/
-
-}
-#myNotebooks .folderBody {
-  /*
-	max-height: 600px; 
-	overflow: auto;
-*/
-
-}
-#addNotebookPlus {
-  padding-right: 10px;
-  color: #ADBECE;
-}
-#addNotebookPlus .fa {
-  font-size: 16px;
-}
-.closed .folder-icon {
-  /* 折叠状态 */
-
-  width: 9px;
-  height: 11px;
-  background-position: -108px -149px;
-}
-.closed .folderBody {
-  display: none;
-}
-.folderBody {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  background-color: #37485e;
-}
-.folderBody li {
-  line-height: 30px;
-}
-.folderBody a {
-  padding-left: 20px;
-  display: block;
-  color: #ADBECE;
-  cursor: pointer;
-  border-bottom: 1px solid transparent;
-  border-color: rgba(255, 255, 255, 0.05);
-  line-height: 35px;
-}
-.folderBody a:hover,
-.folderBody .contextmenu-hover {
-  color: #fff;
-  background-color: rgba(0, 0, 0, 0.05) !important;
-}
-.folderBody a.active,
-.folderBody a.active:hover {
-  background-color: #25313e !important;
-  color: #fff;
-}
-#notebookList input {
-  border: 1px solid #ebeff2;
-  width: 90%;
-  box-shadow: none;
-}
-#notebookList input:focus {
-  outline: none !important;
-  border-color: #0fb264;
-}
-#myTag .folderBody {
-  /*
-	max-height: 200px; 
-	overflow: auto;
-*/
-
-}
-#myTag .folderBody li {
-  position: relative;
-}
-#myTag .folderBody li .badge {
-  width: 40px;
-  position: absolute;
-  right: 3px;
-  top: 7px;
-  font-weight: normal;
-  background-color: #ffffff;
-  color: #000000;
-  border: 1px solid #ebeff2;
-}
-/* notelist */
 #search {
   border: #bababa 1px solid;
   background-color: #fff;
@@ -549,12 +219,6 @@ a.raw:hover {
   background-color: #eee;
   border-bottom: 1px solid #ebeff2;
 }
-#sortType {
-  /*  position: absolute;
-  right:0;*/
-
-  float: right;
-}
 /* item list */
 #noteItemList {
   position: absolute;
@@ -582,19 +246,6 @@ a.raw:hover {
 #noteItemList .contextmenu-hover {
   background-color: #ddd !important;
   color: #000000;
-}
-.item-active,
-#noteItemList .item-active:hover {
-  background-color: #65bd77 !important;
-  color: #fff;
-}
-.item-active .item-desc .fa,
-#noteItemList .item-active:hover .item-desc .fa {
-  color: #eee !important;
-}
-.item-active .item-title,
-#noteItemList .item-active:hover .item-title {
-  color: #fff;
 }
 #noteItemList .item-thumb {
   padding-left: 10px;
@@ -658,53 +309,16 @@ a.raw:hover {
 #editorTool li {
   display: inline-block;
 }
-#noteTitleDiv {
-  height: 30px;
-  border-bottom: 1px solid #ddd;
-}
-#noteTitle {
-  height: 100%;
-  padding: 0px 3px;
-  width: 100%;
-  border: none;
-  background-color: #ffffff;
-}
 #noteTitle:focus {
   outline: none !important;
 }
-#editorMask {
-  position: absolute;
-  top: 0px;
-  bottom: 0px;
-  right: 0;
-  left: 0;
-  background-color: #fff;
-  z-index: -10;
-  padding-top: 50px;
-  text-align: center;
-}
-#editorMask .fa,
-#editorMask a {
-  font-size: 24px;
-}
-#editorMask a {
-  display: inline-block;
-  border-radius: 3px;
-  border: 1px solid #ebeff2;
-  padding: 10px;
-}
-#editorMask a:hover {
-  background-color: #65bd77;
-  color: #fff;
-}
 #editor,
 #mdEditor {
-  position: absolute;
   z-index: 2;
   top: 71px;
   bottom: 0px;
   right: 0;
-  left: 5px;
+  left: 0;
   padding: 0;
   display: none;
 }
@@ -745,14 +359,16 @@ a.raw:hover {
   position: relative;
   height: 30px;
   overflow: hidden;
-  border-bottom: 1px solid #ccc;
-  background-color: #f0f0f0;
+  background-color: #fbfcf7;
 }
 /* 编辑器工具 需要important, 因为mce还要有js加载css, 肯定在此之后 */
 /*加高, 之前显得拥挤*/
 .mce-btn-small button {
   padding: 5px 5px !important;
   line-height: 20px !important;
+}
+.mce-btn {
+  background-color: #fbfcf7 !important;
 }
 .mce-menubtn.mce-btn-small span {
   line-height: 20px !important;
@@ -788,6 +404,7 @@ a.raw:hover {
 }
 /*标签与其它工具*/
 #tool {
+  display: none;
   border-bottom: 1px solid #ddd;
 }
 /* tag */
@@ -803,7 +420,7 @@ a.raw:hover {
   display: none;
   padding: 0;
   border: none;
-  background-color: #ffffff;
+  background-color: #fbfcf7;
 }
 #addTagInput:focus {
   outline: none;
@@ -1096,20 +713,31 @@ background-position:-1px -670px
   border-top: 1px dashed #eee;
   padding: 5px 0;
 }
-#leanoteMsg {
-  line-height: 40px;
-  margin-top: 10px;
-  margin-left: 10px;
+#left-column {
+  width: 100% !important;
 }
-#newNoteWrap {
-  line-height: 40px;
-  margin-top: 10px;
+#editorMask {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  right: 0;
+  left: 0;
+  background-color: #fff;
+  z-index: -10;
+  padding-top: 50px;
+  text-align: center;
 }
-#loading {
+#editorMask .fa,
+#editorMask a {
+  font-size: 24px;
+}
+#editorMask a {
   display: inline-block;
-  width: 20px;
-  height: 20px;
-  content: url(../../images/loading-a-20.gif);
-  margin-top: 10px;
-  visibility: hidden;
+  border-radius: 3px;
+  border: 1px solid #ebeff2;
+  padding: 10px;
+}
+#editorMask a:hover {
+  background-color: #65bd77;
+  color: #fff;
 }

@@ -1,4 +1,7 @@
 // 主页渲染
+//-------------
+// 编辑器模式
+var em = new editorMode();
 
 // ifr 的高度, 默认是小20px, 启动1s后运行resizeEditor()调整之
 
@@ -96,15 +99,17 @@ $(function() {
 		
 		var height = $("#mceToolbar").height();
 
+		// 现在是折叠的
 		if (height < $("#popularToolbar").height()) {
 			$("#mceToolbar").height($("#popularToolbar").height());
 			$(this).find("i").removeClass("fa-angle-down").addClass("fa-angle-up");
 			
 		} else {
-			$("#mceToolbar").height(30);
+			$("#mceToolbar").height(height/2);
 			$(this).find("i").removeClass("fa-angle-up").addClass("fa-angle-down");
 		}
 		
+		/*
 		// 新加 3.12
 		var mceToolbarHeight = $("#mceToolbar").height();
 		$("#editorContent").css("top", mceToolbarHeight);
@@ -113,6 +118,7 @@ $(function() {
 		$("#leanoteNav").css("top", mceToolbarHeight + 2);
 
 		$("#editor").css("top", $("#noteTop").height());
+		*/
 		
 		resizeEditor();
 		
@@ -184,7 +190,7 @@ $(function() {
 		selector : "#editorContent",
 		// height: 100,//这个应该是文档的高度, 而其上层的高度是$("#content").height(),
 		// parentHeight: $("#content").height(),
-		content_css : ["css/bootstrap.css", "css/editor.css"],
+		content_css : ["css/bootstrap.css", "css/editor/editor.css"].concat(em.getWritingCss()),
 		skin : "custom",
 		language: LEA.locale, // 语言
 		plugins : [
@@ -611,7 +617,7 @@ $(function() {
 	if(LEA.isMobile) {
 		UserInfo.NoteListWidth = 101;
 	}
-	resize3ColumnsEnd(UserInfo.NotebookWidth, UserInfo.NoteListWidth);
+//	resize3ColumnsEnd(UserInfo.NotebookWidth, UserInfo.NoteListWidth);
 	if (UserInfo.LeftIsMin) {
 		minLeft(false);
 	}
@@ -679,4 +685,89 @@ $(function() {
 		$("#wmd-panel-preview").css("width", "100%");
 	}, 10);
 	
+	// 编辑器模式
+	em.init();
 });
+
+// 编辑器模式
+function editorMode() {
+	this.writingHash = "#writing";
+	this.normalHash = "#normal";
+	this.isWritingMode = location.hash == this.writingHash;
+	
+	this.toggleA = null;
+}
+
+editorMode.prototype.toggleAText = function(isWriting) {
+	var self = this;
+	setTimeout(function() {
+		toggleA = $("#toggleEditorMode a");
+		if(isWriting) {
+			toggleA.attr("href", self.normalHash).text("普通模式");
+		} else {
+			toggleA.attr("href", self.writingHash).text("写作模式");
+		}	
+	}, 0);
+}
+editorMode.prototype.isWriting = function(hash) {
+	return hash == this.writingHash;
+}
+editorMode.prototype.init = function() {
+	this.changeMode(this.isWritingMode);
+	var self = this;
+	$("#toggleEditorMode").click(function() {
+		var $a = $(this).find("a");
+		var isWriting = self.isWriting($a.attr("href"));
+		self.changeMode(isWriting);
+	});
+}
+// 改变模式
+editorMode.prototype.changeMode = function(isWritingMode) {
+	this.toggleAText(isWritingMode);
+	if(isWritingMode) {
+		this.writtingMode();
+	} else {
+		this.normalMode();
+	}
+}
+editorMode.prototype.normalMode = function() {
+	var $c = $("#editorContent_ifr").contents();
+	
+	$c.contents().find("#writtingMode").remove();
+	$c.contents().find('link[href$="editor-writting-mode.css"]').remove();
+			
+		$("#noteItemListWrap, #notesAndSort").show();
+	$("#noteList").unbind("mouseenter").unbind("mouseleave"); 
+	
+	var theme = UserInfo.Theme || "default";
+	theme += ".css";
+	$("#themeLink").attr("href", "/css/theme/" + theme);
+	
+	
+}
+editorMode.prototype.writtingMode = function() {
+//	$("body").fadeOut();
+	
+	$("#themeLink").attr("href", "/css/theme/writting-overwrite.css");
+	
+	setTimeout(function() {
+		var $c = $("#editorContent_ifr").contents();
+		$c.contents().find("head").append('<link type="text/css" rel="stylesheet" href="/css/editor/editor-writting-mode.css" id="writtingMode">');
+	}, 0);
+		
+	$("#noteItemListWrap, #notesAndSort").fadeOut();
+	$("#noteList").hover(function() {
+		$("#noteItemListWrap, #notesAndSort").fadeIn();
+	}, function() {
+		$("#noteItemListWrap, #notesAndSort").fadeOut();
+	});
+	
+//	$("body").fadeIn();
+}
+
+editorMode.prototype.getWritingCss = function() {
+	if(this.isWritingMode) {
+		return ["css/editor/editor-writting-mode.css"];
+	}
+	return [];
+}
