@@ -81,6 +81,8 @@ defaultShare=Default sharing
 leftHidden=Hidden slide bar
 leftShow=Show slide bar
 nav=Note nav
+writingMode=Writing Mode
+normalMode=Normal Mode
 
 update=Update
 create=Create

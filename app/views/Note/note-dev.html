@@ -11,9 +11,21 @@
 <link href="css/bootstrap.css" rel="stylesheet" />
 <!-- 先加载, 没有样式, 宽度不定 -->
 <link rel="stylesheet" href="tinymce/skins/custom/skin.min.css" type="text/css" />
+
 <!-- leanote css -->
-<link rel="stylesheet" href="css/theme/{{if .userInfo.Theme}}{{.userInfo.Theme}}{{else}}default{{end}}.css" type="text/css" id="themeLink" />
+<script>
+var hash = location.hash;
+if(hash == "#writing") {
+	var files = '<link rel="stylesheet" href="css/theme/writting-overwrite.css" type="text/css" id="themeLink" />';
+} else {
+	var files ='<link rel="stylesheet" href="css/theme/{{if .userInfo.Theme}}{{.userInfo.Theme}}{{else}}default{{end}}.css" type="text/css" id="themeLink" />';
+}
+document.write(files);
+</script>
+
 <link href="css/font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet" />
+
+<!-- For Develop writting mod -->
 
 <script>
 function log(o) {
@@ -42,14 +54,14 @@ function log(o) {
 					 <span id="leftSwitcher2" title="{{msg . "leftShow"}}">lea</span>
 				</div>
 				<!-- search -->
-				<div class="pull-left">
+				<div class="pull-left" id="searchWrap">
 					<form class="navbar-form form-inline col-lg-2 hidden-xs" id="searchNote">
 						<input class="form-control" placeholder="Search" type="text" id="searchNoteInput">
 					</form>
 				</div>
 
 				<!-- 全局按钮 -->
-				<div class="pull-left" style="line-height: 40px; margin-top: 10px;">
+				<div class="pull-left" style="" id="newNoteWrap">
 				
 					<!-- 新建笔记 -->
 					<div id="newMyNote">
@@ -57,11 +69,12 @@ function log(o) {
 							<i class="fa fa-file-o"></i>
 							{{msg . "newNote"}}
 						</a>
-						|
+						<span class="new-split">|</span>
 						<a id="newNoteMarkdownBtn" title="{{msg . "newMarkdown"}}">
 						Markdown
 						</a>
-						 - <span id="curNotebookForNewNote" notebookId=""></span>
+						<span class="for-split"> - </span>
+						<span id="curNotebookForNewNote" notebookId=""></span>
 						<div class="dropdown" style="display: inline-block">
 							<a class="ios7-a dropdown-toggle"
 								id="dropdownMenu2" data-toggle="dropdown"> 
@@ -78,11 +91,12 @@ function log(o) {
 							<i class="fa fa-file-o"></i>
 							{{msg . "newNote"}}
 						</a>
-						|
+						<span class="new-split">|</span>
 						<a id="newShareNoteMarkdownBtn" title="{{msg . "newMarkdown"}}">
 						Markdown
 						</a>
-						 - <span id="curNotebookForNewSharedNote" notebookId="" userId=""></span>
+						<span class="for-split"> - </span>
+						<span id="curNotebookForNewSharedNote" notebookId="" userId=""></span>
 						<div class="dropdown" style="display: inline-block">
 							<a class="ios7-a dropdown-toggle"
 								id="dropdownMenu2" data-toggle="dropdown"> 
@@ -94,11 +108,10 @@ function log(o) {
 					</div>				
 				</div>
 				
-				<div class="pull-left" style="line-height: 40px; margin-top: 10px; margin-left: 10px;" id="leanoteMsg">
+				<div class="pull-left" id="leanoteMsg">
 					<span id="msg" style="display: inline-block;"></span>
-					<img id="loading" style="visibility: hidden" src="/images/loading-a-20.gif" />
-					
-					
+					<span id="loading">
+					</span>
 				</div>
 				
 				<!-- 
@@ -162,6 +175,10 @@ function log(o) {
 				</div>
 				{{end}}
 				{{end}}
+				
+				<div class="pull-right" style="line-height: 60px; margin-right:10px" id="toggleEditorMode">
+					<a href="#writing">{{msg . "writingMode"}}</a>
+				</div>
 				
 				<!--
 				<ul id="setting" class="pull-right">
@@ -461,6 +478,7 @@ function log(o) {
 								id="moreBtn"> <i class="fa fa-angle-down"></i>
 							</a>
 						</div>
+						<div class="editorBg"></div>
 						<div id="leanoteNav">
 							<h1>
 								<i class="fa fa-align-justify" title="文档导航"></i>
@@ -477,6 +495,7 @@ function log(o) {
 					
 					<div id="mdEditor">
 						<div id="wmd-button-bar" id="mdBar"></div>
+						<div class="editorBg"></div>
 						<!-- 为了scroll -->
 	                    
 						<div class="clearfix" id="mdEditorPreview">
