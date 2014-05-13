@@ -703,9 +703,9 @@ editorMode.prototype.toggleAText = function(isWriting) {
 	setTimeout(function() {
 		toggleA = $("#toggleEditorMode a");
 		if(isWriting) {
-			toggleA.attr("href", self.normalHash).text("普通模式");
+			toggleA.attr("href", self.normalHash).text(getMsg("normalMode"));
 		} else {
-			toggleA.attr("href", self.writingHash).text("写作模式");
+			toggleA.attr("href", self.writingHash).text(getMsg("writingMode"));
 		}	
 	}, 0);
 }

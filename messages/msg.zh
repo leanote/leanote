@@ -82,6 +82,8 @@ defaultShare=默认共享
 leftHidden=隐藏左侧
 leftShow=展开左侧
 nav=文档导航
+writingMode=写作模式
+normalMode=普通模式
 
 update=更新
 create=创建
