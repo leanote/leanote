@@ -292,11 +292,13 @@ function switchEditor(isMarkdown) {
 		// 刚开始没有
 		editorIframeTabindex(2);
 		$("#wmd-input").attr("tabindex", 3);
+		$("#leanoteNav").show();
 	} else {
 		$("#mdEditor").css("z-index", 3).show();
 		
 		editorIframeTabindex(3);
 		$("#wmd-input").attr("tabindex", 2);
+		$("#leanoteNav").hide();
 	}
 }
 
