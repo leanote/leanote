@@ -84,7 +84,8 @@ leftShow=展开左侧
 nav=文档导航
 writingMode=写作模式
 normalMode=普通模式
-saving=Saving
+saving=正在保存
+saveSuccess=保存成功
 
 update=更新
 create=创建
