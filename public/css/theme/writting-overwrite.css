@@ -945,6 +945,7 @@ body {
 #leanoteNav {
   background-color: #fbfcf7;
   opacity: 0.3;
+  right: -20px;
 }
 .new-note-right {
   padding: 0 2px;
