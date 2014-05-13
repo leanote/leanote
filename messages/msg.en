@@ -83,6 +83,8 @@ leftShow=Show slide bar
 nav=Note nav
 writingMode=Writing Mode
 normalMode=Normal Mode
+saving=Saving
+saveSuccess=Save success
 
 update=Update
 create=Create

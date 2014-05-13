@@ -729,8 +729,16 @@ editorMode.prototype.changeMode = function(isWritingMode) {
 	} else {
 		this.normalMode();
 	}
+	
+	$("#moreBtn i").removeClass("fa-angle-up").addClass("fa-angle-down");
 }
 editorMode.prototype.normalMode = function() {
+	/*
+	var w = $(document).width();
+	var h = $(document).height();
+	$("#lock").css({right:0, bottom:0});
+	*/
+	
 	var $c = $("#editorContent_ifr").contents();
 	
 	$c.contents().find("#writtingMode").remove();
@@ -743,10 +751,18 @@ editorMode.prototype.normalMode = function() {
 	theme += ".css";
 	$("#themeLink").attr("href", "/css/theme/" + theme);
 	
+	$("#mceToolbar").css("height", "30px");
 	
+//	$("#lock").animate({right:w},1000);
 }
 editorMode.prototype.writtingMode = function() {
+	/*
 //	$("body").fadeOut();
+	var w = $(document).width();
+	var h = $(document).height();
+	$("#lock").css({right:0, bottom:0});
+//	$("#lock").animate({right:0}, 0);
+	*/
 	
 	$("#themeLink").attr("href", "/css/theme/writting-overwrite.css");
 	
@@ -762,6 +778,10 @@ editorMode.prototype.writtingMode = function() {
 		$("#noteItemListWrap, #notesAndSort").fadeOut();
 	});
 	
+	// 点击扩展会使html的height生成, 切换后会覆盖css文件的
+	$("#mceToolbar").css("height", "40px");
+	
+//	$("#lock").animate({right:w},1000);
 //	$("body").fadeIn();
 }
 

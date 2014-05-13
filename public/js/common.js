@@ -270,15 +270,35 @@ ajaxPostJson(
 */
 
 //-----------------
+
+// 切换编辑器时要修改tabIndex
+function editorIframeTabindex(index) {
+	var $i = $("#editorContent_ifr");
+	if($i.size() == 0) {
+		setTimeout(function() {
+			editorIframeTabindex(index);
+		}, 100);
+	} else {
+		$i.attr("tabindex", index);
+	}
+}
 //切换编辑器
 function switchEditor(isMarkdown) {
 	// 富文本永远是2
-	
 	if(!isMarkdown) {
 		$("#editor").show();
 		$("#mdEditor").css("z-index", 1);
+		
+		// 刚开始没有
+		editorIframeTabindex(2);
+		$("#wmd-input").attr("tabindex", 3);
+		$("#leanoteNav").show();
 	} else {
 		$("#mdEditor").css("z-index", 3).show();
+		
+		editorIframeTabindex(3);
+		$("#wmd-input").attr("tabindex", 2);
+		$("#leanoteNav").hide();
 	}
 }
 
@@ -306,7 +326,9 @@ function setEditorContent(content, isMarkdown, preview) {
 		$("#wmd-preview").html(""); // 防止先点有的, 再点tinymce再点没内容的
 		if(!content || preview) { // 没有内容就不要解析了
 			$("#wmd-preview").html(preview).css("height", "auto");
-			ScrollLink.onPreviewFinished(); // 告诉scroll preview结束了
+			if(ScrollLink) {
+				ScrollLink.onPreviewFinished(); // 告诉scroll preview结束了
+			}
 		} else {
 			// 还要清空preview
 			if(MarkdownEditor) {

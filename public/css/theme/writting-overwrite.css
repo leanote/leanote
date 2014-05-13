@@ -751,7 +751,9 @@ body {
 #newShareNoteMarkdownBtn,
 .new-split,
 #editorMask,
-#sortType {
+#sortType,
+#myProfile,
+#demoRegister {
   display: none;
 }
 #mainMask {
@@ -943,6 +945,7 @@ body {
 #leanoteNav {
   background-color: #fbfcf7;
   opacity: 0.3;
+  right: -20px;
 }
 .new-note-right {
   padding: 0 2px;
@@ -954,4 +957,7 @@ body {
   content: url(../../images/loading-a-20-black.gif);
   margin-top: 10px;
   visibility: hidden;
+}
+#moreBtn {
+  right: 0 !important;
 }

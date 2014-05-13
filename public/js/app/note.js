@@ -363,14 +363,14 @@ Note.curChangedSaveIt = function(force) {
 		Note.setNoteCache({"NoteId": hasChanged.NoteId, "UpdatedTime": (new Date()).format("yyyy-MM-ddThh:mm:ss.S")}, false);
 		
 		// 保存之
-		showMsg("正在保存");
+		showMsg(getMsg("saving"));
 		ajaxPost("/note/UpdateNoteOrContent", hasChanged, function(ret) {
 			if(hasChanged.IsNew) {
 				// 缓存之, 后台得到其它信息
 				ret.IsNew = false;
 				Note.setNoteCache(ret, false);
 			}
-			showMsg("保存成功!", 1000);
+			showMsg(getMsg("saveSuccess"), 1000);
 		});
 		
 		return hasChanged;
