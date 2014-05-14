@@ -13,17 +13,12 @@ type Notebook struct {
 	BaseController
 }
 
-// 得到笔记本
-// 该用户下的
-func (c Notebook) GetNotebooks() {
-}
-
 func (c Notebook) Index(notebook info.Notebook, i int, name string) revel.Result {
 	return c.RenderJson(notebook)
 }
 
 // 得到用户的所有笔记本
-func (c Notebook) getNotebooks() revel.Result {
+func (c Notebook) GetNotebooks() revel.Result {
 	re := notebookService.GetNotebooks(c.GetUserId())
 	return c.RenderJson(re)
 }

@@ -85,6 +85,11 @@ func (c Note) ListTrashNotes() revel.Result {
 	return c.RenderJson(notes)
 }
 
+// 得到note和内容
+func (c Note) GetNoteAndContent(noteId string) revel.Result {
+	return c.RenderJson(noteService.GetNoteAndContent(noteId, c.GetUserId()))
+}
+
 // 得到内容
 func (c Note) GetNoteContent(noteId string) revel.Result {
 	noteContent := noteService.GetNoteContent(noteId, c.GetUserId())

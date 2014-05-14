@@ -1,0 +1,19 @@
+<!-- 员工列表 -->
+<div class="topcoat-navigation-bar">
+	
+	<div class="bar-left">
+       <i class="fa fa-angle-left" ng-click="back()"></i>
+	</div>
+	<div class="bar-center">
+        <h1 class="topcoat-navigation-bar__title">[[note.Title]]</h1>
+	</div>
+	<div class="bar-right">
+        <i class="fa fa-pencil-square-o" id="editBtn"></i>
+	</div>
+
+</div>
+
+<div class="topcoat-list__container" style="top:70px;">
+	<div ng-bind-html="note.RawContent" id="noteContent">
+	</div>
+</div>

@@ -33,7 +33,7 @@ func (c Mobile) Index() revel.Result {
 	c.RenderArgs["sharedUserInfos"] = c.Json(sharedUserInfos)
 	c.RenderArgs["tagsJson"] = c.Json(tagService.GetTags(c.GetUserId()))
 	
-	return c.RenderTemplate("mobile/index.html");
+	return c.RenderTemplate("mobile/angular.html");
 }
 
 func (c Mobile) Logout() revel.Result {
