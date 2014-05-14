@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link href="/public/mobile2/topcoat/css/topcoat-mobile-light.min.css" rel="stylesheet">
+    <link href="/public/mobile2/css/styles.css" rel="stylesheet">
+	<link href="/public/css/font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet">
+</head>
+
+<body ng-controller="MainCtrl">
+
+    <div id="sidebar" class="page-sidebar">
+        <h1>leanote</h1>
+        <ul id="nav">
+            <li ng-click="go('/notes/all')"><a>[[msg.all]]</a></li>
+            <li ng-click="go('/notebooks')"><a>[[msg.notebook]]</a></li>
+            <li><a href="#">[[msg.tag]]</a></li>
+        </ul>
+        <footer>
+            <a href="/mobile/logout">[[msg.logout]]</a>
+        </footer>
+    </div>
+
+    <div id="content" class="page-content">
+        <div ng-view ng-class="slide" >
+        </div>
+    </div>
+
+<script src="/js/jquery-1.9.0.min.js"></script>
+<script src="/js/i18n/msg.{{.locale}}.js"></script>
+<script src="/js/common.js"></script>
+
+<script src="/public/mobile2/lib/angular.js"></script>
+<script src="/public/mobile2/lib/angular-touch.js"></script>
+<script src="/public/mobile2/lib/angular-resource.js"></script>
+<script src="/public/mobile2/lib/angular-animate.js"></script>
+<script src="/public/mobile2/lib/angular-route.js"></script>
+<script src="/public/mobile2/js/app.js"></script>
+<script src="/public/mobile2/js/controllers.js"></script>
+<script src="/public/mobile2/js/memory-services.js"></script>
+<script src="/public/mobile2/js/snap.js"></script>
+<script src="/public/mobile2/js/page.js"></script>
+<script>
+angular.element(document).ready(function() {
+    angular.bootstrap(document, ['myApp']);
+});
+</script>
+</body>
+</html>

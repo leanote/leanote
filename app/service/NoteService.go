@@ -31,6 +31,13 @@ func (this *NoteService) GetNoteContent(noteContentId, userId string) (noteConte
 	return
 }
 
+// 得到笔记和内容
+func (this *NoteService) GetNoteAndContent(noteId, userId string) (noteAndContent info.NoteAndContent) {
+	note := this.GetNote(noteId, userId)
+	noteContent := this.GetNoteContent(noteId, userId)
+	return info.NoteAndContent{note, noteContent}
+}
+
 // 列出note, 排序规则, 还有分页
 // CreatedTime, UpdatedTime, title 来排序
 func (this *NoteService) ListNotes(userId, notebookId string,
