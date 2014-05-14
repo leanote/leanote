@@ -16,7 +16,6 @@
         <li ng-repeat="note in notes | filter:query | orderBy:'UpdatedTime'" class="topcoat-list__item">
             <a ng-click="go('/note/' + note.NoteId)">
                 <p>[[note.Title]]</p>
-                <span class="chevron"></span><span class="count"></span>
             </a>
         </li>
     </ul>

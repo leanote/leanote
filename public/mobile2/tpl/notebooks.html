@@ -15,14 +15,15 @@
     	 <li class="topcoat-list__item">
             <a ng-click="go('/notes/all')">
                 <p>[[msg.all]]</p>
-                <span class="chevron"></span><span class="count"></span>
             </a>
         </li>
         
         <li ng-repeat="notebook in notebooks | filter:query | orderBy:'Title'" class="topcoat-list__item">
             <a ng-click="go('/notes/' + notebook.NotebookId)">
                 <p>[[notebook.Title]]</p>
+                <!--
                 <span class="chevron"></span><span class="count"></span>
+                -->
             </a>
         </li>
     </ul>

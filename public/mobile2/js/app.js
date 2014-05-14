@@ -9,7 +9,7 @@ angular.module('myApp', [
     'ngRoute',
     'ngAnimate',
     'myApp.controllers',
-    'myApp.memoryServices'
+    'myApp.services'
 ]).
 config(['$routeProvider', '$interpolateProvider', function ($routeProvider, $interpolateProvider) {
 	

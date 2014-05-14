@@ -1,27 +1,7 @@
 
-angular.module('myApp.memoryServices', [])
-.factory('Employee', [
-    function () {
-        return {
-            query: function () {
-                return employees;
-            },
-            get: function (employee) {
-                return findById(parseInt(employee.employeeId));
-            }
-        }
+// services
 
-    }])
-.factory('Report', [
-    function () {
-        return {
-            query: function (employee) {
-                return findByManager(parseInt(employee.employeeId));
-            }
-        }
-
-}])
-
+angular.module('myApp.services', [])
 // Note
 .factory('Note', ["$http", function($http) {
 	var self = this;
