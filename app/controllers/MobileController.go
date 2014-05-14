@@ -22,6 +22,7 @@ func (c Mobile) Index() revel.Result {
 		return c.RenderTemplate("mobile/login.html")
 	}
 	
+	/*
 	// 已登录了, 那么得到所有信息
 	notebooks := notebookService.GetNotebooks(userId)
 	shareNotebooks, sharedUserInfos := shareService.GetShareNotebooks(userId)
@@ -32,6 +33,7 @@ func (c Mobile) Index() revel.Result {
 	c.RenderArgs["shareNotebooks"] = c.Json(shareNotebooks)
 	c.RenderArgs["sharedUserInfos"] = c.Json(sharedUserInfos)
 	c.RenderArgs["tagsJson"] = c.Json(tagService.GetTags(c.GetUserId()))
+	*/
 	
 	return c.RenderTemplate("mobile/angular.html");
 }
