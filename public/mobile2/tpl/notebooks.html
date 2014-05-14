@@ -1,0 +1,29 @@
+<div class="topcoat-navigation-bar">
+    <div class="bar-left">
+       <i class="fa fa-bars" ng-click="menu()"></i>
+	</div>
+	<div class="bar-center">
+        <h1 class="topcoat-navigation-bar__title">[[msg.notebook]]</h1>
+	</div>
+</div>
+
+<div class="search-bar">
+    <input ng-model="query" type="search" placeholder="search" class="topcoat-search-input search-key">
+</div>
+<div class="topcoat-list__container" style="top:138px;">
+    <ul class="topcoat-list list">
+    	 <li class="topcoat-list__item">
+            <a ng-click="go('/notes/all')">
+                <p>[[msg.all]]</p>
+                <span class="chevron"></span><span class="count"></span>
+            </a>
+        </li>
+        
+        <li ng-repeat="notebook in notebooks | filter:query | orderBy:'Title'" class="topcoat-list__item">
+            <a ng-click="go('/notes/' + notebook.NotebookId)">
+                <p>[[notebook.Title]]</p>
+                <span class="chevron"></span><span class="count"></span>
+            </a>
+        </li>
+    </ul>
+</div>
