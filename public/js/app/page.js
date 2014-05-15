@@ -716,9 +716,13 @@ editorMode.prototype.init = function() {
 	this.changeMode(this.isWritingMode);
 	var self = this;
 	$("#toggleEditorMode").click(function() {
+		// 
+		saveBookmark();
 		var $a = $(this).find("a");
 		var isWriting = self.isWriting($a.attr("href"));
 		self.changeMode(isWriting);
+		// 
+		restoreBookmark();
 	});
 }
 // 改变模式
@@ -731,6 +735,16 @@ editorMode.prototype.changeMode = function(isWritingMode) {
 	}
 	
 	$("#moreBtn i").removeClass("fa-angle-up").addClass("fa-angle-down");
+}
+
+editorMode.prototype.resizeEditor = function() {
+	// css还没渲染完
+	setTimeout(function() {
+		resizeEditor();
+	}, 10);
+	setTimeout(function() {
+		resizeEditor();
+	}, 20);
 }
 editorMode.prototype.normalMode = function() {
 	/*
@@ -755,7 +769,7 @@ editorMode.prototype.normalMode = function() {
 	
 //	$("#lock").animate({right:w},1000);
 	
-	resizeEditor();
+	this.resizeEditor();
 }
 editorMode.prototype.writtingMode = function() {
 	/*
@@ -785,8 +799,8 @@ editorMode.prototype.writtingMode = function() {
 	
 //	$("#lock").animate({right:w},1000);
 //	$("body").fadeIn();
-	
-	resizeEditor();
+
+	this.resizeEditor();
 }
 
 editorMode.prototype.getWritingCss = function() {
