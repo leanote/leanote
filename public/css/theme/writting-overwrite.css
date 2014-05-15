@@ -960,3 +960,6 @@ body {
 #moreBtn {
   right: 0 !important;
 }
+#toggleEditorMode {
+  margin: 0 10px !important;
+}
