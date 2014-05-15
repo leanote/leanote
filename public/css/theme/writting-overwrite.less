@@ -877,23 +877,17 @@ html,body {
 		margin:auto;
 	}
 	color: #ccc;
-	.pull-right {
-		&:hover {
-			a {
-				color: #000;
-			}
-		}
-	}
 }
 
 #newNoteWrap {
 	line-height: 40px; margin-top: 10px;
 	margin-left: 10px;
+}
+
+#newNoteWrap, #topNav {
+	opacity: 0;
 	&:hover {
-		color: #000;
-		a {
-			color: #000;
-		}
+		opacity: 1;
 	}
 }
 
@@ -1043,7 +1037,7 @@ html,body {
 #leanoteNav {
 	background-color: @bgColor;
 	opacity: 0.3;
-	right: -20px;
+	right: -30px;
 }
 
 .new-note-right {

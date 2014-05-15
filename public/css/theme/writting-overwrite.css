@@ -783,19 +783,18 @@ body {
   line-height: 60px;
   margin: auto;
 }
-#header .pull-right:hover a {
-  color: #000;
-}
 #newNoteWrap {
   line-height: 40px;
   margin-top: 10px;
   margin-left: 10px;
 }
-#newNoteWrap:hover {
-  color: #000;
+#newNoteWrap,
+#topNav {
+  opacity: 0;
 }
-#newNoteWrap:hover a {
-  color: #000;
+#newNoteWrap:hover,
+#topNav:hover {
+  opacity: 1;
 }
 #mainContainer {
   overflow-y: hidden;
@@ -945,7 +944,7 @@ body {
 #leanoteNav {
   background-color: #fbfcf7;
   opacity: 0.3;
-  right: -20px;
+  right: -30px;
 }
 .new-note-right {
   padding: 0 2px;

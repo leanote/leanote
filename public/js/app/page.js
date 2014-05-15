@@ -744,7 +744,7 @@ editorMode.prototype.normalMode = function() {
 	$c.contents().find("#writtingMode").remove();
 	$c.contents().find('link[href$="editor-writting-mode.css"]').remove();
 			
-		$("#noteItemListWrap, #notesAndSort").show();
+	$("#noteItemListWrap, #notesAndSort").show();
 	$("#noteList").unbind("mouseenter").unbind("mouseleave"); 
 	
 	var theme = UserInfo.Theme || "default";
@@ -754,6 +754,8 @@ editorMode.prototype.normalMode = function() {
 	$("#mceToolbar").css("height", "30px");
 	
 //	$("#lock").animate({right:w},1000);
+	
+	resizeEditor();
 }
 editorMode.prototype.writtingMode = function() {
 	/*
@@ -783,6 +785,8 @@ editorMode.prototype.writtingMode = function() {
 	
 //	$("#lock").animate({right:w},1000);
 //	$("body").fadeIn();
+	
+	resizeEditor();
 }
 
 editorMode.prototype.getWritingCss = function() {
