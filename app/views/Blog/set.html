@@ -166,19 +166,17 @@
 $(function() {
 	tinymce.init({
 		selector : "#AboutMe",
-		content_css : [ "/css/bootstrap.css", "/css/editor.css" ],
+		content_css : [ "/css/bootstrap.css", "/css/editor/editor.css" ],
 		skin : "custom",
-		language : "zh_CN",
+		language : "zh",
 		height : 300,
 		width : "100%",
+		skin : "custom",
 		plugins : [
-				"advlist autolink link image lists charmap hr ",
-				"searchreplace visualblocks visualchars code tabfocus",
-				"table contextmenu directionality textcolor paste fullpage textcolor" ],
-
-		toolbar1 : "formatselect fontselect fontsizeselect | forecolor backcolor | bold italic underline strikethrough | image |  bullist numlist | alignleft aligncenter alignright alignjustify",
-		toolbar2 : "outdent indent blockquote | link unlink | table | hr removeformat | subscript superscript | visualchars visualblocks | searchreplace | code",
-
+				"advlist autolink link leanote_image lists charmap hr ",
+				"searchreplace visualblocks visualchars leanote_code tabfocus",
+				"table contextmenu directionality textcolor paste fullpage textcolor"],
+		toolbar1 : "formatselect |fontselect fontsizeselect| forecolor backcolor | bold italic underline strikethrough | bullist numlist |",
 		menubar : false,
 		toolbar_items_size : 'small',
 		statusbar : false,
