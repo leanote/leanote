@@ -20,7 +20,7 @@ To be honest, our inspiration comes from Evernote. We use Evernote to manage our
 
 ### 3.1. Download leanote
 
-Leanote v0.1 has been released. Binaries:
+Leanote V0.3 has been released. Binaries:
 
 * Linux: [leanote-linux-v0.3.bin.tar.gz](https://github.com/leanote/leanote/releases/download/0.3/leanote-linux-v0.3.bin.tar.gz)
 * MacOS X: [leanote-mac-v0.3.bin.tar.gz](https://github.com/leanote/leanote/releases/download/0.3/leanote-mac-v0.3.bin.tar.gz)
