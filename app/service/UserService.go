@@ -212,7 +212,7 @@ func (this *UserService) UpdateEmailSendActiveEmail(userId, email string) (ok bo
 	body := "邮箱验证后您的登录邮箱为: <b>" + email + "</b><br />";
 	body += fmt.Sprintf("请点击链接验证邮箱: <a href='%v'>%v</a>. %v小时后过期.", url, url, tokenService.GetOverHours(info.TokenUpdateEmail));
 	if !SendEmail(email, "leanote-验证邮箱", "验证邮箱", body) {
-		msg = "发送失败"
+		msg = "发送失败, 该邮箱存在?"
 		return 
 	}
 	ok = true
