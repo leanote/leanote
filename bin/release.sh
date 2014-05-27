@@ -21,6 +21,13 @@ cp  ./bin/run.sh $tmp/leanote/bin/
 
 # views
 cp -r ./app/views $tmp/leanote/app
+# 可不要
+cp -r ./app/service $tmp/leanote/app/service
+cp -r ./app/controllers $tmp/leanote/app/controllers
+cp -r ./app/db $tmp/leanote/app/db
+cp -r ./app/info $tmp/leanote/app/info
+cp -r ./app/lea $tmp/leanote/app/lea
+
 # conf
 cp ./conf/app.conf-default $tmp/leanote/conf/app.conf
 cp ./conf/routes-default $tmp/leanote/conf/routes
