@@ -745,6 +745,9 @@ editorMode.prototype.resizeEditor = function() {
 	setTimeout(function() {
 		resizeEditor();
 	}, 20);
+	setTimeout(function() {
+		resizeEditor();
+	}, 500);
 }
 editorMode.prototype.normalMode = function() {
 	/*
