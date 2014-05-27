@@ -28,8 +28,8 @@ var bodyTpl = `
 					<div style="float:left; height: 40px;">
 						<a href="http://leanote.com" style="font-size: 24px">leanote</a>
 					</div>
-					<div style="float:left; height:40px; line-height:16px;">
-						&nbsp;&nbsp;| &nbsp;<span style="font-size:24px">$title</span>
+					<div style="float:left; height:40px; line-height:40px;">
+						&nbsp;&nbsp;| &nbsp;<span style="font-size:14px">$title</span>
 					</div>
 					<div style="clear:both"></div>
 				</div>
@@ -50,7 +50,7 @@ var bodyTpl = `
 						font-size: 12px;
 					}
 				</style>
-				<a href="http://leanote.com">leanote</a>, your own cloud note
+				<a href="http://leanote.com">leanote</a>, your own cloud note!
 			</div>
 		</div>
 	</body>
@@ -78,6 +78,7 @@ func SendEmail(to, subject, title, body string) bool {
 	err := smtp.SendMail(host+":"+port, auth, username, send_to, msg)
 	
 	if err != nil {
+		Log(err)
 		return false
 	}
 	return true
