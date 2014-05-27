@@ -123,5 +123,10 @@ uploadImage=Upload image
 aboutMe=About me
 blogSet=Set blog
 
+# index
+discussion=Discussion
+download=Download
+howToInstallLeanote=How to install leanote
+
 # error 
 notFound=This page cann't found.
