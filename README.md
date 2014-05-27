@@ -87,7 +87,7 @@ $> sudo sh run.sh
 
 ## 4. How to develop leanote
 
-Please see [our wiki](https://github.com/leanote/leanote/wiki/How-to-develop-leanote)
+Please see [How-to-develop-leanote](https://github.com/leanote/leanote/wiki/How-to-develop-leanote)
 
 ## Discussion
 [leanote google group](https://groups.google.com/forum/#!forum/leanote)
