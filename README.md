@@ -87,40 +87,7 @@ $> sudo sh run.sh
 
 ## 4. How to develop leanote
 
-For more tips please see [our wiki](https://github.com/leanote/leanote/wiki/How-to-develop-leanote)
-
-Leanote is a app based on [revel](https://revel.github.io/), so if you want to work on leanote, you should be familar with revel.
-
-### 4.1 Install golang
-
-Install golang and set the `GOPATH` environment variable
-
-### 4.2 Install revel
-```
-$> go get github.com/revel/revel
-$> go get github.com/revel/cmd/revel
-```
-
-### 4.3 Get leanote
-
-```
-$> go get github.com/leanote/leanote/app
-```
-
-### 4.4 Build/Run leanote via revel
-
-```
-$> cp conf/app.conf-default conf/app.conf
-$> cp conf/routes-default conf/routes
-```
-
-Now you can modify the leanote source and build/run using `revel`
-
-```
-$> revel run github.com/leanote/leanote
-```
-
-You are welcome to join us and contribute code to leanote! Thanks.
+Please see [our wiki](https://github.com/leanote/leanote/wiki/How-to-develop-leanote)
 
 ## Discussion
 [leanote google group](https://groups.google.com/forum/#!forum/leanote)
