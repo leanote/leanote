@@ -20,7 +20,7 @@ func (c File) UploadImage(renderHtml string) revel.Result {
 		renderHtml = "file/image.html"
 	}
 	
-	re := c.uploadImage();
+	re := c.uploadImage("");
 	
 	c.RenderArgs["fileUrlPath"] = siteUrl + re.Id
 	c.RenderArgs["resultCode"] = re.Code
@@ -34,24 +34,26 @@ func (c File) UploadBlogLogo() revel.Result {
 	return c.UploadImage("file/blog_logo.html");
 }
 
-// 拖拉上传
-func (c File) UploadImageJson(renderHtml string) revel.Result {
-	re := c.uploadImage();
+// 拖拉上传, pasteImage
+func (c File) UploadImageJson(renderHtml, from string) revel.Result {
+	re := c.uploadImage(from);
 	re.Id = siteUrl + re.Id
 //	re.Id = re.Id
 	return c.RenderJson(re)
 }
 
 // 上传图片, 公用方法
-func (c File) uploadImage() (re info.Re) {
+func (c File) uploadImage(from string) (re info.Re) {
 	var fileUrlPath = ""
 	var resultCode = 0 // 1表示正常
 	var resultMsg = "内部错误" // 错误信息
+	var Ok = false
 	
 	defer func() {
 		re.Id = fileUrlPath
 		re.Code = resultCode
 		re.Msg = resultMsg
+		re.Ok = Ok
 	}()
 	
 	file, handel, err := c.Request.FormFile("file")
@@ -69,11 +71,18 @@ func (c File) uploadImage() (re info.Re) {
 	}
 	// 生成新的文件名
 	filename := handel.Filename
-	_, ext := SplitFilename(filename)
-	if(ext != ".gif" && ext != ".jpg" && ext != ".png" && ext != ".bmp" && ext != ".jpeg") {
-		resultMsg = "不是图片"
-		return re
+	
+	var ext string;
+	if from == "pasteImage" {
+		ext = ".png"; // TODO 可能不是png类型
+	} else {
+		_, ext = SplitFilename(filename)
+		if(ext != ".gif" && ext != ".jpg" && ext != ".png" && ext != ".bmp" && ext != ".jpeg") {
+			resultMsg = "不是图片"
+			return re
+		}
 	}
+
 	filename = NewGuid() + ext
 	data, err := ioutil.ReadAll(file)
 	if err != nil {
@@ -99,6 +108,7 @@ func (c File) uploadImage() (re info.Re) {
 	
 	fileUrlPath += "/" + GetFilename(toPathGif)
 	resultCode = 1
+	Ok = true
 	resultMsg = "上传成功!"
 	
 	return re

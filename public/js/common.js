@@ -1,4 +1,9 @@
-// --------------------- 命名空间
+// leanote 通用方法
+
+//--------------
+// 命名空间
+//--------------
+
 // 最上级变量
 var LEA = {};
 // 命名空间
@@ -64,7 +69,7 @@ function arrayEqual(a, b) {
 	return a.join(",") == b.join(",");
 }
 
-//是否是数组
+// 是否是数组
 function isArray(obj) {  
 	return Object.prototype.toString.call(obj) === '[object Array]';   
 }
@@ -419,32 +424,6 @@ function enableEditor() {
 	}
 }
 
-//---------------
-// notify
-$(function() {
-	if($.pnotify) {
-		$.pnotify.defaults.delay = 1000;
-	}
-})
-
-function notifyInfo(text) {
-	$.pnotify({
-	    title: '通知',
-	    text: text,
-	    type: 'info',
-	    styling: 'bootstrap'
-	});
-}
-function notifyError(text) {
-	$.pnotify.defaults.delay = 2000
-	$.pnotify({
-	    title: '通知',
-	    text: text,
-	    type: 'error',
-	    styling: 'bootstrap'
-	});
-}
-
 //-----------
 // dialog
 //-----------
@@ -500,6 +479,7 @@ function hideDialogRemote() {
 }
 //---------------
 // notify
+// 没用
 $(function() {
 	if($.pnotify) {
 		$.pnotify.defaults.delay = 1000;
@@ -808,7 +788,7 @@ function reIsOk(re) {
 }
 
 // marker
-// 下拉扩展工具栏用, 点击文档导航用
+// 下拉扩展工具栏用, 点击文档导航用, 切换编辑模式时用
 LEA.bookmark = null;
 LEA.hasBookmark = false;
 function saveBookmark() {
