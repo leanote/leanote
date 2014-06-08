@@ -281,7 +281,6 @@ define("tinymce/pasteplugin/Clipboard", [
 			  }
 			  // load image if there is a pasted image
 			  if (blob) {
-			  	log(blob);
 			    var reader = new FileReader();
 			    reader.onload = function(event) {
 			      	// 上传之
@@ -323,10 +322,14 @@ define("tinymce/pasteplugin/Clipboard", [
 				    	});
 			    };
 			    reader.readAsDataURL(blob);
+			    return true;
 			  }
+			  return false;
 		}
 
 		editor.on('paste', function(e) {
+			
+			
 			var clipboardContent = getClipboardContent(e);
 			var isKeyBoardPaste = new Date().getTime() - keyboardPasteTimeStamp < 100;
 			var plainTextMode = self.pasteFormat == "text" || keyboardPastePlainTextState;
@@ -378,13 +381,18 @@ define("tinymce/pasteplugin/Clipboard", [
 					pasteHtml(html, clipboardContent['text/plain']);
 				}
 			}, 0);
+			
+			//-----------
+			// paste image
+			try {
+				if(pasteImage(e)) {
+					return;
+				}
+			} catch(e) {};
+
 		});
 		
-		//-----------
-		// paste image
-		try {
-			pasteImage(e);
-		} catch(e) {};
+		
 
 		self.pasteHtml = pasteHtml;
 		self.pasteText = pasteText;
