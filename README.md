@@ -90,14 +90,13 @@ $> sudo sh run.sh
 Please see [How-to-develop-leanote](https://github.com/leanote/leanote/wiki/How-to-develop-leanote)
 
 
-## Contributors
+## 5. Contributors
 Thank you to all the [contributors](https://github.com/leanote/leanote/graphs/contributors) on
 this project. Your help is much appreciated.
 
-## 5. Contributing
+## 6. Contributing
 
-Please fork this repository and contribute back using
-[pull requests](https://github.com/leanote/leanote/pulls).
+Please fork this repository and contribute back using [pull requests](https://github.com/leanote/leanote/pulls).
 
 ## Discussion
 [leanote google group](https://groups.google.com/forum/#!forum/leanote)
