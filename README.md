@@ -1,3 +1,5 @@
+(中文)[https://github.com/leanote/leanote#1-介绍]
+
 ## 1. Introduction
 
 Leanote, your own cloud note.
@@ -102,8 +104,6 @@ Please fork this repository and contribute back using [pull requests](https://gi
 [leanote google group](https://groups.google.com/forum/#!forum/leanote)
 
 -----------------------------------------------------------------------
-
-中文
 
 ## 1. 介绍
 
