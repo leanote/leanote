@@ -125,7 +125,7 @@ Leanote, 你的私人云笔记!
 * 还有...
 
 ## 3.安装leanote
-leanote是一款私有云笔记, 你可以下载它安装在自己的服务器上, 当然也可以在http://leanote.com上注册.
+leanote是一款私有云笔记, 你可以下载它安装在自己的服务器上, 当然也可以在 http://leanote.com 上注册.
 
 ### 3.1. 下载leanote
 
@@ -136,9 +136,9 @@ Leanote V0.3 已发布, 二进制文件(暂时没有windows版的):
 
 ### 3.2. 安装 MongodbDB
 
-Leanote是由golang(使用[revel](https://revel.github.io/)框架 and [MongoDB](https://www.mongodb.org)数据库), 你需要先安装Mongodb.
+Leanote是由golang(使用[revel](https://revel.github.io/)框架 和 [MongoDB](https://www.mongodb.org)数据库), 你需要先安装Mongodb.
 
-安装MongodbDB, 导入数据更多细节请查看: [our wiki](https://github.com/leanote/leanote/wiki/Install-Mongodb)
+安装MongodbDB, 导入数据更多细节请查看: [wiki](https://github.com/leanote/leanote/wiki/Install-Mongodb)
 
 ### 3.3. 导入初始数据
 
@@ -159,7 +159,7 @@ user2 username: admin, password: abc123
 
 修改 `[PATH_TO_LEANOTE]/conf/app.conf`. 有以下选项:
 
-``mongodb``  **必须**
+``mongodb``  **必须配置!**
 
 ```Shell
 db.host=localhost
