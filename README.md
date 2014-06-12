@@ -1,4 +1,4 @@
-(中文)[https://github.com/leanote/leanote#1-介绍]
+[中文](https://github.com/leanote/leanote#1-介绍)
 
 ## 1. Introduction
 
