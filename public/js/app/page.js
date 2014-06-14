@@ -666,28 +666,34 @@ $(function() {
 	
 	// slimScroll
 	//---
+	/*
 	setTimeout(function() {
-		$("#notebook").slimScroll({
-		    height: "100%", // $("#leftNotebook").height()+"px"
-		});
-		$("#noteItemList").slimScroll({
-		    height: "100%", // ($("#leftNotebook").height()-42)+"px"
-		});
-		$("#wmd-input").slimScroll({
-		    height: "100%", // $("#wmd-input").height()+"px"
-		});
-		$("#wmd-input").css("width", "100%");
-		
-		$("#wmd-panel-preview").slimScroll({
-		    height: "100%", // $("#wmd-panel-preview").height()+"px"
-		});
-		
-		$("#wmd-panel-preview").css("width", "100%");
+		initSlimScroll();
 	}, 10);
+	*/
 	
 	// 编辑器模式
 	em.init();
 });
+
+function initSlimScroll() {
+	$("#notebook").slimScroll({
+	    height: "100%", // $("#leftNotebook").height()+"px"
+	});
+	$("#noteItemList").slimScroll({
+	    height: "100%", // ($("#leftNotebook").height()-42)+"px"
+	});
+	$("#wmd-input").slimScroll({
+	    height: "100%", // $("#wmd-input").height()+"px"
+	});
+	$("#wmd-input").css("width", "100%");
+	
+	$("#wmd-panel-preview").slimScroll({
+	    height: "100%", // $("#wmd-panel-preview").height()+"px"
+	});
+	
+	$("#wmd-panel-preview").css("width", "100%");
+}
 
 // 编辑器模式
 function editorMode() {
