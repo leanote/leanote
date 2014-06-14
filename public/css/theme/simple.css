@@ -413,10 +413,6 @@ a.raw:hover {
 */
 
 }
-#myNotebooks .folderBody {
-  max-height: 600px;
-  overflow: auto;
-}
 #addNotebookPlus {
   padding-right: 10px;
   color: #666;
