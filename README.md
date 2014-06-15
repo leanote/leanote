@@ -89,7 +89,7 @@ $> sudo sh run.sh
 
 ## 4. How to develop leanote
 
-Please see [How-to-develop-leanote](https://github.com/leanote/leanote/wiki/How-to-develop-leanote)
+Please see [How-to-develop-leanote](https://github.com/leanote/leanote/wiki/How-to-develop-leanote-%E5%A6%82%E4%BD%95%E5%BC%80%E5%8F%91leanote)
 
 
 ## 5. Contributors
@@ -195,7 +195,7 @@ $> sudo sh run.sh
 
 ## 4. 如何对leanote进行二次开发
 
-请查看 [How-to-develop-leanote](https://github.com/leanote/leanote/wiki/How-to-develop-leanote)
+请查看 [How-to-develop-leanote](https://github.com/leanote/leanote/wiki/How-to-develop-leanote-%E5%A6%82%E4%BD%95%E5%BC%80%E5%8F%91leanote)
 
 ## 5. 贡献者
 多谢 [贡献者](https://github.com/leanote/leanote/graphs/contributors) 的贡献, leanote因有你们而更完美!
