@@ -7100,3 +7100,7 @@ td.visible-print {
 .btn {
 	border-radius: 0;
 }
+.mce-item-table, .mce-item-table td, .mce-item-table th, .mce-item-table caption {
+	border: 1px solid #9B9898;
+	border-collapse: collapse;
+}
