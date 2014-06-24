@@ -948,7 +948,11 @@ Note.renderNoteReadOnly = function(note) {
 	$("#noteReadUpdatedTime").html(goNowToDatetime(note.UpdatedTime));
 }
 Note.renderNoteContentReadOnly = function(note) {
-	$("#noteReadContent").html(note.Content);
+	if(note.IsMarkdown) {
+		$("#noteReadContent").html('<pre id="readOnlyMarkdown">' + note.Content + "</pre>");
+	} else {
+		$("#noteReadContent").html(note.Content);
+	}
 }
 
 //---------------------------
