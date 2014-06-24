@@ -28,9 +28,9 @@ tinymce.PluginManager.add('leanote_code', function(editor, url) {
 			}
 			if(!text) {
 				text = $(node).text();
-				$(node).replaceWith('<pre class="brush:' + value + '"> '+ text + "</pre>");
+				$(node).replaceWith('<pre class="brush:' + value + '">'+ text + "</pre>");
 			} else {
-				ed.insertContent('<pre class="brush:' + value + '"> ' + text + "</pre>");
+				ed.insertContent('<pre class="brush:' + value + '">' + text + "</pre>");
 			}
 		}
 		ed.selection.moveToBookmark(everBookmark);

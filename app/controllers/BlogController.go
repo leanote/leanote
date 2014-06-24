@@ -173,6 +173,8 @@ func (c Blog) Set() revel.Result {
 	
 	c.getRecentBlogs(userId)
 	
+	c.SetLocale();
+	
 	return c.RenderTemplate("blog/set.html")
 }
 

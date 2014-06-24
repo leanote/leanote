@@ -76,6 +76,7 @@ myNotebook=My notebook
 addNotebook=Add notebook
 all=Newest
 trash=Trash
+delete=Delete
 unTitled=UnTitled
 defaultShare=Default sharing
 leftHidden=Hidden slide bar
