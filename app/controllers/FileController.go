@@ -122,7 +122,7 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 	
 	// File
 	fileInfo := info.File{Name: filename,
-		Title: filename,
+		Title: handel.Filename,
 		Path: fileUrlPath,
 		Size: filesize}
 		
