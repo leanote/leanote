@@ -181,8 +181,15 @@ make<br>make --- install</pre>
 	`, "/Users/life/Desktop/a.png")
 	fmt.Printf("time cost %v\n", time.Now().Sub(start))
 }
+
+func testLea() {
+	names := ListDir("/Users/life/Documents/Go/package/src/leanote")
+	fmt.Println(names);
+}
+
 func main() {
 	revel.BasePath = "/Users/life/Documents/Go/package/src/leanote"
+	testLea();
 //	a, b := SplitFilename("http://ab/c/a.gif#??")
 //	println(a)
 //	println(b)
@@ -199,7 +206,7 @@ func main() {
 	//_, err := mgo.Dial("mongodb://leanote:nKFAkxKnWkEQy8Vv2LlM@115.28.133.226:27017/leanote")
 	
 //	testNotebookService();
-	testNoteService();
+	// testNoteService();
 //	testShareService()
 //	testAuthService()
 	

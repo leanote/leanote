@@ -33,6 +33,10 @@ var Tokens *mgo.Collection
 
 var Suggestions *mgo.Collection
 
+// Album & file(image)
+var Albums *mgo.Collection
+var Files *mgo.Collection
+
 // 初始化时连接数据库
 func Init() {
 	var url string
@@ -94,8 +98,12 @@ func Init() {
 	// find password
 	Tokens = Session.DB(dbname).C("tokens")
 	
-	// 
+	// Suggestion
 	Suggestions = Session.DB(dbname).C("suggestions")
+	
+	// Album & file
+	Albums = Session.DB(dbname).C("albums")
+	Files = Session.DB(dbname).C("files")
 }
 
 func init() { 

@@ -23,6 +23,9 @@ var pwdService *service.PwdService
 var tokenService *service.TokenService
 var suggestionService *service.SuggestionService 
 
+var albumService *service.AlbumService 
+var fileService *service.FileService
+
 var pageSize = 1000
 var defaultSortField = "UpdatedTime"
 var leanoteUserId = "52d26b4e99c37b609a000001"

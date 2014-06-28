@@ -30,6 +30,16 @@ func GetFilename(path string) string {
 	return filepath.Base(path)
 }
 
+// file size
+// length in bytes
+func GetFilesize(path string) int64 {
+	fileinfo, err := os.Stat(path)
+	if err == nil {
+		return fileinfo.Size()
+	}
+	return 0;
+}
+
 // 清空dir下所有的文件和文件夹
 // RemoveAll会清空本文件夹, 所以还要创建之
 func ClearDir(dir string) bool {
@@ -42,4 +52,14 @@ func ClearDir(dir string) bool {
 		return false
 	}
 	return true
+}
+
+// list dir's all file, return filenames
+func ListDir(dir string) []string {
+	f, err := os.Open(dir)
+	if err != nil {
+		return nil
+	}
+	names, _ := f.Readdirnames(0)
+	return names
 }

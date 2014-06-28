@@ -194,11 +194,11 @@ $(function() {
 		skin : "custom",
 		language: LEA.locale, // 语言
 		plugins : [
-				"autolink link leanote_image lists charmap hr", "paste",
+				"autolink link leaui_image leanote_image lists charmap hr", "paste",
 				"searchreplace leanote_nav leanote_code tabfocus",
 				"table directionality textcolor codemirror" ], // nonbreaking
 				
-		toolbar1 : "formatselect | forecolor backcolor | bold italic underline strikethrough | leanote_image | leanote_code | bullist numlist | alignleft aligncenter alignright alignjustify",
+		toolbar1 : "formatselect | forecolor backcolor | bold italic underline strikethrough | leaui_image | leanote_image | leanote_code | bullist numlist | alignleft aligncenter alignright alignjustify",
 		toolbar2 : "outdent indent blockquote | link unlink | table | hr removeformat | subscript superscript |searchreplace | code | pastetext | fontselect fontsizeselect",
 
 		// 使用tab键: http://www.tinymce.com/wiki.php/Plugin3x:nonbreaking
