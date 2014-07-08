@@ -21908,7 +21908,7 @@ define("tinymce/ui/DragHelper", [
 			if (e.button !== downButton) {
 				return stop(e);
 			}
-
+	
 			e.deltaX = e.screenX - startX;
 			e.deltaY = e.screenY - startY;
 
@@ -24994,7 +24994,7 @@ define("tinymce/util/Observable", [
 	var bindingsName = "__bindings";
 	var nativeEvents = Tools.makeMap(
 		"focusin focusout click dblclick mousedown mouseup mousemove mouseover beforepaste paste cut copy selectionchange" +
-		" mouseout mouseenter mouseleave keydown keypress keyup contextmenu dragend dragover draggesture dragdrop drop drag", ' '
+		" mouseout mouseenter mouseleave keydown keypress keyup contextmenu dragstart dragend dragover draggesture dragdrop drop drag", ' '
 	);
 
 	function returnFalse() {

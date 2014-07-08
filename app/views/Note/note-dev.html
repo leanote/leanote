@@ -450,8 +450,9 @@ function log(o) {
 										<li role="presentation"><span class="label label-green">{{msg . "green"}}</span></li>
 									</ul>
 								</div>
-
 							</div>
+							
+
 
 							<ul class="pull-right" id="editorTool">
 								<li><a class="ios7-a " id="saveBtn" title="ctrl+s"
@@ -487,6 +488,47 @@ function log(o) {
 							<div id="leanoteNavContent">
 							</div>
 						</div>
+<style>
+#upload {
+	position: absolute;
+	z-index: 0;
+	bottom: 0;
+	right: 0;
+	left: 0px;
+	padding: 0;
+	background-color: #fff;
+	text-align: center;
+	display: none;
+}
+#upload #drop {
+	width: 100%;
+	height: 100%;
+	padding-top: 100px;
+}
+#drop.in {
+    border: 1px solid #000000;
+}
+#drop.hover {
+    border: 2px solid #000000;
+}
+#uploadMsg {
+	position: absolute;
+	top: 3px;
+	right: 3px;
+	bottom: 10px;
+	overflow: scroll;
+	list-style: none;
+}
+</style>
+			<form id="upload" method="post" action="/file/uploadImageLeaui" enctype="multipart/form-data" style="margin-top: 5px;">
+                <div id="drop">
+                       Drop images to here
+                    <input type="file" name="file" multiple style="display: none"/>
+                </div>
+                <ul id="uploadMsg">
+                </ul>
+            </form>
+            
 						<!-- 由此可以算高度 -->
 						<div id="editorContent" name="editorContent" tabindex="2" />
 							{{.noteContent}}
@@ -512,8 +554,8 @@ function log(o) {
 						</div>
 	                    <textarea id="md-section-helper"></textarea>
 					</div>
-					
-					
+					<!-- for test -->
+
 					<!-- mdEditor -->
 					<!-- Hidden Popup Modal -->
 					<div class="modal fade bs-modal-sm" id="editorDialog" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
@@ -955,6 +997,7 @@ Tag.renderTagNav(tagsJson);
 initSlimScroll();
 </script>
 
+
 <!-- mdEditor -->
 <link href="/public/mdeditor/editor/editor.css" rel="stylesheet">
 <script src="/public/mdeditor/editor/pagedown/Markdown.Converter-min.js"></script>
@@ -978,5 +1021,22 @@ initSlimScroll();
 <!-- context-menu -->
 <link rel="stylesheet" href="/js/contextmenu/css/contextmenu.css" type="text/css" />
 <script src="/js/contextmenu/jquery.contextmenu.js"></script>
+
+<script src="/js/require.js"></script>
+<script>
+require.config({
+	baseUrl: '/public',
+    paths: {
+    	'jquery': 'js/jquery-1.9.0.min',
+    	'leaui_image': 'tinymce/plugins/leaui_image/public/js/for_editor',
+    	'jquery.ui.widget': 'tinymce/plugins/leaui_image/public/js/jquery.ui.widget',
+    	'fileupload': '/tinymce/plugins/leaui_image/public/js/jquery.fileupload'
+    },
+    shim: {
+    }
+});
+require(['leaui_image'], function(leaui_image) {
+});
+</script>
 </body>
 </html>
