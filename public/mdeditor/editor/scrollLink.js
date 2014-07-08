@@ -143,35 +143,15 @@ function getScrollLink() {
                 return;
             }
             
-            /*
-            var d = 100; // 时间间隔
-            var top = destScrollTop;
-            var nowTop = destElt.scrollTop();
-            log(srcScrollTop + " => " + destScrollTop)
-    		for(var i = 0; i < d; i++) {
-    			setTimeout(
-    			(function(top) {
-    				return function() {
-			            destElt.slimScroll({ scrollTo: top, onlyScrollBar: true}); 
-    				}
-    			})(nowTop + 1.0*i*(top-nowTop)/d), i);
-    		}
-    		// 最后必然执行
-    		setTimeout(function() {
-//                callback(destScrollTop);
-    		}, d+5);
-    		*/
-            
             destElt.animate({
                 scrollTop: destScrollTop
             }, 500, function() {
                 callback(destScrollTop);
             });
-            setTimeout(
-            		function() {
-			            // 仅仅是移动bar而不移动内容
-			            destElt.slimScroll({ scrollTo: destScrollTop, onlyScrollBar: true}); 
-            		}, 500);
+            setTimeout(function() {
+	            // 仅仅是移动bar而不移动内容
+	            destElt.slimScroll({ scrollTo: destScrollTop, onlyScrollBar: true}); 
+    		}, 500);
         }
         
         // Perform the animation if diff > 9px
