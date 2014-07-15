@@ -72,13 +72,10 @@ a.raw:hover {
   color: #ffffff;
   border-bottom: 1px solid #ebeff2;
   /* for app */
-
   webkit-user-select: none;
   /* 还不知 */
-
   -webkit-app-region: drag;
   /* -webkit-app-region: no-drag; */
-
 }
 #header a {
   color: #ccc;
@@ -290,7 +287,6 @@ a.raw:hover {
 }
 .item-title {
   /*font-weight: 400;*/
-
   font-size: 16px;
   height: 22px;
   line-height: 20px;
@@ -345,9 +341,7 @@ a.raw:hover {
   border: none;
   overflow: hidden !important;
   /*不知道哪里设置了auto*/
-
   /*border-radius: 5px;*/
-
 }
 /* 最顶层 */
 #editor .mce-tinymce {
@@ -449,7 +443,6 @@ a.raw:hover {
   cursor: pointer;
   font-style: normal;
   /*border-left: 1px solid #ccc;*/
-
   display: inline-block;
   padding-left: 3px;
   opacity: 0;
@@ -740,4 +733,34 @@ background-position:-1px -670px
 #editorMask a:hover {
   background-color: #65bd77;
   color: #fff;
+}
+#upload {
+  position: absolute;
+  z-index: 0;
+  bottom: 0;
+  right: 0;
+  left: 0px;
+  padding: 0;
+  background-color: #fff;
+  text-align: center;
+  display: none;
+}
+#upload #drop {
+  width: 100%;
+  height: 100%;
+  padding-top: 100px;
+}
+#drop.in {
+  border: 1px solid #000000;
+}
+#drop.hover {
+  border: 2px solid #000000;
+}
+#uploadMsg {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  bottom: 10px;
+  overflow: scroll;
+  list-style: none;
 }

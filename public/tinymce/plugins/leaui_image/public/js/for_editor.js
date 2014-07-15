@@ -159,8 +159,8 @@ define('leaui_image', ['jquery.ui.widget', 'fileupload'], function(){
 	    	$("#upload").show();
 	    }
 	    
-	    function hideUpload() { 
-	    	$("#upload").css("z-index", 0).css("top", "auto");
+	    function hideUpload() {
+	    	$("#upload").css("z-index", 0).css("top", "auto").hide();
 	    }
 	    
 	    // drag css

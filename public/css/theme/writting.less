@@ -830,3 +830,36 @@ background-position:-1px -670px
 		}
 	}
 }
+
+
+// leaui image drop drag
+#upload {
+	position: absolute;
+	z-index: 0;
+	bottom: 0;
+	right: 0;
+	left: 0px;
+	padding: 0;
+	background-color: #fff;
+	text-align: center;
+	display: none;
+}
+#upload #drop {
+	width: 100%;
+	height: 100%;
+	padding-top: 100px;
+}
+#drop.in {
+    border: 1px solid #000000;
+}
+#drop.hover {
+    border: 2px solid #000000;
+}
+#uploadMsg {
+	position: absolute;
+	top: 3px;
+	right: 3px;
+	bottom: 10px;
+	overflow: scroll;
+	list-style: none;
+}
