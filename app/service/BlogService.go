@@ -1,12 +1,12 @@
 package service
 
 import (
-	"github.com/leanote/leanote/app/info"
-	"github.com/leanote/leanote/app/db"
-//	. "github.com/leanote/leanote/app/lea"
-	"labix.org/v2/mgo/bson"
-//	"time"
-//	"sort"
+	"leanote/app/db"
+	"leanote/app/info"
+	//	. "github.com/leanote/leanote/app/lea"
+	"gopkg.in/mgo.v2/bson"
+	//	"time"
+	//	"sort"
 )
 
 // blog
@@ -31,17 +31,17 @@ type BlogService struct {
 // 得到某博客具体信息
 func (this *BlogService) GetBlog(noteId string) (blog info.BlogItem) {
 	note := noteService.GetBlogNote(noteId)
-	
+
 	if note.NoteId == "" || !note.IsBlog {
 		return
 	}
-	
+
 	// 内容
 	noteContent := noteService.GetNoteContent(note.NoteId.Hex(), note.UserId.Hex())
-	
+
 	// 组装成blogItem
-	blog = info.BlogItem{note, noteContent.Content, false}	
-	
+	blog = info.BlogItem{note, noteContent.Content, false}
+
 	return
 }
 
@@ -55,18 +55,18 @@ func (this *BlogService) ListBlogNotebooks(userId string) []info.Notebook {
 // 博客列表
 // userId 表示谁的blog
 func (this *BlogService) ListBlogs(userId, notebookId string, page, pageSize int, sortField string, isAsc bool) (int, []info.BlogItem) {
-	count, notes := noteService.ListNotes(userId, notebookId, false, page, pageSize, sortField, isAsc, true);
-	
-	if(notes == nil || len(notes) == 0) {
+	count, notes := noteService.ListNotes(userId, notebookId, false, page, pageSize, sortField, isAsc, true)
+
+	if notes == nil || len(notes) == 0 {
 		return 0, nil
 	}
-	
+
 	// 得到content, 并且每个都要substring
 	noteIds := make([]bson.ObjectId, len(notes))
 	for i, note := range notes {
 		noteIds[i] = note.NoteId
 	}
-	
+
 	// 直接得到noteContents表的abstract
 	// 这里可能是乱序的
 	noteContents := noteService.ListNoteAbstractsByNoteIds(noteIds) // 返回[info.NoteContent]
@@ -74,7 +74,7 @@ func (this *BlogService) ListBlogs(userId, notebookId string, page, pageSize int
 	for _, noteContent := range noteContents {
 		noteContentsMap[noteContent.NoteId] = noteContent
 	}
-	
+
 	// 组装成blogItem
 	// 按照notes的顺序
 	blogs := make([]info.BlogItem, len(noteIds))
@@ -90,18 +90,18 @@ func (this *BlogService) ListBlogs(userId, notebookId string, page, pageSize int
 }
 
 func (this *BlogService) SearchBlog(key, userId string, page, pageSize int, sortField string, isAsc bool) (int, []info.BlogItem) {
-	count, notes := noteService.SearchNote(key, userId, page, pageSize, sortField, isAsc, true);
-	
-	if(notes == nil || len(notes) == 0) {
+	count, notes := noteService.SearchNote(key, userId, page, pageSize, sortField, isAsc, true)
+
+	if notes == nil || len(notes) == 0 {
 		return 0, nil
 	}
-	
+
 	// 得到content, 并且每个都要substring
 	noteIds := make([]bson.ObjectId, len(notes))
 	for i, note := range notes {
 		noteIds[i] = note.NoteId
 	}
-	
+
 	// 直接得到noteContents表的abstract
 	// 这里可能是乱序的
 	noteContents := noteService.ListNoteAbstractsByNoteIds(noteIds) // 返回[info.NoteContent]
@@ -109,7 +109,7 @@ func (this *BlogService) SearchBlog(key, userId string, page, pageSize int, sort
 	for _, noteContent := range noteContents {
 		noteContentsMap[noteContent.NoteId] = noteContent
 	}
-	
+
 	// 组装成blogItem
 	// 按照notes的顺序
 	blogs := make([]info.BlogItem, len(noteIds))
@@ -124,13 +124,12 @@ func (this *BlogService) SearchBlog(key, userId string, page, pageSize int, sort
 	return count, blogs
 }
 
-
 //------------------------
 // 博客设置
 func (this *BlogService) GetUserBlog(userId string) info.UserBlog {
 	userBlog := info.UserBlog{}
 	db.Get(db.UserBlogs, userId, &userBlog)
-	
+
 	if userBlog.Title == "" {
 		userInfo := userService.GetUserInfo(userId)
 		userBlog.Title = userInfo.Username + " 的博客"
@@ -143,6 +142,7 @@ func (this *BlogService) GetUserBlog(userId string) info.UserBlog {
 func (this *BlogService) UpdateUserBlog(userBlog info.UserBlog) bool {
 	return db.Upsert(db.UserBlogs, bson.M{"_id": userBlog.UserId}, userBlog)
 }
+
 // 修改之UserBlogBase
 func (this *BlogService) UpdateUserBlogBase(userId string, userBlog info.UserBlogBase) bool {
 	return db.UpdateByQMap(db.UserBlogs, bson.M{"_id": bson.ObjectIdHex(userId)}, userBlog)

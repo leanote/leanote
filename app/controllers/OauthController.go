@@ -1,12 +1,12 @@
 package controllers
 
 import (
-	"code.google.com/p/goauth2/oauth"
-	"github.com/revel/revel"
-	"github.com/leanote/leanote/app/lea/netutil"
-	. "github.com/leanote/leanote/app/lea"
 	"encoding/json"
 	"fmt"
+	"github.com/arkxu/goauth2/oauth"
+	"github.com/revel/revel"
+	. "leanote/app/lea"
+	"leanote/app/lea/netutil"
 )
 
 type Oauth struct {
@@ -19,7 +19,7 @@ var oauthCfg = &oauth.Config{
 	AuthURL:      "https://github.com/login/oauth/authorize",
 	TokenURL:     "https://github.com/login/oauth/access_token",
 	RedirectURL:  "http://leanote.com/oauth/githubCallback",
-	Scope: "user",
+	Scope:        "user",
 }
 
 // 用户允许后, github返回到leanote

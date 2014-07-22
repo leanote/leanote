@@ -127,6 +127,8 @@ blogSet=博客设置
 
 # error 
 notFound=该页面不存在
+emptyNotebook=该笔记本下空空如也...何不
+cannotAdd = Sorry, 这里不能添加笔记的.
 
 # index
 discussion=参与讨论

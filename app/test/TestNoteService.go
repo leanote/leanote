@@ -2,19 +2,19 @@ package main
 
 import (
 	"github.com/robfig/revel"
-	
-	"github.com/leanote/leanote/app/service"
-	"github.com/leanote/leanote/app/info"
-	. "github.com/leanote/leanote/app/lea"
-//	"github.com/leanote/leanote/app/lea/memcache"
-//	"github.com/leanote/leanote/app/lea/netutil"
-	"github.com/leanote/leanote/app/lea/html2image"
-	"time"
+
+	"leanote/app/info"
+	. "leanote/app/lea"
+	"leanote/app/service"
+	//	"github.com/leanote/leanote/app/lea/memcache"
+	//	"github.com/leanote/leanote/app/lea/netutil"
 	"fmt"
-	"labix.org/v2/mgo/bson"
-//	"labix.org/v2/mgo"
-//	"encoding/json"
-//	"strings"
+	"gopkg.in/mgo.v2/bson"
+	"leanote/app/lea/html2image"
+	"time"
+	//	"labix.org/v2/mgo"
+	//	"encoding/json"
+	//	"strings"
 )
 
 var userId = "5295d4c95b1dd58edb4a7f4f"
@@ -39,125 +39,122 @@ func testNoteService() {
 	note := noteService.GetBlogNote("535f9e6b19807a4c8d000000")
 	LogJ(note)
 	/*
-	_, notes := noteService.SearchNote("go", "52d3e8ac99c37b7f0d000001", 1, 30, "", false, true);
-	LogJ(notes)
+		_, notes := noteService.SearchNote("go", "52d3e8ac99c37b7f0d000001", 1, 30, "", false, true);
+		LogJ(notes)
 	*/
-	return;
-	
+	return
+
 	/*
-	noteService.AddNote(info.Note{UserId: userIdO, 
-		NotebookId: notebookIdO, 
-		Title: "life you", Tags: []string{"red", "yellow"}})
+		noteService.AddNote(info.Note{UserId: userIdO,
+			NotebookId: notebookIdO,
+			Title: "life you", Tags: []string{"red", "yellow"}})
 	*/
-		
-	noteService.AddNoteContent(info.NoteContent{UserId: userIdO, 
-		NoteId: bson.ObjectIdHex("52b4531dcfeeae33ef073b33"), 
-		Content:"xxxxxxxxxxxxxxxxxxxxlifeyou can m<div><p></p></div>"})
-		
-//	noteService.UpdateNoteContent(userId, userId, "52b2dd34ea3ba3d3fb35910d", "life2---------")
-	
-//    noteService.AddNote(info.Note{Title: "life", Tags: []string{"life", "life2"}})
-    
-//	println(bson.IsObjectIdHex(id))
-	
-//	note := noteService.Get(id)
-//	fmt.Println(note) 
-	
-//	noteService.UpdateTags(id, []string{"lifedd", "life2"});
+
+	noteService.AddNoteContent(info.NoteContent{UserId: userIdO,
+		NoteId:  bson.ObjectIdHex("52b4531dcfeeae33ef073b33"),
+		Content: "xxxxxxxxxxxxxxxxxxxxlifeyou can m<div><p></p></div>"})
+
+	//	noteService.UpdateNoteContent(userId, userId, "52b2dd34ea3ba3d3fb35910d", "life2---------")
+
+	//    noteService.AddNote(info.Note{Title: "life", Tags: []string{"life", "life2"}})
+
+	//	println(bson.IsObjectIdHex(id))
+
+	//	note := noteService.Get(id)
+	//	fmt.Println(note)
+
+	//	noteService.UpdateTags(id, []string{"lifedd", "life2"});
 }
 
-func testNotebookService() { 
+func testNotebookService() {
 	service := &service.NotebookService{}
 	Log(service.IsBlog("52ccb959bcbf21610d000001"))
-	
-	return;
-	
+
+	return
+
 	notebooks := service.GetNotebooks(userId3)
-	LogJ(notebooks) 
-	
-//	b, _ := json.MarshalIndent(notebooks, "", "	") 
-//	fmt.Println(string(b))
-	
+	LogJ(notebooks)
+
+	//	b, _ := json.MarshalIndent(notebooks, "", "	")
+	//	fmt.Println(string(b))
+
 	// service.UpdateNotebookTitle("52b2cf9eea3ba3d3fb359108", userId, "JS")
-	
-//	service.SortNotebooks(userId, map[string]int{"52b2d051ea3ba3d3fb35910c": 4, "52b2d051ea3ba3d3fb35910b": 3})
- 
- /*
-	service.AddNotebook(info.Notebook{UserId: userId3O, 
-		ParentNotebookId: bson.ObjectIdHex("52b43c1fcfeeae33ef073b2e"),
-		Title: "Mac-life",
-		Seq: 0})
-		*/
-		
+
+	//	service.SortNotebooks(userId, map[string]int{"52b2d051ea3ba3d3fb35910c": 4, "52b2d051ea3ba3d3fb35910b": 3})
+
+	/*
+		service.AddNotebook(info.Notebook{UserId: userId3O,
+			ParentNotebookId: bson.ObjectIdHex("52b43c1fcfeeae33ef073b2e"),
+			Title: "Mac-life",
+			Seq: 0})
+	*/
+
 	println("xxx")
 }
 
 func testShareService() {
 	service := &service.ShareService{}
-	
-//	service.AddShareNote("52bd127dbcbf216d0b000000", 1, "5295d4c95b1dd58edb4a7f4f", "c@a.com")
+
+	//	service.AddShareNote("52bd127dbcbf216d0b000000", 1, "5295d4c95b1dd58edb4a7f4f", "c@a.com")
 	LogJ(service.ListNoteShareUserInfo("52cd11a1bcbf215680000000", "5295d4c95b1dd58edb4a7f4f"))
-	return;
-	
-/*
-	service.AddShareNotebook(info.ShareNotebook{UserId: userId3O, ToUserId: userIdO, 
-		NotebookId: bson.ObjectIdHex("52b43c38cfeeae33ef073b30")})
-		*/
-	
-	notebooks,_ := service.GetShareNotebooks(userId)
+	return
+
+	/*
+		service.AddShareNotebook(info.ShareNotebook{UserId: userId3O, ToUserId: userIdO,
+			NotebookId: bson.ObjectIdHex("52b43c38cfeeae33ef073b30")})
+	*/
+
+	notebooks, _ := service.GetShareNotebooks(userId)
 	LogJ(notebooks)
-	
-//	noteService.AddNoteContent(info.NoteContent{UserId: userIdO, 
-//		NoteId: bson.ObjectIdHex("52b2dd34ea3ba3d3fb35910d"), Content:"xxxxxxxxxxxxxxxxxxxxlifeyou can m<div><p></p></div>"})
 
-	
-//    noteService.AddNote(info.Note{Title: "life", Tags: []string{"life", "life2"}})
-    
-//	println(bson.IsObjectIdHex(id))
-	
-//	note := noteService.Get(id)
-//	fmt.Println(note) 
-	
-//	noteService.UpdateTags(id, []string{"lifedd", "life2"});
+	//	noteService.AddNoteContent(info.NoteContent{UserId: userIdO,
+	//		NoteId: bson.ObjectIdHex("52b2dd34ea3ba3d3fb35910d"), Content:"xxxxxxxxxxxxxxxxxxxxlifeyou can m<div><p></p></div>"})
+
+	//    noteService.AddNote(info.Note{Title: "life", Tags: []string{"life", "life2"}})
+
+	//	println(bson.IsObjectIdHex(id))
+
+	//	note := noteService.Get(id)
+	//	fmt.Println(note)
+
+	//	noteService.UpdateTags(id, []string{"lifedd", "life2"});
 }
-
 
 func testAuthService() {
 	userService := &service.UserService{}
 	LogJ(userService.GetUserInfo("52d26b4e99c37b609a000001"))
 	// userService.AddUser(info.User{UserId: bson.ObjectIdHex("52d26b4e99c37b609a000001"), Email: "leanote@leanote.com", Pwd:"abc"})
-	return;
-	
+	return
+
 	authService := &service.AuthService{}
 	authService.Register("f@a.com", "abc")
-	
-//	fmt.Println(authService.LogonGetUserInfo("a@a.com", "abc"))
-	
-//	noteService.AddNoteContent(info.NoteContent{UserId: userIdO, 
-//		NoteId: bson.ObjectIdHex("52b2dd34ea3ba3d3fb35910d"), Content:"xxxxxxxxxxxxxxxxxxxxlifeyou can m<div><p></p></div>"})
-	
-//    noteService.AddNote(info.Note{Title: "life", Tags: []string{"life", "life2"}})
-    
-//	println(bson.IsObjectIdHex(id))
-	
-//	note := noteService.Get(id)
-//	fmt.Println(note) 
-	
-//	noteService.UpdateTags(id, []string{"lifedd", "life2"});
+
+	//	fmt.Println(authService.LogonGetUserInfo("a@a.com", "abc"))
+
+	//	noteService.AddNoteContent(info.NoteContent{UserId: userIdO,
+	//		NoteId: bson.ObjectIdHex("52b2dd34ea3ba3d3fb35910d"), Content:"xxxxxxxxxxxxxxxxxxxxlifeyou can m<div><p></p></div>"})
+
+	//    noteService.AddNote(info.Note{Title: "life", Tags: []string{"life", "life2"}})
+
+	//	println(bson.IsObjectIdHex(id))
+
+	//	note := noteService.Get(id)
+	//	fmt.Println(note)
+
+	//	noteService.UpdateTags(id, []string{"lifedd", "life2"});
 }
 
 func testTagService() {
 	service := &service.TagService{}
-//	service.AddTags("5295d4c95b1dd58edb4a7f4f", []string{"life", "blue", "yellow"})
-//	service.AddTags("5295d4c95b1dd58edb4a7f4f", []string{"what", "can", "make"})
+	//	service.AddTags("5295d4c95b1dd58edb4a7f4f", []string{"life", "blue", "yellow"})
+	//	service.AddTags("5295d4c95b1dd58edb4a7f4f", []string{"what", "can", "make"})
 	LogJ(service.GetTags("5295d4c95b1dd58edb4a7f4f"))
 }
 
 func testHtml2Image() {
 	start := time.Now()
 	Log("start...")
-//	TestFillString()
-
+	//	TestFillString()
 
 	html2image.ToImage("uid", "username", "noteId", "开发一款属于自己的编程语言，开发一款属于自己的编程语言听起来是不是很酷？", `
 		<div class="each-post">
@@ -184,53 +181,53 @@ make<br>make --- install</pre>
 
 func testLea() {
 	names := ListDir("/Users/life/Documents/Go/package/src/leanote")
-	fmt.Println(names);
+	fmt.Println(names)
 }
 
 func main() {
 	revel.BasePath = "/Users/life/Documents/Go/package/src/leanote"
-	testLea();
-//	a, b := SplitFilename("http://ab/c/a.gif#??")
-//	println(a)
-//	println(b)
-	
-//	path, ok := netutil.WriteUrl("http://a.36krcnd.com/photo/2014/9bd1a07c0973d79ca05ad13c3c2e16b8.png!slider", "/tmp")
-//	println(path)
-//	testHtml2Image();
+	testLea()
+	//	a, b := SplitFilename("http://ab/c/a.gif#??")
+	//	println(a)
+	//	println(b)
 
-//	println(IsObjectId("52d26b4e99c37b609a000001"))
+	//	path, ok := netutil.WriteUrl("http://a.36krcnd.com/photo/2014/9bd1a07c0973d79ca05ad13c3c2e16b8.png!slider", "/tmp")
+	//	println(path)
+	//	testHtml2Image();
 
-//	b := `请点击链接验证邮箱: <a href="">http://leanote.com/user/activeEmail?token=d8ca086cce5550a6227f9dc84dbac09d</a>. 48小时后过期.`
-//	SendEmail("lifephp@gmail.com", "leanote-验证邮箱", "验证邮", b)
-	
+	//	println(IsObjectId("52d26b4e99c37b609a000001"))
+
+	//	b := `请点击链接验证邮箱: <a href="">http://leanote.com/user/activeEmail?token=d8ca086cce5550a6227f9dc84dbac09d</a>. 48小时后过期.`
+	//	SendEmail("lifephp@gmail.com", "leanote-验证邮箱", "验证邮", b)
+
 	//_, err := mgo.Dial("mongodb://leanote:nKFAkxKnWkEQy8Vv2LlM@115.28.133.226:27017/leanote")
-	
-//	testNotebookService();
+
+	//	testNotebookService();
 	// testNoteService();
-//	testShareService()
-//	testAuthService()
-	
-//	testTagService();
+	//	testShareService()
+	//	testAuthService()
+
+	//	testTagService();
 	/*
-	filename := "你好59.26.png"
-	ext := SubstringByte(filename, strings.LastIndex(filename, "."))
-	ext = strings.ToLower(ext)
-	print(ext)
-	52d26ab199c37b5f80000001
-	
-	Log(bson.NewObjectId())
-	Log(bson.NewObjectId())
-	Log(bson.NewObjectId())
-	
+		filename := "你好59.26.png"
+		ext := SubstringByte(filename, strings.LastIndex(filename, "."))
+		ext = strings.ToLower(ext)
+		print(ext)
+		52d26ab199c37b5f80000001
+
+		Log(bson.NewObjectId())
+		Log(bson.NewObjectId())
+		Log(bson.NewObjectId())
+
 	*/
-//	Log(TransferExt("/你好a/b/a.gif", ".jpg"))
-//	TransToGif("/Users/life/Desktop/a2.png", 0, false)
+	//	Log(TransferExt("/你好a/b/a.gif", ".jpg"))
+	//	TransToGif("/Users/life/Desktop/a2.png", 0, false)
 
-//	Log(IsUsername("xx**x"))
+	//	Log(IsUsername("xx**x"))
 
-/*
-	memcache.Set("xx", map[string]string{"A":"you"}, 0)
-	a := memcache.Get("xx")
-	Log(a)
-*/
+	/*
+		memcache.Set("xx", map[string]string{"A":"you"}, 0)
+		a := memcache.Get("xx")
+		Log(a)
+	*/
 }

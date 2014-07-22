@@ -1,12 +1,12 @@
 package controllers
 
 import (
-	"github.com/revel/revel"
-	"labix.org/v2/mgo/bson"
 	"encoding/json"
-	"github.com/leanote/leanote/app/info"
-//	"io/ioutil"
-//	"fmt"
+	"github.com/revel/revel"
+	"gopkg.in/mgo.v2/bson"
+	"leanote/app/info"
+	//	"io/ioutil"
+	//	"fmt"
 	"math"
 	"strconv"
 	"strings"
@@ -56,14 +56,14 @@ func (c BaseController) GetUserInfo() info.User {
 	if userId, ok := c.Session["UserId"]; ok && userId != "" {
 		notebookWidth, _ := strconv.Atoi(c.Session["NotebookWidth"])
 		noteListWidth, _ := strconv.Atoi(c.Session["NoteListWidth"])
-		user := info.User{UserId: bson.ObjectIdHex(userId), 
-			Email: c.Session["Email"], 
-			Username: c.Session["Username"], 
-			UsernameRaw: c.Session["UsernameRaw"], 
-			Theme: c.Session["Theme"], 
-			NotebookWidth: notebookWidth, 
+		user := info.User{UserId: bson.ObjectIdHex(userId),
+			Email:         c.Session["Email"],
+			Username:      c.Session["Username"],
+			UsernameRaw:   c.Session["UsernameRaw"],
+			Theme:         c.Session["Theme"],
+			NotebookWidth: notebookWidth,
 			NoteListWidth: noteListWidth,
-			}
+		}
 		if c.Session["Verified"] == "1" {
 			user.Verified = true
 		}
@@ -82,16 +82,16 @@ func (c BaseController) SetSession(userInfo info.User) {
 		c.Session["Username"] = userInfo.Username
 		c.Session["UsernameRaw"] = userInfo.UsernameRaw
 		c.Session["Theme"] = userInfo.Theme
-		
+
 		c.Session["NotebookWidth"] = strconv.Itoa(userInfo.NotebookWidth)
 		c.Session["NoteListWidth"] = strconv.Itoa(userInfo.NoteListWidth)
-		
+
 		if userInfo.Verified {
 			c.Session["Verified"] = "1"
 		} else {
 			c.Session["Verified"] = "0"
 		}
-		
+
 		if userInfo.LeftIsMin {
 			c.Session["LeftIsMin"] = "1"
 		} else {
@@ -114,8 +114,8 @@ func (c BaseController) UpdateSession(key, value string) {
 
 // 返回json
 func (c BaseController) Json(i interface{}) string {
-//	b, _ := json.MarshalIndent(i, "", "	") 
-	b, _ := json.Marshal(i) 
+	//	b, _ := json.MarshalIndent(i, "", "	")
+	b, _ := json.Marshal(i)
 	return string(b)
 }
 
@@ -132,9 +132,9 @@ func (c BaseController) GetPage() int {
 // 判断是否含有某参数
 func (c BaseController) Has(key string) bool {
 	if _, ok := c.Params.Values[key]; ok {
-		return true;
+		return true
 	}
-	return false;
+	return false
 }
 
 /*
@@ -144,12 +144,12 @@ func (c Blog) GetPage(page, count int, list interface{}) info.Page {
 */
 
 func (c BaseController) GetTotalPage(page, count int) int {
-	return int(math.Ceil(float64(count)/float64(page)))
+	return int(math.Ceil(float64(count) / float64(page)))
 }
 
 //-------------
 func (c BaseController) E404() revel.Result {
-	c.RenderArgs["title"] = "404";
+	c.RenderArgs["title"] = "404"
 	return c.NotFound("", nil)
 }
 
@@ -162,9 +162,9 @@ func (c BaseController) SetLocale() {
 		lang = locale[0:pos]
 	}
 	if lang != "zh" && lang != "en" {
-		lang = "en";
+		lang = "en"
 	}
-	c.RenderArgs["locale"] = lang;
+	c.RenderArgs["locale"] = "en"
 }
 
 // 设置userInfo

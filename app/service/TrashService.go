@@ -1,9 +1,9 @@
 package service
 
 import (
-	"labix.org/v2/mgo/bson"
-	"github.com/leanote/leanote/app/db"
-	"github.com/leanote/leanote/app/info"
+	"gopkg.in/mgo.v2/bson"
+	"leanote/app/db"
+	"leanote/app/info"
 )
 
 // 回收站
@@ -45,10 +45,10 @@ func (this *TrashService) DeleteSharedNote(noteId, userId, myUserId string) bool
 
 // recover
 func (this *TrashService) recoverNote(noteId, notebookId, userId string) bool {
-	re := db.UpdateByIdAndUserId(db.Notes, noteId, userId, 
-		bson.M{"$set": bson.M{"IsTrash": false, 
+	re := db.UpdateByIdAndUserId(db.Notes, noteId, userId,
+		bson.M{"$set": bson.M{"IsTrash": false,
 			"NotebookId": bson.ObjectIdHex(notebookId)}})
-	return re;
+	return re
 }
 
 // 删除trash
@@ -58,8 +58,8 @@ func (this *TrashService) DeleteTrash(noteId, userId string) bool {
 
 // 列出note, 排序规则, 还有分页
 // CreatedTime, UpdatedTime, title 来排序
-func (this *TrashService) ListNotes(userId string, 
-		pageNumber, pageSize int, sortField string, isAsc bool) (notes []info.Note) {
+func (this *TrashService) ListNotes(userId string,
+	pageNumber, pageSize int, sortField string, isAsc bool) (notes []info.Note) {
 	_, notes = noteService.ListNotes(userId, "", true, pageNumber, pageSize, sortField, isAsc, false)
 	return
 }

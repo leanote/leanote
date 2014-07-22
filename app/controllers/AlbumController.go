@@ -2,11 +2,11 @@ package controllers
 
 import (
 	"github.com/revel/revel"
-//	"encoding/json"
-	"github.com/leanote/leanote/app/info"
-	"labix.org/v2/mgo/bson"
-//	. "github.com/leanote/leanote/app/lea"
-//	"io/ioutil"
+	//	"encoding/json"
+	"gopkg.in/mgo.v2/bson"
+	"leanote/app/info"
+	//	. "github.com/leanote/leanote/app/lea"
+	//	"io/ioutil"
 )
 
 type Album struct {
@@ -28,12 +28,12 @@ func (c Album) DeleteAlbum(albumId string) revel.Result {
 func (c Album) AddAlbum(name string) revel.Result {
 	album := info.Album{
 		AlbumId: bson.NewObjectId(),
-		Name: name,
-		Seq: -1,
-		UserId: c.GetObjectUserId()}
+		Name:    name,
+		Seq:     -1,
+		UserId:  c.GetObjectUserId()}
 	re := albumService.AddAlbum(album)
 
-	if(re) {
+	if re {
 		return c.RenderJson(album)
 	} else {
 		return c.RenderJson(false)

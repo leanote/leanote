@@ -1,11 +1,11 @@
 package service
 
 import (
-	"github.com/leanote/leanote/app/info"
-	"github.com/leanote/leanote/app/db"
-	. "github.com/leanote/leanote/app/lea"
-	"labix.org/v2/mgo/bson"
-//	"time"
+	"gopkg.in/mgo.v2/bson"
+	"leanote/app/db"
+	"leanote/app/info"
+	. "leanote/app/lea"
+	//	"time"
 )
 
 /*
@@ -29,8 +29,8 @@ func (this *TagService) AddTagsI(userId string, tags interface{}) bool {
 }
 func (this *TagService) AddTags(userId string, tags []string) bool {
 	for _, tag := range tags {
-		if !db.Upsert(db.Tags, 
-			bson.M{"_id": bson.ObjectIdHex(userId)}, 
+		if !db.Upsert(db.Tags,
+			bson.M{"_id": bson.ObjectIdHex(userId)},
 			bson.M{"$addToSet": bson.M{"Tags": tag}}) {
 			return false
 		}
