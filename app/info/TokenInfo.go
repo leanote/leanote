@@ -1,7 +1,7 @@
 package info
 
 import (
-	"labix.org/v2/mgo/bson"
+	"gopkg.in/mgo.v2/bson"
 	"time"
 )
 
@@ -18,7 +18,7 @@ const (
 
 // 过期时间
 const (
-	PwdOverHours = 2.0
+	PwdOverHours         = 2.0
 	ActiveEmailOverHours = 48.0
 	UpdateEmailOverHours = 2.0
 )

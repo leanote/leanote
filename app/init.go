@@ -1,13 +1,13 @@
 package app
 
 import (
-	"github.com/revel/revel"
-	. "github.com/leanote/leanote/app/lea"
-	_ "github.com/leanote/leanote/app/lea/binder"
-	"reflect"
 	"fmt"
+	"github.com/revel/revel"
 	"html/template"
+	. "leanote/app/lea"
+	_ "leanote/app/lea/binder"
 	"math"
+	"reflect"
 	"strconv"
 	"time"
 )
@@ -15,28 +15,28 @@ import (
 func init() {
 	// Filters is the default set of global filters.
 	revel.Filters = []revel.Filter{
-		revel.PanicFilter,             // Recover from panics and display an error page instead.
-		revel.RouterFilter,            // Use the routing table to select the right Action
+		revel.PanicFilter,  // Recover from panics and display an error page instead.
+		revel.RouterFilter, // Use the routing table to select the right Action
 		// AuthFilter,						// Invoke the action.
 		revel.FilterConfiguringFilter, // A hook for adding or removing per-Action filters.
 		revel.ParamsFilter,            // Parse parameters into Controller.Params.
 		revel.SessionFilter,           // Restore and write the session cookie.
-		
-//		session.SessionFilter,         // leanote memcache session life
-		
-		revel.FlashFilter,             // Restore and write the flash cookie.
-		revel.ValidationFilter,        // Restore kept validation errors and save new ones from cookie.
-		revel.I18nFilter,              // Resolve the requested language
-		revel.InterceptorFilter,       // Run interceptors around the action.
-		revel.CompressFilter,          // Compress the result.
-		revel.ActionInvoker,           // Invoke the action.
+
+		//		session.SessionFilter,         // leanote memcache session life
+
+		revel.FlashFilter,       // Restore and write the flash cookie.
+		revel.ValidationFilter,  // Restore kept validation errors and save new ones from cookie.
+		revel.I18nFilter,        // Resolve the requested language
+		revel.InterceptorFilter, // Run interceptors around the action.
+		revel.CompressFilter,    // Compress the result.
+		revel.ActionInvoker,     // Invoke the action.
 	}
-	
+
 	revel.TemplateFuncs["raw"] = func(str string) template.HTML {
 		return template.HTML(str)
 	}
 	revel.TemplateFuncs["add"] = func(i int) template.HTML {
-		i = i + 1;
+		i = i + 1
 		return template.HTML(fmt.Sprintf("%v", i))
 	}
 	revel.TemplateFuncs["concat"] = func(s1, s2 string) template.HTML {
@@ -45,10 +45,10 @@ func init() {
 	revel.TemplateFuncs["datetime"] = func(t time.Time) template.HTML {
 		return template.HTML(t.Format("2006-01-02 15:04:05"))
 	}
-	
+
 	// interface是否有该字段
 	revel.TemplateFuncs["has"] = func(i interface{}, key string) bool {
-		t := reflect.TypeOf(i) 
+		t := reflect.TypeOf(i)
 		_, ok := t.FieldByName(key)
 		return ok
 	}
@@ -68,20 +68,20 @@ func init() {
 			} else {
 				tagStr += tag
 			}
-			if i != lenTags - 1 {
+			if i != lenTags-1 {
 				tagStr += ","
 			}
 		}
 		return template.HTML(tagStr)
 	}
-	
+
 	// pagination
 	revel.TemplateFuncs["page"] = func(userId, notebookId string, page, pageSize, count int) template.HTML {
 		if count == 0 {
-			return "";
+			return ""
 		}
-		totalPage := int(math.Ceil(float64(count)/float64(pageSize)))
-		
+		totalPage := int(math.Ceil(float64(count) / float64(pageSize)))
+
 		preClass := ""
 		prePage := page - 1
 		if prePage == 0 {
@@ -90,15 +90,15 @@ func init() {
 		nextClass := ""
 		nextPage := page + 1
 		var preUrl, nextUrl string
-		
+
 		urlBase := "/blog/" + userId
 		if notebookId != "" {
 			urlBase += "/" + notebookId
 		}
-		
-		preUrl = urlBase + "?page="  + strconv.Itoa(prePage)
+
+		preUrl = urlBase + "?page=" + strconv.Itoa(prePage)
 		nextUrl = urlBase + "?page=" + strconv.Itoa(nextPage)
-		
+
 		// 没有上一页了
 		if page == 1 {
 			preClass = "disabled"
@@ -111,7 +111,7 @@ func init() {
 		}
 		return template.HTML("<li class='" + preClass + "'><a href='" + preUrl + "'>Previous</a></li> <li  class='" + nextClass + "'><a href='" + nextUrl + "'>Next</a></li>")
 	}
-	
+
 	// init Email
 	revel.OnAppStart(func() {
 		InitEmail()

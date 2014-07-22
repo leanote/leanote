@@ -1,7 +1,7 @@
 package info
 
 import (
-	"labix.org/v2/mgo/bson"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // 只为blog, 不为note
@@ -13,31 +13,31 @@ type BlogItem struct {
 }
 
 type UserBlogBase struct {
-	Logo       string        `Logo`
-	Title      string        `Title`      // 标题
-	SubTitle   string        `SubTitle`   // 副标题
-	AboutMe    string        `AboutMe` // 关于我
+	Logo     string `Logo`
+	Title    string `Title`    // 标题
+	SubTitle string `SubTitle` // 副标题
+	AboutMe  string `AboutMe`  // 关于我
 }
 
 type UserBlogComment struct {
-	CanComment bool          `CanComment` // 是否可以评论
-	DisqusId   string        `DisqusId`
+	CanComment bool   `CanComment` // 是否可以评论
+	DisqusId   string `DisqusId`
 }
 
 type UserBlogStyle struct {
-	Style      string        `Style`   // 风格
+	Style string `Style` // 风格
 }
 
 // 每个用户一份博客设置信息
 type UserBlog struct {
-	UserId     bson.ObjectId `bson:"_id"` // 谁的
-	Logo       string        `Logo`
-	Title      string        `Title`      // 标题
-	SubTitle   string        `SubTitle`   // 副标题
-	AboutMe    string        `AboutMe` // 关于我
-	
-	CanComment bool          `CanComment` // 是否可以评论
-	DisqusId   string        `DisqusId`
-	
-	Style      string        `Style`   // 风格
+	UserId   bson.ObjectId `bson:"_id"` // 谁的
+	Logo     string        `Logo`
+	Title    string        `Title`    // 标题
+	SubTitle string        `SubTitle` // 副标题
+	AboutMe  string        `AboutMe`  // 关于我
+
+	CanComment bool   `CanComment` // 是否可以评论
+	DisqusId   string `DisqusId`
+
+	Style string `Style` // 风格
 }

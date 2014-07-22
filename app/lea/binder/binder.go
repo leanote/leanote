@@ -1,17 +1,17 @@
 package binder
 
 import (
-	"github.com/revel/revel"
-	"github.com/leanote/leanote/app/info"
-	"github.com/leanote/leanote/app/controllers"
 	"fmt"
+	"github.com/revel/revel"
+	"leanote/app/controllers"
+	"leanote/app/info"
 	"reflect"
 	"strings"
 )
 
 // leanote binder struct
 // rewrite revel struct binder
-// not need the struct name as prefix, 
+// not need the struct name as prefix,
 // eg:
 // type Note struct {Name}
 // func (c Controller) List(note Note) revel.Result {}
@@ -33,13 +33,13 @@ var MSSBinder = revel.Binder{
 		}
 		return result
 	},
-	
+
 	Unbind: func(output map[string]string, name string, val interface{}) {
 		mapValue := reflect.ValueOf(val)
 		for _, key := range mapValue.MapKeys() {
 			revel.Unbind(output, fmt.Sprintf("%v", key.Interface()),
 				mapValue.MapIndex(key).Interface())
-		}	
+		}
 	},
 }
 
@@ -53,6 +53,7 @@ func nextKey(key string) string {
 	}
 	return key[:fieldLen]
 }
+
 var leanoteStructBinder = revel.Binder{
 	Bind: func(params *revel.Params, name string, typ reflect.Type) reflect.Value {
 		result := reflect.New(typ).Elem()
@@ -62,19 +63,19 @@ var leanoteStructBinder = revel.Binder{
 			// life
 			var suffix string
 			var noPrefix = false
-			if !strings.HasPrefix(key, name + ".") {
+			if !strings.HasPrefix(key, name+".") {
 				noPrefix = true
 				suffix = key
-	//			continue
+				//			continue
 			} else {
 				// Get the name of the struct property.
 				// Strip off the prefix. e.g. foo.bar.baz => bar.baz
 				suffix = key[len(name)+1:]
 			}
-	
+
 			fieldName := nextKey(suffix) // e.g. bar => "bar", bar.baz => "bar", bar[0] => "bar"
 			fieldLen := len(fieldName)
-			
+
 			if _, ok := fieldValues[fieldName]; !ok {
 				// Time to bind this field.  Get it and make sure we can set it.
 				fieldValue := result.FieldByName(fieldName)
@@ -86,7 +87,7 @@ var leanoteStructBinder = revel.Binder{
 				}
 				var boundVal reflect.Value
 				// 没有name前缀
-				if(noPrefix) {
+				if noPrefix {
 					boundVal = revel.Bind(params, key[:fieldLen], fieldValue.Type())
 				} else {
 					boundVal = revel.Bind(params, key[:len(name)+1+fieldLen], fieldValue.Type())

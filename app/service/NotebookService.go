@@ -1,11 +1,11 @@
 package service
 
 import (
-//	"fmt"
-	"labix.org/v2/mgo/bson"
-	"github.com/leanote/leanote/app/db"
-	"github.com/leanote/leanote/app/info"
-//	. "github.com/leanote/leanote/app/lea"
+	//	"fmt"
+	"gopkg.in/mgo.v2/bson"
+	"leanote/app/db"
+	"leanote/app/info"
+	//	. "github.com/leanote/leanote/app/lea"
 	"sort"
 	"time"
 )
@@ -60,7 +60,7 @@ func ParseAndSortNotebooks(userNotebooks []info.Notebook, noParentDelete, needSo
 				// 并剪掉
 				delete(userNotebooksMap, id)
 			} else if noParentDelete {
-				// 没有父, 且设置了要删除	
+				// 没有父, 且设置了要删除
 				delete(userNotebooksMap, id)
 			}
 		}
@@ -98,7 +98,7 @@ func (this *NotebookService) GetNotebooks(userId string) info.SubNotebooks {
 	if len(userNotebooks) == 0 {
 		return nil
 	}
-	
+
 	return ParseAndSortNotebooks(userNotebooks, true, true)
 }
 
@@ -108,11 +108,11 @@ func (this *NotebookService) GetNotebooks(userId string) info.SubNotebooks {
 func (this *NotebookService) GetNotebooksByNotebookIds(notebookIds []bson.ObjectId) info.SubNotebooks {
 	userNotebooks := []info.Notebook{}
 	db.Notebooks.Find(bson.M{"_id": bson.M{"$in": notebookIds}}).All(&userNotebooks)
-	
+
 	if len(userNotebooks) == 0 {
 		return nil
 	}
-	
+
 	return ParseAndSortNotebooks(userNotebooks, false, false)
 }
 
@@ -130,7 +130,7 @@ func (this *NotebookService) AddNotebook(notebook info.Notebook) bool {
 // 判断是否是blog
 func (this *NotebookService) IsBlog(notebookId string) bool {
 	notebook := info.Notebook{}
-	db.GetByQWithFields(db.Notebooks, bson.M{"_id": bson.ObjectIdHex(notebookId)}, []string{"IsBlog"}, &notebook);
+	db.GetByQWithFields(db.Notebooks, bson.M{"_id": bson.ObjectIdHex(notebookId)}, []string{"IsBlog"}, &notebook)
 	return notebook.IsBlog
 }
 
@@ -155,16 +155,16 @@ func (this *NotebookService) UpdateNotebookTitle(notebookId, userId, title strin
 
 // 更新notebook
 func (this *NotebookService) UpdateNotebook(userId, notebookId string, needUpdate bson.M) bool {
-	needUpdate["UpdatedTime"] = time.Now();
-	
+	needUpdate["UpdatedTime"] = time.Now()
+
 	// 如果有IsBlog之类的, 需要特殊处理
 	if isBlog, ok := needUpdate["IsBlog"]; ok {
 		// 设为blog/取消
 		if is, ok2 := isBlog.(bool); ok2 {
-			q := bson.M{"UserId": bson.ObjectIdHex(userId), 
+			q := bson.M{"UserId": bson.ObjectIdHex(userId),
 				"NotebookId": bson.ObjectIdHex(notebookId)}
 			db.UpdateByQMap(db.Notes, q, bson.M{"IsBlog": is})
-				
+
 			// noteContents也更新, 这个就麻烦了, noteContents表没有NotebookId
 			// 先查该notebook下所有notes, 得到id
 			notes := []info.Note{}
@@ -178,14 +178,14 @@ func (this *NotebookService) UpdateNotebook(userId, notebookId string, needUpdat
 			}
 		}
 	}
-	
+
 	return db.UpdateByIdAndUserIdMap(db.Notebooks, notebookId, userId, needUpdate)
 }
 
 // 先查看该notebookId下是否有notes, 没有则删除
 func (this *NotebookService) DeleteNotebook(userId, notebookId string) (bool, string) {
-	if db.Count(db.Notes, bson.M{"NotebookId": bson.ObjectIdHex(notebookId), 
-		"UserId": bson.ObjectIdHex(userId),
+	if db.Count(db.Notes, bson.M{"NotebookId": bson.ObjectIdHex(notebookId),
+		"UserId":  bson.ObjectIdHex(userId),
 		"IsTrash": false}) == 0 { // 不包含trash
 		return db.DeleteByIdAndUserId(db.Notebooks, notebookId, userId), ""
 	}
@@ -206,6 +206,6 @@ func (this *NotebookService) SortNotebooks(userId string, notebookId2Seqs map[st
 			return false
 		}
 	}
-	
+
 	return true
 }

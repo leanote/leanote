@@ -1,7 +1,7 @@
 package info
 
 import (
-	"labix.org/v2/mgo/bson"
+	"gopkg.in/mgo.v2/bson"
 	"time"
 )
 
@@ -54,11 +54,11 @@ type NoteAndContent struct {
 // 每一个历史记录对象
 type EachHistory struct {
 	UpdatedUserId bson.ObjectId `UpdatedUserId`
-	UpdatedTime   time.Time `UpdatedTime`
-	Content  string `Content`
+	UpdatedTime   time.Time     `UpdatedTime`
+	Content       string        `Content`
 }
 type NoteContentHistory struct {
-	NoteId bson.ObjectId `bson:"_id,omitempty"`
-	UserId bson.ObjectId `bson:"UserId"` // 所属者
-	Histories  []EachHistory `Histories`
+	NoteId    bson.ObjectId `bson:"_id,omitempty"`
+	UserId    bson.ObjectId `bson:"UserId"` // 所属者
+	Histories []EachHistory `Histories`
 }

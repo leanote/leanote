@@ -1,10 +1,10 @@
 package service
 
 import (
-	"github.com/leanote/leanote/app/info"
-//	. "github.com/leanote/leanote/app/lea"
-	"github.com/leanote/leanote/app/db"
-	"labix.org/v2/mgo/bson"
+	"leanote/app/info"
+	//	. "github.com/leanote/leanote/app/lea"
+	"gopkg.in/mgo.v2/bson"
+	"leanote/app/db"
 	"time"
 )
 
@@ -30,9 +30,9 @@ func (this *AlbumService) GetAlbums(userId string) []info.Album {
 // delete album
 // presupposition: has no images under this ablum
 func (this *AlbumService) DeleteAlbum(userId, albumId string) (bool, string) {
-	if db.Count(db.Files, bson.M{"AlbumId": bson.ObjectIdHex(albumId), 
+	if db.Count(db.Files, bson.M{"AlbumId": bson.ObjectIdHex(albumId),
 		"UserId": bson.ObjectIdHex(userId),
-		}) == 0 {
+	}) == 0 {
 		return db.DeleteByIdAndUserId(db.Albums, albumId, userId), ""
 	}
 	return false, "has images"

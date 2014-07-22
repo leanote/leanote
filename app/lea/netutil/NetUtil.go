@@ -1,11 +1,12 @@
 package netutil
+
 import (
-	"strings"
 	"os"
-//	"path/filepath"
-	"net/http"
+	"strings"
+	//	"path/filepath"
 	"io/ioutil"
-	. "github.com/leanote/leanote/app/lea"
+	. "leanote/app/lea"
+	"net/http"
 )
 
 // net的util
@@ -15,36 +16,36 @@ import (
 // 返回文件的完整目录
 func WriteUrl(url string, toPath string) (path string, ok bool) {
 	if url == "" {
-		return;
+		return
 	}
 	content, err := GetContent(url)
 	if err != nil {
-		return;
+		return
 	}
-	
+
 	// a.html?a=a11&xxx
 	url = trimQueryParams(url)
 	_, ext := SplitFilename(url)
 	if toPath == "" {
 		toPath = "/tmp"
 	}
-//	dir := filepath.Dir(toPath)
+	//	dir := filepath.Dir(toPath)
 	newFilename := NewGuid() + ext
 	fullPath := toPath + "/" + newFilename
 	/*
-	if err := os.MkdirAll(dir, 0777); err != nil {
-		return 
-	}
+		if err := os.MkdirAll(dir, 0777); err != nil {
+			return
+		}
 	*/
-	
+
 	// 写到文件中
 	file, err := os.Create(fullPath)
-    defer file.Close()
-    if err != nil {
-    	return
+	defer file.Close()
+	if err != nil {
+		return
 	}
 	file.Write(content)
-	
+
 	path = fullPath
 	ok = true
 	return
@@ -54,40 +55,40 @@ func WriteUrl(url string, toPath string) (path string, ok bool) {
 func GetContent(url string) (content []byte, err error) {
 	var resp *http.Response
 	resp, err = http.Get(url)
-	if(resp != nil && resp.Body != nil) {
+	if resp != nil && resp.Body != nil {
 		defer resp.Body.Close()
 	} else {
 	}
-    if resp == nil || resp.Body == nil || err != nil || resp.StatusCode != http.StatusOK {
-		return
-    }
-    
-    var buf []byte
-   	buf, err = ioutil.ReadAll(resp.Body)
-   	if(err != nil) {
+	if resp == nil || resp.Body == nil || err != nil || resp.StatusCode != http.StatusOK {
 		return
 	}
-	
-   	content = buf;
-   	err = nil
-    return
+
+	var buf []byte
+	buf, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+
+	content = buf
+	err = nil
+	return
 }
 
 // 将url ?, #后面的字符串去掉
 func trimQueryParams(url string) string {
-	pos := strings.Index(url, "?");
+	pos := strings.Index(url, "?")
 	if pos != -1 {
-		url = Substr(url, 0, pos);
+		url = Substr(url, 0, pos)
 	}
-	
-	pos = strings.Index(url, "#");
+
+	pos = strings.Index(url, "#")
 	if pos != -1 {
-		url = Substr(url, 0, pos);
+		url = Substr(url, 0, pos)
 	}
-	
-	pos = strings.Index(url, "!");
+
+	pos = strings.Index(url, "!")
 	if pos != -1 {
-		url = Substr(url, 0, pos);
+		url = Substr(url, 0, pos)
 	}
-	return url;
+	return url
 }
