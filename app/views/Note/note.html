@@ -406,15 +406,15 @@ function log(o) {
 					<div id="noteMask"
 						style="position: absolute; top: 0px; bottom: 0px; right: 0; left: 10px; z-index: -1"></div>
 					<div id="editorMask">
-						该笔记本下空空如也...何不
+						{{msg . "emptyNotebook"}}
 						<br />
 						<div id="editorMaskBtns">
 							<br />
-							<a class="note">新建笔记</a>
-							<a class="markdown">新建Markdown笔记</a>
+							<a class="note">{{msg . "newNote"}}</a>
+							<a class="markdown">{{msg . "newMarkdown"}}</a>
 						</div>
 						<div id="editorMaskBtnsEmpty">
-							Sorry, 这里不能添加笔记的.
+							{{msg . "cannotAdd"}}
 						</div>
 					</div>
 					<div id="noteTop">

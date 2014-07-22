@@ -96,7 +96,7 @@ close=Close
 cancel=Cancel
 send=Send
 
-# 标签
+# tag
 tag=Tag
 myTag=My tag
 red=red
@@ -104,7 +104,7 @@ yellow=yellow
 blue=blue
 green=green
 
-# 设置
+# setting
 accountSetting=Account
 themeSetting=Theme
 logout=Logout
@@ -131,3 +131,5 @@ howToInstallLeanote=How to install leanote
 
 # error 
 notFound=This page cann't found.
+emptyNotebook=The notebook is empty.
+cannotAdd = Sorry,can not add note here.
