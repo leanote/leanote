@@ -61,7 +61,7 @@ function log(o) {
 				<li class="{{if .index}}active{{end}}"><a href="/blog/{{$username}}">{{msg . "home"}}</a></li>
 			{{range .notebooks}}
 			{{$notebookId := .NotebookId.Hex}}
-				<li class="{{if eq $navNotebookId $notebookId}}active{{else}}{{end}}">
+				<li class="{{if $navNotebookId}}{{if eq $navNotebookId $notebookId}}active{{else}}{{end}}{{end}}">
 					<a href="/blog/{{$username}}/{{$notebookId}}" 
 					>{{.Title}}</a>
 				</li>
