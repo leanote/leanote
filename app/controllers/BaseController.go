@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/revel/revel"
-	"labix.org/v2/mgo/bson"
+	"gopkg.in/mgo.v2/bson"
 	"encoding/json"
 	"github.com/leanote/leanote/app/info"
 //	"io/ioutil"

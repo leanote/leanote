@@ -1,7 +1,7 @@
 package info
 
 import (
-	"labix.org/v2/mgo/bson"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // 这里主要是为了统计每个tag的note数目

@@ -11,8 +11,8 @@ import (
 	"github.com/leanote/leanote/app/lea/html2image"
 	"time"
 	"fmt"
-	"labix.org/v2/mgo/bson"
-//	"labix.org/v2/mgo"
+	"gopkg.in/mgo.v2/bson"
+//	"gopkg.in/mgo.v2"
 //	"encoding/json"
 //	"strings"
 )

@@ -4,7 +4,7 @@ import (
 	"github.com/leanote/leanote/app/info"
 	"github.com/leanote/leanote/app/db"
 	. "github.com/leanote/leanote/app/lea"
-	"labix.org/v2/mgo/bson"
+	"gopkg.in/mgo.v2/bson"
 	"time"
 	"strings"
 	"fmt"

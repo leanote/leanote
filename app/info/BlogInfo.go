@@ -1,7 +1,7 @@
 package info
 
 import (
-	"labix.org/v2/mgo/bson"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // 只为blog, 不为note

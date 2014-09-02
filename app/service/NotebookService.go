@@ -2,7 +2,7 @@ package service
 
 import (
 //	"fmt"
-	"labix.org/v2/mgo/bson"
+	"gopkg.in/mgo.v2/bson"
 	"github.com/leanote/leanote/app/db"
 	"github.com/leanote/leanote/app/info"
 //	. "github.com/leanote/leanote/app/lea"
