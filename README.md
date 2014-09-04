@@ -22,10 +22,10 @@ To be honest, our inspiration comes from Evernote. We use Evernote to manage our
 
 ### 3.1. Download leanote
 
-Leanote V0.3 has been released. Binaries:
+Leanote V0.4 has been released. Binaries:
 
-* Linux: [leanote-linux-v0.3.bin.tar.gz](https://github.com/leanote/leanote/releases/download/0.3/leanote-linux-v0.3.bin.tar.gz)
-* MacOS X: [leanote-mac-v0.3.bin.tar.gz](https://github.com/leanote/leanote/releases/download/0.3/leanote-mac-v0.3.bin.tar.gz)
+* Linux: [leanote-linux-v0.4.bin.tar.gz](https://github.com/leanote/leanote/releases/download/0.4/leanote-linux-v0.4.bin.tar.gz)
+* MacOS X: [leanote-mac-v0.4.bin.tar.gz](https://github.com/leanote/leanote/releases/download/0.4/leanote-mac-v0.4.bin.tar.gz)
 
 ### 3.2. Install MongoDB
 
@@ -129,10 +129,10 @@ leanote是一款私有云笔记, 你可以下载它安装在自己的服务器�
 
 ### 3.1. 下载leanote
 
-Leanote V0.3 已发布, 二进制文件(暂时没有windows版的):
+Leanote V0.4 已发布, 二进制文件(暂时没有windows版的):
 
-* Linux: [leanote-linux-v0.3.bin.tar.gz](https://github.com/leanote/leanote/releases/download/0.3/leanote-linux-v0.3.bin.tar.gz)
-* MacOS X: [leanote-mac-v0.3.bin.tar.gz](https://github.com/leanote/leanote/releases/download/0.3/leanote-mac-v0.3.bin.tar.gz)
+* Linux: [leanote-linux-v0.4.bin.tar.gz](https://github.com/leanote/leanote/releases/download/0.4/leanote-linux-v0.4.bin.tar.gz)
+* MacOS X: [leanote-mac-v0.4.bin.tar.gz](https://github.com/leanote/leanote/releases/download/0.4/leanote-mac-v0.4.bin.tar.gz)
 
 ### 3.2. 安装 MongodbDB
 

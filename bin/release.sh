@@ -54,7 +54,8 @@ cd $SP
 cd ../
 cp ./bin/leanote-linux $tmp/leanote/bin/
 cd $tmp
-tar -cvf $tmp/leanote-linux.tar.gz leanote
+tar -cvf $tmp/leanote-linux-v0.4.bin.tar leanote
+gzip $tmp/leanote-linux-v0.4.bin.tar
 
 # mac
 rm $tmp/leanote/bin/leanote-linux
@@ -62,6 +63,7 @@ cd $SP
 cd ../
 cp ./bin/leanote-mac $tmp/leanote/bin/
 cd $tmp
-tar -cvf $tmp/leanote-mac.tar.gz leanote
+tar -cvf $tmp/leanote-mac-v0.4.bin.tar leanote
+gzip $tmp/leanote-mac-v0.4.bin.tar
 
 # BLOCK'
