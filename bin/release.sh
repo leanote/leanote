@@ -37,6 +37,11 @@ cp -r ./messages ./public ./mongodb_backup $tmp/leanote/
 
 # delete some files
 rm -r $tmp/leanote/public/tinymce/classes
+rm -r $tmp/leanote/public/upload
+mkdir $tmp/leanote/public/upload
+rm -r $tmp/leanote/public/.codekit-cache
+rm $tmp/leanote/public/.DS_Store
+rm $tmp/leanote/public/config.codekit
 
 # make link
 cd $tmp/leanote/bin

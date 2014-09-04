@@ -41,11 +41,12 @@ The mongodb data is in `[PATH_TO_LEANOTE]/mongodb_backup/leanote_install_data`
 $> mongorestore -h localhost -d leanote --directoryperdb PATH_TO_LEANOTE/mongodb_backup/leanote_install_data
 ```
 
-The initial database contains two users:
+The initial database contains three users:
 
 ```
 user1 username: leanote, password: abc123
 user2 username: admin, password: abc123
+user3 username: demo@leanote.com, password: demo@leanote.com (this user is for demo)
 ```
 
 ### 3.4. Configuration
@@ -147,11 +148,12 @@ MongodbDB初始数据在 `[PATH_TO_LEANOTE]/mongodb_backup/leanote_install_data`
 $> mongorestore -h localhost -d leanote --directoryperdb PATH_TO_LEANOTE/mongodb_backup/leanote_install_data
 ```
 
-初始数据包含两个用户:
+初始数据包含三个用户:
 
 ```
 user1 username: leanote, password: abc123
 user2 username: admin, password: abc123
+user3 username: demo@leanote.com, password: demo@leanote.com (为体验使用)
 ```
 
 ### 3.4. 配置
