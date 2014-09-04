@@ -4,18 +4,19 @@
 </style>
 <section>
 	<div class="header">
-		<h2>leanote, your own cloud note!</h2>
-		<p>Knowledge, Sharing, Cooperation, Blog... all just in leanote</p>
+		<h2>leanote, {{msg . "moto"}}</h2>
+		<p>{{msg . "moto3"}}</p>
+		<p>{{msg . "moto2"}}</p>
 		
 		<div>
-			<a class="btn btn-primary" href="https://github.com/leanote/leanote">Fork leanote on Github</a> 
+			<a class="btn btn-primary" href="https://github.com/leanote/leanote">{{msg . "fork github"}}</a> 
 			&nbsp;
 			&nbsp;
-			<a class="btn btn-default" href="/demo">Try it</a>
+			<a class="btn btn-default" href="/demo">{{msg . "try"}}</a>
 			{{if .openRegister}}
 			&nbsp;
 			&nbsp;
-			OR			
+			OR	
 			&nbsp;
 			&nbsp;
 			<a class="btn btn-default" href="/register">{{msg . "register"}}</a> 
