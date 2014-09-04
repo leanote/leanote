@@ -617,7 +617,8 @@ $(function() {
 	if(LEA.isMobile) {
 		UserInfo.NoteListWidth = 101;
 	}
-//	resize3ColumnsEnd(UserInfo.NotebookWidth, UserInfo.NoteListWidth);
+	resize3ColumnsEnd(UserInfo.NotebookWidth, UserInfo.NoteListWidth);
+	
 	if (UserInfo.LeftIsMin) {
 		minLeft(false);
 	}

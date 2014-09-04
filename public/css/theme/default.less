@@ -1,3 +1,4 @@
+@import "basic.less";
 
 @bgColor: #fff;
 @headerBgColor: #25313e;
@@ -13,34 +14,6 @@
 @leftNotebookWidth: 170px;
 @noteListWidth: 250px;
 @noteActiveBg: #65bd77;
-
-// font
-@font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Open Sans Light'), local('OpenSans-Light'), url('../../fonts/open-sans2/DXI1ORHCpsQm3Vp6mXoaTXhCUOGz7vYGh680lGh-uXM.woff') format('woff');
-}
-@font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Open Sans'), local('OpenSans'), url('../../fonts/open-sans2/cJZKeOuBrn4kERxqtaUH3T8E0i7KZn-EPnyo3HZu7kw.woff') format('woff');
-}
-@font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Open Sans Bold'), local('OpenSans-Bold'), url('../../fonts/open-sans2/k3k702ZOKiLJc3WVjuplzHhCUOGz7vYGh680lGh-uXM.woff') format('woff');
-}
-@font-face {
-  font-family: 'Open Sans';
-  font-style: italic;
-  font-weight: 400;
-  src: local('Open Sans Italic'), local('OpenSans-Italic'), url('../../fonts/open-sans2/xjAJXh38I15wypJXxuGMBobN6UDyHWBl620a-IRfuBk.woff') format('woff');
-}
-
-/*"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue", Helvetica, "Microsoft Yahei", Verdana, Simsun, "Segoe UI", "Segoe UI Web Regular", "Segoe UI Symbol",  "BBAlpha Sans", "S60 Sans", Arial, sans-serif;*/
 
 @selectionBg: @aBlackColor;
 @selectionColor: #fff;
@@ -101,7 +74,6 @@ a.raw:hover {
 
 #logo, #logo span {
 	line-height: 50px;//@headerHeight;
-	font-size: 28px;
 }
 #logo {
 	width: 140px;
@@ -113,7 +85,7 @@ a.raw:hover {
 	border-color: rgba(255, 255, 255, 0.1);
 	//color: #ccc;
 }
-#logo span , #switcher span {
+#logo span{
 	background-color: #000; 
 	//color: #eee;
 	border-radius: 10px;
@@ -137,7 +109,7 @@ a.raw:hover {
 	}
 	span {
 		border-radius: 5px;
-		padding: 8px 4px;
+		background-color: #000; 
 		cursor: pointer;
 		font-size: 16px;
 		&:hover {
