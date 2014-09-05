@@ -50,7 +50,16 @@ function log(o) {
 			<li><a href="/index#aboutLeanote" target="#aboutLeanote" class="smooth-scroll">{{msg . "aboutLeanote"}}</a> </li>
 			<li><a href="/index#download" target="#download" class="smooth-scroll">{{msg . "download"}}</a> </li>
 			<li><a id="leanoteBlog" href="http://leanote.com/blog/leanote" target="_blank" class="">{{msg . "leanoteBlog"}}</a></li>
-			<li><a href="http://bbs.leanote.com" target="_blank" class="">{{msg . "discussion"}}</a></li>
+			<li style="position: relative; margin-right: 3px;">
+				<a href="http://bbs.leanote.com" target="_blank" class="">{{msg . "discussion"}}</a>
+				<div style="position: absolute;
+					width: 8px;
+					height: 8px;
+					background: red;
+					top: 15px;
+					right: 5px;
+					border-radius: 9px;"></div>
+			</li>
 		</ul>
 		
 	</div>
