@@ -102,7 +102,8 @@ this project. Your help is much appreciated.
 Please fork this repository and contribute back using [pull requests](https://github.com/leanote/leanote/pulls).
 
 ## Discussion
-[leanote google group](https://groups.google.com/forum/#!forum/leanote)
+* [leanote bbs](http://bbs.leanote.com)
+* [leanote google group](https://groups.google.com/forum/#!forum/leanote)
 
 -----------------------------------------------------------------------
 
@@ -209,4 +210,5 @@ $> sudo sh run.sh
 leanote还有很多问题, 如果你喜欢它, 欢迎加入我们一起完善leanote.
 
 ## 讨论
-[leanote google group](https://groups.google.com/forum/#!forum/leanote)
+* [leanote bbs](http://bbs.leanote.com)
+* [leanote google group](https://groups.google.com/forum/#!forum/leanote)
