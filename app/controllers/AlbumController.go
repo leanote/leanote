@@ -9,6 +9,7 @@ import (
 //	"io/ioutil"
 )
 
+// Album controller
 type Album struct {
 	BaseController
 }
