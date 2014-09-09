@@ -15,4 +15,6 @@ app/routes/routes.go
 app/tmp/main.go
 .DS_Store
 .settings
+.project
 public/config.codekit
+
