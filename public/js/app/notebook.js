@@ -51,15 +51,121 @@ Notebook.curNotebookIsTrashOrAll = function() {
 	return Notebook.curNotebookId == Notebook.trashNotebookId || Notebook.curNotebookId == Notebook.allNotebookId ;
 }
 Notebook.renderNotebooks = function(notebooks) {
+
 	if(!notebooks || typeof notebooks != "object" || notebooks.length < 0) {
 		notebooks = [];
 	}
 	
-	notebooks = [{NotebookId: Notebook.allNotebookId, Title: getMsg("all")}].concat(notebooks);
-	notebooks.push({NotebookId: Notebook.trashNotebookId, Title: getMsg("trash")});
+	notebooks = [{NotebookId: Notebook.allNotebookId, Title: getMsg("all"), drop:false, drag: false}].concat(notebooks);
+	notebooks.push({NotebookId: Notebook.trashNotebookId, Title: getMsg("trash"), drop:false, drag: false});
 	Notebook.notebooks = notebooks; // 缓存之
 	
+	// 拖拽
+	function beforeDrag(treeId, treeNodes) {
+		for (var i=0,l=treeNodes.length; i<l; i++) {
+			if (treeNodes[i].drag === false) {
+				return false;
+			}
+		}
+		return true;
+	}
+	function beforeDrop(treeId, treeNodes, targetNode, moveType) {
+		return targetNode ? targetNode.drop !== false : true;
+	}
+	function onDrop(e, treeId, treeNodes, targetNode, moveType) {
+		var treeNode = treeNodes[0];
+		var parentNode;
+		var treeObj = $.fn.zTree.getZTreeObj("notebookList");
+		var ajaxData = {curNotebookId: treeNode.NotebookId};
+		
+		// 成为子节点, 那么只需要得到targetNode下所有的子结点即可
+		if(moveType == "inner") {
+			parentNode = targetNode;
+		// 在targetNode之前或之后, 
+		// 那么: 1) 需要将该parentNode下所有的node重新排序即可; 2) treeNodes[0]为parentNode的子
+		} else {
+			parentNode = targetNode.getParentNode();
+		}
+		
+		if(!parentNode) {
+			var nodes = treeObj.getNodes();
+		} else {
+			ajaxData.parentNotebookId = parentNode.NotebookId;
+			var nextLevel = parentNode.level+1;
+			function filter(node) {
+				return node.level == nextLevel;
+			}
+			var nodes = treeObj.getNodesByFilter(filter, false, parentNode);
+		}
+		
+		ajaxData.siblings = [];
+		for(var i in nodes) {
+			var notebookId = nodes[i].NotebookId;
+			if(!Notebook.isAllNotebookId(notebookId) && !Notebook.isTrashNotebookId(notebookId)) {
+				ajaxData.siblings.push(notebookId);
+			}
+		}
+		ajaxPost("/notebook/dragNotebooks", {data: JSON.stringify(ajaxData)});
+	}
+	// 添加自定义dom
+	function addDiyDom(treeId, treeNode) {
+		var spaceWidth = 5;
+		var switchObj = $("#" + treeNode.tId + "_switch"),
+		icoObj = $("#" + treeNode.tId + "_ico");
+		switchObj.remove();
+		icoObj.before(switchObj);
+		if (treeNode.level > 1) {
+			var spaceStr = "<span style='display: inline-block;width:" + (spaceWidth * treeNode.level)+ "px'></span>";
+			switchObj.before(spaceStr);
+		}
+	}
+	var setting = {
+		view: {
+			showLine: false,
+			showIcon: false,
+			selectedMulti: false,
+			dblClickExpand: false,
+			addDiyDom: addDiyDom
+		},
+		data: {
+			key: {
+				name: "Title",
+				children: "Subs",
+			}
+		},
+		edit: {
+			enable: true,
+			showRemoveBtn: false,
+			showRenameBtn: false,
+			drag: {
+				isMove: true,
+				prev: true,
+				inner: true,
+				next: true
+			}
+		},
+		callback: {
+			beforeDrag: beforeDrag,
+			beforeDrop: beforeDrop,
+			onDrop: onDrop,
+			onClick: function(e, treeId, treeNode) {
+				var notebookId = treeNode.NotebookId;
+				Notebook.changeNotebook(notebookId);
+			}
+		}
+	};
+	
+	$.fn.zTree.init($("#notebookList"), setting, notebooks);
+		
 	var $notebookList = $("#notebookList");
+	$notebookList.hover(function () {
+		if (!$notebookList.hasClass("showIcon")) {
+			$notebookList.addClass("showIcon");
+		}
+	}, function() {
+		$notebookList.removeClass("showIcon");
+	});
+			
 	var nav = "";
 	for(var i in notebooks) {
 		var notebook = notebooks[i];
@@ -69,7 +175,7 @@ Notebook.renderNotebooks = function(notebooks) {
 			classes = "active";
 			Notebook.curNotebookId = notebook.NotebookId;
 		}
-		$notebookList.append(t('<li><a class="?" notebookId="?">?</a></li>', classes, notebook.NotebookId, notebook.Title))
+		// $notebookList.append(t('<li><a class="?" notebookId="?">?</a></li>', classes, notebook.NotebookId, notebook.Title))
 	}
 	
 	// 渲染nav
@@ -285,7 +391,7 @@ Notebook.curActiveNotebookIsAll = function() {
 // 3. 使用Note.RederNotes()
 Notebook.changeNotebook = function(notebookId) {
 	Notebook.changeNotebookNav(notebookId);
-		
+	
 	Notebook.curNotebookId = notebookId;
 		
 	// 1
@@ -503,10 +609,12 @@ Notebook.deleteNotebook = function(target) {
 $(function() {
 	//-------------------
 	// 点击notebook
+	/*
 	$("#myNotebooks").on("click", "ul.folderBody li a", function() {
 		var notebookId = $(this).attr("notebookId");
 		Notebook.changeNotebook(notebookId);
 	});
+	*/
 	// min
 	$("#minNotebookList").on("click", "li", function() {
 		var notebookId = $(this).find("a").attr("notebookId");

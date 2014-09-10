@@ -24,6 +24,7 @@ document.write(files);
 </script>
 
 <link href="css/font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet" />
+<link href="css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
 
 <!-- For Develop writting mod -->
 
@@ -233,7 +234,7 @@ function log(o) {
 									<i class="fa  fa-plus" title="{{msg . "addNotebook"}}"></i>
 								</div>
 							</div>
-							<ul class="folderBody" id="notebookList">
+							<ul class="folderBody ztree" id="notebookList">
 							</ul>
 						</div>
 						
@@ -922,6 +923,7 @@ function log(o) {
 	</div>
 </div>
 <script src="js/jquery-1.9.0.min.js"></script>
+<script src="js/jquery.ztree.all-3.5.min.js"></script>
 <script src="js/i18n/msg.{{.locale}}.js"></script>
 <script src="js/common.js"></script>
 <script>
@@ -978,11 +980,13 @@ initSlimScroll();
 <script src="/public/mdeditor/editor/underscore-min.js"></script>
 <script src="/public/mdeditor/editor/scrollLink.js"></script>
 <!--mathjax-->
+<!--
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ["\\(","\\)"]], processEscapes: true },  messageStyle: "none"});
 </script>
 <script src="/public/mdeditor/editor/mathJax-min.js"></script>
 <script src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+-->
 <script src="/public/mdeditor/editor/jquery.waitforimages-min.js"></script>
 <script src="/public/mdeditor/editor/google-code-prettify/prettify.js"></script>
 <script src="/public/mdeditor/editor/editor.js"></script>	

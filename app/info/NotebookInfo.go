@@ -21,7 +21,7 @@ type Notebook struct {
 }
 
 // 仅仅是为了返回前台
-type SubNotebooks []Notebooks
+type SubNotebooks []*Notebooks // 存地址, 为了生成tree
 type Notebooks struct {
 	Notebook
 	Subs SubNotebooks // 子notebook 在数据库中是没有的
@@ -32,7 +32,7 @@ func (this SubNotebooks) Len() int {
 	return len(this)
 }
 func (this SubNotebooks) Less(i, j int) bool {
-	return this[i].Seq < this[j].Seq
+	return (*this[i]).Seq < (*this[j]).Seq
 }
 func (this SubNotebooks) Swap(i, j int) {
 	this[i], this[j] = this[j], this[i]
