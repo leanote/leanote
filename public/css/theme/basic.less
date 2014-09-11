@@ -61,13 +61,14 @@
 }
 
 .dropdown-menu {
-  border-radius: 0;
+  border-radius: 3px;
   margin:0;
   -webkit-box-shadow: none;
   box-shadow: none;
   border: 1px solid @hColor;
   /*overflow-x: hidden; */
   /*overflow-y: scroll;*/
+  box-shadow: rgba(0, 0, 0, 0.172549) 0px 6px 12px 0px;
 }
 
 .dropdown-menu li {
@@ -143,11 +144,11 @@
 }
 
 // 动画
-.open > .dropdown-list {
+.open > .dropdown-menu {
   -webkit-transform: scale(1, 1);
   transform: scale(1, 1);  
 }
-.dropdown-list {
+.dropdown-menu {
   -webkit-transform-origin: left;
   transform-origin: top;
   -webkit-animation-fill-mode: forwards;  

@@ -336,44 +336,14 @@ Notebook.everNotebooks = [];
 Notebook.changeNav = function() {
 	var self = Notebook;
 	
-	var navForNewNote = "";
-	
 	var notebooks = Notebook.tree.getNodes();
-	var html = self.getChangedNotebooks(notebooks);
+	var pureNotebooks = notebooks.slice(1, -1); // 不含新和垃圾
+	var html = self.getChangedNotebooks(pureNotebooks);
 	
 	self.everNavForNewNote = html;
-	self.everNotebooks = notebooks;
+	self.everNotebooks = pureNotebooks;
 	
-	/*
-	var i = 0;
-	var $list = $("#notebookList li a");
-	var len = $list.length - 1;
-	$list.each(function() {
-		var notebookId = $(this).attr("notebookId");
-		var notebook = Notebook.cache[notebookId];
-		if(notebook) {
-			var each = t('<li role="presentation"><a role="menuitem" tabindex="-1" href="#" notebookId="?">?</a></li>', notebook.NotebookId, notebook.Title);
-			var eachForNew = t('<li role="presentation" class="clearfix"><div class="new-note-left pull-left" title="为该笔记本新建笔记" href="#" notebookId="?">?</div><div title="为该笔记本新建markdown笔记" class="new-note-right pull-left" notebookId="?">Markdown</div></li>', notebook.NotebookId, notebook.Title, notebook.NotebookId);
-	
-			navForListNote  += each;
-			var isActive = $(this).hasClass('active'); // 万一修改的是已选择的, 那么...
-			if(isActive) {
-				$("#curNotebookForListNote").html(notebook.Title);
-			}
-			if(i != 0 && i != len) {
-				navForNewNote  += eachForNew;
-				if(isActive) {
-					$("#curNotebookForNewNote").html(notebook.Title);
-				}
-			}
-			i++;
-		}
-	});
-	*/
-	
-	$("#notebookNavForListNote").html(html);
 	$("#notebookNavForNewNote").html(html);
-	$("#notebookNavForMoveNote").html(html);
 	
 	// 移动, 复制重新来, 因为nav变了, 移动至-----的notebook导航也变了
 	Note.initContextmenu();

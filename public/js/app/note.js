@@ -1153,13 +1153,37 @@ Note.copyNote = function(target, data, isShared) {
 }
 
 Note.contextmenu = null;
+Note.getContextNotebooks = function(notebooks) {
+	var moves = [];
+	var copys = [];
+	for(var i in notebooks) {
+		var notebook = notebooks[i];
+		var move = {text: notebook.Title, notebookId: notebook.NotebookId, action: Note.moveNote}
+		var copy = {text: notebook.Title, notebookId: notebook.NotebookId, action: Note.copyNote}
+		if(!isEmpty(notebook.Subs)) {
+			var mc = Note.getContextNotebooks(notebook.Subs);
+			move.items = mc[0];
+			copy.items = mc[1];
+			$.extend(move, {type: "group", width: 150});
+			$.extend(copy, {type: "group", width: 150});
+		}
+		moves.push(move);
+		copys.push(copy);
+	}
+	return [moves, copys];
+}
 Note.initContextmenu = function() {
+	var self = Note;
 	if(Note.contextmenu) {
 		Note.contextmenu.unbind("contextmenu");
 	}
 	// 得到可移动的notebook
-	var notebooksMove = [];
-	var notebooksCopy = [];
+	var notebooks = Notebook.everNotebooks;
+	var mc = self.getContextNotebooks(notebooks);
+	var notebooksMove = mc[0];
+	var notebooksCopy = mc[1];
+	
+	/*
 	$("#notebookNavForNewNote li div.new-note-left").each(function() {
 		var notebookId = $(this).attr("notebookId");
 		var title = $(this).text();
@@ -1168,6 +1192,7 @@ Note.initContextmenu = function() {
 		notebooksMove.push(move);
 		notebooksCopy.push(copy);
 	});
+	*/
 	
 	//---------------------
 	// context menu
@@ -1180,7 +1205,7 @@ Note.initContextmenu = function() {
 			{ text: "公开为博客", alias: 'set2Blog', icon: "", action: Note.setNote2Blog },
 			{ text: "取消公开为博客", alias: 'unset2Blog', icon: "", action: Note.setNote2Blog },
 			{ type: "splitLine" },
-			// { text: "发送长微博", alias: 'html2Image', icon: "", action: Note.html2Image },
+			// { text: "发送长微博", alias: 'html2Image', icon: "", action: Note.html2Image , width: 150, type: "group", items:[{text: "a"}]},
 			// { type: "splitLine" },
 			{ text: "删除", icon: "", faIcon: "fa-trash-o", action: Note.deleteNote },
 			{ text: "移动", alias: "move", icon: "",

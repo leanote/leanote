@@ -21,7 +21,8 @@ LEA.cmroot = 1;
                 this.disable = obj.disable;
                 this.className = "b-m-idisable";
             }
-            $(this).width(obj.width).click(returnfalse).mousedown(returnfalse).appendTo($("body"));
+            $(this).width(obj.width).click(function(){}).mousedown(returnfalse).appendTo($("body"));
+            
             obj = null;
             return this;
         };
@@ -73,19 +74,29 @@ LEA.cmroot = 1;
                 		// log(items[i].alias);
                 	}
                     items[i].gidx = gidx;
-                    if (items[i].type == "group") {
+                    if (items[i].type == "group" && !items[i].action) {
                         //group 
                         buildGroup.apply(gTemplet.clone()[0], [items[i]]);
                         arguments.callee(items[i].alias, items[i].items, items[i].alias); // life 传上级的alias, 避免重复
                         items[i].type = "arrow";
                         tmp = buildItem.apply(iTemplet.clone()[0], [items[i]]);
                     } else {
-                        //normal item
-                        items[i].type = "ibody";
-                        tmp = buildItem.apply(iTemplet.clone()[0], [items[i]]);
+                    	// 如果group有action还是可以点击的 life
+                    	if(items[i].type == "group") {
+	                    	//group 
+	                        buildGroup.apply(gTemplet.clone()[0], [items[i]]);
+	                        arguments.callee(items[i].alias, items[i].items, items[i].alias); // life 传上级的alias, 避免重复
+	                        items[i].type = "arrow";
+	                        tmp = buildItem.apply(iTemplet.clone()[0], [items[i]]);
+                    	} else {
+	                        //normal item
+	                        items[i].type = "ibody";
+	                        tmp = buildItem.apply(iTemplet.clone()[0], [items[i]]);
+                        }
 						// 
                         var thisItem = items[i];
                         
+                        // 点击item
                         // 用闭包来存储变量
                         (function(thisItem, tmp) {
 	                        $(tmp).click(function(e) {
