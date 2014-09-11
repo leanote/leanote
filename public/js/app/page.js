@@ -604,7 +604,8 @@ $(function() {
 			var target = $(this).attr("target");
 			// show的时候要计算高度, 防止过高
 			// 先show再计算, 不然高度有偏差
-			$(this).find("ul").html($(target).html()).show().height(getMaxDropdownHeight(this));
+			$(this).addClass("open");
+			$(this).find("ul").html($(target).html()).show(); // .height(getMaxDropdownHeight(this));
 		}, function() {
 			$(this).find("ul").hide();
 		}
