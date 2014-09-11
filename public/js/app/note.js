@@ -1288,7 +1288,7 @@ $(function() {
 	});
 	$("#notebookNavForNewNote").on("click", "li div", function() {
 		var notebookId = $(this).attr("notebookId");
-		if($(this).text() == "Markdown") {
+		if($(this).hasClass("new-note-right")) {
 			Note.newNote(notebookId, false, "", true);
 		} else {
 			Note.newNote(notebookId);

@@ -81,8 +81,13 @@ function log(o) {
 								id="dropdownMenu2" data-toggle="dropdown"> 
 								<i class="fa fa-angle-down"></i>
 							</a>
-							<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2" style="width: 180px;left: -5px;" id="notebookNavForNewNote">
-							</ul>
+							<div class="dropdown-menu dropdown-list" style="left: -200px;" >
+								<!--
+								<input type="text" placeholder="search notebook"/>
+								-->
+								<ul class="clearfix" role="menu" aria-labelledby="dropdownMenu2" id="notebookNavForNewNote">
+								</ul>
+							</div>
 						</div>
 					</div>
 					
@@ -313,19 +318,23 @@ function log(o) {
 							<div class="dropdown" id="myNotebookNavForListNav">
 								<a class="ios7-a dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">
 									<span id="curNotebookForListNote">{{msg . "all"}}</span>
+									<!--
 									<i class="fa fa-angle-down"></i>
+									-->
 								</a>
 								<!-- 如果notebook过多, 则会产生滚动 -->
-								<ul class="dropdown-menu" role="menu"
-									aria-labelledby="dropdownMenu1" style="left: 5px;" id="notebookNavForListNote">
-								</ul>
+								<div class="dropdown-menu dropdown-list" style="left: 5px;">
+									<ul role="menu" aria-labelledby="dropdownMenu1" id="notebookNavForListNote"></ul>
+								</div>
 							</div>
 							
 							<!-- 共享的笔记本 -->
 							<div class="dropdown" id="sharedNotebookNavForListNav" style="display: none">
 								<a class="ios7-a dropdown-toggle" id="dropdownMenu2" data-toggle="dropdown">
 									<span id="curSharedNotebookForListNote">{{msg . "all"}}</span>
+									<!--
 									<i class="fa fa-angle-down"></i>
+									-->
 								</a>
 								<ul class="dropdown-menu" role="menu"
 									aria-labelledby="dropdownMenu2" style="left: 5px;" id="sharedNotebookNavForListNote">

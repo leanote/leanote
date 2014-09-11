@@ -224,6 +224,9 @@ Notebook.cacheAllNotebooks = function(notebooks) {
 // nav 为了新建, 快速选择, 移动笔记
 // 这些在添加,修改,删除notebooks都要变动!!!
 Notebook.renderNav = function(nav) {
+	var self = this;
+	self.changeNav();
+	return;
 	var navForListNote = "";
 	var navForNewNote = "";
 	var navForMoveNote = "";
@@ -248,9 +251,39 @@ Notebook.renderNav = function(nav) {
 // 修改,添加,删除notebook后调用
 // 改变nav
 // 直接从html中取!
+Notebook.getChangedNotebooks = function(notebooks) {
+	var self = this;
+	var navForNewNote = "";
+	
+	var len = notebooks.length;
+	for(var i = 0; i < len; ++i) {
+		var notebook = notebooks[i];
+		
+		var classes = "";
+		if(!isEmpty(notebook.Subs)) {
+			classes = "dropdown-submenu";
+		}
+		var eachForNew = t('<li role="presentation" class="clearfix ?"><div class="new-note-left pull-left" title="为该笔记本新建笔记" href="#" notebookId="?">?</div><div title="为该笔记本新建markdown笔记" class="new-note-right pull-left" notebookId="?">M</div>', classes, notebook.NotebookId, notebook.Title, notebook.NotebookId);
+		
+		if(!isEmpty(notebook.Subs)) {
+			eachForNew  += "<ul class='dropdown-menu'>";
+			eachForNew  += self.getChangedNotebooks(notebook.Subs);
+			eachForNew  += "</ul>";
+		}
+		
+		eachForNew  += '</li>';
+		
+		navForNewNote += eachForNew;
+	}
+	return navForNewNote;
+}
 Notebook.changeNav = function() {
+	var self = Notebook;
 	var navForListNote = "";
 	var navForNewNote = "";
+	
+	var notebooks = Notebook.tree.getNodes();
+	var html = self.getChangedNotebooks(notebooks);
 	
 	var i = 0;
 	var $list = $("#notebookList li a");
@@ -261,7 +294,7 @@ Notebook.changeNav = function() {
 		if(notebook) {
 			var each = t('<li role="presentation"><a role="menuitem" tabindex="-1" href="#" notebookId="?">?</a></li>', notebook.NotebookId, notebook.Title);
 			var eachForNew = t('<li role="presentation" class="clearfix"><div class="new-note-left pull-left" title="为该笔记本新建笔记" href="#" notebookId="?">?</div><div title="为该笔记本新建markdown笔记" class="new-note-right pull-left" notebookId="?">Markdown</div></li>', notebook.NotebookId, notebook.Title, notebook.NotebookId);
-				
+	
 			navForListNote  += each;
 			var isActive = $(this).hasClass('active'); // 万一修改的是已选择的, 那么...
 			if(isActive) {
@@ -277,9 +310,9 @@ Notebook.changeNav = function() {
 		}
 	});
 	
-	$("#notebookNavForListNote").html(navForListNote);
-	$("#notebookNavForNewNote").html(navForNewNote);
-	$("#notebookNavForMoveNote").html(navForNewNote);
+	$("#notebookNavForListNote").html(html);
+	$("#notebookNavForNewNote").html(html);
+	$("#notebookNavForMoveNote").html(html);
 	
 	// 移动, 复制重新来, 因为nav变了, 移动至-----的notebook导航也变了
 	Note.initContextmenu();

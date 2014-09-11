@@ -631,7 +631,7 @@ $(function() {
 	// dropdown
 	$('.dropdown').on('shown.bs.dropdown', function () {
 		var $ul = $(this).find("ul");
-		$ul.height(getMaxDropdownHeight(this));
+		// $ul.css("max-height", getMaxDropdownHeight(this));
 	});
 	
 	//--------
