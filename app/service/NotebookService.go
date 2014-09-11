@@ -191,14 +191,20 @@ func (this *NotebookService) UpdateNotebook(userId, notebookId string, needUpdat
 	return db.UpdateByIdAndUserIdMap(db.Notebooks, notebookId, userId, needUpdate)
 }
 
+// 查看是否有子notebook
 // 先查看该notebookId下是否有notes, 没有则删除
 func (this *NotebookService) DeleteNotebook(userId, notebookId string) (bool, string) {
-	if db.Count(db.Notes, bson.M{"NotebookId": bson.ObjectIdHex(notebookId), 
-		"UserId": bson.ObjectIdHex(userId),
-		"IsTrash": false}) == 0 { // 不包含trash
-		return db.DeleteByIdAndUserId(db.Notebooks, notebookId, userId), ""
+	if db.Count(db.Notebooks, bson.M{"ParentNotebookId": bson.ObjectIdHex(notebookId), 
+		"UserId": bson.ObjectIdHex(userId)}) == 0 { // 无
+		if db.Count(db.Notes, bson.M{"NotebookId": bson.ObjectIdHex(notebookId), 
+			"UserId": bson.ObjectIdHex(userId),
+			"IsTrash": false}) == 0 { // 不包含trash
+			return db.DeleteByIdAndUserId(db.Notebooks, notebookId, userId), ""
+		}
+		return false, "笔记本下有笔记"
+	} else {
+		return false, "笔记本下有子笔记本"
 	}
-	return false, "笔记本下有笔记"
 }
 
 // 排序

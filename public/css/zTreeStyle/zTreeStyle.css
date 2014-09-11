@@ -15,7 +15,7 @@ website:	http://code.google.com/p/jquerytree/
 .ztree li ul.line{ background:url(./img/line_conn.gif) 0 0 repeat-y;}
 
 .ztree li a {padding:1px 3px 0 0; margin:0; cursor:pointer; height:17px; color:#333; background-color: transparent;
-	text-decoration:none; vertical-align:top; display: inline-block}
+	text-decoration:none; vertical-align:top; display: block}
 .ztree li a:hover {text-decoration:underline}
 .ztree li a.curSelectedNode {padding-top:0px; background-color:#FFE6B0; color:black; height:16px; border:1px #FFB951 solid; opacity:0.8;}
 .ztree li a.curSelectedNode_Edit {padding-top:0px; background-color:#FFE6B0; color:black; height:16px; border:1px #FFB951 solid; opacity:0.8;}
@@ -27,8 +27,7 @@ website:	http://code.google.com/p/jquerytree/
 }
 .ztree li a.tmpTargetNode_prev {}
 .ztree li a.tmpTargetNode_next {}
-.ztree li a input.rename {height:14px; width:80px; padding:0; margin:0;
-	font-size:12px; border:1px #7EC4CC solid; *border:0px}
+
 .ztree li span {line-height:16px; margin-right:2px}
 .ztree li span.button {line-height:0; margin:0; width:16px; height:16px; display: inline-block; vertical-align:middle;
 	border:0 none; cursor: pointer;outline:none;
@@ -106,7 +105,10 @@ ul.ztree.zTreeDragUL {z-index: 333;margin:0; padding:0; position:absolute; width
 
 .ztree li ul{ margin:0; padding:0}
 .ztree li {line-height:30px;}
-.ztree li a {width:200px;height:30px;padding-top: 0px;}
+.ztree > li {
+	border-bottom: 1px dashed #eee;
+}
+.ztree li a {height:30px;padding-top: 0px;}
 .ztree li a:hover {text-decoration:none; background-color: #E7E7E7;}
 .ztree li a span.button.switch {visibility:hidden}
 .ztree.showIcon li a span.button.switch {visibility:visible}
@@ -124,3 +126,14 @@ ul.ztree.zTreeDragUL {z-index: 333;margin:0; padding:0; position:absolute; width
 .ztree li span.button.noline_close {background-position: -18px 0;}
 .ztree li span.button.noline_open.level0 {background-position: 0 -18px;}
 .ztree li span.button.noline_close.level0 {background-position: -18px -18px;}
+
+/* life */
+.ztree .tree-title {
+	display: inline-block;
+}
+/*
+.ztree li a input.rename {height:14px; width:80px; padding:0; margin:0;
+	font-size:12px; border:1px #7EC4CC solid; *border:0px}
+*/
+.ztree li a.curSelectedNode_Edit input {
+}

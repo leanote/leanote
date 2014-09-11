@@ -226,6 +226,7 @@ LEA.cmroot = 1;
         });
         */
         
+        // bind event
         var me = $(option.parent).on('contextmenu', option.children, function(e) {
             var bShowContext = (option.onContextMenu && $.isFunction(option.onContextMenu)) ? option.onContextMenu.call(this, e) : true;
             if (bShowContext) {
@@ -234,6 +235,8 @@ LEA.cmroot = 1;
                 }
                 root.showMenu(e, this);
             }
+            // 阻止冒泡, 默认事件
+            e.preventDefault();
             return false;
         });
         

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"github.com/leanote/leanote/app/info"
 	"gopkg.in/mgo.v2/bson"
-	. "github.com/leanote/leanote/app/lea"
+//	. "github.com/leanote/leanote/app/lea"
 //	"io/ioutil"
 )
 
@@ -29,11 +29,14 @@ func (c Notebook) DeleteNotebook(notebookId string) revel.Result {
 }
 
 // 添加notebook
-func (c Notebook) AddNotebook(notebookId, title string) revel.Result {
+func (c Notebook) AddNotebook(notebookId, title, parentNotebookId string) revel.Result {
 	notebook := info.Notebook{NotebookId: bson.ObjectIdHex(notebookId), 
 		Title: title,
 		Seq: -1,
 		UserId: c.GetObjectUserId()}
+	if(parentNotebookId != "") {
+		notebook.ParentNotebookId = bson.ObjectIdHex(parentNotebookId)
+	}
 	re := notebookService.AddNotebook(notebook)
 	
 	if(re) {
