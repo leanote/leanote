@@ -44,23 +44,23 @@ Notebook.getNotebookTitle = function(notebookId) {
 	<li><a>August 13, 2013</a></li>
 </ul>
  */
-// TODO 层级
-Notebook.allNotebookId = "0";
-Notebook.trashNotebookId = "-1";
-Notebook.curNotebookIsTrashOrAll = function() {
-	return Notebook.curNotebookId == Notebook.trashNotebookId || Notebook.curNotebookId == Notebook.allNotebookId ;
-}
-Notebook.renderNotebooks = function(notebooks) {
+ 
+Notebook.getTreeSetting = function(isSearch){ 
+	var noSearch = !isSearch;
+	
 	var self = this;
-
-	if(!notebooks || typeof notebooks != "object" || notebooks.length < 0) {
-		notebooks = [];
+	// 添加自定义dom
+	function addDiyDom(treeId, treeNode) {
+		var spaceWidth = 5;
+		var switchObj = $("#" + treeId + " #" + treeNode.tId + "_switch"),
+		icoObj = $("#" + treeId + " #" + treeNode.tId + "_ico");
+		switchObj.remove();
+		icoObj.before(switchObj);
+		if (treeNode.level > 1) {
+			var spaceStr = "<span style='display: inline-block;width:" + (spaceWidth * treeNode.level)+ "px'></span>";
+			switchObj.before(spaceStr);
+		}
 	}
-	
-	notebooks = [{NotebookId: Notebook.allNotebookId, Title: getMsg("all"), drop:false, drag: false}].concat(notebooks);
-	notebooks.push({NotebookId: Notebook.trashNotebookId, Title: getMsg("trash"), drop:false, drag: false});
-	Notebook.notebooks = notebooks; // 缓存之
-	
 	// 拖拽
 	function beforeDrag(treeId, treeNodes) {
 		for (var i=0,l=treeNodes.length; i<l; i++) {
@@ -75,6 +75,10 @@ Notebook.renderNotebooks = function(notebooks) {
 	}
 	function onDrop(e, treeId, treeNodes, targetNode, moveType) {
 		var treeNode = treeNodes[0];
+		// 搜索不能drag
+		if(!targetNode) {
+			return;
+		}
 		var parentNode;
 		var treeObj = self.tree;
 		var ajaxData = {curNotebookId: treeNode.NotebookId};
@@ -108,20 +112,7 @@ Notebook.renderNotebooks = function(notebooks) {
 		}
 		ajaxPost("/notebook/dragNotebooks", {data: JSON.stringify(ajaxData)});
 	}
-	// 添加自定义dom
-	function addDiyDom(treeId, treeNode) {
-		var spaceWidth = 5;
-		var switchObj = $("#" + treeNode.tId + "_switch"),
-		icoObj = $("#" + treeNode.tId + "_ico");
-		switchObj.remove();
-		icoObj.before(switchObj);
-		if (treeNode.level > 1) {
-			var spaceStr = "<span style='display: inline-block;width:" + (spaceWidth * treeNode.level)+ "px'></span>";
-			switchObj.before(spaceStr);
-		}
-	}
 	var setting = {
-	
 		view: {
 			showLine: false,
 			showIcon: false,
@@ -140,10 +131,10 @@ Notebook.renderNotebooks = function(notebooks) {
 			showRemoveBtn: false,
 			showRenameBtn: false,
 			drag: {
-				isMove: true,
-				prev: true,
-				inner: true,
-				next: true
+				isMove: noSearch,
+				prev: noSearch,
+				inner: noSearch,
+				next: noSearch
 			}
 		},
 		callback: {
@@ -153,8 +144,6 @@ Notebook.renderNotebooks = function(notebooks) {
 			onClick: function(e, treeId, treeNode) {
 				var notebookId = treeNode.NotebookId;
 				Notebook.changeNotebook(notebookId);
-			},
-			onRightClick: function(event, treeId, treeNode) {
 			},
 			beforeRename: function(treeId, treeNode, newName, isCancel) {
 				if(newName == "") {
@@ -183,7 +172,29 @@ Notebook.renderNotebooks = function(notebooks) {
 		}
 	};
 	
-	self.tree = $.fn.zTree.init($("#notebookList"), setting, notebooks);
+	// 搜索不能拖拽
+	if(isSearch) {
+	}
+	
+	return setting;
+}
+Notebook.allNotebookId = "0";
+Notebook.trashNotebookId = "-1";
+Notebook.curNotebookIsTrashOrAll = function() {
+	return Notebook.curNotebookId == Notebook.trashNotebookId || Notebook.curNotebookId == Notebook.allNotebookId ;
+}
+Notebook.renderNotebooks = function(notebooks) {
+	var self = this;
+
+	if(!notebooks || typeof notebooks != "object" || notebooks.length < 0) {
+		notebooks = [];
+	}
+	
+	notebooks = [{NotebookId: Notebook.allNotebookId, Title: getMsg("all"), drop:false, drag: false}].concat(notebooks);
+	notebooks.push({NotebookId: Notebook.trashNotebookId, Title: getMsg("trash"), drop:false, drag: false});
+	Notebook.notebooks = notebooks; // 缓存之
+	
+	self.tree = $.fn.zTree.init($("#notebookList"), self.getTreeSetting(), notebooks);
 	
 	// 展开/折叠图标
 	var $notebookList = $("#notebookList");
@@ -227,6 +238,7 @@ Notebook.renderNav = function(nav) {
 	var self = this;
 	self.changeNav();
 	return;
+	
 	var navForListNote = "";
 	var navForNewNote = "";
 	var navForMoveNote = "";
@@ -247,6 +259,47 @@ Notebook.renderNav = function(nav) {
 	$("#notebookNavForNewNote").html(navForNewNote);
 	$("#notebookNavForMoveNote").html(navForMoveNote);
 }
+
+// 搜索notebook
+Notebook.searchNotebookForAddNote = function(key) {
+	var self = this;
+	if(key) {
+		var notebooks = self.tree.getNodesByParamFuzzy("Title", key);
+		if(isEmpty(notebooks)) {
+			$("#notebookNavForNewNote").html("");
+		} else {
+			$("#notebookNavForNewNote").html(self.getChangedNotebooks(notebooks));
+		}
+	} else {
+		$("#notebookNavForNewNote").html(self.everNavForNewNote);
+	}
+}
+
+// 搜索notebook
+Notebook.searchNotebookForList = function(key) {
+	var self = this;
+	var $search = $("#notebookListForSearch");
+	var $notebookList = $("#notebookList");
+	if(key) {
+		$search.show();
+		$notebookList.hide();
+		
+		var notebooks = self.tree.getNodesByParamFuzzy("Title", key);
+		log(notebooks);
+		if(isEmpty(notebooks)) {
+			$search.html("");
+		} else {
+			var setting = self.getTreeSetting(true);
+			self.tree2 = $.fn.zTree.init($search, setting, notebooks);
+		}
+	} else {
+		self.tree2 = null;
+		$search.hide();
+		$notebookList.show();
+		$("#notebookNavForNewNote").html(self.everNavForNewNote);
+	}
+}
+
 
 // 修改,添加,删除notebook后调用
 // 改变nav
@@ -277,14 +330,21 @@ Notebook.getChangedNotebooks = function(notebooks) {
 	}
 	return navForNewNote;
 }
+
+Notebook.everNavForNewNote = "";
+Notebook.everNotebooks = [];
 Notebook.changeNav = function() {
 	var self = Notebook;
-	var navForListNote = "";
+	
 	var navForNewNote = "";
 	
 	var notebooks = Notebook.tree.getNodes();
 	var html = self.getChangedNotebooks(notebooks);
 	
+	self.everNavForNewNote = html;
+	self.everNotebooks = notebooks;
+	
+	/*
 	var i = 0;
 	var $list = $("#notebookList li a");
 	var len = $list.length - 1;
@@ -309,6 +369,7 @@ Notebook.changeNav = function() {
 			i++;
 		}
 	});
+	*/
 	
 	$("#notebookNavForListNote").html(html);
 	$("#notebookNavForNewNote").html(html);
@@ -589,21 +650,27 @@ Notebook.setNotebook2Blog = function(target) {
 Notebook.updateNotebookTitle = function(target) {
 	var self = Notebook;
 	var notebookId = $(target).attr("notebookId");
-	self.tree.editName(self.tree.getNodeByTId(notebookId));
 	
-	return;
-	
-	var notebookTitle = $(target).text();
-	var id = "editNotebookTitle";
-	$(target).html(t('<input type="text" value="?" everValue="?" id="?" notebookId="?"/>', notebookTitle, notebookTitle, id, $(target).attr("notebookId")));
-	$("#" + id).focus();
+	if(self.tree2) {
+		self.tree2.editName(self.tree2.getNodeByTId(notebookId));
+	} else {
+		self.tree.editName(self.tree.getNodeByTId(notebookId));
+	}
 }
 Notebook.doUpdateNotebookTitle = function(notebookId, newTitle) {
+	var self = Notebook;
 	ajaxPost("/notebook/updateNotebookTitle", {notebookId: notebookId, title: newTitle}, function(ret) {
 		// 修改缓存
 		Notebook.cache[notebookId].Title = newTitle;
 		// 改变nav
 		Notebook.changeNav();
+		
+		// 同步
+		if(self.tree2) {
+			var notebook = self.tree.getNodeByTId(notebookId);
+			notebook.Title = newTitle;
+			self.tree.updateNode(notebook);
+		}
 	});
 }
 
@@ -671,6 +738,9 @@ Notebook.deleteNotebook = function(target) {
 			$(target).parent().remove();
 			*/
 			self.tree.removeNode(self.tree.getNodeByTId(notebookId));
+			if(self.tree2) {
+				self.tree2.removeNode(self.tree2.getNodeByTId(notebookId));
+			}
 			delete Notebook.cache[notebookId];
 			
 			// 改变nav
@@ -722,6 +792,23 @@ $(function() {
     	children: "li a"
 	}
 	
+	var notebookListMenu2 = {
+		width: 150, 
+		items: [
+			{ text: "分享给好友", alias: 'shareToFriends', icon: "", faIcon: "fa-share-square-o", action: Notebook.listNotebookShareUserInfo},
+			{ type: "splitLine" },
+			{ text: "公开为博客", alias: 'set2Blog', icon: "", action: Notebook.setNotebook2Blog },
+			{ text: "取消公开为博客", alias: 'unset2Blog', icon: "", action: Notebook.setNotebook2Blog }, // Unset
+			{ type: "splitLine" },
+			{ text: "重命名", icon: "", action: Notebook.updateNotebookTitle },
+			{ text: "删除", icon: "", alias: 'delete', faIcon: "fa-trash-o", action: Notebook.deleteNotebook }
+		],
+		onShow: applyrule,
+    	onContextMenu: beforeContextMenu,
+    	parent: "#notebookListForSearch ",
+    	children: "li a"
+	}
+	
 	function applyrule(menu) {
 		var notebookId = $(this).attr("notebookId");
 		var notebook = Notebook.cache[notebookId];
@@ -752,6 +839,8 @@ $(function() {
 		return !Notebook.isTrashNotebookId(notebookId) && !Notebook.isAllNotebookId(notebookId);
 	}
 	$("#notebookList li a").contextmenu(notebookListMenu);
+	
+	$("#notebookListForSearch").contextmenu(notebookListMenu2);
 	
 	//------------------
 	// 添加notebook

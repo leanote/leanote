@@ -1294,6 +1294,17 @@ $(function() {
 			Note.newNote(notebookId);
 		}
 	});
+	$("#searchNotebookForAdd").click(function(e) {
+		e.stopPropagation();
+	});
+	$("#searchNotebookForAdd").keyup(function() {
+		var key = $(this).val();
+		Notebook.searchNotebookForAddNote(key);
+	});
+	$("#searchNotebookForList").keyup(function() {
+		var key = $(this).val();
+		Notebook.searchNotebookForList(key);
+	});
 	
 	//---------------------------
 	// 搜索, 按enter才搜索

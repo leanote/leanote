@@ -82,9 +82,7 @@ function log(o) {
 								<i class="fa fa-angle-down"></i>
 							</a>
 							<div class="dropdown-menu dropdown-list" style="left: -200px;" >
-								<!--
-								<input type="text" placeholder="search notebook"/>
-								-->
+								<input type="text" placeholder="search notebook" class="form-control" id="searchNotebookForAdd"/>
 								<ul class="clearfix" role="menu" aria-labelledby="dropdownMenu2" id="notebookNavForNewNote">
 								</ul>
 							</div>
@@ -239,8 +237,12 @@ function log(o) {
 									<i class="fa  fa-plus" title="{{msg . "addNotebook"}}"></i>
 								</div>
 							</div>
-							<ul class="folderBody ztree" id="notebookList">
-							</ul>
+							
+							<div class="folderBody">
+								<input type="text" class="form-control" id="searchNotebookForList" placeholder="search notebook"/>							
+								<ul class="ztree" id="notebookList"></ul>
+								<ul class="ztree" id="notebookListForSearch"></ul>
+							</div>
 						</div>
 						
 						<div class="folderNote closed" id="myTag">
