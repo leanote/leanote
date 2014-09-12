@@ -606,7 +606,7 @@ $(function() {
 	// 点击展开
 	$("#notebookMin div.minContainer").click(function() {
 		var target = $(this).attr("target");
-		maxLeft(false);
+		maxLeft(true);
 		if(target == "#notebookList") {
 			if($("#myNotebooks").hasClass("closed")) {
 				$("#myNotebooks .folderHeader").trigger("click");

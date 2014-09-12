@@ -398,15 +398,6 @@ a.raw:hover {
 	  border-right: none;
 	}
 }
-.each-user ul {
-	list-style: none;
-	margin: 0;
-	padding:0;
-	a {
-		padding-left: 20px;
-		font-size: 12px;
-	}
-}
 
 #myNotebooks.opened .fa-left {
 /*
@@ -436,28 +427,32 @@ a.raw:hover {
 .closed .folderBody {
   display: none;
 }
+@leftBgColor: #37485e;
 .folderBody {
   list-style: none;
   margin: 0;
   padding: 0;
-  background-color: #37485e;
+  background-color: @leftBgColor;
 }
+
 .folderBody li {
   line-height: 30px;
 }
-.folderBody a {
-  padding-left: 20px;
-  display: block;
-  color: #ADBECE;
-  cursor: pointer;
+.ztree > li {
   border-bottom: 1px solid transparent;
   border-color: rgba(255,255,255,0.05);
-  line-height: 35px;
+}
+.ztree li a.curSelectedNode {
+	background-color: rgba(0,0,0,0.3);
+	border-radius: 3px;
+	color: #fff;
+}
+.ztree li a {
+  color: #ADBECE;
 }
 .folderBody a:hover, .folderBody .contextmenu-hover {
-//  background-color: @borderColor !important;
 	color: #fff;
-  background-color: rgba(0,0,0,0.05) !important;
+	background-color: rgba(0,0,0,0.1) !important;
 }
 .folderBody a.active, .folderBody a.active:hover {
   background-color: #25313e !important; // @bgColor;
@@ -1172,18 +1167,23 @@ background-position:-1px -670px
 	list-style: none;
 }
 
-// 设置
-.notebook-setting {
-	display: none;
-	position: absolute;
-	right: 3px;
-	top: 0;
-	bottom: 0;
-	line-height: 30px;
+//----------------------
+#searchNotebookForList {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ccc;
+    background-color: @leftBgColor;
+    &:focus {
+      outline: none !important;
+      box-shadow: none;
+    }
 }
-.notebook-setting:before {
-	content: "\f013";
+.label-default {
+	background-color: #191D2B;
 }
-.ztree li a:hover .notebook-setting {
-	display: block;
+.each-user {
+	border: 1px solid rgba(0, 0, 0, 0.09);
+	background-color: @leftBgColor;
+}
+#myShareNotebooks .folderBody {
+	background: none;
 }

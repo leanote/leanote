@@ -180,10 +180,14 @@
   border-color: #ebeff2;
   box-shadow: none;
 }
+#myNotebooks .folderBody {
+  padding-top: 3px;
+}
 #searchNotebookForList {
   height: 30px;
   width: 90%;
   margin: 3px auto;
+  margin-top: 0;
   border-color: #ebeff2;
   box-shadow: none;
 }
@@ -235,6 +239,35 @@
   margin-top: 3px;
   border: 1px solid #eee;
   border-radius: 3px;
+}
+.notebook-setting {
+  display: none;
+  position: absolute;
+  right: 3px;
+  top: 0;
+  bottom: 0;
+  line-height: 30px;
+}
+.notebook-setting:before {
+  content: "\f013";
+}
+.ztree li a:hover .notebook-setting {
+  display: block;
+}
+#myTag .folderBody {
+  padding: 0 3px;
+  padding-bottom: 3px;
+}
+#myTag .folderBody li {
+  float: left;
+  padding: 3px;
+  line-height: normal;
+}
+#notebookList {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+.ztree {
+  padding: 0px;
 }
 ::selection {
   background: #000000;
@@ -602,15 +635,6 @@ a.raw:hover {
   width: 20px;
   border-right: none;
 }
-.each-user ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.each-user ul a {
-  padding-left: 20px;
-  font-size: 12px;
-}
 #myNotebooks.opened .fa-left {
   /*
 	background-color: #65bd77;
@@ -651,19 +675,22 @@ a.raw:hover {
 .folderBody li {
   line-height: 30px;
 }
-.folderBody a {
-  padding-left: 20px;
-  display: block;
-  color: #ADBECE;
-  cursor: pointer;
+.ztree > li {
   border-bottom: 1px solid transparent;
   border-color: rgba(255, 255, 255, 0.05);
-  line-height: 35px;
+}
+.ztree li a.curSelectedNode {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+  color: #fff;
+}
+.ztree li a {
+  color: #ADBECE;
 }
 .folderBody a:hover,
 .folderBody .contextmenu-hover {
   color: #fff;
-  background-color: rgba(0, 0, 0, 0.05) !important;
+  background-color: rgba(0, 0, 0, 0.1) !important;
 }
 .folderBody a.active,
 .folderBody a.active:hover {
@@ -1312,17 +1339,22 @@ background-position:-1px -670px
   overflow: scroll;
   list-style: none;
 }
-.notebook-setting {
-  display: none;
-  position: absolute;
-  right: 3px;
-  top: 0;
-  bottom: 0;
-  line-height: 30px;
+#searchNotebookForList {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ccc;
+  background-color: #37485e;
 }
-.notebook-setting:before {
-  content: "\f013";
+#searchNotebookForList:focus {
+  outline: none !important;
+  box-shadow: none;
 }
-.ztree li a:hover .notebook-setting {
-  display: block;
+.label-default {
+  background-color: #191D2B;
+}
+.each-user {
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  background-color: #37485e;
+}
+#myShareNotebooks .folderBody {
+  background: none;
 }

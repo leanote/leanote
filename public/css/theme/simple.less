@@ -386,15 +386,6 @@ a.raw:hover {
 	  border-right: none;
 	}
 }
-.each-user ul {
-	list-style: none;
-	margin: 0;
-	padding:0;
-	a {
-		padding-left: 20px;
-		font-size: 12px;
-	}
-}
 
 #myNotebooks.opened .fa-left {
 /*
@@ -431,12 +422,7 @@ a.raw:hover {
   background-color: @bgColor;
   color: @hColor;
 }
-.folderBody a {
-  padding-left: 20px;
-  display: block;
-  color: #444;
-  cursor: pointer;
-}
+
 .folderBody a:hover, .folderBody .contextmenu-hover {
   background-color: @borderColor !important;
 }
@@ -1129,4 +1115,7 @@ background-position:-1px -670px
 	bottom: 10px;
 	overflow: scroll;
 	list-style: none;
+}
+#notebookList {
+	border-top: 1px dashed #eee;
 }

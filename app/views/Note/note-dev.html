@@ -13,6 +13,8 @@
 <link rel="stylesheet" href="tinymce/skins/custom/skin.min.css" type="text/css" />
 
 <!-- leanote css -->
+<link href="css/font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet" />
+<link href="css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
 <script>
 var hash = location.hash;
 if(hash == "#writing") {
@@ -23,8 +25,6 @@ if(hash == "#writing") {
 document.write(files);
 </script>
 
-<link href="css/font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet" />
-<link href="css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
 
 <!-- For Develop writting mod -->
 
@@ -253,7 +253,7 @@ function log(o) {
 								</span>
 							</div>
 	
-							<ul class="folderBody" id="tagNav">
+							<ul class="folderBody clearfix" id="tagNav">
 								<li><a> <span class="label label-red">{{msg . "red"}}</span></a></li>
 								<li><a> <span class="label label-blue">{{msg . "blue"}}</span></a></li>
 								<li><a> <span class="label label-yellow">{{msg . "yellow"}}</span></a></li>

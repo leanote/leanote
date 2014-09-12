@@ -129,12 +129,19 @@ Notebook.getTreeSetting = function(isSearch, isShare){
 			var notebookId = treeNode.NotebookId;
 			Notebook.changeNotebook(notebookId);
 		};
+		var onDblClick = function(e) {
+			var notebookId = $(e.target).attr("notebookId");
+			if(!Notebook.isAllNotebookId(notebookId) && !Notebook.isTrashNotebookId(notebookId)) {
+				self.updateNotebookTitle(e.target);
+			}
+		}
 	} else {
 		var onClick =  function(e, treeId, treeNode) {
 			var notebookId = treeNode.NotebookId;
 			var fromUserId = $(e.target).closest('.friend-notebooks').attr("fromUserId");
 			Share.changeNotebook(fromUserId, notebookId);
 		};
+		var onDblClick = null;
 	}
 	
 	var setting = {
@@ -167,6 +174,7 @@ Notebook.getTreeSetting = function(isSearch, isShare){
 			beforeDrop: beforeDrop,
 			onDrop: onDrop,
 			onClick: onClick,
+			onDblClick: onDblClick,
 			beforeRename: function(treeId, treeNode, newName, isCancel) {
 				if(newName == "") {
 					if(treeNode.IsNew) {

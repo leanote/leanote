@@ -180,10 +180,14 @@
   border-color: #ebeff2;
   box-shadow: none;
 }
+#myNotebooks .folderBody {
+  padding-top: 3px;
+}
 #searchNotebookForList {
   height: 30px;
   width: 90%;
   margin: 3px auto;
+  margin-top: 0;
   border-color: #ebeff2;
   box-shadow: none;
 }
@@ -235,6 +239,35 @@
   margin-top: 3px;
   border: 1px solid #eee;
   border-radius: 3px;
+}
+.notebook-setting {
+  display: none;
+  position: absolute;
+  right: 3px;
+  top: 0;
+  bottom: 0;
+  line-height: 30px;
+}
+.notebook-setting:before {
+  content: "\f013";
+}
+.ztree li a:hover .notebook-setting {
+  display: block;
+}
+#myTag .folderBody {
+  padding: 0 3px;
+  padding-bottom: 3px;
+}
+#myTag .folderBody li {
+  float: left;
+  padding: 3px;
+  line-height: normal;
+}
+#notebookList {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+.ztree {
+  padding: 0px;
 }
 ::selection {
   background: #000000;
@@ -589,15 +622,6 @@ a.raw:hover {
   width: 20px;
   border-right: none;
 }
-.each-user ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.each-user ul a {
-  padding-left: 20px;
-  font-size: 12px;
-}
 #myNotebooks.opened .fa-left {
   /*
 	background-color: #65bd77;
@@ -633,12 +657,6 @@ a.raw:hover {
 .folderBody a.active {
   background-color: #ffffff;
   color: #0fb264;
-}
-.folderBody a {
-  padding-left: 20px;
-  display: block;
-  color: #444;
-  cursor: pointer;
 }
 .folderBody a:hover,
 .folderBody .contextmenu-hover {
@@ -1272,4 +1290,7 @@ background-position:-1px -670px
   bottom: 10px;
   overflow: scroll;
   list-style: none;
+}
+#notebookList {
+  border-top: 1px dashed #eee;
 }
