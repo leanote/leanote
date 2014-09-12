@@ -114,16 +114,21 @@ ul.ztree.zTreeDragUL {z-index: 333;margin:0; padding:0; position:absolute; width
 .ztree.showIcon li a span.button.switch {visibility:visible}
 .ztree li a.curSelectedNode {background-color:#eee;border:0;height:30px;}
 .ztree li span {line-height:30px;}
-.ztree li span.button {margin-top: -7px;}
-.ztree li span.button.switch {width: 16px;height: 16px;}
+.ztree li span.button {margin-top: -5px;}
+.ztree li span.button.switch {width: 16px;height: 30px; line-height: 30px; text-align: center}
 
 .ztree li a.level0 span {font-size: 14px;}
-.ztree li span.button {background-image:url("./img/left_menuForOutLook.png"); 
-*background-image:url("./img/left_menuForOutLook.gif")}
-.ztree li span.button.switch.level0 {width: 20px; height:20px}
-.ztree li span.button.switch.level1 {width: 20px; height:20px}
-.ztree li span.button.noline_open {background-position: 0 0;}
-.ztree li span.button.noline_close {background-position: -18px 0;}
+.ztree li span.button {
+	background-image: none; /* url("./img/left_menuForOutLook.png"); */
+}
+.ztree li span.button.switch.level0 {width: 20px;}
+.ztree li span.button.switch.level1 {width: 20px;}
+.ztree li span.button.noline_open:before {
+	content: "\f107";
+}
+.ztree li span.button.noline_close:before {
+	content: "\f105";
+}
 .ztree li span.button.noline_open.level0 {background-position: 0 -18px;}
 .ztree li span.button.noline_close.level0 {background-position: -18px -18px;}
 

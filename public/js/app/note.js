@@ -11,7 +11,7 @@ Note.curNoteId = "";
 
 Note.interval = ""; // 定时器
 
-Note.itemIsBlog = '<div class="item-blog"><i class="fa fa-bold" title="blog"></i></div>';
+Note.itemIsBlog = '<div class="item-blog"><i class="fa fa-bold" title="blog"></i></div><div class="item-setting"><i class="fa fa-cog" title="setting"></i></div>';
 // for render
 Note.itemTplNoImg = '<div href="#" class="item ?" noteId="?">'
 Note.itemTplNoImg += Note.itemIsBlog +'<div class="item-desc" style="right: 0;"><p class="item-title">?</p><p class="item-text"><i class="fa fa-book"></i> <span class="note-notebook">?</span> <i class="fa fa-calendar"></i> <span class="updated-time">?</span> <br /><span class="desc">?</span></p></div></div>';
@@ -1152,7 +1152,6 @@ Note.copyNote = function(target, data, isShared) {
 	});
 }
 
-Note.contextmenu = null;
 Note.getContextNotebooks = function(notebooks) {
 	var moves = [];
 	var copys = [];
@@ -1172,27 +1171,18 @@ Note.getContextNotebooks = function(notebooks) {
 	}
 	return [moves, copys];
 }
+// Notebook调用
+Note.contextmenu = null;
 Note.initContextmenu = function() {
 	var self = Note;
 	if(Note.contextmenu) {
-		Note.contextmenu.unbind("contextmenu");
+		Note.contextmenu.destroy();
 	}
 	// 得到可移动的notebook
 	var notebooks = Notebook.everNotebooks;
 	var mc = self.getContextNotebooks(notebooks);
 	var notebooksMove = mc[0];
 	var notebooksCopy = mc[1];
-	
-	/*
-	$("#notebookNavForNewNote li div.new-note-left").each(function() {
-		var notebookId = $(this).attr("notebookId");
-		var title = $(this).text();
-		var move = {text: title, notebookId: notebookId, action: Note.moveNote}
-		var copy = {text: title, notebookId: notebookId, action: Note.copyNote}
-		notebooksMove.push(move);
-		notebooksCopy.push(copy);
-	});
-	*/
 	
 	//---------------------
 	// context menu
@@ -1229,7 +1219,6 @@ Note.initContextmenu = function() {
 	function menuAction(target) {
 		// $('#myModal').modal('show')
 		showDialog("dialogUpdateNotebook", {title: "修改笔记本", postShow: function() {
-			
 		}});
 	}
 	function applyrule(menu) {
@@ -1273,7 +1262,7 @@ Note.initContextmenu = function() {
 	    return this.id != "target3";
 	}
 	
-	Note.contextmenu = $("#noteItemList .item").contextmenu(noteListMenu);
+	Note.contextmenu = $("#noteItemList .item-my").contextmenu(noteListMenu);
 }
 
 //------------------- 事件
@@ -1348,7 +1337,7 @@ $(function() {
 	});
 	
 	//--------------------
-	Note.initContextmenu();
+	// Note.initContextmenu();
 	
 	//------------
 	// 文档历史
@@ -1367,6 +1356,17 @@ $(function() {
 		// 得到ID
 		var noteId = $(this).parent().attr('noteId');
 		window.open("/blog/view/" + noteId);
+	});
+	
+	// note setting
+	$("#noteItemList").on("click", ".item-setting", function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		// 得到ID
+		var $p = $(this).parent();
+		var noteId = $p.attr('noteId');
+		
+		Note.contextmenu.showMenu(e, $p);
 	});
 });
 

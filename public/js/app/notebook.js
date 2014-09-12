@@ -237,27 +237,6 @@ Notebook.cacheAllNotebooks = function(notebooks) {
 Notebook.renderNav = function(nav) {
 	var self = this;
 	self.changeNav();
-	return;
-	
-	var navForListNote = "";
-	var navForNewNote = "";
-	var navForMoveNote = "";
-	var len = Notebook.notebooks.length-1;
-	var contextmenu = [];
-	for(var i in Notebook.notebooks) {
-		var notebook = Notebook.notebooks[i];
-		var each = t('<li role="presentation"><a role="menuitem" tabindex="-1" href="#" notebookId="?">?</a></li>', notebook.NotebookId, notebook.Title);
-		var eachForNew = t('<li role="presentation" class="clearfix"><div class="new-note-left pull-left" title="为该笔记本新建笔记" href="#" notebookId="?">?</div><div title="为该笔记本新建markdown笔记" class="new-note-right pull-left" notebookId="?">Markdown</div></li>', notebook.NotebookId, notebook.Title, notebook.NotebookId);
-		navForListNote  += each;
-		if(i != 0 && i != len) {
-			navForMoveNote += each;
-			navForNewNote += eachForNew;
-		}
-	}
-	
-	$("#notebookNavForListNote").html(navForListNote);
-	$("#notebookNavForNewNote").html(navForNewNote);
-	$("#notebookNavForMoveNote").html(navForMoveNote);
 }
 
 // 搜索notebook
@@ -817,29 +796,10 @@ $(function() {
 		var notebookId = $(this).attr("notebookId");
 		return !Notebook.isTrashNotebookId(notebookId) && !Notebook.isAllNotebookId(notebookId);
 	}
+	
 	$("#notebookList li a").contextmenu(notebookListMenu);
 	
 	$("#notebookListForSearch").contextmenu(notebookListMenu2);
-	
-	//------------------
-	// 添加notebook
-	// 右键菜单
-	var addNotebookContextmenu = {
-		width: 150, 
-		items: [
-			{ text: "添加笔记本", icon: "", action: Notebook.addNotebook },
-		],
-    	parent: "#myNotebooks",
-    	children: ""
-	}
-	$("#myNotebooks").contextmenu(addNotebookContextmenu);
-	
-	//---------------
-	// 点击中部notebook nav
-	$("#notebookNavForListNote").on("click", "li", function() {
-		var notebookId = $(this).find("a").attr("notebookId");
-		Notebook.changeNotebook(notebookId);
-	});
 	
 	// 添加笔记本
 	$("#addNotebookPlus").click(function(e) {

@@ -16,7 +16,7 @@
 	//default consts of core
 	_consts = {
 		className: {
-			BUTTON: "button",
+			BUTTON: "button fa",
 			LEVEL: "level",
 			ICO_LOADING: "ico_loading",
 			SWITCH: "switch"

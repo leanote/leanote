@@ -202,7 +202,8 @@ LEA.cmroot = 1;
 	            $(target).addClass("contextmenu-hover");
             }
             
-            $(document).one('mousedown', function() {
+            // life , 之前是mousedown
+            $(document).one('click', function() {
             	hideMenuPane();
             	// life
 	            $(target).removeClass("contextmenu-hover");
@@ -237,8 +238,7 @@ LEA.cmroot = 1;
         });
         */
         
-        // bind event
-        var me = $(option.parent).on('contextmenu', option.children, function(e) {
+        function onShowMenu(e) {
             var bShowContext = (option.onContextMenu && $.isFunction(option.onContextMenu)) ? option.onContextMenu.call(this, e) : true;
             if (bShowContext) {
                 if (option.onShow && $.isFunction(option.onShow)) {
@@ -247,8 +247,14 @@ LEA.cmroot = 1;
                 root.showMenu(e, this);
             }
             // 阻止冒泡, 默认事件
-            e.preventDefault();
+            if(e) {
+	            e.preventDefault();
+            }
             return false;
+        }
+        // bind event
+        var me = $(option.parent).on('contextmenu', option.children, function(e){ 
+        	onShowMenu.call(this, e);
         });
         
         //to apply rule
@@ -259,6 +265,16 @@ LEA.cmroot = 1;
         addItems = overItem = outItem = null;
         //CollectGarbage();
         
-        return me;
+        var out = {
+        	destroy: function() {
+        		me.unbind("contextmenu");
+        	},
+        	showMenu: function(e, target) {
+        		log(e);
+        		log(target);
+        		onShowMenu.call(target, e);
+        	}
+        }
+        return out;
     }
 })(jQuery);

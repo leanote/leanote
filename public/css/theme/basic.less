@@ -142,7 +142,7 @@
 }
 
 // 动画
-.open > .dropdown-menu {
+.open > .dropdown-menu, .dropdown-submenu:hover > .dropdown-menu {
   -webkit-transform: scale(1, 1);
   transform: scale(1, 1);  
 }
@@ -200,4 +200,41 @@
 	margin: 3px auto;
 	border-color: #ebeff2;
 	box-shadow: none;
+}
+
+// blog
+#noteItemList {
+	.item-setting, .item-blog {
+	  position: absolute; 
+	  right: 1px;
+	  font-size: 10px;
+	  z-index: 2;
+	  padding: 3px;
+	  border-radius: 5px;
+	  cursor: pointer;
+	  .fa {
+		  color: #fff !important;
+	  }
+	  width: 20px;
+	  text-align: center;
+	  opacity: 0.5;
+	  &:hover {
+		  opacity: 0.8;
+	  }
+	  background-color: #464C5E;
+	 }
+	  
+	 .item-blog {
+	 	top: 1px;
+	 }
+	  
+	 .item-setting {
+	 	bottom: 0;
+	 	display: none;
+	 }
+}
+#noteItemList .item:hover  {
+	 .item-setting {
+	 	display: block;
+	 }
 }
