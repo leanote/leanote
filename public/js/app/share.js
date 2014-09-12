@@ -4,7 +4,7 @@
 
 // 默认共享notebook id
 Share.defaultNotebookId = "share0";
-Share.defaultNotebookTitle = "默认共享";
+Share.defaultNotebookTitle = "Default Share";
 Share.sharedUserInfos = {}; // userId => {}
 
 // 在render时就创建, 以后复用之

@@ -15,7 +15,9 @@ website:	http://code.google.com/p/jquerytree/
 .ztree li ul.line{ background:url(./img/line_conn.gif) 0 0 repeat-y;}
 
 .ztree li a {padding:1px 3px 0 0; margin:0; cursor:pointer; height:17px; color:#333; background-color: transparent;
-	text-decoration:none; vertical-align:top; display: block}
+	text-decoration:none; vertical-align:top; display: block;
+	position: relative;
+}
 .ztree li a:hover {text-decoration:underline}
 .ztree li a.curSelectedNode {padding-top:0px; background-color:#FFE6B0; color:black; height:16px; border:1px #FFB951 solid; opacity:0.8;}
 .ztree li a.curSelectedNode_Edit {padding-top:0px; background-color:#FFE6B0; color:black; height:16px; border:1px #FFB951 solid; opacity:0.8;}
@@ -141,4 +143,19 @@ ul.ztree.zTreeDragUL {z-index: 333;margin:0; padding:0; position:absolute; width
 	font-size:12px; border:1px #7EC4CC solid; *border:0px}
 */
 .ztree li a.curSelectedNode_Edit input {
+}
+
+.notebook-setting {
+	display: none;
+	position: absolute;
+	right: 3px;
+	top: 0;
+	bottom: 0;
+	line-height: 30px;
+}
+.notebook-setting:before {
+	content: "\f013";
+}
+.ztree li a:hover .notebook-setting {
+	display: block;
 }

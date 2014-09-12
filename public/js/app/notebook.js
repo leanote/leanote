@@ -56,6 +56,9 @@ Notebook.getTreeSetting = function(isSearch){
 		icoObj = $("#" + treeId + " #" + treeNode.tId + "_ico");
 		switchObj.remove();
 		icoObj.before(switchObj);
+		if(!Notebook.isAllNotebookId(treeNode.NotebookId) && !Notebook.isTrashNotebookId(treeNode.NotebookId)) {
+			icoObj.after($('<span class="fa notebook-setting" title="setting"></span>'));
+		}
 		if (treeNode.level > 1) {
 			var spaceStr = "<span style='display: inline-block;width:" + (spaceWidth * treeNode.level)+ "px'></span>";
 			switchObj.before(spaceStr);
@@ -797,13 +800,27 @@ $(function() {
 		return !Notebook.isTrashNotebookId(notebookId) && !Notebook.isAllNotebookId(notebookId);
 	}
 	
-	$("#notebookList li a").contextmenu(notebookListMenu);
+	Notebook.contextmenu = $("#notebookList li a").contextmenu(notebookListMenu);
 	
-	$("#notebookListForSearch").contextmenu(notebookListMenu2);
+	Notebook.contextmenuSearch = $("#notebookListForSearch li a").contextmenu(notebookListMenu2);
 	
 	// 添加笔记本
 	$("#addNotebookPlus").click(function(e) {
 		e.stopPropagation();
 		Notebook.addNotebook();
+	});
+	
+	// notebook setting
+	$("#notebookList").on("click", ".notebook-setting", function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var $p = $(this).parent();
+		Notebook.contextmenu.showMenu(e, $p);
+	});
+	$("#notebookListForSearch").on("click", ".notebook-setting", function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var $p = $(this).parent();
+		Notebook.contextmenuSearch.showMenu(e, $p);
 	});
 });
