@@ -77,7 +77,8 @@ func (c User) SendRegisterEmail(content, toEmail string) revel.Result {
 	
 	// 发送邮件
 	var userInfo = c.GetUserInfo();
-	url := "http://leanote.com/register?from=" + userInfo.Username
+	siteUrl, _ := revel.Config.String("site.url")
+	url := siteUrl + "/register?from=" + userInfo.Username
 	body := fmt.Sprintf("点击链接注册leanote: <a href='%v'>%v</a>. ", url, url);
 	body = content + "<br />" + body
 	re.Ok = SendEmail(toEmail, userInfo.Username + "邀请您注册leanote", "邀请注册", body)

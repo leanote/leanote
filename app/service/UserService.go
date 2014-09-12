@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/revel/revel"
 	"github.com/leanote/leanote/app/info"
 	"github.com/leanote/leanote/app/db"
 	. "github.com/leanote/leanote/app/lea"
@@ -180,7 +181,8 @@ func (this *UserService) RegisterSendActiveEmail(userId string, email string) bo
 	}
 	
 	// 发送邮件
-	url := "http://leanote.com/user/activeEmail?token=" + token
+	siteUrl, _ := revel.Config.String("site.url")
+	url := siteUrl + "/user/activeEmail?token=" + token
 	body := fmt.Sprintf("请点击链接验证邮箱: <a href='%v'>%v</a>. %v小时后过期.", url, url, tokenService.GetOverHours(info.TokenActiveEmail));
 	if !SendEmail(email, "leanote-验证邮箱", "验证邮箱", body) {
 		return false
@@ -208,7 +210,8 @@ func (this *UserService) UpdateEmailSendActiveEmail(userId, email string) (ok bo
 	}
 	
 	// 发送邮件
-	url := "http://leanote.com/user/updateEmail?token=" + token
+	siteUrl, _ := revel.Config.String("site.url")
+	url := siteUrl + "/user/updateEmail?token=" + token
 	body := "邮箱验证后您的登录邮箱为: <b>" + email + "</b><br />";
 	body += fmt.Sprintf("请点击链接验证邮箱: <a href='%v'>%v</a>. %v小时后过期.", url, url, tokenService.GetOverHours(info.TokenUpdateEmail));
 	if !SendEmail(email, "leanote-验证邮箱", "验证邮箱", body) {
