@@ -2996,7 +2996,6 @@
 					}
 					var newNodes = isCopy ? tools.clone(nodes) : nodes;
 
-					// 这里速度慢
 					function dropCallback() {
 						if (isOtherTree) {
 							if (!isCopy) {
@@ -3040,7 +3039,6 @@
 						view.selectNodes(targetSetting, newNodes);
 						$$(newNodes[0], setting).focus().blur();
 
-						// 这里非常耗时!!! 原因是ajax自定义方法
 						setting.treeObj.trigger(consts.event.DROP, [event, targetSetting.treeId, newNodes, dragTargetNode, moveType, isCopy]);
 					}
 
@@ -3245,7 +3243,6 @@
 			root.noSelection = false;
 			root.curEditNode = node;
 		},
-		// 这里, 速度慢
 		moveNode: function(setting, targetNode, node, moveType, animateFlag, isSilent) {
 			var root = data.getRoot(setting),
 			childKey = setting.data.key.children;

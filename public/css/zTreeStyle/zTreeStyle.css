@@ -14,10 +14,12 @@
 /* 拖动到上面 */
 .ztree li a.tmpTargetNode_inner {
 	padding-top:0px; 
-	background-color:#316AC5; 
-	color:white; height:30px; 
-	border:1px #316AC5 solid;
-	opacity:0.8; filter:alpha(opacity=80)
+	background-color:#eee; 
+	color: #000; 
+	height: 30px; 
+	border:1px #ccc solid;
+	opacity: 0.8; 
+	filter:alpha(opacity=80)
 }
 .ztree li span {line-height:16px; margin-right:2px}
 .ztree li span.button {line-height:0; margin:0; width:16px; height:16px; display: inline-block; vertical-align:middle;
@@ -32,14 +34,20 @@
 
 ul.tmpTargetzTree {background-color:#FFE6B0; opacity:0.8; filter:alpha(opacity=80)}
 
-/* 移动 */
+/* 移动 箭头*/
 span.tmpzTreeMove_arrow {
-	z-index: 333;width:16px; height:30px; line-height: 30px;
-	display: inline-block; padding:0; margin:2px 0 0 15px; border:0 none; position:absolute;
+	z-index: 333;width:16px; 
+	height:30px; line-height: 30px;
+	display: inline-block; 
+	padding:0; 
+	margin:0 0 0 15px; 
+	border:0 none; position:absolute;
 }
 
+/* 拖动的副本 */
 ul.ztree.zTreeDragUL {z-index: 333;margin:0; padding:0; position:absolute; width:auto; height:auto;overflow:hidden; 
-	background-color:cfcfcf; border:1px #00B83F dotted; opacity:0.8; filter:alpha(opacity=80)}
+	background-color: cfcfcf; 
+	border:1px #00B83F dotted; opacity:0.8; filter:alpha(opacity=80)}
 .zTreeMask {z-index:1000; background-color:#cfcfcf; opacity:0.0; filter:alpha(opacity=0); position:absolute}
 .ztree li ul{ margin:0; padding:0}
 .ztree li {line-height:30px;}

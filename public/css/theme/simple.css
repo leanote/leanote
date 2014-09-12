@@ -664,14 +664,16 @@ a.raw:hover {
 }
 #notebookList input,
 #notebookListForSearch input {
-  border: 1px solid #ebeff2;
   width: 90%;
+  border: none;
   box-shadow: none;
+  padding-left: 3px;
+  background: none;
 }
 #notebookList input:focus,
 #notebookListForSearch input:focus {
   outline: none !important;
-  border-color: #0fb264;
+  border: none;
 }
 #myTag .folderBody li {
   position: relative;

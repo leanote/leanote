@@ -461,12 +461,14 @@ a.raw:hover {
 
 // 重命名, 添加notebook
 #notebookList input, #notebookListForSearch input {
-	border: 1px solid @borderColor;
+	border: 1px solid rgba(0,0,0,0.1);
 	width: 90%;
+	padding-left:3px;
     box-shadow: none;
+	background: none;
+	color: #fff;
     &:focus {
       outline: none !important;
-      border-color: @hColor;
 	}
 }
 
@@ -1190,4 +1192,14 @@ background-position:-1px -670px
 }
 .tmpzTreeMove_arrow {
 	color: #fff;
+}
+
+.ztree li a.tmpTargetNode_inner {
+	padding-top:0px; 
+	background-color: rgba(0, 0, 0, 0.3);
+	color: #fff; 
+	height: 30px; 
+	border:1px #ccc solid;
+	opacity: 0.8; 
+	filter:alpha(opacity=80)
 }

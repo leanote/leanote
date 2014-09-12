@@ -699,14 +699,16 @@ a.raw:hover {
 }
 #notebookList input,
 #notebookListForSearch input {
-  border: 1px solid #ebeff2;
+  border: 1px solid rgba(0, 0, 0, 0.1);
   width: 90%;
+  padding-left: 3px;
   box-shadow: none;
+  background: none;
+  color: #fff;
 }
 #notebookList input:focus,
 #notebookListForSearch input:focus {
   outline: none !important;
-  border-color: #0fb264;
 }
 #myTag .folderBody {
   /*
@@ -1361,4 +1363,13 @@ background-position:-1px -670px
 }
 .tmpzTreeMove_arrow {
   color: #fff;
+}
+.ztree li a.tmpTargetNode_inner {
+  padding-top: 0px;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  height: 30px;
+  border: 1px #ccc solid;
+  opacity: 0.8;
+  filter: alpha(opacity=80);
 }
