@@ -47,7 +47,48 @@ Share.setCache = function(note) {
  */
 // TODO 层级
 // shareNotebooks = {userId => {}}
+Share.getNotebooksForNew = function(userId, notebooks) {
+	var self = this;
+	var navForNewNote = "";
+	
+	var len = notebooks.length;
+	for(var i = 0; i < len; ++i) {
+		var notebook = notebooks[i];
+		notebook.IsShared = true;
+		notebook.UserId = userId;
+		self.notebookCache[notebook.NotebookId] = notebook;
+		// notebook的cache也缓存一份, 为了显示标题
+		Notebook.cache[notebook.NotebookId] = notebook;
+		
+		var classes = "";
+		var subs = false;
+		if(!isEmpty(notebook.Subs)) {
+			log(11);
+			log(notebook.Subs);
+			var subs = self.getNotebooksForNew(userId, notebook.Subs);
+			if(subs) {
+				classes = "dropdown-submenu";
+			}
+		}
+		
+		var eachForNew = "";
+		if(notebook.Perm) {
+			var eachForNew = t('<li role="presentation" class="clearfix ?" userId="?" notebookId="?"><div class="new-note-left pull-left" title="为该笔记本新建笔记" href="#">?</div><div title="为该笔记本新建markdown笔记" class="new-note-right pull-left">M</div>', classes, userId, notebook.NotebookId, notebook.Title);
+			if(subs) {
+				eachForNew  += "<ul class='dropdown-menu'>";
+				eachForNew  += subs;
+				eachForNew  += "</ul>";
+			}
+			eachForNew  += '</li>';
+		}
+		
+		navForNewNote += eachForNew;
+	}
+	return navForNewNote;
+}
+Share.trees = {};
 Share.renderShareNotebooks = function(sharedUserInfos, shareNotebooks) {
+	var self = Share;
 	if(isEmpty(sharedUserInfos)) {
 		return;
 	}
@@ -61,49 +102,98 @@ Share.renderShareNotebooks = function(sharedUserInfos, shareNotebooks) {
 	// render每一个用户的share给我的笔记本, 之前先建一个默认共享
 	for(var i in sharedUserInfos) {
 		var userInfo = sharedUserInfos[i];
-		var userNotebooks = shareNotebooks[userInfo.UserId] || [];
+		var userNotebooksPre = shareNotebooks[userInfo.UserId] || [];
 		
-		userNotebooks = [{NotebookId: Share.defaultNotebookId, Title: Share.defaultNotebookTitle}].concat(userNotebooks)
+		userNotebooks = [{NotebookId: self.defaultNotebookId, Title: Share.defaultNotebookTitle}].concat(userNotebooksPre)
+		
+		self.notebookCache[self.defaultNotebookId] = userNotebooks[0];
 
 		var username = userInfo.Username || userInfo.Email;
 		userInfo.Username = username;
 		Share.sharedUserInfos[userInfo.UserId] = userInfo;
 		var userId = userInfo.UserId;
-		var header = t('<li class="each-user"><div class="" fromUserId="?"><i class="fa fa-angle-down"></i><span>?</span></div>', userInfo.UserId, username);
-		var friendId = "friendContainer" + i;
-		var body = '<ul class="" id="' + friendId + '">';
+		var header = t('<li class="each-user"><div class="friend-header" fromUserId="?"><i class="fa fa-angle-down"></i><span>?</span> <span class="fa notebook-setting" title="setting"></span> </div>', userInfo.UserId, username);
+		var friendId = "friendContainer_" + userId;
+		var body = '<ul class="friend-notebooks ztree" id="' + friendId + '" fromUserId="' + userId + '"></ul>';
+		$shareNotebooks.append(header + body + "</li>")
 		
-		var forList = ""; // 全部
-		var forNew = ""; // 必须要有权限的
-		
-		for(var j in userNotebooks) {
-			var notebook = userNotebooks[j];
-			
-			// 缓存起来, 像Note
-			notebook.IsShared = true;
-			notebook.UserId = userId;
-			Share.notebookCache[notebook.NotebookId] = notebook;
-			// notebook的cache也缓存一份, 为了显示标题
-			Notebook.cache[notebook.NotebookId] = notebook;
-			
-			body += t('<li><a notebookId="?" fromUserId="?">?</a></li>', notebook.NotebookId, userId, notebook.Title)
-			
-			// 
-			var each = t('<li role="presentation"><a role="menuitem" tabindex="-1" href="#" userId="?" notebookId="?">?</a></li>', userId, notebook.NotebookId, notebook.Title);
-			forList += each;
-			if(j != 0 && notebook.Perm) {
-				forNew += t('<li role="presentation" class="clearfix" userId="?" notebookId="?"><div class="new-note-left pull-left">?</div><div class="new-note-right pull-left">Markdown</div></li>', userId, notebook.NotebookId, notebook.Title);
-			}
-		}
-		
-		body += "</ul>";
-		Share.userNavs[userId] = {"forList": forList, "forNew": forNew};
-		
-		$shareNotebooks.append(header + body + "</div>")
-		
-		// mainShare
-		// $("#minShareNotebooks").append('<div class="minContainer" target="#' + friendId + '" title="' + username + ' 的分享"><i class="fa fa-user"></i><ul class="dropdown-menu"></ul></li>')
+		self.trees[userId] = $.fn.zTree.init($("#" + friendId), Notebook.getTreeSetting(true, true), userNotebooks);
+	
+		self.userNavs[userId] = {"forNew": self.getNotebooksForNew(userId, userNotebooksPre)};
+		log(self.userNavs);
 	}
+	
+	$(".friend-notebooks").hover(function () {
+		if (!$(this).hasClass("showIcon")) {
+			$(this).addClass("showIcon");
+		}
+	}, function() {
+		$(this).removeClass("showIcon");
+	});
+	
+	$(".friend-header i").click(function() {
+		var $this = $(this);
+		var $tree = $(this).parent().next();
+		if($tree.is(":hidden")) {
+			$tree.slideDown("fast");
+			$this.removeClass("fa-angle-right fa-angle-down").addClass("fa-angle-down");
+		} else {
+			$tree.slideUp("fast");
+			$this.removeClass("fa-angle-right fa-angle-down").addClass("fa-angle-right");
+		}
+	});
+	
+	//-----------------------------
+	// contextmenu shareNotebooks
+	// 删除共享笔记本
+	var shareNotebookMenu = {
+			width: 150, 
+			items: [
+				{ text: "删除共享笔记本", icon: "", faIcon: "fa-trash-o", action: Share.deleteShareNotebook }
+			], 
+			onShow: applyrule,
+			onContextMenu: beforeContextMenu,
+			
+			parent: "#shareNotebooks",
+			children: ".notebook-item",
+	};
+	function applyrule(menu) {
+		return;
+	}
+	// 默认共享不能删除
+	function beforeContextMenu() {
+		var notebookId = $(this).attr("notebookId");
+		return !Share.isDefaultNotebookId(notebookId);
+	}
+	
+	var menuNotebooks = $("#shareNotebooks").contextmenu(shareNotebookMenu);
+	
+	//---------------------------
+	// contextmenu shareNotebooks
+	// 删除某用户所有的
+	var shareUserMenu = {
+			width: 150, 
+			items: [
+				{ text: "删除所有共享", icon: "", faIcon: "fa-trash-o", action: Share.deleteUserShareNoteAndNotebook }
+			],
+			parent: "#shareNotebooks",
+			children: ".friend-header",
+	};
+	
+	var menuUser = $("#shareNotebooks").contextmenu(shareUserMenu);
+	
+	$(".friend-header").on("click", ".notebook-setting", function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var $p = $(this).parent();
+		menuUser.showMenu(e, $p);
+	});
+	$("#shareNotebooks .notebook-item").on("click", ".notebook-setting", function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var $p = $(this).parent();
+		menuNotebooks.showMenu(e, $p);
+	});
 };
 
 Share.isDefaultNotebookId = function(notebookId) {
@@ -114,13 +204,12 @@ Share.isDefaultNotebookId = function(notebookId) {
 // for list和for new
 // 如果forNew没有, 那么还是保持我的nav
 Share.toggleToSharedNav = function(userId, notebookId) {
+	var self = this;
 	// for list
-	$("#sharedNotebookNavForListNote").html(Share.userNavs[userId].forList);
-	$("#sharedNotebookNavForListNav").show();
-	$("#curSharedNotebookForListNote").html(Share.notebookCache[notebookId].Title + '(' + Share.sharedUserInfos[userId].Username + ")");
-	$("#myNotebookNavForListNav").hide();
+	$("#curNotebookForListNote").html(Share.notebookCache[notebookId].Title + '(' + Share.sharedUserInfos[userId].Username + ")");
 	
 	// for new
+	// 如果该用户下有新建的note, 那么列出, 如果没有, 则列出我的笔记
 	var forNew = Share.userNavs[userId].forNew;
 	if(forNew) {
 		$("#notebookNavForNewSharedNote").html(forNew);
@@ -134,7 +223,7 @@ Share.toggleToSharedNav = function(userId, notebookId) {
 			// 得到第一个
 			var $f = $("#notebookNavForNewSharedNote li").eq(0);
 			curNotebookId = $f.attr("notebookId");
-			curNotebookTitle = $f.text();
+			curNotebookTitle = $f.find(".new-note-left").text();
 		}
 		
 		$("#curNotebookForNewSharedNote").html(curNotebookTitle + '(' + Share.sharedUserInfos[userId].Username + ')');
@@ -143,6 +232,11 @@ Share.toggleToSharedNav = function(userId, notebookId) {
 		
 		$("#newSharedNote").show();
 		$("#newMyNote").hide();
+		
+	} else {
+		// 展示出我的笔记
+		$("#newMyNote").show();
+		$("#newSharedNote").hide();
 	}
 	
 	// 隐藏tag
@@ -156,7 +250,7 @@ Share.toggleToSharedNav = function(userId, notebookId) {
 //3. 使用Note.RederNotes()
 Share.changeNotebook = function(userId, notebookId) {
 	// 选中
-	Notebook.selectNotebook($(t('#shareNotebooks a[notebookId="?"]', notebookId)));
+	Notebook.selectNotebook($(t('#friendContainer_? a[notebookId="?"]', userId, notebookId)));
 	
 	// 改变nav!!!! TODO
 	Share.toggleToSharedNav(userId, notebookId);
@@ -206,13 +300,15 @@ Share.hasUpdatePerm = function(notebookId) {
 //---------------------------
 // 我删除别人共享给我的笔记本
 Share.deleteShareNotebook = function(target) {
-	var notebookId = $(target).attr("notebookId");
-	var fromUserId = $(target).attr("fromUserId"); // 谁共享给了我 from
-	ajaxGet("/share/DeleteShareNotebookBySharedUser", {notebookId: notebookId, fromUserId: fromUserId}, function(ret) {
-		if(ret) {
-			$(target).parent().remove();
-		}
-	});
+	if(confirm("Are you sure to delete it?")) {
+		var notebookId = $(target).attr("notebookId");
+		var fromUserId = $(target).closest(".friend-notebooks").attr("fromUserId"); // 谁共享给了我 from
+		ajaxGet("/share/DeleteShareNotebookBySharedUser", {notebookId: notebookId, fromUserId: fromUserId}, function(ret) {
+			if(ret) {
+				$(target).parent().remove();
+			}
+		});
+	}
 }
 Share.deleteShareNote = function(target) {
 	var noteId = $(target).attr("noteId");
@@ -224,12 +320,14 @@ Share.deleteShareNote = function(target) {
 	});
 }
 Share.deleteUserShareNoteAndNotebook = function(target) {
-	var fromUserId = $(target).attr("fromUserId"); // 谁共享给了我 from
-	ajaxGet("/share/deleteUserShareNoteAndNotebook", {fromUserId: fromUserId}, function(ret) {
-		if(ret) {
-			$(target).parent().remove();
-		}
-	});
+	if(confirm("Are you sure to delete all shared notebooks and notes?")) {
+		var fromUserId = $(target).attr("fromUserId"); // 谁共享给了我 from
+		ajaxGet("/share/deleteUserShareNoteAndNotebook", {fromUserId: fromUserId}, function(ret) {
+			if(ret) {
+				$(target).parent().remove();
+			}
+		});
+	}
 }
 
 // 新建shared note
@@ -260,20 +358,10 @@ Share.copySharedNote = function(target, contextmenuItem) {
 }
 
 Share.contextmenu = null;
-Share.initContextmenu = function() {
+Share.initContextmenu = function(notebooksCopy) {
 	if(Share.contextmenu) {
-		Share.contextmenu.unbind("contextmenu");
+		Share.contextmenu.destroy();
 	}
-	// 得到可移动的notebook
-	var notebooksCopy = [];
-	
-	// 到时这个可以缓存起来
-	$("#notebookNavForNewNote li .new-note-left").each(function() {
-		var notebookId = $(this).attr("notebookId");
-		var title = $(this).text();
-		var copy = {text: title, notebookId: notebookId, action: Share.copySharedNote}
-		notebooksCopy.push(copy);
-	});
 	
 	//---------------------
 	// context menu
@@ -316,58 +404,16 @@ Share.initContextmenu = function() {
 }
 
 $(function() {
-	// 点击notebook
-	$("#shareNotebooks").on("click", "ul li a", function() {
-		var notebookId = $(this).attr("notebookId");
-		var userId = $(this).attr("fromUserId");
-		Share.changeNotebook(userId, notebookId);
-	});
-	// min
-	$("#minShareNotebooks").on("click", "li", function() {
-		var self = $(this).find("a");
-		var notebookId = $(self).attr("notebookId");
-		var userId = $(self).attr("fromUserId");
-		Share.changeNotebook(userId, notebookId);
+	// note setting
+	$("#noteItemList").on("click", ".item-shared .item-setting", function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		// 得到ID
+		var $p = $(this).parent();
+		Share.contextmenu.showMenu(e, $p);
 	});
 	
-	//-----------------------------
-	// contextmenu shareNotebooks
-	// 删除共享笔记本
-	var shareNotebookMenu = {
-			width: 150, 
-			items: [
-				{ text: "删除共享笔记本", icon: "", faIcon: "fa-trash-o", action: Share.deleteShareNotebook }
-			], 
-			onShow: applyrule,
-			onContextMenu: beforeContextMenu,
-			
-			parent: "#shareNotebooks .folderBody",
-			children: "li a",
-	};
-	function applyrule(menu) {
-		return;
-	}
-	// 默认共享不能删除
-	function beforeContextMenu() {
-		var notebookId = $(this).attr("notebookId");
-		return !Share.isDefaultNotebookId(notebookId);
-	}
 	
-	$("#shareNotebooks").contextmenu(shareNotebookMenu);
-	
-	//---------------------------
-	// contextmenu shareNotebooks
-	// 删除某用户所有的
-	var shareUserMenu = {
-			width: 150, 
-			items: [
-				{ text: "删除所有共享", icon: "", faIcon: "fa-trash-o", action: Share.deleteUserShareNoteAndNotebook }
-			],
-			parent: "#shareNotebooks",
-			children: ".folderHeader",
-	};
-	
-	$("#shareNotebooks").contextmenu(shareUserMenu);
 	
 	//---------------------------
 	// 新建笔记
@@ -387,15 +433,12 @@ $(function() {
 		var notebookId = $(this).parent().attr("notebookId");
 		var userId = $(this).parent().attr("userId");
 		
-		if($(this).text() == "Markdown") {
+		if($(this).text() == "M") {
 			Note.newNote(notebookId, true, userId, true);
 		} else {
 			Note.newNote(notebookId, true, userId);
 		}
 	});
-	
-	//------------------
-	Share.initContextmenu();
 	
 	//------------------
 	// 添加共享

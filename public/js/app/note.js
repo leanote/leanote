@@ -1155,24 +1155,30 @@ Note.copyNote = function(target, data, isShared) {
 Note.getContextNotebooks = function(notebooks) {
 	var moves = [];
 	var copys = [];
+	var copys2 = [];
 	for(var i in notebooks) {
 		var notebook = notebooks[i];
 		var move = {text: notebook.Title, notebookId: notebook.NotebookId, action: Note.moveNote}
 		var copy = {text: notebook.Title, notebookId: notebook.NotebookId, action: Note.copyNote}
+		var copy2 = {text: notebook.Title, notebookId: notebook.NotebookId, action: Share.copySharedNote}
 		if(!isEmpty(notebook.Subs)) {
 			var mc = Note.getContextNotebooks(notebook.Subs);
 			move.items = mc[0];
 			copy.items = mc[1];
+			copy2.items = mc[2];
 			$.extend(move, {type: "group", width: 150});
 			$.extend(copy, {type: "group", width: 150});
+			$.extend(copy2, {type: "group", width: 150});
 		}
 		moves.push(move);
 		copys.push(copy);
+		copys2.push(copy2);
 	}
-	return [moves, copys];
+	return [moves, copys, copys2];
 }
 // Notebook调用
 Note.contextmenu = null;
+Note.notebooksCopy = []; // share会用到
 Note.initContextmenu = function() {
 	var self = Note;
 	if(Note.contextmenu) {
@@ -1183,6 +1189,7 @@ Note.initContextmenu = function() {
 	var mc = self.getContextNotebooks(notebooks);
 	var notebooksMove = mc[0];
 	var notebooksCopy = mc[1];
+	self.notebooksCopy = mc[2];
 	
 	//---------------------
 	// context menu
@@ -1359,13 +1366,10 @@ $(function() {
 	});
 	
 	// note setting
-	$("#noteItemList").on("click", ".item-setting", function(e) {
+	$("#noteItemList").on("click", ".item-my .item-setting", function(e) {
 		e.preventDefault();
 		e.stopPropagation();
-		// 得到ID
 		var $p = $(this).parent();
-		var noteId = $p.attr('noteId');
-		
 		Note.contextmenu.showMenu(e, $p);
 	});
 });

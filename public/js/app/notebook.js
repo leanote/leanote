@@ -45,7 +45,7 @@ Notebook.getNotebookTitle = function(notebookId) {
 </ul>
  */
  
-Notebook.getTreeSetting = function(isSearch){ 
+Notebook.getTreeSetting = function(isSearch, isShare){ 
 	var noSearch = !isSearch;
 	
 	var self = this;
@@ -56,8 +56,14 @@ Notebook.getTreeSetting = function(isSearch){
 		icoObj = $("#" + treeId + " #" + treeNode.tId + "_ico");
 		switchObj.remove();
 		icoObj.before(switchObj);
-		if(!Notebook.isAllNotebookId(treeNode.NotebookId) && !Notebook.isTrashNotebookId(treeNode.NotebookId)) {
-			icoObj.after($('<span class="fa notebook-setting" title="setting"></span>'));
+		if(!isShare) {
+			if(!Notebook.isAllNotebookId(treeNode.NotebookId) && !Notebook.isTrashNotebookId(treeNode.NotebookId)) {
+				icoObj.after($('<span class="fa notebook-setting" title="setting"></span>'));
+			}
+		} else {
+			if(!Share.isDefaultNotebookId(treeNode.NotebookId)) {
+				icoObj.after($('<span class="fa notebook-setting" title="setting"></span>'));
+			}
 		}
 		if (treeNode.level > 1) {
 			var spaceStr = "<span style='display: inline-block;width:" + (spaceWidth * treeNode.level)+ "px'></span>";
@@ -115,6 +121,20 @@ Notebook.getTreeSetting = function(isSearch){
 		}
 		ajaxPost("/notebook/dragNotebooks", {data: JSON.stringify(ajaxData)});
 	}
+	
+	if(!isShare) {
+		var onClick =  function(e, treeId, treeNode) {
+			var notebookId = treeNode.NotebookId;
+			Notebook.changeNotebook(notebookId);
+		};
+	} else {
+		var onClick =  function(e, treeId, treeNode) {
+			var notebookId = treeNode.NotebookId;
+			var fromUserId = $(e.target).closest('.friend-notebooks').attr("fromUserId");
+			Share.changeNotebook(fromUserId, notebookId);
+		};
+	}
+	
 	var setting = {
 		view: {
 			showLine: false,
@@ -144,10 +164,7 @@ Notebook.getTreeSetting = function(isSearch){
 			beforeDrag: beforeDrag,
 			beforeDrop: beforeDrop,
 			onDrop: onDrop,
-			onClick: function(e, treeId, treeNode) {
-				var notebookId = treeNode.NotebookId;
-				Notebook.changeNotebook(notebookId);
-			},
+			onClick: onClick,
 			beforeRename: function(treeId, treeNode, newName, isCancel) {
 				if(newName == "") {
 					if(treeNode.IsNew) {
@@ -202,11 +219,11 @@ Notebook.renderNotebooks = function(notebooks) {
 	// 展开/折叠图标
 	var $notebookList = $("#notebookList");
 	$notebookList.hover(function () {
-		if (!$notebookList.hasClass("showIcon")) {
-			$notebookList.addClass("showIcon");
+		if(!$(this).hasClass("showIcon")) {
+			$(this).addClass("showIcon");
 		}
 	}, function() {
-		$notebookList.removeClass("showIcon");
+		$(this).removeClass("showIcon");
 	});
 			
 	// 缓存所有notebooks信息
@@ -338,6 +355,7 @@ Notebook.changeNav = function() {
 	
 	// 移动, 复制重新来, 因为nav变了, 移动至-----的notebook导航也变了
 	Note.initContextmenu();
+	Share.initContextmenu(Note.notebooksCopy);
 }
 
 /**
@@ -396,8 +414,8 @@ Notebook.renderShareNotebooks = function(sharedUserInfos, shareNotebooks) {
 
 // 左侧导航, 选中某个notebook
 Notebook.selectNotebook = function(target) {
-	$("#notebook li a").removeClass("active");
-	$(target).addClass("active");
+	$(".notebook-item").removeClass("curSelectedNode");
+	$(target).addClass("curSelectedNode");
 };
 
 // 新建笔记导航
