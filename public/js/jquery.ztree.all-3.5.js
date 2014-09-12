@@ -2555,6 +2555,7 @@
 			if (node.parentTId) view.expandCollapseParentNode(this.setting, node.getParentNode(), true);
 			view.editNode(this.setting, node)
 		}
+		
 		zTreeTools.moveNode = function(targetNode, node, moveType, isSilent) {
 			if (!node) return node;
 			if (targetNode && !targetNode.isParent && this.setting.data.keep.leaf && moveType === consts.move.TYPE_INNER) {
@@ -2661,6 +2662,7 @@
 			if (tools.uCanDo(setting)) {
 				doc.bind("mousemove", _docMouseMove);
 			}
+			// 拖动
 			function _docMouseMove(event) {
 				//avoid start drag after click node
 				if (root.dragFlag == 0 && Math.abs(mouseDownX - event.clientX) < setting.edit.drag.minMoveSize
@@ -2994,6 +2996,7 @@
 					}
 					var newNodes = isCopy ? tools.clone(nodes) : nodes;
 
+					// 这里速度慢
 					function dropCallback() {
 						if (isOtherTree) {
 							if (!isCopy) {
@@ -3019,6 +3022,7 @@
 							if (isCopy && moveType == consts.move.TYPE_INNER) {
 								view.addNodes(targetSetting, dragTargetNode, newNodes);
 							} else {
+								// 这里
 								if (isCopy) {
 									view.addNodes(targetSetting, dragTargetNode.getParentNode(), newNodes);
 								}
@@ -3036,6 +3040,7 @@
 						view.selectNodes(targetSetting, newNodes);
 						$$(newNodes[0], setting).focus().blur();
 
+						// 这里非常耗时!!! 原因是ajax自定义方法
 						setting.treeObj.trigger(consts.event.DROP, [event, targetSetting.treeId, newNodes, dragTargetNode, moveType, isCopy]);
 					}
 
@@ -3240,6 +3245,7 @@
 			root.noSelection = false;
 			root.curEditNode = node;
 		},
+		// 这里, 速度慢
 		moveNode: function(setting, targetNode, node, moveType, animateFlag, isSilent) {
 			var root = data.getRoot(setting),
 			childKey = setting.data.key.children;
@@ -3302,7 +3308,6 @@
 			} else if (targetObj.get(0) && moveType == consts.move.TYPE_NEXT) {
 				targetObj.after(nodeDom);
 			}
-
 			//repair the data after move
 			var i,l,
 			tmpSrcIndex = -1,
@@ -3412,6 +3417,10 @@
 			if (!isSilent) {
 				view.expandCollapseParentNode(setting, node.getParentNode(), true, animateFlag);
 			}
+			
+			// 这里打印一直就好了
+			setTimeout(function() {
+			}, 10);
 		},
 		removeEditBtn: function(setting, node) {
 			$$(node, consts.id.EDIT, setting).unbind().remove();

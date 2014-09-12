@@ -95,14 +95,14 @@ Notebook.getTreeSetting = function(isSearch, isShare){
 		// 成为子节点, 那么只需要得到targetNode下所有的子结点即可
 		if(moveType == "inner") {
 			parentNode = targetNode;
-		// 在targetNode之前或之后, 
-		// 那么: 1) 需要将该parentNode下所有的node重新排序即可; 2) treeNodes[0]为parentNode的子
 		} else {
 			parentNode = targetNode.getParentNode();
 		}
 		
+		// 在targetNode之前或之后, 
+		// 那么: 1) 需要将该parentNode下所有的node重新排序即可; 2) treeNodes[0]为parentNode的子
 		if(!parentNode) {
-			var nodes = treeObj.getNodes();
+			var nodes = treeObj.getNodes(); // 得到所有nodes
 		} else {
 			ajaxData.parentNotebookId = parentNode.NotebookId;
 			var nextLevel = parentNode.level+1;
@@ -119,9 +119,13 @@ Notebook.getTreeSetting = function(isSearch, isShare){
 				ajaxData.siblings.push(notebookId);
 			}
 		}
+		
 		ajaxPost("/notebook/dragNotebooks", {data: JSON.stringify(ajaxData)});
 		
-		Notebook.changeNav();
+		// 这里慢!
+		setTimeout(function() {
+			Notebook.changeNav();
+		}, 100);
 	}
 	
 	if(!isShare) {
@@ -303,6 +307,7 @@ Notebook.searchNotebookForList = function(key) {
 		$notebookList.hide();
 		
 		var notebooks = self.tree.getNodesByParamFuzzy("Title", key);
+		log('search');
 		log(notebooks);
 		if(isEmpty(notebooks)) {
 			$search.html("");
@@ -353,7 +358,6 @@ Notebook.everNavForNewNote = "";
 Notebook.everNotebooks = [];
 Notebook.changeNav = function() {
 	var self = Notebook;
-	
 	var notebooks = Notebook.tree.getNodes();
 	var pureNotebooks = notebooks.slice(1, -1); // 不含新和垃圾
 	var html = self.getChangedNotebooks(pureNotebooks);
@@ -364,8 +368,12 @@ Notebook.changeNav = function() {
 	$("#notebookNavForNewNote").html(html);
 	
 	// 移动, 复制重新来, 因为nav变了, 移动至-----的notebook导航也变了
+	// 这里速度很慢
+	var t1 = (new Date()).getTime();
 	Note.initContextmenu();
 	Share.initContextmenu(Note.notebooksCopy);
+	var t2 = (new Date()).getTime();
+	log(t2-t1);
 }
 
 /**

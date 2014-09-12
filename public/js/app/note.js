@@ -1152,6 +1152,7 @@ Note.copyNote = function(target, data, isShared) {
 	});
 }
 
+// 这里速度不慢, 很快
 Note.getContextNotebooks = function(notebooks) {
 	var moves = [];
 	var copys = [];
@@ -1166,9 +1167,12 @@ Note.getContextNotebooks = function(notebooks) {
 			move.items = mc[0];
 			copy.items = mc[1];
 			copy2.items = mc[2];
-			$.extend(move, {type: "group", width: 150});
-			$.extend(copy, {type: "group", width: 150});
-			$.extend(copy2, {type: "group", width: 150});
+			move.type = "group";
+			move.width = 150;
+			copy.type = "group";
+			copy.width = 150;
+			copy2.type = "group";
+			copy2.width = 150;
 		}
 		moves.push(move);
 		copys.push(copy);
@@ -1187,6 +1191,7 @@ Note.initContextmenu = function() {
 	// 得到可移动的notebook
 	var notebooks = Notebook.everNotebooks;
 	var mc = self.getContextNotebooks(notebooks);
+	
 	var notebooksMove = mc[0];
 	var notebooksCopy = mc[1];
 	self.notebooksCopy = mc[2];
@@ -1269,6 +1274,7 @@ Note.initContextmenu = function() {
 	    return this.id != "target3";
 	}
 	
+	// 这里很慢!!
 	Note.contextmenu = $("#noteItemList .item-my").contextmenu(noteListMenu);
 }
 

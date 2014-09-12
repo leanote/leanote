@@ -1340,12 +1340,13 @@ background-position:-1px -670px
   list-style: none;
 }
 #searchNotebookForList {
-  border: 1px solid rgba(255, 255, 255, 0.3);
   color: #ccc;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background-color: #37485e;
 }
 #searchNotebookForList:focus {
   outline: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: none;
 }
 .label-default {
@@ -1357,4 +1358,7 @@ background-position:-1px -670px
 }
 #myShareNotebooks .folderBody {
   background: none;
+}
+.tmpzTreeMove_arrow {
+  color: #fff;
 }
