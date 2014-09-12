@@ -86,12 +86,11 @@ website:	http://code.google.com/p/jquerytree/
 ul.tmpTargetzTree {background-color:#FFE6B0; opacity:0.8; filter:alpha(opacity=80)}
 
 /* 移动 */
-span.tmpzTreeMove_arrow {z-index: 333;width:16px; height:30px; line-height: 30px;
-display: inline-block; padding:0; margin:2px 0 0 15px; border:0 none; position:absolute;
-	background-color:transparent; background-repeat:no-repeat; background-attachment: scroll;
-	background-position:-110px -80px; background-image:url("./img/zTreeStandard.png");
-	 *background-image:url("./img/zTreeStandard.gif")
+span.tmpzTreeMove_arrow {
+	z-index: 333;width:16px; height:30px; line-height: 30px;
+	display: inline-block; padding:0; margin:2px 0 0 15px; border:0 none; position:absolute;
 }
+
 ul.ztree.zTreeDragUL {z-index: 333;margin:0; padding:0; position:absolute; width:auto; height:auto;overflow:hidden; 
 	background-color:cfcfcf; border:1px #00B83F dotted; opacity:0.8; filter:alpha(opacity=80)}
 .zTreeMask {z-index:1000; background-color:#cfcfcf; opacity:0.0; filter:alpha(opacity=0); position:absolute}
@@ -137,25 +136,4 @@ ul.ztree.zTreeDragUL {z-index: 333;margin:0; padding:0; position:absolute; width
 /* life */
 .ztree .tree-title {
 	display: inline-block;
-}
-/*
-.ztree li a input.rename {height:14px; width:80px; padding:0; margin:0;
-	font-size:12px; border:1px #7EC4CC solid; *border:0px}
-*/
-.ztree li a.curSelectedNode_Edit input {
-}
-
-.notebook-setting {
-	display: none;
-	position: absolute;
-	right: 3px;
-	top: 0;
-	bottom: 0;
-	line-height: 30px;
-}
-.notebook-setting:before {
-	content: "\f013";
-}
-.ztree li a:hover .notebook-setting {
-	display: block;
 }

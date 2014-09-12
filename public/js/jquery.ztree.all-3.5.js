@@ -2744,7 +2744,7 @@
 					curNode.addClass(setting.treeObj.attr("class"));
 					curNode.appendTo(body);
 
-					tmpArrow = $$("<span class='tmpzTreeMove_arrow'></span>", setting);
+					tmpArrow = $$("<span class='fa fa-arrow-right tmpzTreeMove_arrow'></span>", setting);
 					tmpArrow.attr("id", "zTreeMove_arrow_tmp");
 					tmpArrow.appendTo(body);
 

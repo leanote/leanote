@@ -120,6 +120,8 @@ Notebook.getTreeSetting = function(isSearch, isShare){
 			}
 		}
 		ajaxPost("/notebook/dragNotebooks", {data: JSON.stringify(ajaxData)});
+		
+		Notebook.changeNav();
 	}
 	
 	if(!isShare) {

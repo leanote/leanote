@@ -1171,3 +1171,19 @@ background-position:-1px -670px
 	overflow: scroll;
 	list-style: none;
 }
+
+// 设置
+.notebook-setting {
+	display: none;
+	position: absolute;
+	right: 3px;
+	top: 0;
+	bottom: 0;
+	line-height: 30px;
+}
+.notebook-setting:before {
+	content: "\f013";
+}
+.ztree li a:hover .notebook-setting {
+	display: block;
+}
