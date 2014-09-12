@@ -262,7 +262,7 @@ function log(o) {
 							</ul>
 						</div>
 						
-						<div class="folderNote closed" id="">
+						<div class="folderNote closed" id="myShareNotebooks">
 							<div class="folderHeader">
 								<i class="fa fa-user fa-left"></i>
 								<span>
@@ -277,7 +277,7 @@ function log(o) {
 	
 					</div>
 					
-					<!-- 缩小版 -->
+					<!-- 缩小版 todo 不要展示, 点击展开即可 -->
 					<div id="notebookMin">
 						<!-- 这里隐藏, 不要 -->
 						<div target="#notebookList" title="{{msg . "notebook"}}" class="minContainer">
@@ -291,13 +291,9 @@ function log(o) {
 							</ul>
 						</div>
 						<div id="minShareNotebooks">
-							<!--
-							<div class="minContainer" target="" title="">
+							<div class="minContainer" target="#friendContainer0" title="{{msg . "share"}}">
 								<i class="fa fa-user"></i>
-								<ul class="dropdown-menu">
-								</ul>
 							</div>
-							-->
 						</div>
 					</div>
 					

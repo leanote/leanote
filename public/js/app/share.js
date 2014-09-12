@@ -102,7 +102,7 @@ Share.renderShareNotebooks = function(sharedUserInfos, shareNotebooks) {
 		$shareNotebooks.append(header + body + "</div>")
 		
 		// mainShare
-		$("#minShareNotebooks").append('<div class="minContainer" target="#' + friendId + '" title="' + username + ' 的分享"><i class="fa fa-user"></i><ul class="dropdown-menu"></ul></li>')
+		// $("#minShareNotebooks").append('<div class="minContainer" target="#' + friendId + '" title="' + username + ' 的分享"><i class="fa fa-user"></i><ul class="dropdown-menu"></ul></li>')
 	}
 };
 

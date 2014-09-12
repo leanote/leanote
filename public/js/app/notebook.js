@@ -265,10 +265,19 @@ Notebook.searchNotebookForAddNote = function(key) {
 	var self = this;
 	if(key) {
 		var notebooks = self.tree.getNodesByParamFuzzy("Title", key);
-		if(isEmpty(notebooks)) {
+		notebooks = notebooks || [];
+		// 过滤下, 把new, trash过滤掉
+		var notebooks2 = [];
+		for(var i in notebooks) {
+			var notebookId = notebooks[i].NotebookId;
+			if(!self.isAllNotebookId(notebookId) && !self.isTrashNotebookId(notebookId)) {
+				notebooks2.push(notebooks[i]);
+			}
+		}
+		if(isEmpty(notebooks2)) {
 			$("#notebookNavForNewNote").html("");
 		} else {
-			$("#notebookNavForNewNote").html(self.getChangedNotebooks(notebooks));
+			$("#notebookNavForNewNote").html(self.getChangedNotebooks(notebooks2));
 		}
 	} else {
 		$("#notebookNavForNewNote").html(self.everNavForNewNote);
