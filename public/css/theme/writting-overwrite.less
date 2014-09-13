@@ -1,3 +1,4 @@
+@import "basic.less";
 
 @bgColor: #fff;
 @headerBgColor: #25313e;
@@ -151,8 +152,7 @@ a.raw:hover {
   -webkit-box-shadow: none;
   box-shadow: none;
   border: 1px solid @hColor;
-  overflow-x: hidden; 
-  overflow-y: auto;
+  overflow: visible;
 }
 .dropdown-menu li {
   padding-left: 10px;
@@ -866,7 +866,7 @@ html,body {
 	position: absolute;
 	left:0;
 	right:0;
-	z-index:1;
+	z-index:333;
 	#leanoteMsg {
 		position: absolute;
 		width: @editorWidth;
@@ -897,7 +897,6 @@ html,body {
 #newMyNote, #newSharedNote {
 	position: relative;
 	.dropdown-menu {
-		left: 0px  !important;
 	}
 	.dropdown {
 		position: static;
@@ -966,7 +965,7 @@ html,body {
 }
 #noteTop{
 	position: absolute;
-	z-index:2;
+	z-index:9999;
 	left:0;
 	right: 150px;
 	padding: 15px 0;
@@ -1090,4 +1089,11 @@ body {
 	bottom: 10px;
 	overflow: scroll;
 	list-style: none;
+}
+
+#searchNotebookForAddDropdownList {
+	left: 0;
+}
+#searchNotebookForAdd {
+	background: none;
 }

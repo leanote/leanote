@@ -792,6 +792,9 @@ editorMode.prototype.normalMode = function() {
 //	$("#lock").animate({right:w},1000);
 	
 	this.resizeEditor();
+	
+	$("#noteList").width(UserInfo.NoteListWidth);
+	$("#note").css("left", UserInfo.NoteListWidth);
 }
 editorMode.prototype.writtingMode = function() {
 	/*
@@ -823,6 +826,9 @@ editorMode.prototype.writtingMode = function() {
 //	$("body").fadeIn();
 
 	this.resizeEditor();
+	
+	$("#noteList").width(250);
+	$("#note").css("left", 0);
 }
 
 editorMode.prototype.getWritingCss = function() {
