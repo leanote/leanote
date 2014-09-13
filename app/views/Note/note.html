@@ -81,7 +81,7 @@ function log(o) {
 								id="dropdownMenu2" data-toggle="dropdown"> 
 								<i class="fa fa-angle-down"></i>
 							</a>
-							<div class="dropdown-menu dropdown-list" style="left: -200px;" >
+							<div class="dropdown-menu dropdown-list" id="searchNotebookForAddDropdownList">
 								<input type="text" placeholder="search notebook" class="form-control" id="searchNotebookForAdd"/>
 								<ul class="clearfix" role="menu" aria-labelledby="dropdownMenu2" id="notebookNavForNewNote">
 								</ul>
@@ -978,7 +978,6 @@ Tag.renderTagNav(tagsJson);
 initSlimScroll();
 </script>
 
-
 <!-- mdEditor -->
 <link href="/public/mdeditor/editor/editor.css" rel="stylesheet">
 <script src="/public/mdeditor/editor/pagedown/Markdown.Converter-min.js"></script>
@@ -989,13 +988,11 @@ initSlimScroll();
 <script src="/public/mdeditor/editor/underscore-min.js"></script>
 <script src="/public/mdeditor/editor/scrollLink-min.js"></script>
 <!--mathjax-->
-<!--
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ["\\(","\\)"]], processEscapes: true },  messageStyle: "none"});
 </script>
 <script src="/public/mdeditor/editor/mathJax-min.js"></script>
 <script src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
--->
 <script src="/public/mdeditor/editor/jquery.waitforimages-min.js"></script>
 <script src="/public/mdeditor/editor/google-code-prettify/prettify.js"></script>
 <script src="/public/mdeditor/editor/editor-min.js"></script>	
