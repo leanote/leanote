@@ -111,7 +111,7 @@ a.raw:hover {
 		border-radius: 5px;
 		background-color: #000; 
 		cursor: pointer;
-		font-size: 16px;
+		font-size: 18px;
 		&:hover {
 			color: @hColor;
 		}
@@ -169,29 +169,15 @@ a.raw:hover {
 }
 
 .dropdown-menu {
-  border-radius: 0;
-  margin:0;
-  -webkit-box-shadow: none;
-  box-shadow: none;
   border: 1px solid @hColor;
-  overflow-x: hidden; 
-  overflow-y: auto;
 }
-.dropdown-menu li {
-  padding-left: 10px;
-  width: 100%;
-  height: 30px; // 父设置了line-height, 子下拉也受影响, "新建笔记"
-  line-height: 30px;
-}
-.dropdown-menu > li > a {
+.dropdown-menu li > a {
   color: @aBlackColor;
-  display: inline-block;
-  padding: 3px 3px;
 }
-.dropdown-menu>li:hover, .dropdown-menu>li:focus {
+.dropdown-menu li:hover, .dropdown-menu li:focus {
   background-color: @borderColor;
 }
-.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+.dropdown-menu  li > a:hover, .dropdown-menu li > a:focus {
   background-color: @borderColor;
 }
 
@@ -291,6 +277,7 @@ a.raw:hover {
 		border-color: rgba(255, 255, 255, 0.3);
 		padding: 5px;
 		position: relative;
+		cursor: pointer;
 		i {
 			font-size: 20px;
 			color: #fff;
@@ -353,13 +340,7 @@ a.raw:hover {
   left: @leftNotebookWidth;
 }
 #noteList {
-  position: absolute;
-  bottom: 0;
-  top: 0;
   width: @noteListWidth;
-  
-  overflow-x: hidden;
-  overflow-y: hidden;
   border-right: 1px solid #cfcfcf;
   border-left: 1px solid #cfcfcf;
 }
@@ -391,14 +372,14 @@ a.raw:hover {
   color: #fff; // @hColor;
   font-size: 16px;
 }
-.folderHeader .fa-left, .each-user .fa {
+.folderHeader .fa-left, .friend-header i.fa {
 	display: inline-block;
-  line-height: @folderHeaderHeight;
-  font-size: 16px;
-  width: @folderHeaderHeight;
-  border-right: 1px solid rgba(255,255,255,0.05);
-  text-align: center;
-  color: #fff; // @hColor;
+	line-height: @folderHeaderHeight;
+	font-size: 16px;
+	width: @folderHeaderHeight;
+	border-right: 1px solid rgba(255,255,255,0.05);
+	text-align: center;
+	color: #fff; // @hColor;
 }
 
 .each-user div {
@@ -415,15 +396,6 @@ a.raw:hover {
 	.fa {
 	  width: 20px;
 	  border-right: none;
-	}
-}
-.each-user ul {
-	list-style: none;
-	margin: 0;
-	padding:0;
-	a {
-		padding-left: 20px;
-		font-size: 12px;
 	}
 }
 
@@ -455,28 +427,32 @@ a.raw:hover {
 .closed .folderBody {
   display: none;
 }
+@leftBgColor: #37485e;
 .folderBody {
   list-style: none;
   margin: 0;
   padding: 0;
-  background-color: #37485e;
+  background-color: @leftBgColor;
 }
+
 .folderBody li {
   line-height: 30px;
 }
-.folderBody a {
-  padding-left: 20px;
-  display: block;
-  color: #ADBECE;
-  cursor: pointer;
+.ztree > li {
   border-bottom: 1px solid transparent;
   border-color: rgba(255,255,255,0.05);
-  line-height: 35px;
+}
+.ztree li a.curSelectedNode {
+	background-color: rgba(0,0,0,0.3);
+	border-radius: 3px;
+	color: #fff;
+}
+.ztree li a {
+  color: #ADBECE;
 }
 .folderBody a:hover, .folderBody .contextmenu-hover {
-//  background-color: @borderColor !important;
 	color: #fff;
-  background-color: rgba(0,0,0,0.05) !important;
+	background-color: rgba(0,0,0,0.1) !important;
 }
 .folderBody a.active, .folderBody a.active:hover {
   background-color: #25313e !important; // @bgColor;
@@ -484,13 +460,15 @@ a.raw:hover {
 }
 
 // 重命名, 添加notebook
-#notebookList input {
-	border: 1px solid @borderColor;
+#notebookList input, #notebookListForSearch input {
+	border: 1px solid rgba(0,0,0,0.1);
 	width: 90%;
+	padding-left:3px;
     box-shadow: none;
+	background: none;
+	color: #fff;
     &:focus {
       outline: none !important;
-      border-color: @hColor;
 	}
 }
 
@@ -636,26 +614,7 @@ a.raw:hover {
   	color: #666;
   }
 }
-// blog
-#noteItemList .item-blog {
-  position: absolute; 
-  right: 1px;
-  font-size: 10px;
-  z-index: 2;
-  top: 1px;
-  padding: 3px;
-  cursor: pointer;
-  .fa {
-	  color: #fff !important;
-  }
-  width: 20px;
-  text-align: center;
-  opacity: 0.5;
-  &:hover {
-	  opacity: 0.8;
-  }
-  background-color: #464C5E;
-}
+
 .item-title {
     /*font-weight: 400;*/
     font-size: 16px;
@@ -1149,7 +1108,6 @@ background-position:-1px -670px
 	}
 }
 .new-note-right {
-	padding: 0 5px;
 	&:hover {
 		background-color:@borderColor;
 	}
@@ -1165,12 +1123,7 @@ background-position:-1px -670px
 		padding: 5px 0;
 	}
 }
-#leanoteMsg {
-	line-height: 40px; margin-top: 10px; margin-left: 10px;
-}
-#newNoteWrap {
-	line-height: 40px; margin-top: 10px;
-}
+
 #loading {
 	display: inline-block;
 	width: 20px;
@@ -1214,4 +1167,39 @@ background-position:-1px -670px
 	bottom: 10px;
 	overflow: scroll;
 	list-style: none;
+}
+
+//----------------------
+#searchNotebookForList {
+    color: #ccc;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: @leftBgColor;
+    &:focus {
+    	outline: none !important;
+	    border: 1px solid rgba(255, 255, 255, 0.3);
+		box-shadow: none;
+    }
+}
+.label-default {
+	background-color: #191D2B;
+}
+.each-user {
+	border: 1px solid rgba(0, 0, 0, 0.09);
+	background-color: @leftBgColor;
+}
+#myShareNotebooks .folderBody {
+	background: none;
+}
+.tmpzTreeMove_arrow {
+	color: #fff;
+}
+
+.ztree li a.tmpTargetNode_inner {
+	padding-top:0px; 
+	background-color: rgba(0, 0, 0, 0.3);
+	color: #fff; 
+	height: 30px; 
+	border:1px #ccc solid;
+	opacity: 0.8; 
+	filter:alpha(opacity=80)
 }

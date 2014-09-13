@@ -131,22 +131,21 @@ $(function() {
 	});
 
 	// 左侧, folder 展开与关闭
-	$(".folderHeader").click(
-			function() {
-				var body = $(this).next();
-				var p = $(this).parent();
-				if (!body.is(":hidden")) {
-					$(".folderNote").removeClass("opened").addClass("closed");
+	$(".folderHeader").click(function() {
+		var body = $(this).next();
+		var p = $(this).parent();
+		if (!body.is(":hidden")) {
+			$(".folderNote").removeClass("opened").addClass("closed");
 //					body.hide();
-					p.removeClass("opened").addClass("closed");
-					$(this).find(".fa-angle-down").removeClass("fa-angle-down").addClass("fa-angle-right");
-				} else {
-					$(".folderNote").removeClass("opened").addClass("closed");
+			p.removeClass("opened").addClass("closed");
+			$(this).find(".fa-angle-down").removeClass("fa-angle-down").addClass("fa-angle-right");
+		} else {
+			$(".folderNote").removeClass("opened").addClass("closed");
 //					body.show();
-					p.removeClass("closed").addClass("opened");
-					$(this).find(".fa-angle-right").removeClass("fa-angle-right").addClass("fa-angle-down");
-				}
-			});
+			p.removeClass("closed").addClass("opened");
+			$(this).find(".fa-angle-right").removeClass("fa-angle-right").addClass("fa-angle-down");
+		}
+	});
 
 	tinymce.init({
 		setup: function(ed) {
@@ -551,6 +550,7 @@ $(function() {
 		$("#logo").hide();
 		$("#leftSwitcher").hide();
 		$("#leftSwitcher2").show();
+		$("#leftNotebook .slimScrollDiv").hide();
 		
 		if(save) {
 			updateLeftIsMin(true);
@@ -568,6 +568,7 @@ $(function() {
 		$("#leftSwitcher2").hide();
 		$("#logo").show();
 		$("#leftSwitcher").show();
+		$("#leftNotebook .slimScrollDiv").show();
 		
 		if(save) {
 			updateLeftIsMin(false);
@@ -588,6 +589,7 @@ $(function() {
 	});
 	
 	// 得到最大dropdown高度
+	// 废弃
 	function getMaxDropdownHeight(obj) {
 		var offset = $(obj).offset();
 		var maxHeight = $(document).height()-offset.top;
@@ -599,16 +601,26 @@ $(function() {
 		var preHeight = $(obj).find("ul").height();
 		return preHeight < maxHeight ? preHeight : maxHeight;
 	}
+	
 	// mini版
-	$("#notebookMin div.minContainer").hover(function() {
-			var target = $(this).attr("target");
-			// show的时候要计算高度, 防止过高
-			// 先show再计算, 不然高度有偏差
-			$(this).find("ul").html($(target).html()).show().height(getMaxDropdownHeight(this));
-		}, function() {
-			$(this).find("ul").hide();
+	// 点击展开
+	$("#notebookMin div.minContainer").click(function() {
+		var target = $(this).attr("target");
+		maxLeft(true);
+		if(target == "#notebookList") {
+			if($("#myNotebooks").hasClass("closed")) {
+				$("#myNotebooks .folderHeader").trigger("click");
+			}
+		} else if(target == "#tagNav") {
+			if($("#myTag").hasClass("closed")) {
+				$("#myTag .folderHeader").trigger("click");
+			}
+		} else {
+			if($("#myShareNotebooks").hasClass("closed")) {
+				$("#myShareNotebooks .folderHeader").trigger("click");
+			}
 		}
-	);
+	});
 	
 	//------------------------
 	// 界面设置, 左侧是否是隐藏的
@@ -631,7 +643,7 @@ $(function() {
 	// dropdown
 	$('.dropdown').on('shown.bs.dropdown', function () {
 		var $ul = $(this).find("ul");
-		$ul.height(getMaxDropdownHeight(this));
+		// $ul.css("max-height", getMaxDropdownHeight(this));
 	});
 	
 	//--------
@@ -780,6 +792,9 @@ editorMode.prototype.normalMode = function() {
 //	$("#lock").animate({right:w},1000);
 	
 	this.resizeEditor();
+	
+	$("#noteList").width(UserInfo.NoteListWidth);
+	$("#note").css("left", UserInfo.NoteListWidth);
 }
 editorMode.prototype.writtingMode = function() {
 	/*
@@ -811,6 +826,9 @@ editorMode.prototype.writtingMode = function() {
 //	$("body").fadeIn();
 
 	this.resizeEditor();
+	
+	$("#noteList").width(250);
+	$("#note").css("left", 0);
 }
 
 editorMode.prototype.getWritingCss = function() {

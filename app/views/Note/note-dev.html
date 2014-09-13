@@ -13,6 +13,8 @@
 <link rel="stylesheet" href="tinymce/skins/custom/skin.min.css" type="text/css" />
 
 <!-- leanote css -->
+<link href="css/font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet" />
+<link href="css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
 <script>
 var hash = location.hash;
 if(hash == "#writing") {
@@ -23,7 +25,6 @@ if(hash == "#writing") {
 document.write(files);
 </script>
 
-<link href="css/font-awesome-4.0.3/css/font-awesome.css" rel="stylesheet" />
 
 <!-- For Develop writting mod -->
 
@@ -80,8 +81,11 @@ function log(o) {
 								id="dropdownMenu2" data-toggle="dropdown"> 
 								<i class="fa fa-angle-down"></i>
 							</a>
-							<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2" style="width: 180px;left: -5px;" id="notebookNavForNewNote">
-							</ul>
+							<div class="dropdown-menu dropdown-list" id="searchNotebookForAddDropdownList">
+								<input type="text" placeholder="search notebook" class="form-control" id="searchNotebookForAdd"/>
+								<ul class="clearfix" role="menu" aria-labelledby="dropdownMenu2" id="notebookNavForNewNote">
+								</ul>
+							</div>
 						</div>
 					</div>
 					
@@ -98,12 +102,12 @@ function log(o) {
 						<span class="for-split"> - </span>
 						<span id="curNotebookForNewSharedNote" notebookId="" userId=""></span>
 						<div class="dropdown" style="display: inline-block">
-							<a class="ios7-a dropdown-toggle"
-								id="dropdownMenu2" data-toggle="dropdown"> 
+							<a class="ios7-a dropdown-toggle" data-toggle="dropdown"> 
 								<i class="fa fa-angle-down"></i>
 							</a>
-							<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2" style="width: 180px;left: -5px;" id="notebookNavForNewSharedNote">
-							</ul>
+							<div class="dropdown-menu dropdown-list" style="left: -200px;" >
+								<ul id="notebookNavForNewSharedNote"></ul>
+							</div>
 						</div>
 					</div>				
 				</div>
@@ -233,8 +237,12 @@ function log(o) {
 									<i class="fa  fa-plus" title="{{msg . "addNotebook"}}"></i>
 								</div>
 							</div>
-							<ul class="folderBody" id="notebookList">
-							</ul>
+							
+							<div class="folderBody">
+								<input type="text" class="form-control" id="searchNotebookForList" placeholder="search notebook"/>							
+								<ul class="ztree" id="notebookList"></ul>
+								<ul class="ztree" id="notebookListForSearch"></ul>
+							</div>
 						</div>
 						
 						<div class="folderNote closed" id="myTag">
@@ -245,7 +253,7 @@ function log(o) {
 								</span>
 							</div>
 	
-							<ul class="folderBody" id="tagNav">
+							<ul class="folderBody clearfix" id="tagNav">
 								<li><a> <span class="label label-red">{{msg . "red"}}</span></a></li>
 								<li><a> <span class="label label-blue">{{msg . "blue"}}</span></a></li>
 								<li><a> <span class="label label-yellow">{{msg . "yellow"}}</span></a></li>
@@ -253,7 +261,7 @@ function log(o) {
 							</ul>
 						</div>
 						
-						<div class="folderNote closed" id="">
+						<div class="folderNote closed" id="myShareNotebooks">
 							<div class="folderHeader">
 								<i class="fa fa-user fa-left"></i>
 								<span>
@@ -268,7 +276,7 @@ function log(o) {
 	
 					</div>
 					
-					<!-- 缩小版 -->
+					<!-- 缩小版 todo 不要展示, 点击展开即可 -->
 					<div id="notebookMin">
 						<!-- 这里隐藏, 不要 -->
 						<div target="#notebookList" title="{{msg . "notebook"}}" class="minContainer">
@@ -282,13 +290,9 @@ function log(o) {
 							</ul>
 						</div>
 						<div id="minShareNotebooks">
-							<!--
-							<div class="minContainer" target="" title="">
+							<div class="minContainer" target="#friendContainer0" title="{{msg . "share"}}">
 								<i class="fa fa-user"></i>
-								<ul class="dropdown-menu">
-								</ul>
 							</div>
-							-->
 						</div>
 					</div>
 					
@@ -312,19 +316,24 @@ function log(o) {
 							<div class="dropdown" id="myNotebookNavForListNav">
 								<a class="ios7-a dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">
 									<span id="curNotebookForListNote">{{msg . "all"}}</span>
+									<!--
 									<i class="fa fa-angle-down"></i>
+									-->
 								</a>
-								<!-- 如果notebook过多, 则会产生滚动 -->
-								<ul class="dropdown-menu" role="menu"
-									aria-labelledby="dropdownMenu1" style="left: 5px;" id="notebookNavForListNote">
-								</ul>
+								<!-- 如果notebook过多, 则会产生滚动 弃用
+								<div class="dropdown-menu dropdown-list" style="left: 5px;">
+									<ul role="menu" aria-labelledby="dropdownMenu1" id="notebookNavForListNote"></ul>
+								</div>
+								-->
 							</div>
 							
 							<!-- 共享的笔记本 -->
 							<div class="dropdown" id="sharedNotebookNavForListNav" style="display: none">
 								<a class="ios7-a dropdown-toggle" id="dropdownMenu2" data-toggle="dropdown">
 									<span id="curSharedNotebookForListNote">{{msg . "all"}}</span>
+									<!--
 									<i class="fa fa-angle-down"></i>
+									-->
 								</a>
 								<ul class="dropdown-menu" role="menu"
 									aria-labelledby="dropdownMenu2" style="left: 5px;" id="sharedNotebookNavForListNote">
@@ -922,6 +931,7 @@ function log(o) {
 	</div>
 </div>
 <script src="js/jquery-1.9.0.min.js"></script>
+<script src="js/jquery.ztree.all-3.5.js"></script>
 <script src="js/i18n/msg.{{.locale}}.js"></script>
 <script src="js/common.js"></script>
 <script>
@@ -935,9 +945,10 @@ var noteContentJson = json({{.noteContentJson}});
 var tagsJson = json({{.tagsJson}});
 LEA.locale = "{{.locale}}";
 </script>
-			
+	
 <!-- 渲染view -->
 <script src="/js/jQuery-slimScroll-1.3.0/jquery.slimscroll.js"></script>
+<script src="/js/contextmenu/jquery.contextmenu.js"></script>
 <script src="js/app/page.js"></script>
 
 <script src="tinymce/tinymce.js"></script>
@@ -978,11 +989,13 @@ initSlimScroll();
 <script src="/public/mdeditor/editor/underscore-min.js"></script>
 <script src="/public/mdeditor/editor/scrollLink.js"></script>
 <!--mathjax-->
+<!--
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ["\\(","\\)"]], processEscapes: true },  messageStyle: "none"});
 </script>
 <script src="/public/mdeditor/editor/mathJax-min.js"></script>
 <script src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+-->
 <script src="/public/mdeditor/editor/jquery.waitforimages-min.js"></script>
 <script src="/public/mdeditor/editor/google-code-prettify/prettify.js"></script>
 <script src="/public/mdeditor/editor/editor.js"></script>	
@@ -990,7 +1003,6 @@ initSlimScroll();
 
 <!-- context-menu -->
 <link rel="stylesheet" href="/js/contextmenu/css/contextmenu.css" type="text/css" />
-<script src="/js/contextmenu/jquery.contextmenu.js"></script>
 
 <!-- version 2.0 -->
 <script src="/js/require.js"></script>

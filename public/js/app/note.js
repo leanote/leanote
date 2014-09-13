@@ -11,7 +11,7 @@ Note.curNoteId = "";
 
 Note.interval = ""; // 定时器
 
-Note.itemIsBlog = '<div class="item-blog"><i class="fa fa-bold" title="blog"></i></div>';
+Note.itemIsBlog = '<div class="item-blog"><i class="fa fa-bold" title="blog"></i></div><div class="item-setting"><i class="fa fa-cog" title="setting"></i></div>';
 // for render
 Note.itemTplNoImg = '<div href="#" class="item ?" noteId="?">'
 Note.itemTplNoImg += Note.itemIsBlog +'<div class="item-desc" style="right: 0;"><p class="item-title">?</p><p class="item-text"><i class="fa fa-book"></i> <span class="note-notebook">?</span> <i class="fa fa-calendar"></i> <span class="updated-time">?</span> <br /><span class="desc">?</span></p></div></div>';
@@ -1152,22 +1152,49 @@ Note.copyNote = function(target, data, isShared) {
 	});
 }
 
+// 这里速度不慢, 很快
+Note.getContextNotebooks = function(notebooks) {
+	var moves = [];
+	var copys = [];
+	var copys2 = [];
+	for(var i in notebooks) {
+		var notebook = notebooks[i];
+		var move = {text: notebook.Title, notebookId: notebook.NotebookId, action: Note.moveNote}
+		var copy = {text: notebook.Title, notebookId: notebook.NotebookId, action: Note.copyNote}
+		var copy2 = {text: notebook.Title, notebookId: notebook.NotebookId, action: Share.copySharedNote}
+		if(!isEmpty(notebook.Subs)) {
+			var mc = Note.getContextNotebooks(notebook.Subs);
+			move.items = mc[0];
+			copy.items = mc[1];
+			copy2.items = mc[2];
+			move.type = "group";
+			move.width = 150;
+			copy.type = "group";
+			copy.width = 150;
+			copy2.type = "group";
+			copy2.width = 150;
+		}
+		moves.push(move);
+		copys.push(copy);
+		copys2.push(copy2);
+	}
+	return [moves, copys, copys2];
+}
+// Notebook调用
 Note.contextmenu = null;
+Note.notebooksCopy = []; // share会用到
 Note.initContextmenu = function() {
+	var self = Note;
 	if(Note.contextmenu) {
-		Note.contextmenu.unbind("contextmenu");
+		Note.contextmenu.destroy();
 	}
 	// 得到可移动的notebook
-	var notebooksMove = [];
-	var notebooksCopy = [];
-	$("#notebookNavForNewNote li div.new-note-left").each(function() {
-		var notebookId = $(this).attr("notebookId");
-		var title = $(this).text();
-		var move = {text: title, notebookId: notebookId, action: Note.moveNote}
-		var copy = {text: title, notebookId: notebookId, action: Note.copyNote}
-		notebooksMove.push(move);
-		notebooksCopy.push(copy);
-	});
+	var notebooks = Notebook.everNotebooks;
+	var mc = self.getContextNotebooks(notebooks);
+	
+	var notebooksMove = mc[0];
+	var notebooksCopy = mc[1];
+	self.notebooksCopy = mc[2];
 	
 	//---------------------
 	// context menu
@@ -1180,7 +1207,7 @@ Note.initContextmenu = function() {
 			{ text: "公开为博客", alias: 'set2Blog', icon: "", action: Note.setNote2Blog },
 			{ text: "取消公开为博客", alias: 'unset2Blog', icon: "", action: Note.setNote2Blog },
 			{ type: "splitLine" },
-			// { text: "发送长微博", alias: 'html2Image', icon: "", action: Note.html2Image },
+			// { text: "发送长微博", alias: 'html2Image', icon: "", action: Note.html2Image , width: 150, type: "group", items:[{text: "a"}]},
 			// { type: "splitLine" },
 			{ text: "删除", icon: "", faIcon: "fa-trash-o", action: Note.deleteNote },
 			{ text: "移动", alias: "move", icon: "",
@@ -1204,7 +1231,6 @@ Note.initContextmenu = function() {
 	function menuAction(target) {
 		// $('#myModal').modal('show')
 		showDialog("dialogUpdateNotebook", {title: "修改笔记本", postShow: function() {
-			
 		}});
 	}
 	function applyrule(menu) {
@@ -1248,7 +1274,8 @@ Note.initContextmenu = function() {
 	    return this.id != "target3";
 	}
 	
-	Note.contextmenu = $("#noteItemList .item").contextmenu(noteListMenu);
+	// 这里很慢!!
+	Note.contextmenu = $("#noteItemList .item-my").contextmenu(noteListMenu);
 }
 
 //------------------- 事件
@@ -1288,11 +1315,22 @@ $(function() {
 	});
 	$("#notebookNavForNewNote").on("click", "li div", function() {
 		var notebookId = $(this).attr("notebookId");
-		if($(this).text() == "Markdown") {
+		if($(this).hasClass("new-note-right")) {
 			Note.newNote(notebookId, false, "", true);
 		} else {
 			Note.newNote(notebookId);
 		}
+	});
+	$("#searchNotebookForAdd").click(function(e) {
+		e.stopPropagation();
+	});
+	$("#searchNotebookForAdd").keyup(function() {
+		var key = $(this).val();
+		Notebook.searchNotebookForAddNote(key);
+	});
+	$("#searchNotebookForList").keyup(function() {
+		var key = $(this).val();
+		Notebook.searchNotebookForList(key);
 	});
 	
 	//---------------------------
@@ -1312,7 +1350,7 @@ $(function() {
 	});
 	
 	//--------------------
-	Note.initContextmenu();
+	// Note.initContextmenu();
 	
 	//------------
 	// 文档历史
@@ -1331,6 +1369,14 @@ $(function() {
 		// 得到ID
 		var noteId = $(this).parent().attr('noteId');
 		window.open("/blog/view/" + noteId);
+	});
+	
+	// note setting
+	$("#noteItemList").on("click", ".item-my .item-setting", function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		var $p = $(this).parent();
+		Note.contextmenu.showMenu(e, $p);
 	});
 });
 

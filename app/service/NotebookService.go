@@ -47,31 +47,40 @@ func ParseAndSortNotebooks(userNotebooks []info.Notebook, noParentDelete, needSo
 		newNotebooks.NumberNotes = each.NumberNotes
 		newNotebooks.IsTrash = each.IsTrash
 		newNotebooks.IsBlog = each.IsBlog
+		
+		// 存地址
 		userNotebooksMap[each.NotebookId] = &newNotebooks
 	}
 
 	// 第二遍, 追加到父下
-	//	nilObjectId := bson.ObjectIdHex("")
+	
+	// 需要删除的id
+	needDeleteNotebookId := map[bson.ObjectId]bool{}
 	for id, each := range userNotebooksMap {
 		// 如果有父, 那么追加到父下, 并剪掉当前, 那么最后就只有根的元素
 		if each.ParentNotebookId.Hex() != "" {
 			if userNotebooksMap[each.ParentNotebookId] != nil {
-				userNotebooksMap[each.ParentNotebookId].Subs = append(userNotebooksMap[each.ParentNotebookId].Subs, *each)
+				userNotebooksMap[each.ParentNotebookId].Subs = append(userNotebooksMap[each.ParentNotebookId].Subs, each) // Subs是存地址
 				// 并剪掉
-				delete(userNotebooksMap, id)
+				// bug
+				needDeleteNotebookId[id] = true
+				// delete(userNotebooksMap, id)
 			} else if noParentDelete {
 				// 没有父, 且设置了要删除	
-				delete(userNotebooksMap, id)
+				needDeleteNotebookId[id] = true
+				// delete(userNotebooksMap, id)
 			}
 		}
 	}
 
 	// 第三遍, 得到所有根
-	final := make(info.SubNotebooks, len(userNotebooksMap))
+	final := make(info.SubNotebooks, len(userNotebooksMap)-len(needDeleteNotebookId))
 	i := 0
-	for _, each := range userNotebooksMap {
-		final[i] = *each
-		i++
+	for id, each := range userNotebooksMap {
+		if !needDeleteNotebookId[id] {
+			final[i] = each
+			i++
+		}
 	}
 
 	// 最后排序
@@ -182,14 +191,20 @@ func (this *NotebookService) UpdateNotebook(userId, notebookId string, needUpdat
 	return db.UpdateByIdAndUserIdMap(db.Notebooks, notebookId, userId, needUpdate)
 }
 
+// 查看是否有子notebook
 // 先查看该notebookId下是否有notes, 没有则删除
 func (this *NotebookService) DeleteNotebook(userId, notebookId string) (bool, string) {
-	if db.Count(db.Notes, bson.M{"NotebookId": bson.ObjectIdHex(notebookId), 
-		"UserId": bson.ObjectIdHex(userId),
-		"IsTrash": false}) == 0 { // 不包含trash
-		return db.DeleteByIdAndUserId(db.Notebooks, notebookId, userId), ""
+	if db.Count(db.Notebooks, bson.M{"ParentNotebookId": bson.ObjectIdHex(notebookId), 
+		"UserId": bson.ObjectIdHex(userId)}) == 0 { // 无
+		if db.Count(db.Notes, bson.M{"NotebookId": bson.ObjectIdHex(notebookId), 
+			"UserId": bson.ObjectIdHex(userId),
+			"IsTrash": false}) == 0 { // 不包含trash
+			return db.DeleteByIdAndUserId(db.Notebooks, notebookId, userId), ""
+		}
+		return false, "笔记本下有笔记"
+	} else {
+		return false, "笔记本下有子笔记本"
 	}
-	return false, "笔记本下有笔记"
 }
 
 // 排序
@@ -203,6 +218,31 @@ func (this *NotebookService) SortNotebooks(userId string, notebookId2Seqs map[st
 
 	for notebookId, seq := range notebookId2Seqs {
 		if !db.UpdateByIdAndUserIdField2(db.Notebooks, bson.ObjectIdHex(notebookId), bson.ObjectIdHex(userId), "Seq", seq) {
+			return false
+		}
+	}
+	
+	return true
+}
+
+func (this *NotebookService) DragNotebooks(userId string, curNotebookId string, parentNotebookId string, siblings []string) bool {
+	userIdO := bson.ObjectIdHex(userId)
+	
+	ok := false
+	// 如果没parentNotebookId, 则parentNotebookId设空
+	if(parentNotebookId == "") {
+		ok = db.UpdateByIdAndUserIdField2(db.Notebooks, bson.ObjectIdHex(curNotebookId), userIdO, "ParentNotebookId", "");
+	} else {
+		ok = db.UpdateByIdAndUserIdField2(db.Notebooks, bson.ObjectIdHex(curNotebookId), userIdO, "ParentNotebookId", bson.ObjectIdHex(parentNotebookId));
+	}
+	
+	if !ok {
+		return false
+	}
+
+	// 排序
+	for seq, notebookId := range siblings {
+		if !db.UpdateByIdAndUserIdField2(db.Notebooks, bson.ObjectIdHex(notebookId), userIdO, "Seq", seq) {
 			return false
 		}
 	}

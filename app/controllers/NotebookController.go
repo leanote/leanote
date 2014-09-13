@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/revel/revel"
-//	"encoding/json"
+	"encoding/json"
 	"github.com/leanote/leanote/app/info"
 	"gopkg.in/mgo.v2/bson"
 //	. "github.com/leanote/leanote/app/lea"
@@ -29,11 +29,14 @@ func (c Notebook) DeleteNotebook(notebookId string) revel.Result {
 }
 
 // 添加notebook
-func (c Notebook) AddNotebook(notebookId, title string) revel.Result {
+func (c Notebook) AddNotebook(notebookId, title, parentNotebookId string) revel.Result {
 	notebook := info.Notebook{NotebookId: bson.ObjectIdHex(notebookId), 
 		Title: title,
 		Seq: -1,
 		UserId: c.GetObjectUserId()}
+	if(parentNotebookId != "") {
+		notebook.ParentNotebookId = bson.ObjectIdHex(parentNotebookId)
+	}
 	re := notebookService.AddNotebook(notebook)
 	
 	if(re) {
@@ -46,7 +49,23 @@ func (c Notebook) AddNotebook(notebookId, title string) revel.Result {
 func (c Notebook) UpdateNotebookTitle(notebookId, title string) revel.Result {
 	return c.RenderJson(notebookService.UpdateNotebookTitle(notebookId, c.GetUserId(), title))
 }
+
 // 排序
+// 无用
 func (c Notebook) SortNotebooks(notebookId2Seqs map[string]int) revel.Result {
 	return c.RenderJson(notebookService.SortNotebooks(c.GetUserId(), notebookId2Seqs))
+}
+
+// 调整notebooks, 可能是排序, 可能是移动到其它笔记本下
+type DragNotebooksInfo struct {
+	CurNotebookId string
+	ParentNotebookId string
+	Siblings []string
+}
+// 传过来的data是JSON.stringfy数据
+func (c Notebook) DragNotebooks(data string) revel.Result {
+	info := DragNotebooksInfo{}
+	json.Unmarshal([]byte(data), &info)
+	
+	return c.RenderJson(notebookService.DragNotebooks(c.GetUserId(), info.CurNotebookId, info.ParentNotebookId, info.Siblings))
 }

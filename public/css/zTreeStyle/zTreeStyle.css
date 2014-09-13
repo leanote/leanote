@@ -1,0 +1,84 @@
+.ztree * {padding:0; margin:0; font-size:12px;}
+.ztree {margin:0; padding:5px; color:#333}
+.ztree li{padding:0; margin:0; list-style:none; line-height:14px; text-align:left; white-space:nowrap; outline:0}
+.ztree li ul{ margin:0; padding:0 0 0 18px}
+
+.ztree li a {padding:1px 3px 0 0; margin:0; cursor:pointer; height:17px; color:#333; background-color: transparent;
+	text-decoration:none; vertical-align:top; display: block;
+	position: relative;
+}
+.ztree li a:hover {text-decoration:underline}
+.ztree li a.curSelectedNode {padding-top:0px; background-color:#FFE6B0; color:black; height:16px; border:1px #FFB951 solid; opacity:0.8;}
+.ztree li a.curSelectedNode_Edit {padding-top:0px; background-color:#FFE6B0; color:black; height:16px; border:1px #FFB951 solid; opacity:0.8;}
+
+/* 拖动到上面 */
+.ztree li a.tmpTargetNode_inner {
+	padding-top:0px; 
+	background-color:#eee; 
+	color: #000; 
+	height: 30px; 
+	border:1px #ccc solid;
+	opacity: 0.8; 
+	filter:alpha(opacity=80)
+}
+.ztree li span {line-height:16px; margin-right:2px}
+.ztree li span.button {line-height:0; margin:0; width:16px; height:16px; display: inline-block; vertical-align:middle;
+	border:0 none; cursor: pointer;outline:none;}
+.ztree li span.button.switch {width:18px; height:18px}
+.ztree li span.button.ico_open{margin-right:2px; background-position:-110px -16px; vertical-align:top; 
+}
+.ztree li span.button.ico_close{margin-right:2px; background-position:-110px 0; vertical-align:top; }
+.ztree li span.button.ico_docu{margin-right:2px; background-position:-110px -32px; vertical-align:top; }
+.ztree li span.button.edit {margin-right:2px; background-position:-110px -48px; vertical-align:top; }
+.ztree li span.button.remove {margin-right:2px; background-position:-110px -64px; vertical-align:top; }
+
+ul.tmpTargetzTree {background-color:#FFE6B0; opacity:0.8; filter:alpha(opacity=80)}
+
+/* 移动 箭头*/
+span.tmpzTreeMove_arrow {
+	z-index: 333;width:16px; 
+	height:30px; line-height: 30px;
+	display: inline-block; 
+	padding:0; 
+	margin:0 0 0 15px; 
+	border:0 none; position:absolute;
+}
+
+/* 拖动的副本 */
+ul.ztree.zTreeDragUL {z-index: 333;margin:0; padding:0; position:absolute; width:auto; height:auto;overflow:hidden; 
+	background-color: cfcfcf; 
+	border:1px #00B83F dotted; opacity:0.8; filter:alpha(opacity=80)}
+.zTreeMask {z-index:1000; background-color:#cfcfcf; opacity:0.0; filter:alpha(opacity=0); position:absolute}
+.ztree li ul{ margin:0; padding:0}
+.ztree li {line-height:30px;}
+.ztree > li {
+	border-bottom: 1px dashed #eee;
+}
+.ztree li a {height:30px;padding-top: 0px;}
+.ztree li a:hover {text-decoration:none; background-color: #E7E7E7;}
+.ztree li a span.button.switch {visibility:hidden}
+.ztree.showIcon li a span.button.switch {visibility:visible}
+.ztree li a.curSelectedNode {background-color:#eee;border:0;height:30px;}
+.ztree li span {line-height:30px;}
+.ztree li span.button {margin-top: -5px;}
+.ztree li span.button.switch {width: 16px;height: 30px; line-height: 30px; text-align: center}
+
+.ztree li a.level0 span {font-size: 14px;}
+.ztree li span.button {
+	background-image: none;
+}
+.ztree li span.button.switch.level0 {width: 20px;}
+.ztree li span.button.switch.level1 {width: 20px;}
+.ztree li span.button.noline_open:before {
+	content: "\f107";
+}
+.ztree li span.button.noline_close:before {
+	content: "\f105";
+}
+.ztree li span.button.noline_open.level0 {background-position: 0 -18px;}
+.ztree li span.button.noline_close.level0 {background-position: -18px -18px;}
+
+/* life */
+.ztree .tree-title {
+	display: inline-block;
+}

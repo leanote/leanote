@@ -33,7 +33,8 @@ var jss = []string{"js/jquery-cookie", "js/bootstrap",
 	"js/common", "js/app/note", "js/app/tag", "js/app/notebook", "js/app/share", 
 	"js/object_id", "js/ZeroClipboard/ZeroClipboard"}
 	
-var base = "/Users/life/Documents/Go/package/src/github.com/leanote/leanote/public/"
+var base1 = "/Users/life/Documents/Go/package2/src/github.com/leanote/leanote/"
+var base = "/Users/life/Documents/Go/package2/src/github.com/leanote/leanote/public/"
 var cmdPath = "/usr/local/bin/uglifyjs"
 
 func cmdError(err error) {
@@ -89,8 +90,8 @@ func dev() {
 		"/public/mdeditor/editor/scrollLink.js": "/public/mdeditor/editor/scrollLink-min.js",
 		"console.log(o);": "",
 		}
-	path := "/Users/life/Documents/Go/package/src/github.com/leanote/leanote/src/views/note/note-dev.html"
-	target := "/Users/life/Documents/Go/package/src/github.com/leanote/leanote/src/views/note/note.html"
+	path := base1 + "/src/views/note/note-dev.html"
+	target := base1 + "/src/views/note/note.html"
 	
 	bs, _ := ioutil.ReadFile(path)
 	content := string(bs)
