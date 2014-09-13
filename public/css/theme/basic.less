@@ -59,3 +59,247 @@
 #switcher span:before {
 	content: "b";
 }
+
+.dropdown-menu {
+  border-radius: 3px;
+  margin:0;
+  border: 1px solid @hColor;
+  /*overflow-x: hidden; */
+  /*overflow-y: scroll;*/
+  box-shadow: rgba(0, 0, 0, 0.172549) 0px 6px 12px 0px;
+}
+
+.dropdown-menu li {
+	list-style: none;
+  padding-left: 10px;
+  width: 100%;
+  height: 30px; // 父设置了line-height, 子下拉也受影响, "新建笔记"
+  line-height: 30px;
+}
+.dropdown-menu li > a {
+  color: @aBlackColor;
+  display: block;
+  padding-right: 20px;
+}
+.dropdown-menu > li > a {
+  padding: 3px 20px 3px 0;
+}
+#notebookNavForNewNote li:hover {
+	background: none;
+}
+
+#noteList {
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  /*
+  overflow-x: hidden;
+  overflow-y: hidden;
+  */
+}
+
+//-----------------
+// 下拉菜单
+.dropdown-submenu {
+    position: relative;
+}
+.dropdown-submenu > ul.dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-left: -3px !important;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    padding-top: 10px !important;
+}
+.dropdown-submenu:hover > .dropdown-menu {
+    display: block;
+}
+// 箭头
+.dropdown-submenu:after {
+    display: block;
+    content: " ";
+    position: absolute;
+    right: 0;
+    top: 10px;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #666;
+}
+
+.dropdown-submenu:hover > a:after {
+    border-left-color: #fff;
+}
+.dropdown-submenu.pull-left {
+    float: none;
+}
+.dropdown-submenu.pull-left > .dropdown-menu {
+    left: -100%;
+    margin-left: 10px;
+    -webkit-border-radius: 6px 0 6px 6px;
+    -moz-border-radius: 6px 0 6px 6px;
+    border-radius: 6px 0 6px 6px;
+}
+
+// 动画
+.open > .dropdown-menu, .dropdown-submenu:hover > .dropdown-menu {
+  -webkit-transform: scale(1, 1);
+  transform: scale(1, 1);  
+}
+.dropdown-menu {
+  -webkit-transform-origin: left;
+  transform-origin: top;
+  -webkit-animation-fill-mode: forwards;  
+  animation-fill-mode: forwards; 
+  -webkit-transform: scale(0, 0);
+  display: block;
+  
+  transition: all 0.2s cubic-bezier(0.34, 1.21, 0.4, 1);
+  -webkit-transition: all 0.2s cubic-bezier(0.34, 1.21, 0.4, 1);
+}
+
+.dropdown-list {
+	width: 530px;
+	border-radius: 3px;
+  ul {
+  	margin: 0;
+  	padding: 0;
+  	li {
+  		float: left;
+  		width: 120px;
+  		margin-left: 10px;
+  		margin-bottom: 10px;
+  		border: 1px dashed #ccc;
+  	}
+  }
+}
+
+.new-note-right {
+	padding: 0 5px;
+	padding-left: 3px
+}
+#leanoteMsg {
+	line-height: 40px; margin-top: 10px; margin-left: 10px;
+}
+#newNoteWrap {
+	line-height: 40px; margin-top: 10px;
+}
+
+#searchNotebookForAddDropdownList {
+	left: -200px;
+}
+
+#searchNotebookForAdd {
+	line-height: normal;
+	width: 200px;
+	margin: 0 10px;
+	margin-bottom: 10px;
+	height: 30px;
+	border-color: #ebeff2;
+	box-shadow: none;
+}
+#myNotebooks .folderBody {
+	padding-top: 3px;
+}
+#searchNotebookForList {
+	height: 30px;
+	width: 90%;
+	margin: 3px auto;
+	margin-top: 0;
+	border-color: #ebeff2;
+	box-shadow: none;
+}
+
+// blog
+#noteItemList {
+	.item-setting, .item-blog {
+	  position: absolute; 
+	  right: 1px;
+	  font-size: 10px;
+	  z-index: 2;
+	  padding: 3px;
+	  border-radius: 5px;
+	  cursor: pointer;
+	  .fa {
+		  color: #fff !important;
+	  }
+	  width: 20px;
+	  text-align: center;
+	  opacity: 0.5;
+	  &:hover {
+		  opacity: 0.8;
+	  }
+	  background-color: #464C5E;
+	 }
+	  
+	 .item-blog {
+	 	top: 1px;
+	 }
+	  
+	 .item-setting {
+	 	bottom: 0;
+	 	display: none;
+	 }
+}
+#noteItemList .item:hover  {
+	 .item-setting {
+	 	display: block;
+	 }
+}
+
+// share
+.friend-header {
+	position: relative;
+	.notebook-setting {
+		display: none;
+	}
+	&:hover {
+		.notebook-setting {
+			display: block;
+		}
+	}
+}
+
+.each-user {
+	margin-bottom: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
+	margin-top: 3px;
+	border: 1px solid #eee;
+	border-radius: 3px;
+}
+
+// 设置
+.notebook-setting {
+	display: none;
+	position: absolute;
+	right: 3px;
+	top: 0;
+	bottom: 0;
+	line-height: 30px;
+}
+.notebook-setting:before {
+	content: "\f013";
+}
+.ztree li a:hover .notebook-setting {
+	display: block;
+}
+
+#myTag .folderBody {
+	padding: 0 3px;
+	padding-bottom: 3px;
+}
+#myTag .folderBody li {
+	float: left;
+	padding: 3px;
+	line-height: normal;
+}
+#notebookList {
+	border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+.ztree {
+	padding: 0px;
+}
