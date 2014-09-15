@@ -65,6 +65,7 @@ func (this *UserService) GetUserInfoByAny(idEmailUsername string) info.User {
 		return this.GetUserInfoByEmail(idEmailUsername)
 	}
 	
+	// username
 	return this.GetUserInfoByUsername(idEmailUsername)
 }
 
@@ -83,6 +84,7 @@ func (this *UserService) GetUserInfoByEmail(email string) info.User {
 // 得到用户信息 username
 func (this *UserService) GetUserInfoByUsername(username string) info.User {
 	user := info.User{}
+	username = strings.ToLower(username)
 	db.GetByQ(db.Users, bson.M{"Username": username}, &user)
 	return user
 }
