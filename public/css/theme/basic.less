@@ -146,28 +146,36 @@
 
 // 动画
 .open > .dropdown-menu, .dropdown-submenu:hover > .dropdown-menu {
+  opacity: 1;
+  transform: scale(1, 1); 
   -webkit-transform: scale(1, 1);
   -moz-transform: scale(1, 1);
   -o-transform: scale(1, 1);
-  transform: scale(1, 1); 
-  opacity: 1;
 }
 .dropdown-menu {
   opacity: 0;
+  display: block;
   
-  -webkit-transform-origin: left;
+  -webkit-transform: scale(0, 0);
+  -webkit-transform-origin: top;
   -webkit-animation-fill-mode: forwards;  
+  -webkit-transition: all 0.2s cubic-bezier(0.34, 1.21, 0.4, 1);
+  
+  -o-transform: scale(0, 0);
+  -o-transform-origin: top;
+  -o-animation-fill-mode: forwards;  
+  -o-transition: all 0.2s cubic-bezier(0.34, 1.21, 0.4, 1);
   
   -moz-transform: scale(0, 0);
-  -moz-transform-origin: left;
+  -moz-transform-origin: top;
   -moz-animation-fill-mode: forwards;  
+  -moz-transition: all 0.2s cubic-bezier(0.34, 1.21, 0.4, 1);
   
+  transform: scale(0, 0);
   transform-origin: top;
   animation-fill-mode: forwards; 
-  
   transition: all 0.2s cubic-bezier(0.34, 1.21, 0.4, 1);
-  -webkit-transition: all 0.2s cubic-bezier(0.34, 1.21, 0.4, 1);
-  -moz-transition: all 0.2s cubic-bezier(0.34, 1.21, 0.4, 1);
+  
 }
 
 .dropdown-list {
