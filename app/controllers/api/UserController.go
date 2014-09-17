@@ -14,9 +14,6 @@ import (
 //	"path"
 //	"strconv"
 )
-type User struct {
-	*revel.Controller
-}
 
 type ApiUser struct {
 	*revel.Controller
@@ -24,12 +21,6 @@ type ApiUser struct {
 
 // 修改用户名, 需要重置session
 func (c ApiUser) Info() revel.Result {
-	Log("APIUser");
-	return c.RenderTemplate("home/index.html");
-//	return nil;
-}
-
-func (c User) Info() revel.Result {
 	Log("APIUser");
 	return c.RenderTemplate("home/index.html");
 //	return nil;
