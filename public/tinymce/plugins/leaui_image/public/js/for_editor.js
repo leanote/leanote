@@ -1,7 +1,7 @@
 // for editor.
 // drag image to editor
 // Copyright leaui
-
+var urlPrefix = window.location.protocol + "//" + window.location.host;
 define('leaui_image', ['jquery.ui.widget', 'fileupload'], function(){
 	var editor = tinymce.activeEditor;
 	var dom = editor.dom;
@@ -103,7 +103,8 @@ define('leaui_image', ['jquery.ui.widget', 'fileupload'], function(){
 	        done: function(e, data) {
 	            if (data.result.Ok == true) {
 	                data.context.remove();
-	                var data2 = {src: data.result.Id}
+	                // life
+	                var data2 = {src: urlPrefix + "/file/outputImage?fileId=" + data.result.Id + "&noteId=" + Note.curNoteId}
 	                insertImage(data2);
 	            } else {
 	                data.context.empty();

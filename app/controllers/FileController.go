@@ -3,11 +3,13 @@ package controllers
 import (
 	"github.com/revel/revel"
 //	"encoding/json"
+	"gopkg.in/mgo.v2/bson"
 	. "github.com/leanote/leanote/app/lea"
 	"github.com/leanote/leanote/app/info"
 	"io/ioutil"
 	"os"
 	"strconv"
+	"strings"
 )
 
 // 首页
@@ -16,6 +18,7 @@ type File struct {
 }
 
 // 上传图片 editor
+// 过时
 func (c File) UploadImage(renderHtml string) revel.Result {
 	if renderHtml == "" {
 		renderHtml = "file/image.html"
@@ -31,6 +34,7 @@ func (c File) UploadImage(renderHtml string) revel.Result {
 }
 
 // 上传的是博客logo
+// TODO logo不要设置权限, 另外的目录
 func (c File) UploadBlogLogo() revel.Result {
 	return c.UploadImage("file/blog_logo.html");
 }
@@ -38,28 +42,25 @@ func (c File) UploadBlogLogo() revel.Result {
 // 拖拉上传, pasteImage
 func (c File) UploadImageJson(renderHtml, from string) revel.Result {
 	re := c.uploadImage(from, "");
-	re.Id = siteUrl + re.Id
-//	re.Id = re.Id
 	return c.RenderJson(re)
 }
 
 // leaui image plugin
 func (c File) UploadImageLeaui(albumId string) revel.Result {
 	re := c.uploadImage("", albumId);
-	re.Id = siteUrl + re.Id
-//	re.Id = re.Id
 	return c.RenderJson(re)
 }
 
 // 上传图片, 公用方法
 func (c File) uploadImage(from, albumId string) (re info.Re) {
 	var fileUrlPath = ""
+	var fileId = ""
 	var resultCode = 0 // 1表示正常
 	var resultMsg = "内部错误" // 错误信息
 	var Ok = false
 	
 	defer func() {
-		re.Id = fileUrlPath
+		re.Id = fileId
 		re.Code = resultCode
 		re.Msg = resultMsg
 		re.Ok = Ok
@@ -71,11 +72,10 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 	}
 	defer file.Close()
 	// 生成上传路径
-	fileUrlPath = "/upload/" + c.GetUserId() + "/images"
-	dir := revel.BasePath + "/public/" + fileUrlPath
+	fileUrlPath = "files/" + c.GetUserId() + "/images"
+	dir := revel.BasePath + "/" +  fileUrlPath
 	err = os.MkdirAll(dir, 0755)
 	if err != nil {
-		Log(err)
 		return re
 	}
 	// 生成新的文件名
@@ -126,8 +126,12 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 		Path: fileUrlPath,
 		Size: filesize}
 		
+	id := bson.NewObjectId();
+	fileInfo.FileId = id
+	fileId = id.Hex()
 	Ok = fileService.AddImage(fileInfo, albumId, c.GetUserId())
 	
+	fileInfo.Path = ""; // 不要返回
 	re.Item = fileInfo
 	
 	return re
@@ -196,5 +200,28 @@ func (c File) UpgradeLeauiImage() revel.Result {
 	}
 	
 	re.Msg = msg
+	return c.RenderJson(re)
+}
+
+//-----------
+
+// 输出image
+// 权限判断
+func (c File) OutputImage(noteId, fileId string) revel.Result {
+	path := fileService.GetFile(c.GetUserId(), fileId); // 得到路径
+	if path == "" {
+		return c.RenderText("")
+	}
+	fn := revel.BasePath + "/" +  strings.TrimLeft(path, "/")
+    file, _ := os.Open(fn)
+    return c.RenderFile(file, revel.Inline) // revel.Attachment
+}
+
+// 协作时复制图片到owner
+func (c File) CopyImage(userId, fileId, toUserId string) revel.Result {
+	re := info.NewRe()
+	
+	re.Ok, re.Id = fileService.CopyImage(userId, fileId, toUserId)
+	
 	return c.RenderJson(re)
 }

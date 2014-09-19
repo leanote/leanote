@@ -17,6 +17,8 @@ var userService *UserService
 var tagService *TagService
 var blogService *BlogService
 var tokenService *TokenService
+var noteImageService *NoteImageService
+var fileService *FileService
 
 func init() {
 	notebookService = &NotebookService{}
@@ -28,4 +30,6 @@ func init() {
 	tagService = &TagService{}
 	blogService = &BlogService{}
 	tokenService = &TokenService{}
+	fileService = &FileService{}
+	noteImageService = &NoteImageService{}
 }

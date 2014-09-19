@@ -71,6 +71,15 @@ Note.setNoteCache = function(content, clear) {
 	}
 }
 
+// 得到当前的笔记
+Note.getCurNote = function() {
+	var self = this;
+	if(self.curNoteId == "") {
+		return null;
+	}
+	return self.cache[self.curNoteId];
+}
+
 // 每当有notebookId相应的note改变时都要重新清空之
 // 并设置该notebookId有值
 Note.clearCacheByNotebookId = function(notebookId) {

@@ -37,6 +37,8 @@ var Suggestions *mgo.Collection
 var Albums *mgo.Collection
 var Files *mgo.Collection
 
+var NoteImages *mgo.Collection
+
 // 初始化时连接数据库
 func Init() {
 	var url string
@@ -104,6 +106,8 @@ func Init() {
 	// Album & file
 	Albums = Session.DB(dbname).C("albums")
 	Files = Session.DB(dbname).C("files")
+	
+	NoteImages = Session.DB(dbname).C("note_images")
 }
 
 func init() { 

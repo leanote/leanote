@@ -334,7 +334,7 @@ func (this *ShareService) AddHasShareNote(userId, toUserId string) bool {
 }
 
 // userId是否被共享了noteId
-func (this *ShareService) hasSharedNote(noteId, myUserId string) bool {
+func (this *ShareService) HasSharedNote(noteId, myUserId string) bool {
 	return db.Has(db.ShareNotes, bson.M{"ToUserId": bson.ObjectIdHex(myUserId), "NoteId": bson.ObjectIdHex(noteId)})
 }
 // noteId的notebook是否共享了给我
@@ -355,7 +355,7 @@ func (this *ShareService) GetShareNoteContent(noteId, myUserId, sharedUserId str
 	noteContent = info.NoteContent{}
 	// 是否单独共享了该notebook
 	// 或者, 其notebook共享了我
-	if this.hasSharedNote(noteId, myUserId) || this.hasSharedNotebook(noteId, myUserId, sharedUserId) {
+	if this.HasSharedNote(noteId, myUserId) || this.hasSharedNotebook(noteId, myUserId, sharedUserId) {
 		db.Get(db.NoteContents, noteId, &noteContent)
 	} else {
 	}

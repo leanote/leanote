@@ -17,6 +17,12 @@ func (this *NoteService) GetNote(noteId, userId string) (note info.Note) {
 	db.GetByIdAndUserId(db.Notes, noteId, userId, &note)
 	return
 }
+// fileService调用
+func (this *NoteService) GetNoteById(noteId string) (note info.Note) {
+	note = info.Note{}
+	db.Get(db.Notes, noteId, &note)
+	return
+}
 // 得到blog, blogService用
 // 不要传userId, 因为是公开的
 func (this *NoteService) GetBlogNote(noteId string) (note info.Note) {
@@ -148,6 +154,10 @@ func (this *NoteService) AddNoteContent(noteContent info.NoteContent) info.NoteC
 	noteContent.UpdatedTime = noteContent.CreatedTime 
 	noteContent.UpdatedUserId = noteContent.UserId
 	db.Insert(db.NoteContents, noteContent)
+	
+	// 更新笔记图片
+	noteImageService.UpdateNoteImages(noteContent.UserId.Hex(), noteContent.NoteId.Hex(), noteContent.Content)
+	
 	return noteContent;
 }
 
@@ -237,9 +247,21 @@ func (this *NoteService) UpdateNoteContent(userId, updatedUserId, noteId, conten
 			Content: content,
 			UpdatedTime: time.Now(),
 		})
+		
+		// 更新笔记图片
+		noteImageService.UpdateNoteImages(userId, noteId, content)
+		
 		return true
 	}
 	return false
+}
+
+// ?????
+// 这种方式太恶心, 改动很大
+// 通过content修改笔记的imageIds列表
+// src="http://localhost:9000/file/outputImage?fileId=541ae75499c37b6b79000005&noteId=541ae63c19807a4bb9000000"
+func (this *NoteService) updateNoteImages(noteId string, content string) bool {
+	return true
 }
 
 // 更新tags
@@ -396,7 +418,6 @@ func (this *NoteService) searchNoteFromContent(notes []info.Note, userId, key st
 	for i, note := range notes {
 		noteIds[i] = note.NoteId
 	}
-	LogJ(noteIds)
 	noteContents := []info.NoteContent{}
 	query := bson.M{"_id": bson.M{"$nin": noteIds}, "UserId": bson.ObjectIdHex(userId), "Content": bson.M{"$regex": bson.RegEx{".*?" + key + ".*", "i"}}}
 	if isBlog {
@@ -418,9 +439,6 @@ func (this *NoteService) searchNoteFromContent(notes []info.Note, userId, key st
 	for i, content := range noteContents {
 		noteIds2[i] = content.NoteId
 	}
-	
-//	Log(" content search ")
-//	Log(lenContent)
 	
 	// 得到notes
 	notes2 := this.ListNotesByNoteIds(noteIds2)
@@ -446,8 +464,6 @@ func (this *NoteService) SearchNoteByTags(tags []string, userId string, pageNumb
 	// 总记录数
 	count, _ = q.Count()
 	
-	Log(count)
-		
 	q.Sort(sortFieldR).
 		Skip(skipNum).
 		Limit(pageSize).

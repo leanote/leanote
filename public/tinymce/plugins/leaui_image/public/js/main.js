@@ -260,13 +260,19 @@ var o = {
 			for(var i in datas){
 				var each = datas[i];
 				var classes = "";
-				var src = urlPrefix + each.Path;
+				// life edit
+				// 之前的
+				if(each.Path != "" && each.Path.substr(0, 7) == "/upload") {
+					var src = urlPrefix + each.Path;
+				} else {
+					var src = urlPrefix + "/file/outputImage?fileId=" + each.FileId;
+				}
 				// log(src);
 				if(selectedMap[src]) {
 					classes = 'class="selected"';
 				}
 				html += '<li ' + classes + '>';
-				html += '<a title="" href="javascript:;" class="a-img"><img alt="" data-original="' + src + '" ></a>';
+				html += '<a title="" href="javascript:;" class="a-img"><img  alt="" data-original="' + src + '" ></a>';
 				// html += '<div class="tools"><a href="javascript:;" class="del" data-id="' + each.FileId + '"><span class="glyphicon glyphicon-trash"></span></a></div>';
 				html += '<div class="tools clearfix" data-id="' + each.FileId + '"><div class="file-title pull-left">' + each.Title + '</div><div class="pull-right"><a href="javascript:;" class="del" data-id="' + each.FileId + '"><span class="glyphicon glyphicon-trash"></span></a></div></div>';
 				html += "</li>";
@@ -348,10 +354,11 @@ var o = {
 			return false;
 		}
 		
+		// life 为了图片安全
 		if(typeof $li == "object") {
 			var src = $li.find("img").attr('src');
 		} else {
-			src = $li;
+			src = urlPrefix + "/file/outputImage?fileId=" + $li;
 		}
 		this.selectedImages.push(src);
 		this.reRenderSelectedImages(false, src);
