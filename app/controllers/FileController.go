@@ -18,7 +18,7 @@ type File struct {
 }
 
 // 上传图片 editor
-// 过时
+// 过时 已弃用!
 func (c File) UploadImage(renderHtml string) revel.Result {
 	if renderHtml == "" {
 		renderHtml = "file/image.html"
@@ -39,9 +39,33 @@ func (c File) UploadBlogLogo() revel.Result {
 	return c.UploadImage("file/blog_logo.html");
 }
 
-// 拖拉上传, pasteImage
-func (c File) UploadImageJson(renderHtml, from string) revel.Result {
+// 弃用
+func (c File) UploadImageJson(from, noteId string) revel.Result {
 	re := c.uploadImage(from, "");
+	return c.RenderJson(re)
+}
+
+// 拖拉上传, pasteImage
+// noteId 是为了判断是否是协作的note, 如果是则需要复制一份到note owner中
+func (c File) PasteImage(noteId string) revel.Result {
+	re := c.uploadImage("pasteImage", "");
+	
+	userId := c.GetUserId()
+	note := noteService.GetNoteById(noteId)
+	if note.UserId != "" {
+		noteUserId := note.UserId.Hex()
+		if noteUserId != userId {
+			// 是否是有权限协作的
+			if shareService.HasUpdatePerm(noteUserId, userId, noteId) {
+				// 复制图片之, 图片复制给noteUserId
+				_, re.Id = fileService.CopyImage(userId, re.Id, noteUserId)				
+			} else {
+				// 怎么可能在这个笔记下paste图片呢?
+				// 正常情况下不会
+			}
+		}
+	}
+	
 	return c.RenderJson(re)
 }
 
@@ -60,7 +84,7 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 	var Ok = false
 	
 	defer func() {
-		re.Id = fileId
+		re.Id = fileId // 只是id, 没有其它信息
 		re.Code = resultCode
 		re.Msg = resultMsg
 		re.Ok = Ok
