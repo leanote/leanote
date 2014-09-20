@@ -39,8 +39,6 @@ func (this *NoteImageService) UpdateNoteImages(userId, noteId, content string) b
 	// 删除旧的
 	db.DeleteAll(db.NoteImages, bson.M{"NoteId": bson.ObjectIdHex(noteId)})
 	
-	Log("--------ii--")
-	
 	// 添加新的
 	var fileId string
 	noteImage := info.NoteImage{NoteId: bson.ObjectIdHex(noteId)}
@@ -54,8 +52,6 @@ func (this *NoteImageService) UpdateNoteImages(userId, noteId, content string) b
 					Log(fileId)
 					// 判断是否是我的文件
 					if fileService.IsMyFile(userId, fileId) {
-						Log("?????")
-						Log("<><><>")
 						noteImage.ImageId = bson.ObjectIdHex(fileId)
 						db.Insert(db.NoteImages, noteImage)
 					}
@@ -66,4 +62,41 @@ func (this *NoteImageService) UpdateNoteImages(userId, noteId, content string) b
 	}
 	
 	return true
+}
+
+// 复制图片, 把note的图片都copy给我, 且修改noteContent图片路径
+func (this *NoteImageService) CopyNoteImages(fromNoteId, fromUserId, newNoteId, content, toUserId string) string {
+	// 得到fromNoteId的noteImages, 如果为空, 则直接返回content
+	noteImages := []info.NoteImage{}
+	db.ListByQWithFields(db.NoteImages, bson.M{"NoteId": bson.ObjectIdHex(fromNoteId)}, []string{"ImageId"}, &noteImages)
+	
+	if len(noteImages) == 0 {
+		return content;
+	}
+	
+	// <img src="/file/outputImage?fileId=12323232" />
+	// 把fileId=1232替换成新的
+	replaceMap := map[string]string{}
+	for _, noteImage := range noteImages {
+		imageId := noteImage.ImageId.Hex()
+		ok, newImageId := fileService.CopyImage(fromUserId, imageId, toUserId)
+		if ok {
+			replaceMap[imageId] = newImageId
+		}
+	}
+	
+	if len(replaceMap) > 0 {
+		// 替换之
+		reg, _ := regexp.Compile("outputImage\\?fileId=([a-z0-9A-Z]{24})")
+		content = reg.ReplaceAllStringFunc(content, func(each string) string {
+			// each=outputImage?fileId=541bd2f599c37b4f3r000003
+			fileId := each[len(each)-24:] // 得到后24位, 也即id
+			if replaceFileId, ok := replaceMap[fileId]; ok {
+				return "outputImage?fileId=" + replaceFileId
+			}
+			return each
+		});
+	}
+	
+	return content;
 }

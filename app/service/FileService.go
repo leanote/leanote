@@ -110,7 +110,7 @@ func (this *FileService) UpdateImage(userId, fileId, title string) bool {
 // 要判断是否具有权限
 // userId是否具有fileId的访问权限
 func (this *FileService) GetFile(userId, fileId string) string {
-	if userId == "" || fileId == "" {
+	if fileId == "" {
 		return ""
 	}
 	
@@ -124,7 +124,7 @@ func (this *FileService) GetFile(userId, fileId string) string {
 	// 1. 判断权限
 	
 	// 是否是我的文件
-	if file.UserId.Hex() == userId {
+	if userId != "" && file.UserId.Hex() == userId {
 		return path
 	}
 	

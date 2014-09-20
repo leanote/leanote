@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/leanote/leanote/app/info"
 	"github.com/leanote/leanote/app/db"
-//	. "github.com/leanote/leanote/app/lea"
+	. "github.com/leanote/leanote/app/lea"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 	"sort"
@@ -338,10 +338,12 @@ func (this *ShareService) HasSharedNote(noteId, myUserId string) bool {
 	return db.Has(db.ShareNotes, bson.M{"ToUserId": bson.ObjectIdHex(myUserId), "NoteId": bson.ObjectIdHex(noteId)})
 }
 // noteId的notebook是否共享了给我
-func (this *ShareService) hasSharedNotebook(noteId, myUserId, sharedUserId string) bool {
-	note := noteService.GetNote(noteId, sharedUserId)
-	if note.NoteId != "" {
-		return db.Has(db.ShareNotebooks, bson.M{"NotebookId": note.NotebookId,
+func (this *ShareService) HasSharedNotebook(noteId, myUserId, sharedUserId string) bool {
+	notebookId := noteService.GetNotebookId(noteId)
+	Log(noteId)
+	Log(notebookId)
+	if notebookId != "" {
+		return db.Has(db.ShareNotebooks, bson.M{"NotebookId": notebookId,
 			"UserId": bson.ObjectIdHex(sharedUserId), 
 			"ToUserId": bson.ObjectIdHex(myUserId),
 		})
@@ -355,7 +357,7 @@ func (this *ShareService) GetShareNoteContent(noteId, myUserId, sharedUserId str
 	noteContent = info.NoteContent{}
 	// 是否单独共享了该notebook
 	// 或者, 其notebook共享了我
-	if this.HasSharedNote(noteId, myUserId) || this.hasSharedNotebook(noteId, myUserId, sharedUserId) {
+	if this.HasSharedNote(noteId, myUserId) || this.HasSharedNotebook(noteId, myUserId, sharedUserId) {
 		db.Get(db.NoteContents, noteId, &noteContent)
 	} else {
 	}

@@ -338,9 +338,12 @@ func (this *NoteService) CopyNote(noteId, notebookId, userId string) info.Note {
 }
 
 // 复制别人的共享笔记给我
-// TODO 判断是否共享了给我
+// 将别人可用的图片转为我的图片, 复制图片
 func (this *NoteService) CopySharedNote(noteId, notebookId, fromUserId, myUserId string) info.Note {
-	if notebookService.IsMyNotebook(notebookId, myUserId) {
+	Log(shareService.HasSharedNote(noteId, myUserId) || shareService.HasSharedNotebook(noteId, myUserId, fromUserId))
+	// 判断是否共享了给我
+	if notebookService.IsMyNotebook(notebookId, myUserId) && 
+		(shareService.HasSharedNote(noteId, myUserId) || shareService.HasSharedNotebook(noteId, myUserId, fromUserId)) {
 		note := this.GetNote(noteId, fromUserId)
 		if note.NoteId == "" {
 			return info.Note{}
@@ -354,9 +357,14 @@ func (this *NoteService) CopySharedNote(noteId, notebookId, fromUserId, myUserId
 		note.IsTop = false
 		note.IsBlog = false // 别人的可能是blog
 		
+		note.ImgSrc = "" // 为什么清空, 因为图片需要复制, 先清空
+		
 		// content
 		noteContent.NoteId = note.NoteId
 		noteContent.UserId = note.UserId
+		
+		// 复制图片, 把note的图片都copy给我, 且修改noteContent图片路径
+		noteContent.Content = noteImageService.CopyNoteImages(noteId, fromUserId, note.NoteId.Hex(), noteContent.Content, myUserId)
 		
 		// 添加之
 		note = this.AddNoteAndContent(note, noteContent, note.UserId);
@@ -375,8 +383,10 @@ func (this *NoteService) CopySharedNote(noteId, notebookId, fromUserId, myUserId
 // shareService call
 // [ok]
 func (this *NoteService) GetNotebookId(noteId string) bson.ObjectId {
-	note := &info.Note{}
-	db.Get(db.Notes, noteId, note)
+	note := info.Note{}
+	// db.Get(db.Notes, noteId, &note)
+	// LogJ(note)
+	db.GetByQWithFields(db.Notes, bson.M{"_id": bson.ObjectIdHex(noteId)}, []string{"NotebookId"}, &note)
 	return note.NotebookId
 }
 
