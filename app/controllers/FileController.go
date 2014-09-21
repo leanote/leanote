@@ -17,32 +17,16 @@ type File struct {
 	BaseController
 }
 
-// 过时 已弃用!
-func (c File) UploadImage(renderHtml string) revel.Result {
-	if renderHtml == "" {
-		renderHtml = "file/image.html"
-	}
-	
-	re := c.uploadImage("", "");
-	
-	c.RenderArgs["fileUrlPath"] = siteUrl + re.Id
-	c.RenderArgs["resultCode"] = re.Code
-	c.RenderArgs["resultMsg"] = re.Msg
-
-	return c.RenderTemplate(renderHtml)
-}
-
-// 已弃用
-func (c File) UploadImageJson(from, noteId string) revel.Result {
-	re := c.uploadImage(from, "");
-	return c.RenderJson(re)
-}
-
-
 // 上传的是博客logo
 // TODO logo不要设置权限, 另外的目录
 func (c File) UploadBlogLogo() revel.Result {
-	return c.UploadImage("file/blog_logo.html");
+	re := c.uploadImage("logo", "");
+	
+	c.RenderArgs["fileUrlPath"] = siteUrl + "/" + re.Id
+	c.RenderArgs["resultCode"] = re.Code
+	c.RenderArgs["resultMsg"] = re.Msg
+
+	return c.RenderTemplate("file/blog_logo.html")
 }
 
 // 拖拉上传, pasteImage
@@ -97,7 +81,11 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 	}
 	defer file.Close()
 	// 生成上传路径
-	fileUrlPath = "files/" + c.GetUserId() + "/images"
+	if(from == "logo") {
+		fileUrlPath = "public/upload/" + c.GetUserId() + "/images/logo"
+	} else {
+		fileUrlPath = "files/" + c.GetUserId() + "/images"
+	}
 	dir := revel.BasePath + "/" +  fileUrlPath
 	err = os.MkdirAll(dir, 0755)
 	if err != nil {
@@ -154,6 +142,10 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 	id := bson.NewObjectId();
 	fileInfo.FileId = id
 	fileId = id.Hex()
+	if(from == "logo") {
+		fileId = "public/upload/" + c.GetUserId() + "/images/logo/" + filename
+	}
+	
 	Ok = fileService.AddImage(fileInfo, albumId, c.GetUserId())
 	
 	fileInfo.Path = ""; // 不要返回
@@ -248,5 +240,27 @@ func (c File) CopyImage(userId, fileId, toUserId string) revel.Result {
 	
 	re.Ok, re.Id = fileService.CopyImage(userId, fileId, toUserId)
 	
+	return c.RenderJson(re)
+}
+
+//------------
+// 过时 已弃用!
+func (c File) UploadImage(renderHtml string) revel.Result {
+	if renderHtml == "" {
+		renderHtml = "file/image.html"
+	}
+	
+	re := c.uploadImage("", "");
+	
+	c.RenderArgs["fileUrlPath"] = siteUrl + re.Id
+	c.RenderArgs["resultCode"] = re.Code
+	c.RenderArgs["resultMsg"] = re.Msg
+
+	return c.RenderTemplate(renderHtml)
+}
+
+// 已弃用
+func (c File) UploadImageJson(from, noteId string) revel.Result {
+	re := c.uploadImage(from, "");
 	return c.RenderJson(re)
 }
