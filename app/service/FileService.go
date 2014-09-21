@@ -8,6 +8,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"time"
 	"os"
+	"strings"
 )
 
 const DEFAULT_ALBUM_ID = "52d3e8ac99c37b7f0d000001"
@@ -90,7 +91,14 @@ func (this *FileService) DeleteImage(userId, fileId string) (bool, string) {
 		if db.DeleteByIdAndUserId(db.Files, fileId, userId) {
 			// delete image
 			// TODO
-			err := os.Remove(revel.BasePath + "/public/" + file.Path)
+			file.Path = strings.TrimLeft(file.Path, "/")
+			var err error
+			if strings.HasPrefix(file.Path, "upload") {
+				Log(file.Path)
+				err = os.Remove(revel.BasePath + "/public/" + file.Path)
+			} else {
+				err = os.Remove(revel.BasePath + "/" + file.Path)
+			}
 			if err == nil {
 				return true, ""
 			}
