@@ -351,7 +351,7 @@
   margin-top: 10px;
 }
 #attachMenu {
-  width: 400px;
+  width: 450px;
   padding: 10px 5px;
 }
 #attachList {
@@ -373,7 +373,7 @@
   float: left;
 }
 #attachList li .attach-title {
-  width: 200px;
+  width: 300px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
