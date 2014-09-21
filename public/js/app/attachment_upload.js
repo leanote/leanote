@@ -13,7 +13,6 @@ define('attachment_upload', ['jquery.ui.widget', 'fileupload'], function(){
 	    // Initialize the jQuery File Upload plugin
 	    $('#uploadAttach').fileupload({
 	        dataType: 'json',
-	        maxFileSize: 210000,
 	        // This element will accept file drag/drop uploading
 	        dropZone: $('#dropAttach'),
 	        formData: function(form) {
@@ -35,6 +34,20 @@ define('attachment_upload', ['jquery.ui.widget', 'fileupload'], function(){
 	            // Add the HTML to the UL element
 	            $msg.html(tpl);
 	            data.context = $msg;
+	            
+	            // 检查文件大小
+	            var size = data.files[0].size;
+	            if(typeof size == 'number' && size > 1024 * 1024 * 5) {
+	            	tpl.find("img").remove();
+	            	tpl.removeClass("alert-info").addClass("alert-danger");
+	            	tpl.append(" Warning: File size is bigger than 5M");
+	            	setTimeout((function(tpl) {
+	                	return function() {
+		                	tpl.remove();
+	                	}
+	                })(tpl), 3000);
+	            	return;
+	            }
 	            
 	            // Automatically upload the file once it is added to the queue
 	            var jqXHR;
