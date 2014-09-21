@@ -366,6 +366,9 @@ func (this *NoteService) CopySharedNote(noteId, notebookId, fromUserId, myUserId
 		// 复制图片, 把note的图片都copy给我, 且修改noteContent图片路径
 		noteContent.Content = noteImageService.CopyNoteImages(noteId, fromUserId, note.NoteId.Hex(), noteContent.Content, myUserId)
 		
+		// 复制附件
+		attachService.CopyAttachs(noteId, note.NoteId.Hex(), myUserId)
+		
 		// 添加之
 		note = this.AddNoteAndContent(note, noteContent, note.UserId);
 		

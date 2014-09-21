@@ -38,6 +38,13 @@
 
 /*"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue", Helvetica, "Microsoft Yahei", Verdana, Simsun, "Segoe UI", "Segoe UI Web Regular", "Segoe UI Symbol",  "BBAlpha Sans", "S60 Sans", Arial, sans-serif;*/
 
+.btn {
+	border-radius: 2px;
+}
+.alert {
+	margin-bottom: 10px;
+}
+
 #logo {
 	font-family: "leanoteregular";
 	font-size: 36px;
@@ -320,3 +327,98 @@
 .ztree {
 	padding: 0px;
 }
+
+// leaui image drop drag
+#upload {
+	position: absolute;
+	z-index: 0;
+	bottom: 0;
+	right: 0;
+	left: 0px;
+	padding: 0;
+	background-color: #fff;
+	text-align: center;
+	display: none;
+}
+#upload #drop {
+	width: 100%;
+	height: 100%;
+	padding-top: 100px;
+}
+#drop.in {
+    border: 1px solid #000000;
+}
+#drop.hover {
+    border: 2px solid #000000;
+}
+#uploadMsg {
+	position: absolute;
+	top: 3px;
+	right: 3px;
+	bottom: 10px;
+	overflow: scroll;
+	list-style: none;
+}
+
+// upload attach
+#uploadAttach {
+	position: relative;
+	margin-top: 5px;
+}
+#dropAttach {
+	text-align: center;
+	input {
+		display: none;
+	}
+}
+#dropAttach.in {
+    border: 1px solid #000000;
+}
+#dropAttach.hover {
+    border: 2px solid #000000;
+}
+
+#attachUploadMsg{
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+    max-height: 240px;
+    overflow: scroll;
+    z-index: 3;
+    .alert {
+    	margin: 0;
+    	padding: 0 3px;
+    	margin-top: 10px;
+    }
+}
+#attachMenu {
+	width: 400px;
+	padding: 10px 5px;
+	
+}
+#attachList {
+	margin: 0;
+	padding: 0;
+	max-height: 450px;
+	overflow-y: scroll;
+	li {
+		display: block;
+		margin: 0;
+		padding: 0 3px;
+		border-radius: 3px;
+		border-bottom: 1px dashed #eee;
+		height: 45px;
+		line-height: 45px;
+		div {
+			float: left;
+		}
+		.attach-title {
+			width: 200px;
+			white-space: nowrap;text-overflow:ellipsis; overflow:hidden;
+		}
+		.attach-process {
+			float: right;
+		}
+	}
+}
+

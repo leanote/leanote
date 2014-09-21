@@ -132,5 +132,8 @@ discussion=Discussion
 download=Download
 howToInstallLeanote=How to install leanote
 
+# 
+attachments = Attachments
+
 # error 
 notFound=This page cann't found.

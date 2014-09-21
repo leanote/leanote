@@ -17,7 +17,6 @@ type File struct {
 	BaseController
 }
 
-// 上传图片 editor
 // 过时 已弃用!
 func (c File) UploadImage(renderHtml string) revel.Result {
 	if renderHtml == "" {
@@ -33,16 +32,17 @@ func (c File) UploadImage(renderHtml string) revel.Result {
 	return c.RenderTemplate(renderHtml)
 }
 
+// 已弃用
+func (c File) UploadImageJson(from, noteId string) revel.Result {
+	re := c.uploadImage(from, "");
+	return c.RenderJson(re)
+}
+
+
 // 上传的是博客logo
 // TODO logo不要设置权限, 另外的目录
 func (c File) UploadBlogLogo() revel.Result {
 	return c.UploadImage("file/blog_logo.html");
-}
-
-// 弃用
-func (c File) UploadImageJson(from, noteId string) revel.Result {
-	re := c.uploadImage(from, "");
-	return c.RenderJson(re)
 }
 
 // 拖拉上传, pasteImage
@@ -69,13 +69,14 @@ func (c File) PasteImage(noteId string) revel.Result {
 	return c.RenderJson(re)
 }
 
-// leaui image plugin
+// leaui image plugin upload image
 func (c File) UploadImageLeaui(albumId string) revel.Result {
 	re := c.uploadImage("", albumId);
 	return c.RenderJson(re)
 }
 
 // 上传图片, 公用方法
+// upload image common func
 func (c File) uploadImage(from, albumId string) (re info.Re) {
 	var fileUrlPath = ""
 	var fileId = ""

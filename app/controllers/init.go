@@ -25,6 +25,7 @@ var suggestionService *service.SuggestionService
 
 var albumService *service.AlbumService 
 var fileService *service.FileService
+var attachService *service.AttachService
 
 var pageSize = 1000
 var defaultSortField = "UpdatedTime"

@@ -24,7 +24,7 @@ type Note struct {
 
 	IsMarkdown bool `IsMarkdown` // 是否是markdown笔记, 默认是false
 
-	AttachIds  []string `FileIds,omitempty`  // 2014/9/18, attachments
+	AttachNum  int `AttachNum`  // 2014/9/21, attachments num
 
 	CreatedTime   time.Time     `CreatedTime`
 	UpdatedTime   time.Time     `UpdatedTime`

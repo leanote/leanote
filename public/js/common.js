@@ -288,7 +288,12 @@ function editorIframeTabindex(index) {
 	}
 }
 //切换编辑器
+LEA.isM = false;
+LEA.isMarkdownEditor = function() {
+	return LEA.isM;
+}
 function switchEditor(isMarkdown) {
+	LEA.isM = isMarkdown;
 	// 富文本永远是2
 	if(!isMarkdown) {
 		$("#editor").show();

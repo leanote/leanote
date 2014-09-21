@@ -189,7 +189,6 @@ func (this *FileService) CopyImage(userId, fileId, toUserId string) (bool, strin
 	if file.FileId == "" || file.UserId.Hex() != userId {
 		return false, ""
 	}
-	Log(file)
 		
 	_, ext := SplitFilename(file.Name)
 	newFilename := NewGuid() + ext
