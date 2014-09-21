@@ -203,6 +203,7 @@ define('leaui_image', ['jquery.ui.widget', 'fileupload'], function(){
 		    } else {
 		        clearTimeout(timeout);
 		    }
+		    
 		    var found = false,
 		        node = e.target;
 		    do {

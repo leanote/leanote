@@ -2,9 +2,6 @@
 // 依赖note
 var urlPrefix = window.location.protocol + "//" + window.location.host;
 define('attachment_upload', ['jquery.ui.widget', 'fileupload'], function(){
-	// var editor = tinymce.activeEditor;
-	// var dom = editor.dom;
-	
 	var initUploader =  function() {
 		var $msg = $('#attachUploadMsg');
 	
@@ -36,23 +33,28 @@ define('attachment_upload', ['jquery.ui.widget', 'fileupload'], function(){
 	            tpl.append(data.files[0].name + ' <small>[<i>' + formatFileSize(data.files[0].size) + '</i>]</small>');
 	
 	            // Add the HTML to the UL element
-	            tpl.appendTo($msg);
+	            $msg.html(tpl);
 	            data.context = $msg;
 	            
 	            // Automatically upload the file once it is added to the queue
 	            var jqXHR;
 	            setTimeout(function() {
 		            jqXHR = data.submit();
-	            }, 0);
+	            }, 10);
 	        },
+	        
+	        /*
+	        progress: function (e, data) {
+	        },
+	        */
 	
 	        done: function(e, data) {
 	            if (data.result.Ok == true) {
-	                data.context.remove();
+	                data.context.html("");
 	                Attach.addAttach(data.result.Item);
 	            } else {
 	                var re = data.result;
-	                data.context.empty();
+	                data.context.html("");
 	                var tpl = $('<div class="alert alert-danger"><a class="close" data-dismiss="alert">×</a></div>');
 	                tpl.append('<b>Error:</b> ' + data.files[0].name + ' <small>[<i>' + formatFileSize(data.files[0].size) + '</i>]</small> ' + data.result.Msg);
 	                data.context.html(tpl);
@@ -65,7 +67,7 @@ define('attachment_upload', ['jquery.ui.widget', 'fileupload'], function(){
 	            $("#uploadAttachMsg").scrollTop(1000);
 	        },
 	        fail: function(e, data) {
-	            data.context.empty();
+                data.context.html("");
 	            var tpl = $('<div class="alert alert-danger"><a class="close" data-dismiss="alert">×</a></div>');
 	            tpl.append('<b>Error:</b> ' + data.files[0].name + ' <small>[<i>' + formatFileSize(data.files[0].size) + '</i>]</small> ' + data.errorThrown);
 	            data.context.html(tpl);
@@ -77,11 +79,6 @@ define('attachment_upload', ['jquery.ui.widget', 'fileupload'], function(){
 	
 	            $("#uploadAttachMsg").scrollTop(1000);
 	        }
-	    });
-	
-	    // Prevent the default action when a file is dropped on the window
-	    $(document).on('drop dragover', function(e) {
-	        e.preventDefault();
 	    });
 	
 	    // Helper function that formats the file sizes
@@ -99,15 +96,14 @@ define('attachment_upload', ['jquery.ui.widget', 'fileupload'], function(){
 	    }
 	    
 	    // drag css
-		$(document).bind('dragover', function (e) {
-		    var dropZone = $('#dropAttach'),
-		        timeout = window.dropZoneTimeout;
-		    if (!timeout) {
-		        dropZone.addClass('in');
-		        showUpload();
-		    } else {
+	    var dropZone = $('#dropAttach');
+		$("#uploadAttach").bind('dragover', function (e) {
+			e.preventDefault();
+		    var timeout = window.dropZoneTimeoutAttach;
+		    if(timeout) {
 		        clearTimeout(timeout);
 		    }
+		    
 		    var found = false,
 		        node = e.target;
 		    do {
@@ -122,10 +118,9 @@ define('attachment_upload', ['jquery.ui.widget', 'fileupload'], function(){
 		    } else {
 		        dropZone.removeClass('hover');
 		    }
-		    window.dropZoneTimeout = setTimeout(function () {
-		        window.dropZoneTimeout = null;
+		    window.dropZoneTimeoutAttach = setTimeout(function () {
+		        window.dropZoneTimeoutAttach = null;
 		        dropZone.removeClass('in hover');
-		        hideUpload();
 		    }, 100);
 		});
 	}
