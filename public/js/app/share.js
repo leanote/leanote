@@ -94,7 +94,7 @@ Share.renderShareNotebooks = function(sharedUserInfos, shareNotebooks) {
 	}
 	
 	if(!shareNotebooks || typeof shareNotebooks != "object" || shareNotebooks.length < 0) {
-		return;
+		shareNotebooks = {};
 	}
 	
 	var $shareNotebooks = $("#shareNotebooks");

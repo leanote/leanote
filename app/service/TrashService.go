@@ -53,7 +53,15 @@ func (this *TrashService) recoverNote(noteId, notebookId, userId string) bool {
 
 // 删除trash
 func (this *TrashService) DeleteTrash(noteId, userId string) bool {
-	return db.DeleteByIdAndUserId(db.Notes, noteId, userId)
+	// delete note's attachs
+	ok := attachService.DeleteAllAttachs(noteId, userId)
+	
+	// delete note
+	ok = db.DeleteByIdAndUserId(db.Notes, noteId, userId)
+	// delete content
+	ok = db.DeleteByIdAndUserId(db.NoteContents, noteId, userId)
+	
+	return ok
 }
 
 // 列出note, 排序规则, 还有分页

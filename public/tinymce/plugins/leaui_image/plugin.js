@@ -88,7 +88,7 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 							d.height = img.getAttribute("data-height");
 							d.title = img.getAttribute("data-title");
 
-							datas.push(d); 
+							datas.push(d);
 						}
 					};
 
@@ -104,49 +104,63 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 						}
 						data.src = trueSrc;
 						
-						/*
-						var width = "", height="", title="";
-						if(data.width) {
-							width = 'width="' + data.width +'" ';
-						}
-						if(data.height) {
-							height = 'height="' + data.height +'" ';
-						}
-						if(data.title) {
-							title = 'title="' + data.title +'" ';
-						}
-						var attrs = width + height + title;
-						editor.insertContent('<img ' + attrs + ' data-src="' + src + '" src="' + trueSrc + '" />');
-						*/
-						
-						// 这里, 如果图片宽度过大, 这里设置成500px
-						var back = (function(data2, i) {
-							var d = {};
-							var imgElm;
-							// 先显示loading...
-							d.id = '__mcenew' + i;
-							d.src = "http://leanote.com/images/loading-24.gif";
-							imgElm = dom.createHTML('img', d);
-							editor.insertContent(imgElm);
-							imgElm = dom.get(d.id);
-							log(imgElm)
-							
-							return function(wh) {
-								if(wh && wh.width) {
-									if(wh.width > 600) {
-										wh.width = 600;
-									}
-									data2.width = wh.width;
-								}
-								dom.setAttrib(imgElm, 'src', data2.src);
-								dom.setAttrib(imgElm, 'width', data2.width);
-								dom.setAttrib(imgElm, 'title', data2.title);
+						var renderImage = function(data) {
+							// 这里, 如果图片宽度过大, 这里设置成500px
+							var back = (function(data2, i) {
+								var d = {};
+								var imgElm;
+								// 先显示loading...
+								d.id = '__mcenew' + i;
+								d.src = "http://leanote.com/images/loading-24.gif";
+								imgElm = dom.createHTML('img', d);
+								editor.insertContent(imgElm);
+								imgElm = dom.get(d.id);
 								
-								dom.setAttrib(imgElm, 'id', null);
+								return function(wh) {
+									if(wh && wh.width) {
+										if(wh.width > 600) {
+											wh.width = 600;
+										}
+										data2.width = wh.width;
+									}
+									dom.setAttrib(imgElm, 'src', data2.src);
+									dom.setAttrib(imgElm, 'width', data2.width);
+									dom.setAttrib(imgElm, 'title', data2.title);
+									
+									dom.setAttrib(imgElm, 'id', null);
+								}
+							})(data, i);
+							getImageSize(data.src, back);
+						}
+						
+						// outputImage?fileId=123232323
+						var fileId = "";
+						fileIds = trueSrc.split("fileId=")
+						if(fileIds.length == 2 && fileIds[1].length == "53aecf8a8a039a43c8036282".length) {
+							fileId = fileIds[1];
+						}
+						if(fileId) {
+							// 得到fileId, 如果这个笔记不是我的, 那么肯定是协作的笔记, 那么需要将图片copy给原note owner
+							var curNote = Note.getCurNote();
+							if(curNote && curNote.UserId != UserInfo.UserId) {
+								(function(data) {
+									ajaxPost("/file/copyImage", {userId: UserInfo.UserId, fileId: fileId, toUserId: curNote.UserId}, function(re) {
+										if(reIsOk(re) && re.Id) {
+											var urlPrefix = window.location.protocol + "//" + window.location.host;
+											data.src = urlPrefix + "/file/outputImage?fileId=" + re.Id;
+										}
+										renderImage(data);
+									});
+								})(data);
+							} else {
+								renderImage(data);
 							}
-						})(data, i);
-						getImageSize(data.src, back);
-					}
+						} else {
+							renderImage(data);
+						}
+						
+					} // end for
+					
 					this.parent().parent().close();
 				}
 				},	

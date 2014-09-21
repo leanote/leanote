@@ -472,6 +472,7 @@ define("tinymce/pasteplugin/Clipboard", [
 			      	var c = new FormData;
 				    c.append("from", "pasteImage");
 				    c.append("file", blob);
+				    c.append("noteId", Note.curNoteId); // life
 				    // var d;
 				    // d = $.ajaxSettings.xhr();
 				    // d.withCredentials = i;var d = {};
@@ -481,10 +482,10 @@ define("tinymce/pasteplugin/Clipboard", [
 					var dom = editor.dom;
 					var d = {};						
 					d.id = '__mcenew';
-					d.src = "http://leanote.com/images/loading-24.gif";
+					d.src = "http://leanote.com/images/loading-24.gif"; // 写死了
 					editor.insertContent(dom.createHTML('img', d));
 					var imgElm = dom.get('__mcenew');
-				    $.ajax({url: "/file/uploadImageJson", contentType:false, processData:false , data: c, type: "POST"}
+				    $.ajax({url: "/file/pasteImage", contentType:false, processData:false , data: c, type: "POST"}
 				    	).done(function(re) {
 				    		if(!re || typeof re != "object" || !re.Ok) {
 				    			// 删除
@@ -492,7 +493,9 @@ define("tinymce/pasteplugin/Clipboard", [
 				    			return;
 				    		}
 				    		// 这里, 如果图片宽度过大, 这里设置成500px
-							getImageSize(re.Id, function(wh) {
+							var urlPrefix = window.location.protocol + "//" + window.location.host;
+							var src = urlPrefix + "/file/outputImage?fileId=" + re.Id;
+							getImageSize(src, function(wh) {
 								// life 4/25
 								if(wh && wh.width) {
 									if(wh.width > 600) {
@@ -501,7 +504,7 @@ define("tinymce/pasteplugin/Clipboard", [
 									d.width = wh.width;
 									dom.setAttrib(imgElm, 'width', d.width);
 								}
-								dom.setAttrib(imgElm, 'src', re.Id);
+								dom.setAttrib(imgElm, 'src', src);
 							});
 							dom.setAttrib(imgElm, 'id', null);
 				    	});

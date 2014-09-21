@@ -25,6 +25,7 @@ var suggestionService *service.SuggestionService
 
 var albumService *service.AlbumService 
 var fileService *service.FileService
+var attachService *service.AttachService
 
 var pageSize = 1000
 var defaultSortField = "UpdatedTime"
@@ -56,12 +57,13 @@ var commonUrl = map[string]map[string]bool{"Index": map[string]bool{"Index": tru
 	"User": map[string]bool{"UpdateEmail": true,
 		"ActiveEmail":true,
 		},
-	"oauth": map[string]bool{"githubCallback": true},
+	"Oauth": map[string]bool{"GithubCallback": true},
+	"File": map[string]bool{"OutputImage": true, "OutputFile": true},
 }
 func needValidate(controller, method string) bool {
 	// 在里面
 	if v, ok := commonUrl[controller]; ok {
-		// 不在commonUrl里
+		// 在commonUrl里
 		if _, ok2 := v[method]; ok2 {
 			return false
 		}

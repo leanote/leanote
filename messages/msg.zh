@@ -136,6 +136,9 @@ discussion=社区讨论
 download=下载
 howToInstallLeanote=leanote安装步骤
 
+# 
+attachments = 附件
+
 
 # 必须要加这个, 奇怪
 [CN]

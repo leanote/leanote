@@ -353,6 +353,7 @@ function log(o) {
 									</i>Sort <i class="fa fa-angle-down"></i>
 									-->
 								</a>
+								<!--
 								<ul class="dropdown-menu" role="menu"
 									aria-labelledby="dropdownMenu1"
 									style="right: 3px; ! important; left: -100px; min-width: 100px;">
@@ -366,6 +367,7 @@ function log(o) {
 									<li role="presentation"><a role="menuitem" tabindex="-1"
 										href="#">Separated </a></li>
 								</ul>
+								-->
 							</div>
 						</div>
 
@@ -466,6 +468,38 @@ function log(o) {
 							<ul class="pull-right" id="editorTool">
 								<li><a class="ios7-a " id="saveBtn" title="ctrl+s"
 									data-toggle="dropdown">{{msg . "save"}}</a></li>
+									
+								<li class="dropdown" id="attachDropdown">
+									<a class="ios7-a dropdown-toggle" data-toggle="dropdown" id="showAttach">
+										<!--
+										<span class="fa fa-upload"></span>
+										-->
+										{{msg . "attachments"}}<span id="attachNum"></span>
+									</a>
+									<div class="dropdown-menu" id="attachMenu">
+										<ul id="attachList">
+										</ul>
+										<form id="uploadAttach" method="post" action="/attach/UploadAttach" enctype="multipart/form-data">
+							                <div id="dropAttach">
+							                    <a class="btn btn-success btn-choose-file">
+							                    	Choose File to Upload
+							                    </a>
+							                    <a class="btn btn-default" id="downloadAllBtn">
+								                    <i class="fa fa-download"></i>
+							                    	Download All
+							                    </a>
+							                    <a class="btn btn-default" id="linkAllBtn">
+								                    <i class="fa fa-link"></i>
+							                    	Link All
+							                    </a>
+							                    <input type="file" name="file" multiple/>
+							                </div>
+							                <div id="attachUploadMsg">
+							                </div>
+							            </form>
+									</div>
+								</li>
+								
 								<li><a class="ios7-a " id="tipsBtn"
 									data-toggle="dropdown">{{msg . "editorTips"}}</a></li>
 								<li><a class="ios7-a " id="contentHistory"
@@ -498,7 +532,7 @@ function log(o) {
 							</div>
 						</div>
 						
-						<!-- leaui image -->
+						<!-- leaui image drop image to editor-->
 						<form id="upload" method="post" action="/file/uploadImageLeaui" enctype="multipart/form-data" style="margin-top: 5px;">
 			                <div id="drop">
 			                       Drop images to here
@@ -982,7 +1016,7 @@ initSlimScroll();
 <link href="/public/mdeditor/editor/editor.css" rel="stylesheet">
 <script src="/public/mdeditor/editor/pagedown/Markdown.Converter-min.js"></script>
 <script src="/public/mdeditor/editor/pagedown/Markdown.Sanitizer-min.js"></script>
-<script src="/public/mdeditor/editor/pagedown/Markdown.Editor-min.js"></script>
+<script src="/public/mdeditor/editor/pagedown/Markdown.Editor.js"></script>
 <script src="/public/mdeditor/editor/pagedown/local/Markdown.local.zh-min.js"></script>
 <script src="/public/mdeditor/editor/Markdown.Extra-min.js"></script>
 <script src="/public/mdeditor/editor/underscore-min.js"></script>
@@ -1001,7 +1035,7 @@ initSlimScroll();
 <!-- context-menu -->
 <link rel="stylesheet" href="/js/contextmenu/css/contextmenu.css" type="text/css" />
 
-<!-- version 2.0 -->
+<!-- js version 2.0 use require.js -->
 <script src="/js/require.js"></script>
 <script>
 require.config({
@@ -1009,13 +1043,17 @@ require.config({
     paths: {
     	// 'jquery': 'js/jquery-1.9.0.min',
     	'leaui_image': 'tinymce/plugins/leaui_image/public/js/for_editor',
+    	'attachment_upload': 'js/app/attachment_upload',
     	'jquery.ui.widget': 'tinymce/plugins/leaui_image/public/js/jquery.ui.widget',
     	'fileupload': '/tinymce/plugins/leaui_image/public/js/jquery.fileupload'
     },
     shim: {
+    	'fileupload': {deps: ['jquery.ui.widget']}
     }
 });
 require(['leaui_image'], function(leaui_image) {
+});
+require(['attachment_upload'], function(attachment_upload) {
 });
 </script>
 </body>

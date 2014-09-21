@@ -24,6 +24,8 @@ type Note struct {
 
 	IsMarkdown bool `IsMarkdown` // 是否是markdown笔记, 默认是false
 
+	AttachNum  int `AttachNum`  // 2014/9/21, attachments num
+
 	CreatedTime   time.Time     `CreatedTime`
 	UpdatedTime   time.Time     `UpdatedTime`
 	UpdatedUserId bson.ObjectId `bson:"UpdatedUserId"` // 如果共享了, 并可写, 那么可能是其它他修改了
@@ -54,11 +56,11 @@ type NoteAndContent struct {
 // 每一个历史记录对象
 type EachHistory struct {
 	UpdatedUserId bson.ObjectId `UpdatedUserId`
-	UpdatedTime   time.Time `UpdatedTime`
-	Content  string `Content`
+	UpdatedTime   time.Time     `UpdatedTime`
+	Content       string        `Content`
 }
 type NoteContentHistory struct {
-	NoteId bson.ObjectId `bson:"_id,omitempty"`
-	UserId bson.ObjectId `bson:"UserId"` // 所属者
-	Histories  []EachHistory `Histories`
+	NoteId    bson.ObjectId `bson:"_id,omitempty"`
+	UserId    bson.ObjectId `bson:"UserId"` // 所属者
+	Histories []EachHistory `Histories`
 }

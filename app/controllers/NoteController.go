@@ -117,7 +117,6 @@ type NoteOrContent struct {
 // 这里不能用json, 要用post
 func (c Note) UpdateNoteOrContent(noteOrContent NoteOrContent) revel.Result {
 	// 新添加note
-	LogJ(noteOrContent)
 	if noteOrContent.IsNew {
 		userId := c.GetObjectUserId();
 		myUserId := userId

@@ -36,6 +36,9 @@ var Suggestions *mgo.Collection
 // Album & file(image)
 var Albums *mgo.Collection
 var Files *mgo.Collection
+var Attachs *mgo.Collection
+
+var NoteImages *mgo.Collection
 
 // 初始化时连接数据库
 func Init() {
@@ -104,6 +107,9 @@ func Init() {
 	// Album & file
 	Albums = Session.DB(dbname).C("albums")
 	Files = Session.DB(dbname).C("files")
+	Attachs = Session.DB(dbname).C("attachs")
+	
+	NoteImages = Session.DB(dbname).C("note_images")
 }
 
 func init() { 

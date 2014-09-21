@@ -1,7 +1,7 @@
 // for editor.
 // drag image to editor
 // Copyright leaui
-
+var urlPrefix = window.location.protocol + "//" + window.location.host;
 define('leaui_image', ['jquery.ui.widget', 'fileupload'], function(){
 	var editor = tinymce.activeEditor;
 	var dom = editor.dom;
@@ -35,33 +35,62 @@ define('leaui_image', ['jquery.ui.widget', 'fileupload'], function(){
 	}
 	
 	var i = 1;
-	function insertImage(data2) {
-		// 这里, 如果图片宽度过大, 这里设置成500px
-		var d = {};
-		var imgElm;
-		// 先显示loading...
-		d.id = '__mcenew' + (i++);
-		d.src = "http://leanote.com/images/loading-24.gif";
-		imgElm = dom.createHTML('img', d);
-		editor.insertContent(imgElm);
-		imgElm = dom.get(d.id);
-		
-		function callback (wh) {
-			if(wh && wh.width) {
-				if(wh.width > 600) {
-					wh.width = 600;
-				}
-				data2.width = wh.width;
-			}
-			dom.setAttrib(imgElm, 'src', data2.src);
-			dom.setAttrib(imgElm, 'width', data2.width);
-			if(data2.title) {
-				dom.setAttrib(imgElm, 'title', data2.title);
-			}
+	function insertImage(data) {
+		var renderImage = function(data2) {
+			// 这里, 如果图片宽度过大, 这里设置成500px
+			var d = {};
+			var imgElm;
+			// 先显示loading...
+			d.id = '__mcenew' + (i++);
+			d.src = "http://leanote.com/images/loading-24.gif";
+			imgElm = dom.createHTML('img', d);
+			editor.insertContent(imgElm);
+			imgElm = dom.get(d.id);
 			
-			dom.setAttrib(imgElm, 'id', null);
-		};
-		getImageSize(data2.src, callback);
+			function callback (wh) {
+				if(wh && wh.width) {
+					if(wh.width > 600) {
+						wh.width = 600;
+					}
+					data2.width = wh.width;
+				}
+				dom.setAttrib(imgElm, 'src', data2.src);
+				dom.setAttrib(imgElm, 'width', data2.width);
+				if(data2.title) {
+					dom.setAttrib(imgElm, 'title', data2.title);
+				}
+				
+				dom.setAttrib(imgElm, 'id', null);
+			};
+			getImageSize(data.src, callback);
+		}
+		
+		//-------------
+		// outputImage?fileId=123232323
+		var fileId = "";
+		fileIds = data.src.split("fileId=")
+		if(fileIds.length == 2 && fileIds[1].length == "53aecf8a8a039a43c8036282".length) {
+			fileId = fileIds[1];
+		}
+		if(fileId) {
+			// 得到fileId, 如果这个笔记不是我的, 那么肯定是协作的笔记, 那么需要将图片copy给原note owner
+			var curNote = Note.getCurNote();
+			if(curNote && curNote.UserId != UserInfo.UserId) {
+				(function(data) {
+					ajaxPost("/file/copyImage", {userId: UserInfo.UserId, fileId: fileId, toUserId: curNote.UserId}, function(re) {
+						if(reIsOk(re) && re.Id) {
+							var urlPrefix = window.location.protocol + "//" + window.location.host;
+							data.src = urlPrefix + "/file/outputImage?fileId=" + re.Id;
+						}
+						renderImage(data);
+					});
+				})(data);
+			} else {
+				renderImage(data);
+			}
+		} else {
+			renderImage(data);
+		}
 	}
 	
 	var initUploader =  function() {
@@ -103,7 +132,8 @@ define('leaui_image', ['jquery.ui.widget', 'fileupload'], function(){
 	        done: function(e, data) {
 	            if (data.result.Ok == true) {
 	                data.context.remove();
-	                var data2 = {src: data.result.Id}
+	                // life
+	                var data2 = {src: urlPrefix + "/file/outputImage?fileId=" + data.result.Id}
 	                insertImage(data2);
 	            } else {
 	                data.context.empty();

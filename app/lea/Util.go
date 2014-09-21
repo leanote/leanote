@@ -267,3 +267,15 @@ func RandomPwd(num int) string {
 	
 	return str
 }
+
+func InArray(arr []string, str string) bool {
+	if arr == nil {
+		return false
+	}
+	for _, v := range arr {
+		if v == str {
+			return true
+		}
+	}
+	return false
+}

@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/leanote/leanote/app/info"
 	"github.com/leanote/leanote/app/db"
-//	. "github.com/leanote/leanote/app/lea"
+	 . "github.com/leanote/leanote/app/lea"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 	"sort"
@@ -286,6 +286,28 @@ func (this *ShareService) AddShareNote(noteId string, perm int, userId, email st
 	return db.Insert(db.ShareNotes, shareNote), "", toUserId
 }
 
+// updatedUserId是否有查看userId noteId的权限?
+func (this *ShareService) HasReadPerm(userId, updatedUserId, noteId string) bool {
+	if !db.Has(db.ShareNotes, 
+		bson.M{"UserId": bson.ObjectIdHex(userId), "ToUserId": bson.ObjectIdHex(updatedUserId), "NoteId": bson.ObjectIdHex(noteId)}) {
+		// noteId的notebookId是否被共享了?
+		notebookId := noteService.GetNotebookId(noteId)
+		if notebookId.Hex() == "" {
+			return false
+		}
+		
+		// 判断notebook是否被共享
+		if !db.Has(db.ShareNotebooks, 
+			bson.M{"UserId": bson.ObjectIdHex(userId), "ToUserId": bson.ObjectIdHex(updatedUserId), "NotebookId": notebookId}) {
+			return false
+	 	} else {
+	 		return true
+	 	}
+	} else {
+		return true
+	}
+}
+
 // updatedUserId是否有修改userId noteId的权限?
 func (this *ShareService) HasUpdatePerm(userId, updatedUserId, noteId string) bool {
 	// 1. noteId是否被共享了?
@@ -334,14 +356,14 @@ func (this *ShareService) AddHasShareNote(userId, toUserId string) bool {
 }
 
 // userId是否被共享了noteId
-func (this *ShareService) hasSharedNote(noteId, myUserId string) bool {
+func (this *ShareService) HasSharedNote(noteId, myUserId string) bool {
 	return db.Has(db.ShareNotes, bson.M{"ToUserId": bson.ObjectIdHex(myUserId), "NoteId": bson.ObjectIdHex(noteId)})
 }
 // noteId的notebook是否共享了给我
-func (this *ShareService) hasSharedNotebook(noteId, myUserId, sharedUserId string) bool {
-	note := noteService.GetNote(noteId, sharedUserId)
-	if note.NoteId != "" {
-		return db.Has(db.ShareNotebooks, bson.M{"NotebookId": note.NotebookId,
+func (this *ShareService) HasSharedNotebook(noteId, myUserId, sharedUserId string) bool {
+	notebookId := noteService.GetNotebookId(noteId)
+	if notebookId != "" {
+		return db.Has(db.ShareNotebooks, bson.M{"NotebookId": notebookId,
 			"UserId": bson.ObjectIdHex(sharedUserId), 
 			"ToUserId": bson.ObjectIdHex(myUserId),
 		})
@@ -355,7 +377,7 @@ func (this *ShareService) GetShareNoteContent(noteId, myUserId, sharedUserId str
 	noteContent = info.NoteContent{}
 	// 是否单独共享了该notebook
 	// 或者, 其notebook共享了我
-	if this.hasSharedNote(noteId, myUserId) || this.hasSharedNotebook(noteId, myUserId, sharedUserId) {
+	if this.HasSharedNote(noteId, myUserId) || this.HasSharedNotebook(noteId, myUserId, sharedUserId) {
 		db.Get(db.NoteContents, noteId, &noteContent)
 	} else {
 	}
@@ -507,4 +529,51 @@ func (this *ShareService) DeleteUserShareNoteAndNotebook(userId, toUserId string
 	db.DeleteAll(db.HasShareNotes, query);
 	
 	return true
+}
+
+// 用户userId是否有修改noteId的权限 
+func (this *ShareService) HasUpdateNotePerm(noteId, userId string) bool {
+	if noteId == "" || userId == "" {
+		return false;
+	}
+	note := noteService.GetNoteById(noteId)
+	LogJ(note);
+	if note.UserId != "" {
+		noteUserId := note.UserId.Hex()
+		if noteUserId != userId {
+			// 是否是有权限协作的
+			if this.HasUpdatePerm(noteUserId, userId, noteId) {
+				return true
+			} else {
+				return false;
+			}
+		} else {
+			return true
+		}
+	} else {
+		return false;
+	}
+}
+
+// 用户userId是否有修改noteId的权限 
+func (this *ShareService) HasReadNotePerm(noteId, userId string) bool {
+	if noteId == "" || userId == "" {
+		return false;
+	}
+	note := noteService.GetNoteById(noteId)
+	if note.UserId != "" {
+		noteUserId := note.UserId.Hex()
+		if noteUserId != userId {
+			// 是否是有权限协作的
+			if this.HasReadPerm(noteUserId, userId, noteId) {
+				return true
+			} else {
+				return false;
+			}
+		} else {
+			return true
+		}
+	} else {
+		return false;
+	}
 }

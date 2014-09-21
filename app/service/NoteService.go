@@ -17,6 +17,12 @@ func (this *NoteService) GetNote(noteId, userId string) (note info.Note) {
 	db.GetByIdAndUserId(db.Notes, noteId, userId, &note)
 	return
 }
+// fileService调用
+func (this *NoteService) GetNoteById(noteId string) (note info.Note) {
+	note = info.Note{}
+	db.Get(db.Notes, noteId, &note)
+	return
+}
 // 得到blog, blogService用
 // 不要传userId, 因为是公开的
 func (this *NoteService) GetBlogNote(noteId string) (note info.Note) {
@@ -148,6 +154,10 @@ func (this *NoteService) AddNoteContent(noteContent info.NoteContent) info.NoteC
 	noteContent.UpdatedTime = noteContent.CreatedTime 
 	noteContent.UpdatedUserId = noteContent.UserId
 	db.Insert(db.NoteContents, noteContent)
+	
+	// 更新笔记图片
+	noteImageService.UpdateNoteImages(noteContent.UserId.Hex(), noteContent.NoteId.Hex(), noteContent.Content)
+	
 	return noteContent;
 }
 
@@ -237,9 +247,21 @@ func (this *NoteService) UpdateNoteContent(userId, updatedUserId, noteId, conten
 			Content: content,
 			UpdatedTime: time.Now(),
 		})
+		
+		// 更新笔记图片
+		noteImageService.UpdateNoteImages(userId, noteId, content)
+		
 		return true
 	}
 	return false
+}
+
+// ?????
+// 这种方式太恶心, 改动很大
+// 通过content修改笔记的imageIds列表
+// src="http://localhost:9000/file/outputImage?fileId=541ae75499c37b6b79000005&noteId=541ae63c19807a4bb9000000"
+func (this *NoteService) updateNoteImages(noteId string, content string) bool {
+	return true
 }
 
 // 更新tags
@@ -316,9 +338,12 @@ func (this *NoteService) CopyNote(noteId, notebookId, userId string) info.Note {
 }
 
 // 复制别人的共享笔记给我
-// TODO 判断是否共享了给我
+// 将别人可用的图片转为我的图片, 复制图片
 func (this *NoteService) CopySharedNote(noteId, notebookId, fromUserId, myUserId string) info.Note {
-	if notebookService.IsMyNotebook(notebookId, myUserId) {
+	Log(shareService.HasSharedNote(noteId, myUserId) || shareService.HasSharedNotebook(noteId, myUserId, fromUserId))
+	// 判断是否共享了给我
+	if notebookService.IsMyNotebook(notebookId, myUserId) && 
+		(shareService.HasSharedNote(noteId, myUserId) || shareService.HasSharedNotebook(noteId, myUserId, fromUserId)) {
 		note := this.GetNote(noteId, fromUserId)
 		if note.NoteId == "" {
 			return info.Note{}
@@ -332,9 +357,17 @@ func (this *NoteService) CopySharedNote(noteId, notebookId, fromUserId, myUserId
 		note.IsTop = false
 		note.IsBlog = false // 别人的可能是blog
 		
+		note.ImgSrc = "" // 为什么清空, 因为图片需要复制, 先清空
+		
 		// content
 		noteContent.NoteId = note.NoteId
 		noteContent.UserId = note.UserId
+		
+		// 复制图片, 把note的图片都copy给我, 且修改noteContent图片路径
+		noteContent.Content = noteImageService.CopyNoteImages(noteId, fromUserId, note.NoteId.Hex(), noteContent.Content, myUserId)
+		
+		// 复制附件
+		attachService.CopyAttachs(noteId, note.NoteId.Hex(), myUserId)
 		
 		// 添加之
 		note = this.AddNoteAndContent(note, noteContent, note.UserId);
@@ -353,8 +386,10 @@ func (this *NoteService) CopySharedNote(noteId, notebookId, fromUserId, myUserId
 // shareService call
 // [ok]
 func (this *NoteService) GetNotebookId(noteId string) bson.ObjectId {
-	note := &info.Note{}
-	db.Get(db.Notes, noteId, note)
+	note := info.Note{}
+	// db.Get(db.Notes, noteId, &note)
+	// LogJ(note)
+	db.GetByQWithFields(db.Notes, bson.M{"_id": bson.ObjectIdHex(noteId)}, []string{"NotebookId"}, &note)
 	return note.NotebookId
 }
 
@@ -396,7 +431,6 @@ func (this *NoteService) searchNoteFromContent(notes []info.Note, userId, key st
 	for i, note := range notes {
 		noteIds[i] = note.NoteId
 	}
-	LogJ(noteIds)
 	noteContents := []info.NoteContent{}
 	query := bson.M{"_id": bson.M{"$nin": noteIds}, "UserId": bson.ObjectIdHex(userId), "Content": bson.M{"$regex": bson.RegEx{".*?" + key + ".*", "i"}}}
 	if isBlog {
@@ -418,9 +452,6 @@ func (this *NoteService) searchNoteFromContent(notes []info.Note, userId, key st
 	for i, content := range noteContents {
 		noteIds2[i] = content.NoteId
 	}
-	
-//	Log(" content search ")
-//	Log(lenContent)
 	
 	// 得到notes
 	notes2 := this.ListNotesByNoteIds(noteIds2)
@@ -446,8 +477,6 @@ func (this *NoteService) SearchNoteByTags(tags []string, userId string, pageNumb
 	// 总记录数
 	count, _ = q.Count()
 	
-	Log(count)
-		
 	q.Sort(sortFieldR).
 		Skip(skipNum).
 		Limit(pageSize).
