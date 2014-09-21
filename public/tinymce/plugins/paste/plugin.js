@@ -472,7 +472,7 @@ define("tinymce/pasteplugin/Clipboard", [
 			      	var c = new FormData;
 				    c.append("from", "pasteImage");
 				    c.append("file", blob);
-				    c.append("noteId", Note.curNoteId);
+				    c.append("noteId", Note.curNoteId); // life
 				    // var d;
 				    // d = $.ajaxSettings.xhr();
 				    // d.withCredentials = i;var d = {};
