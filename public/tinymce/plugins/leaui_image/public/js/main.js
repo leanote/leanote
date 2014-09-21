@@ -739,6 +739,7 @@ var o = {
 	            // Automatically upload the file once it is added to the queue
 	            var jqXHR = data.submit();
 	        },
+	        
 
 	        done: function(e, data) {
 	            if (data.result.Ok == true) {
