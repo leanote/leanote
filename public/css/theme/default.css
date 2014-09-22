@@ -362,7 +362,6 @@
   margin: 0;
   padding: 0;
   max-height: 240px;
-  overflow: scroll;
   z-index: 3;
 }
 #attachUploadMsg .alert {
@@ -378,7 +377,7 @@
   margin: 0;
   padding: 0;
   max-height: 450px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 #attachList li {
   display: block;
