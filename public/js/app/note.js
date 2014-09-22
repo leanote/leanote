@@ -1365,7 +1365,7 @@ var Attach = {
 			if(!note) {
 				return;
 			}
-			var src = "/attach/downloadAll?noteId=" + Note.curNoteId
+			var src = UrlPrefix +  "/attach/downloadAll?noteId=" + Note.curNoteId
 			var title = note.Title ? note.Title + ".tar.gz" : "all.tar.gz";
 			
 			if(LEA.isMarkdownEditor() && MarkdownEditor) {
