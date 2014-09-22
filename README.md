@@ -128,6 +128,10 @@ Leanote, 你的私人云笔记!
 ## 3.安装leanote
 leanote是一款私有云笔记, 你可以下载它安装在自己的服务器上, 当然也可以在 http://leanote.com 上注册.
 
+这里详细整理了leanote二进版和leanote开发版的安装教程, 请移步至:
+* [leanote二进制详细安装教程](https://github.com/leanote/leanote/wiki/leanote%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
+* [leanote开发版详细安装教程](https://github.com/leanote/leanote/wiki/leanote%E5%BC%80%E5%8F%91%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
+
 ### 3.1. 下载leanote
 
 Leanote V0.4 已发布, 二进制文件(暂时没有windows版的):
