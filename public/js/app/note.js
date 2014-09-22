@@ -1350,7 +1350,6 @@ var Attach = {
 			var attachId = $(this).closest('li').data("id");
 			var attach = self.attachsMap[attachId];
 			var src = UrlPrefix + "/attach/download?attachId=" + attachId;
-			log(src);
 			if(LEA.isMarkdownEditor() && MarkdownEditor) {
 				MarkdownEditor.insertLink(src, attach.Title);
 			} else {
