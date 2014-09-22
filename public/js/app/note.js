@@ -1335,12 +1335,12 @@ var Attach = {
 		self.attachListO.on("click", ".download-attach", function(e) {
 			e.stopPropagation();
 			var attachId = $(this).closest('li').data("id");
-			window.open("/attach/download?attachId=" + attachId);
+			window.open(UrlPrefix + "/attach/download?attachId=" + attachId);
 			// location.href = "/attach/download?attachId=" + attachId;
 		});
 		// 下载全部
 		self.downloadAllBtnO.click(function() {
-			window.open("/attach/downloadAll?noteId=" + Note.curNoteId);
+			window.open(UrlPrefix + "/attach/downloadAll?noteId=" + Note.curNoteId);
 			// location.href = "/attach/downloadAll?noteId=" + Note.curNoteId;
 		});
 		
@@ -1349,7 +1349,7 @@ var Attach = {
 			e.stopPropagation();
 			var attachId = $(this).closest('li').data("id");
 			var attach = self.attachsMap[attachId];
-			var src = "/attach/download?attachId=" + attachId;
+			var src = UrlPrefix + "/attach/download?attachId=" + attachId;
 			
 			if(LEA.isMarkdownEditor() && MarkdownEditor) {
 				MarkdownEditor.insertLink(src, attach.Title);
