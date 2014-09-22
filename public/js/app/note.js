@@ -1422,7 +1422,7 @@ var Attach = {
 			html += '<li class="clearfix" data-id="' + each.AttachId + '">' +
 						'<div class="attach-title">' + each.Title + '</div>' + 
 						'<div class="attach-process"> ' +
-						'	  <button class="btn btn-sm btn-warning delete-attach"><i class="fa fa-trash-o"></i></button> ' + 
+						'	  <button class="btn btn-sm btn-warning delete-attach" data-loading-text="..."><i class="fa fa-trash-o"></i></button> ' + 
 						'	  <button type="button" class="btn btn-sm btn-primary download-attach"><i class="fa fa-download"></i></button> ' +
 						'	  <button type="button" class="btn btn-sm btn-default link-attach" title="Insert link into content"><i class="fa fa-link"></i></button> ' +
 						'</div>' + 
