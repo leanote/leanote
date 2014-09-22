@@ -3,18 +3,16 @@ package controllers
 import (
 	"github.com/leanote/leanote/app/service"
 	"github.com/leanote/leanote/app/info"
+//	. "github.com/leanote/leanote/app/lea"
 	"github.com/revel/revel"
 	"strings"
 )
-
-// 该文件初始化所有service方法
 
 var userService *service.UserService
 var noteService *service.NoteService
 var trashService *service.TrashService
 var notebookService *service.NotebookService
 var noteContentHistoryService *service.NoteContentHistoryService
-
 var authService *service.AuthService
 var shareService *service.ShareService
 var blogService *service.BlogService
@@ -22,8 +20,8 @@ var tagService *service.TagService
 var pwdService *service.PwdService
 var tokenService *service.TokenService
 var suggestionService *service.SuggestionService 
-
 var albumService *service.AlbumService 
+var noteImageService *service.NoteImageService 
 var fileService *service.FileService
 var attachService *service.AttachService
 
@@ -59,6 +57,7 @@ var commonUrl = map[string]map[string]bool{"Index": map[string]bool{"Index": tru
 		},
 	"Oauth": map[string]bool{"GithubCallback": true},
 	"File": map[string]bool{"OutputImage": true, "OutputFile": true},
+	"Attach": map[string]bool{"Download": true, "DownloadAll": true},
 }
 func needValidate(controller, method string) bool {
 	// 在里面
@@ -78,12 +77,10 @@ func AuthInterceptor(c *revel.Controller) revel.Result {
 	var controller = strings.Title(c.Name)
 	var method = strings.Title(c.MethodName)
 	
-	
 	// 是否需要验证?
 	if !needValidate(controller, method) {
 		return nil
 	}
-	
 	
 	// 验证是否已登录
 	if userId, ok := c.Session["UserId"]; ok && userId != "" {
@@ -100,6 +97,27 @@ func AuthInterceptor(c *revel.Controller) revel.Result {
 	return c.Redirect("/login")
 }
 
+// 最外层init.go调用
+// 获取service, 单例
+func InitService() {
+	notebookService = service.NotebookS
+	noteService = service.NoteS
+	noteContentHistoryService = service.NoteContentHistoryS
+	trashService = service.TrashS
+	shareService = service.ShareS
+	userService = service.UserS
+	tagService = service.TagS
+	blogService = service.BlogS
+	tokenService = service.TokenS
+	noteImageService = service.NoteImageS
+	fileService = service.FileS
+	albumService= service.AlbumS
+	attachService = service.AttachS
+	pwdService = service.PwdS
+	suggestionService = service.SuggestionS
+	authService = service.AuthS
+}
+
 func init() {
 	// interceptor
 	// revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &Index{}) // Index.Note自己校验
@@ -108,23 +126,9 @@ func init() {
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &Share{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &User{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &File{})
+	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &Attach{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &Blog{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &NoteContentHistory{})
-	
-	// service 
-	
-	userService = &service.UserService{}
-	noteService = &service.NoteService{}
-	trashService = &service.TrashService{}
-	notebookService = &service.NotebookService{}
-	noteContentHistoryService = &service.NoteContentHistoryService{}
-	authService = &service.AuthService{}
-	shareService = &service.ShareService{}
-	blogService = &service.BlogService{}
-	tagService = &service.TagService{}
-	pwdService = &service.PwdService{}
-	tokenService = &service.TokenService{}
-	suggestionService = &service.SuggestionService{}
 	
 	revel.OnAppStart(func() {
 		leanoteUserId, _ = revel.Config.String("adminUsername")

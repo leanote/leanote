@@ -3,6 +3,8 @@ package app
 import (
 	"github.com/revel/revel"
 	. "github.com/leanote/leanote/app/lea"
+	"github.com/leanote/leanote/app/service"
+	"github.com/leanote/leanote/app/controllers"
 	_ "github.com/leanote/leanote/app/lea/binder"
 	"reflect"
 	"fmt"
@@ -116,5 +118,8 @@ func init() {
 	// init Email
 	revel.OnAppStart(func() {
 		InitEmail()
+		
+		service.InitService()
+		controllers.InitService()
 	})
 }

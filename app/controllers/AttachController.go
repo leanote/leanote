@@ -208,5 +208,3 @@ func (c Attach) DownloadAll(noteId string) revel.Result {
 	// fw.Seek(0, 0)
     return c.RenderBinary(fw, filename, revel.Attachment, time.Now()) // revel.Attachment
 }
-
-	

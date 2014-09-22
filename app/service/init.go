@@ -8,30 +8,53 @@ import (
 // 初始化, 实例service
 // 为了共享service
 
-var notebookService *NotebookService
-var noteService *NoteService
-var noteContentHistoryService *NoteContentHistoryService
-var trashService *TrashService
-var shareService *ShareService
-var userService *UserService
-var tagService *TagService
-var blogService *BlogService
-var tokenService *TokenService
-var noteImageService *NoteImageService
-var fileService *FileService
-var attachService *AttachService
+var notebookService, NotebookS *NotebookService
+var noteService, NoteS *NoteService
+var noteContentHistoryService, NoteContentHistoryS *NoteContentHistoryService
+var trashService, TrashS *TrashService
+var shareService, ShareS *ShareService
+var userService, UserS *UserService
+var tagService, TagS *TagService
+var blogService, BlogS *BlogService
+var tokenService, TokenS *TokenService
+var noteImageService, NoteImageS *NoteImageService
+var fileService, FileS *FileService
+var albumService, AlbumS *AlbumService
+var attachService, AttachS *AttachService
+var PwdS *PwdService
+var SuggestionS *SuggestionService
+var AuthS *AuthService
 
-func init() {
-	notebookService = &NotebookService{}
-	noteService = &NoteService{}
-	noteContentHistoryService = &NoteContentHistoryService{}
-	trashService = &TrashService{}
-	shareService = &ShareService{}
-	userService = &UserService{}
-	tagService = &TagService{}
-	blogService = &BlogService{}
-	tokenService = &TokenService{}
-	fileService = &FileService{}
-	attachService = &AttachService{}
-	noteImageService = &NoteImageService{}
+// onAppStart调用
+func InitService() {
+	NotebookS = &NotebookService{}
+	NoteS = &NoteService{}
+	NoteContentHistoryS = &NoteContentHistoryService{}
+	TrashS = &TrashService{}
+	ShareS = &ShareService{}
+	UserS = &UserService{}
+	TagS = &TagService{}
+	BlogS = &BlogService{}
+	TokenS = &TokenService{}
+	NoteImageS = &NoteImageService{}
+	FileS = &FileService{}
+	AlbumS = &AlbumService{}
+	AttachS = &AttachService{}
+	PwdS = &PwdService{}
+	SuggestionS = &SuggestionService{}
+	AuthS = &AuthService{}
+	
+	notebookService = NotebookS
+	noteService = NoteS
+	noteContentHistoryService = NoteContentHistoryS
+	trashService = TrashS
+	shareService = ShareS
+	userService = UserS
+	tagService = TagS
+	blogService = BlogS
+	tokenService = TokenS
+	noteImageService = NoteImageS
+	fileService = FileS
+	albumService = AlbumS
+	attachService = AttachS
 }
