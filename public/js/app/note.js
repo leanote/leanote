@@ -406,7 +406,7 @@ Note.changeNote = function(selectNoteId, isShare, needSaveChanged) {
 	Note.stopInterval();
 	
 	// 0
-	var target = $(t('[noteId="?"]', selectNoteId))
+	var target = $(tt('[noteId="?"]', selectNoteId))
 	Note.selectTarget(target);
 	
 	// 1 之前的note, 判断是否已改变, 改变了就要保存之
@@ -487,7 +487,7 @@ Note.renderChangedNote = function(changedNote) {
 	}
 	
 	// 找到左侧相应的note
-	var $leftNoteNav = $(t('[noteId="?"]', changedNote.NoteId));
+	var $leftNoteNav = $(tt('[noteId="?"]', changedNote.NoteId));
 	if(changedNote.Title) {
 		$leftNoteNav.find(".item-title").html(changedNote.Title);
 	}
@@ -500,7 +500,7 @@ Note.renderChangedNote = function(changedNote) {
 		if($thumb.length > 0) {
 			$thumb.find("img").attr("src", changedNote.ImgSrc);
 		} else {
-			$leftNoteNav.append(t('<div class="item-thumb" style=""><img src="?"></div>', changedNote.ImgSrc));
+			$leftNoteNav.append(tt('<div class="item-thumb" style=""><img src="?"></div>', changedNote.ImgSrc));
 		}
 		$leftNoteNav.find(".item-desc").removeAttr("style");
 	} else if(changedNote.ImgSrc == "") {
@@ -662,9 +662,9 @@ Note._renderNotes = function(notes, forNewNote, isShared, tang) { // 第几趟
 		var note = notes[i];
 		var tmp;
 		if(note.ImgSrc && !LEA.isMobile) {
-			tmp = t(Note.itemTpl, classes, note.NoteId, note.ImgSrc, note.Title, Notebook.getNotebookTitle(note.NotebookId), goNowToDatetime(note.UpdatedTime), note.Desc);
+			tmp = tt(Note.itemTpl, classes, note.NoteId, note.ImgSrc, note.Title, Notebook.getNotebookTitle(note.NotebookId), goNowToDatetime(note.UpdatedTime), note.Desc);
 		} else {
-			tmp = t(Note.itemTplNoImg, classes, note.NoteId, note.Title, Notebook.getNotebookTitle(note.NotebookId), goNowToDatetime(note.UpdatedTime), note.Desc);
+			tmp = tt(Note.itemTplNoImg, classes, note.NoteId, note.Title, Notebook.getNotebookTitle(note.NotebookId), goNowToDatetime(note.UpdatedTime), note.Desc);
 		}
 		if(!note.IsBlog) {
 			tmp = $(tmp);
@@ -725,9 +725,9 @@ Note.newNote = function(notebookId, isShare, fromUserId, isMarkdown) {
 	var notebookTitle = notebook ? notebook.Title : "";
 	var curDate = getCurDate();
 	if(isShare) {
-		newItem = t(Note.newItemTpl, baseClasses, fromUserId, note.NoteId, note.Title, notebookTitle, curDate, "");
+		newItem = tt(Note.newItemTpl, baseClasses, fromUserId, note.NoteId, note.Title, notebookTitle, curDate, "");
 	} else {
-		newItem = t(Note.newItemTpl, baseClasses, "", note.NoteId, note.Title, notebookTitle, curDate, "");
+		newItem = tt(Note.newItemTpl, baseClasses, "", note.NoteId, note.Title, notebookTitle, curDate, "");
 	}
 	
 	// notebook是否是Blog
@@ -756,7 +756,7 @@ Note.newNote = function(notebookId, isShare, fromUserId, isMarkdown) {
 		Note.noteItemListO.prepend(newItem);
 	}
 	
-	Note.selectTarget($(t('[noteId="?"]', note.NoteId)));
+	Note.selectTarget($(tt('[noteId="?"]', note.NoteId)));
 	
 	$("#noteTitle").focus();
 	
@@ -887,7 +887,7 @@ Note.listNoteContentHistories = function() {
 		for (i in re) {
 			var content = re[i]
 			content.Ab = Note.genAbstract(content.Content, 200);
-			str += t('<tr><td seq="?"><? class="each-content">?</?> <div class="btns">时间: <span class="label label-default">?</span> <button class="btn btn-default all">展开</button> <button class="btn btn-primary back">还原</button></div></td></tr>', i, s, content.Ab, s, goNowToDatetime(content.UpdatedTime))
+			str += tt('<tr><td seq="?"><? class="each-content">?</?> <div class="btns">时间: <span class="label label-default">?</span> <button class="btn btn-default all">展开</button> <button class="btn btn-primary back">还原</button></div></td></tr>', i, s, content.Ab, s, goNowToDatetime(content.UpdatedTime))
 		}
 		str += "</table></div>";
 		$content.html(str);

@@ -73,7 +73,7 @@ Share.getNotebooksForNew = function(userId, notebooks) {
 		
 		var eachForNew = "";
 		if(notebook.Perm) {
-			var eachForNew = t('<li role="presentation" class="clearfix ?" userId="?" notebookId="?"><div class="new-note-left pull-left" title="为该笔记本新建笔记" href="#">?</div><div title="为该笔记本新建markdown笔记" class="new-note-right pull-left">M</div>', classes, userId, notebook.NotebookId, notebook.Title);
+			var eachForNew = tt('<li role="presentation" class="clearfix ?" userId="?" notebookId="?"><div class="new-note-left pull-left" title="为该笔记本新建笔记" href="#">?</div><div title="为该笔记本新建markdown笔记" class="new-note-right pull-left">M</div>', classes, userId, notebook.NotebookId, notebook.Title);
 			if(subs) {
 				eachForNew  += "<ul class='dropdown-menu'>";
 				eachForNew  += subs;
@@ -112,7 +112,7 @@ Share.renderShareNotebooks = function(sharedUserInfos, shareNotebooks) {
 		userInfo.Username = username;
 		Share.sharedUserInfos[userInfo.UserId] = userInfo;
 		var userId = userInfo.UserId;
-		var header = t('<li class="each-user"><div class="friend-header" fromUserId="?"><i class="fa fa-angle-down"></i><span>?</span> <span class="fa notebook-setting" title="setting"></span> </div>', userInfo.UserId, username);
+		var header = tt('<li class="each-user"><div class="friend-header" fromUserId="?"><i class="fa fa-angle-down"></i><span>?</span> <span class="fa notebook-setting" title="setting"></span> </div>', userInfo.UserId, username);
 		var friendId = "friendContainer_" + userId;
 		var body = '<ul class="friend-notebooks ztree" id="' + friendId + '" fromUserId="' + userId + '"></ul>';
 		$shareNotebooks.append(header + body + "</li>")
@@ -250,7 +250,7 @@ Share.toggleToSharedNav = function(userId, notebookId) {
 //3. 使用Note.RederNotes()
 Share.changeNotebook = function(userId, notebookId) {
 	// 选中
-	Notebook.selectNotebook($(t('#friendContainer_? a[notebookId="?"]', userId, notebookId)));
+	Notebook.selectNotebook($(tt('#friendContainer_? a[notebookId="?"]', userId, notebookId)));
 	
 	// 改变nav!!!! TODO
 	Share.toggleToSharedNav(userId, notebookId);
@@ -333,7 +333,7 @@ Share.deleteUserShareNoteAndNotebook = function(target) {
 // 新建shared note
 Share.changeNotebookForNewNote = function(notebookId) {
 	// 改变nav for list, for new
-	Notebook.selectNotebook($(t('#shareNotebooks [notebookId="?"]', notebookId)));
+	Notebook.selectNotebook($(tt('#shareNotebooks [notebookId="?"]', notebookId)));
 	var userId = Share.notebookCache[notebookId].UserId;
 	Share.toggleToSharedNav(userId, notebookId);	
 	
@@ -546,10 +546,10 @@ function addShareNoteOrNotebook(trSeq) {
 			// 成功
 			// 成功了则去掉输入框
 			if(ret.Ok) {
-				var tpl = t('<td>?</td>', '#');
-				tpl += t('<td>?</td>', emails);
-				tpl += t('<td><a href="#" noteOrNotebookId="?" perm="?" toUserId="?" title="点击改变权限" class="btn btn-default change-perm">?</a></td>', id, perm, ret.Id, !perm || perm == '0' ? "只读" : "可编辑");
-				tpl += t('<td><a href="#" noteOrNotebookId="?" toUserId="?" class="btn btn-warning delete-share">删除</a></td>', id, ret.Id);
+				var tpl = tt('<td>?</td>', '#');
+				tpl += tt('<td>?</td>', emails);
+				tpl += tt('<td><a href="#" noteOrNotebookId="?" perm="?" toUserId="?" title="点击改变权限" class="btn btn-default change-perm">?</a></td>', id, perm, ret.Id, !perm || perm == '0' ? "只读" : "可编辑");
+				tpl += tt('<td><a href="#" noteOrNotebookId="?" toUserId="?" class="btn btn-warning delete-share">删除</a></td>', id, ret.Id);
 				$(trId).html(tpl);
 			} else {
 				var shareUrl = 'http://leanote/register?from=' + UserInfo.Username;

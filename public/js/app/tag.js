@@ -109,7 +109,7 @@ Tag.renderReadOnlyTags = function(tags) {
 		if(!classes) {
 			classes = getNextDefaultClasses();
 		}
-		tag = t('<span class="?">?</span>', classes, text);
+		tag = tt('<span class="?">?</span>', classes, text);
 		
 		$("#noteReadTags").append(tag);
 	}
@@ -143,7 +143,7 @@ Tag.appendTag = function(tag) {
 	}
 	
 	text = Tag.mapEn2Cn[text] || text;
-	tag = t('<span class="?">?<i title="删除">X</i></span>', classes, text);
+	tag = tt('<span class="?">?<i title="删除">X</i></span>', classes, text);
 
 	// 避免重复
 	$("#tags").children().each(function() {
@@ -193,7 +193,7 @@ Tag.renderTagNav = function(tags) {
 		}
 		var text = Tag.mapEn2Cn[tag] || tag;
 		var classes = Tag.classes[tag] || "label label-default";
-		$("#tagNav").append(t('<li><a> <span class="?">?</span></li>', classes, text));
+		$("#tagNav").append(tt('<li><a> <span class="?">?</span></li>', classes, text));
 	}
 }
 

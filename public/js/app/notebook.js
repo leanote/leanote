@@ -339,7 +339,7 @@ Notebook.getChangedNotebooks = function(notebooks) {
 		if(!isEmpty(notebook.Subs)) {
 			classes = "dropdown-submenu";
 		}
-		var eachForNew = t('<li role="presentation" class="clearfix ?"><div class="new-note-left pull-left" title="为该笔记本新建笔记" href="#" notebookId="?">?</div><div title="为该笔记本新建markdown笔记" class="new-note-right pull-left" notebookId="?">M</div>', classes, notebook.NotebookId, notebook.Title, notebook.NotebookId);
+		var eachForNew = tt('<li role="presentation" class="clearfix ?"><div class="new-note-left pull-left" title="为该笔记本新建笔记" href="#" notebookId="?">?</div><div title="为该笔记本新建markdown笔记" class="new-note-right pull-left" notebookId="?">M</div>', classes, notebook.NotebookId, notebook.Title, notebook.NotebookId);
 		
 		if(!isEmpty(notebook.Subs)) {
 			eachForNew  += "<ul class='dropdown-menu'>";
@@ -418,11 +418,11 @@ Notebook.renderShareNotebooks = function(sharedUserInfos, shareNotebooks) {
 		userNotebooks.ShareNotebooks = [{NotebookId: "-2", Title: "默认共享"}].concat(userNotebooks.ShareNotebooks)
 
 		var username = userInfo.Username || userInfo.Email;
-		var header = t('<div class="folderNote closed"><div class="folderHeader"><a><h1 title="? 的共享"><i class="fa fa-angle-right"></i>?</h1></a></div>', username, username);
+		var header = tt('<div class="folderNote closed"><div class="folderHeader"><a><h1 title="? 的共享"><i class="fa fa-angle-right"></i>?</h1></a></div>', username, username);
 		var body = '<ul class="folderBody">';
 		for(var j in userNotebooks.ShareNotebooks) {
 			var notebook = userNotebooks.ShareNotebooks[j];
-			body += t('<li><a notebookId="?">?</a></li>', notebook.NotebookId, notebook.Title)
+			body += tt('<li><a notebookId="?">?</a></li>', notebook.NotebookId, notebook.Title)
 		}
 		body += "</ul>";
 		
@@ -485,7 +485,7 @@ Notebook.changeNotebookNav = function(notebookId) {
 	Notebook.toggleToMyNav();
 	
 	// 1
-	Notebook.selectNotebook($(t('#notebookList [notebookId="?"]', notebookId)));
+	Notebook.selectNotebook($(tt('#notebookList [notebookId="?"]', notebookId)));
 	
 	var notebook = Notebook.cache[notebookId];
 	
@@ -560,7 +560,7 @@ Notebook.changeNotebook = function(notebookId) {
 // 还包括共享
 // called by Note
 Notebook.isCurNotebook = function(notebookId) {
-	return $(t('#notebookList [notebookId="?"], #shareNotebooks [notebookId="?"]', notebookId, notebookId)).attr("class") == "active";
+	return $(tt('#notebookList [notebookId="?"], #shareNotebooks [notebookId="?"]', notebookId, notebookId)).attr("class") == "active";
 }
 
 // 改变nav, 为了新建note

@@ -61,6 +61,7 @@ function t() {
 	}
 	return text;
 }
+var tt = t; // 当slimscroll滑动时t被重新赋值了
 
 // 判断数组是否相等
 function arrayEqual(a, b) {
