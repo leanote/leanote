@@ -66,6 +66,23 @@
   /*overflow-y: scroll;*/
   box-shadow: rgba(0, 0, 0, 0.172549) 0px 6px 12px 0px;
 }
+.dropdown-menu:before {
+  content: "";
+  width: 20px;
+  height: 12px;
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  background-image: url("../../images/triangle_2x.png");
+  background-size: 20px 12px;
+}
+.dropdown-submenu .dropdown-menu:before {
+  background: none;
+}
+#searchNotebookForAddDropdownList:before {
+  left: 190px;
+  right: inherit;
+}
 .dropdown-menu li {
   list-style: none;
   padding-left: 10px;
@@ -522,9 +539,6 @@ a.raw:hover {
   display: inline-block;
   font-size: 28px;
   color: #999999;
-}
-.dropdown-menu {
-  border: 1px solid #0fb264;
 }
 .dropdown-menu li > a {
   color: #000000;
