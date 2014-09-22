@@ -154,7 +154,7 @@ func (c BaseController) E404() revel.Result {
 }
 
 // 设置本地
-func (c BaseController) SetLocale() {
+func (c BaseController) SetLocale() string {
 	locale := string(c.Request.Locale) // zh-CN
 	lang := locale
 	if strings.Contains(locale, "-") {
@@ -165,6 +165,7 @@ func (c BaseController) SetLocale() {
 		lang = "en";
 	}
 	c.RenderArgs["locale"] = lang;
+	return lang
 }
 
 // 设置userInfo

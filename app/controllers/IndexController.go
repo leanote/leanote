@@ -17,9 +17,9 @@ func (c Index) Index() revel.Result {
 	c.SetUserInfo()
 	c.RenderArgs["title"] = "leanote"
 	c.RenderArgs["openRegister"] = openRegister
-	c.SetLocale()
+	lang := c.SetLocale()
 	
-	return c.RenderTemplate("home/index.html");
+	return c.RenderTemplate("home/index_" + lang + ".html");
 }
 
 // 建议
