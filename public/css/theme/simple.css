@@ -83,6 +83,9 @@
   left: 190px;
   right: inherit;
 }
+#tagColor:before {
+  background: none;
+}
 .dropdown-menu li {
   list-style: none;
   padding-left: 10px;
