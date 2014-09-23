@@ -5,14 +5,31 @@
 
 <section id="box">
 	<div>
-		<h1>error-500</h1>
-		<form class="form-inline" id="boxForm">
-			Sorry, we got a error.
-			<br />
-			<a href="javascript:history.go(-1)">Back</a>
-		</form>		
+		<div>
+			<h1 class="h text-white animated fadeInDownBig">404</h1>
+		</div>
+		<div id="errorBox">
+			<p class="error-info">
+				Sorry, we got an error.
+			</p>
+			
+		    <div class="list-group m-b-sm bg-white m-b-lg"> 
+		    	<a href="javascript:history.go(-1);" class="list-group-item"><!--  <i class="fa fa-chevron-right icon-muted"> --></i> <i class="fa fa-fw fa-arrow-left icon-muted"></i> Back </a> 
+		    	<a href="/index" class="list-group-item"><!--  <i class="fa fa-chevron-right icon-muted"> --></i> <i class="fa fa-fw fa-home icon-muted"></i> Goto homepage </a> 
+		    	<a href="/note" class="list-group-item"><!--  <i class="fa fa-chevron-right icon-muted"> --></i> <i class="fa fa-fw fa-file-o icon-muted"></i> My note</a> 
+		    	<a class="list-group-item" href="mailto:leanote@leanote.com"> 
+		    		<span class="badge">leanote@leanote.com</span> 
+		    		<i class="fa fa-fw fa-envelope-o icon-muted"></i> Contact Us </a> 
+		    </div>
+		</div>		
     </div>
 </section>
+<div id="boxFooter">
+	<p>
+		<a href="/index">leanote</a> © 2014
+	</p>
+</div>
 </body>
 </html>
+
 {{end}}

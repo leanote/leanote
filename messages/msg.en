@@ -48,6 +48,9 @@ wrongPassword=Wrong password
 logining=Sign in
 loginSuccess=login success
 ing=processing
+use = Use
+hadAcount = Already have an account?
+hasAcount = Do not have an account?
 
 # 注册
 registerSuccessAndRdirectToNote=register success, now redirect to my note...

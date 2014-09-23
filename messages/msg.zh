@@ -48,6 +48,9 @@ wrongPassword=密码有误
 logining=正在登录
 loginSuccess=登录成功, 正在跳转
 ing=正在处理
+use = 使用
+hadAcount = 已有帐户?
+hasAcount = 还无帐户?
 
 # 注册
 registerSuccessAndRdirectToNote=注册成功, 正在转至我的笔记...

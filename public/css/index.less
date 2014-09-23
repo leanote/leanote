@@ -1,4 +1,3 @@
-
 @bgColor: #fff;
 @headerBgColor: #fff;
 @fontFamily:  'Open Sans', '微软雅黑', Arial, Tahoma, sans-serif;
@@ -51,6 +50,7 @@ html,body {
   font-family: @fontFamily;
   font-weight: 300;
   font-size: @fontSize;
+	-webkit-font-smoothing: antialiased;
 }
 h1, h2, h3 {
   font-family: @fontFamily;
@@ -207,10 +207,6 @@ section {
 	padding-top: 10px;
 }
 
-.btn {
-	border-radius: 0px;
-	border: none;
-}
 .btn-primary {
 	background-color: green;
 }
@@ -218,18 +214,24 @@ section {
 #loginContainer {
 	position: relative;
 }
-	
-input {
-	border-radius: 0 !important;
-	border: none;
+
+input, .form-control {
+	border-radius: 2px !important;
+	border-color: #d9d9d9;
+	height: 40px;
+	padding: 10px 16px;
+}
+.form-control, .form-control:focus {
+	-webkit-box-shadow: none;
+	box-shadow: none;
 }
 .alert {
-	border-radius: 0;
+	border-radius: 2px;
 	border: none;
-	margin:0 0 5px 0; 
-	padding:5px;
+	margin-bottom: 3px;
 	display: none;
 }
+
 #loginForm {
 	width: 320px; 
 	position: absolute; 
@@ -279,12 +281,15 @@ input {
 	padding: 30px;
 }
 //-------------
+#boxBody {
+	background-color: #65bd77;
+}
 @boxWidth: 500px;
 #box {
 	margin: 0;
 	color: #000;
-	height: 100%;
 	padding-top: 30px;
+
 	h1 {
 		width: @boxWidth;; 
 		margin: auto; 
@@ -293,17 +298,32 @@ input {
 		color: #eee;
 	}
 }
+#logo {
+	text-align: center;
+}
+#boxHeader {
+	border-color: #e8e8e8;
+	color: #333;
+	background-color: #f5f5f5;
+	border-radius: 2px 2px 0 0;
+	padding: 10px 15px;
+	border-bottom: 1px solid transparent;
+	text-align: center;
+	font-weight: bold;
+	font-size: 16px;
+}
 #boxForm {
 	background-color: #fff;
 	width: @boxWidth;; 
 	margin: auto;
-	padding: 20px;
-	padding-top: 15px;
-	border-radius: 5px;
+	border-radius: 2px;
+	form {
+		padding: 20px 30px;
+		padding-bottom: 30px;
+	}
 	table {
 		width: 100%;
 		td {
-			padding: 5px 10px;
 		}
 	}
 }
@@ -326,4 +346,249 @@ input {
 			color: #eee;
 		}
 	}
+}
+
+.line {
+	height: 2px;
+	margin: 10px 0;
+	font-size: 0;
+	overflow: hidden;
+	background-color: transparent;
+	border-width: 0;
+	border-top: 1px solid #e8e8e8;
+}
+.line-dashed {
+	border-style: dashed;
+	background: transparent;
+}
+
+.btn {
+	font-weight: 500;
+	border-radius: 2px;
+	border-radius: 3px;
+}
+.btn-github {
+	padding-left: 12px;
+	padding-right: 12px;
+	color: #fff !important;
+	background-color: #335397;
+	border-color: #335397;
+}
+.btn-github:hover {
+	color: #fff !important;
+	background-color: #2d4984;
+	border-color: #294279;
+}
+.btn>i.pull-left, .btn>i.pull-right {
+	line-height: 1.428571429;
+}
+.m-t-xs {
+	margin-top: 5px;
+}
+
+#boxFooter {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	text-align: center;
+	color: #eee;
+	a {
+		color: #eee;
+	}
+}
+
+// error
+.h {
+	font-size: 170px;
+	font-weight: 300;
+	text-shadow: 0 1px 0 #d9d9d9,0 2px 0 #d0d0d0,0 5px 10px rgba(0,0,0,0.125),0 10px 20px rgba(0,0,0,0.2);
+	text-align: center;
+}
+.list-group-item>.fa-chevron-right {
+	float: right;
+	margin-top: 4px;
+	margin-right: -5px;
+	color: #ccc;
+	margin-left: 10px;
+}
+#errorBox {
+	width: @boxWidth;; 
+	margin: auto;
+	padding: 20px 30px;
+	padding-bottom: 30px;
+	.error-info {
+		padding-bottom: 10px;
+		color: #fff;
+		font-size: 16px;
+		text-align: center;
+	}
+}
+
+//--------
+.animated {
+	-webkit-animation-fill-mode: both;
+	-moz-animation-fill-mode: both;
+	-ms-animation-fill-mode: both;
+	-o-animation-fill-mode: both;
+	animation-fill-mode: both;
+	-webkit-animation-duration: 0.5s;
+	-moz-animation-duration: 0.5s;
+	-ms-animation-duration: 0.5s;
+	-o-animation-duration: 0.5s;
+	animation-duration: 0.5s;
+}
+
+@-webkit-keyframes fadeIn {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
+
+@-moz-keyframes fadeIn {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
+
+@-o-keyframes fadeIn {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
+
+.fadeIn {
+	-webkit-animation-name: fadeIn;
+	-moz-animation-name: fadeIn;
+	-o-animation-name: fadeIn;
+	animation-name: fadeIn;
+}
+
+@-webkit-keyframes fadeInUp {
+	0% {
+		opacity: 0;
+		-webkit-transform: translateY(20px);
+	}
+
+	100% {
+		opacity: 1;
+		-webkit-transform: translateY(0);
+	}
+}
+
+@-moz-keyframes fadeInUp {
+	0% {
+		opacity: 0;
+		-moz-transform: translateY(20px);
+	}
+
+	100% {
+		opacity: 1;
+		-moz-transform: translateY(0);
+	}
+}
+
+@-o-keyframes fadeInUp {
+	0% {
+		opacity: 0;
+		-o-transform: translateY(20px);
+	}
+
+	100% {
+		opacity: 1;
+		-o-transform: translateY(0);
+	}
+}
+
+@keyframes fadeInUp {
+	0% {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.fadeInUp {
+	-webkit-animation-name: fadeInUp;
+	-moz-animation-name: fadeInUp;
+	-o-animation-name: fadeInUp;
+	animation-name: fadeInUp;
+}
+@-webkit-keyframes fadeInDownBig {
+	0% {
+		opacity: 0;
+		-webkit-transform: translateY(-2000px);
+	}
+
+	100% {
+		opacity: 1;
+		-webkit-transform: translateY(0);
+	}
+}
+
+@-moz-keyframes fadeInDownBig {
+	0% {
+		opacity: 0;
+		-moz-transform: translateY(-2000px);
+	}
+
+	100% {
+		opacity: 1;
+		-moz-transform: translateY(0);
+	}
+}
+
+@-o-keyframes fadeInDownBig {
+	0% {
+		opacity: 0;
+		-o-transform: translateY(-2000px);
+	}
+
+	100% {
+		opacity: 1;
+		-o-transform: translateY(0);
+	}
+}
+
+@keyframes fadeInDownBig {
+	0% {
+		opacity: 0;
+		transform: translateY(-2000px);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.fadeInDownBig {
+	-webkit-animation-name: fadeInDownBig;
+	-moz-animation-name: fadeInDownBig;
+	-o-animation-name: fadeInDownBig;
+	animation-name: fadeInDownBig;
 }
