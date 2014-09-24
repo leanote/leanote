@@ -811,7 +811,7 @@ editorMode.prototype.writtingMode = function() {
 	$("#lock").css({right:0, bottom:0});
 //	$("#lock").animate({right:0}, 0);
 	*/
-	$("#pageInner").removeClass("animated fadeInUp");
+	// $("#pageInner").removeClass("animated fadeInUp");
 	
 	$("#themeLink").attr("href", "/css/theme/writting-overwrite.css");
 	
@@ -832,7 +832,7 @@ editorMode.prototype.writtingMode = function() {
 	
 //	$("#lock").animate({right:w},1000);
 //	$("body").fadeIn();
-	$("#pageInner").addClass("animated fadeInUp");
+	//$("#pageInner").addClass("animated fadeInUp");
 
 	this.resizeEditor();
 	
