@@ -135,10 +135,16 @@ func (this *BlogService) ListAllBlogs(tag string, keywords string, isRecommend b
 	skipNum, sortFieldR := parsePageAndSort(page, pageSize, sorterField, isAsc)
 	
 	// 不是trash的
-	query := bson.M{"IsTrash": false, "IsBlog": true}
+	query := bson.M{"IsTrash": false, "IsBlog": true, "Title": bson.M{"$ne":"欢迎来到leanote!"}}
 	if tag != "" {
 		query["Tags"] = bson.M{"$in": []string{tag}}
 	}
+	// 不是demo的博客
+	demoUserId := configService.GetGlobalStringConfig("demoUserId")
+	if demoUserId != "" {
+		query["UserId"] = bson.M{"$ne": bson.ObjectIdHex(demoUserId)}
+	}
+	
 	if isRecommend {
 		query["IsRecommend"] = isRecommend
 	}
