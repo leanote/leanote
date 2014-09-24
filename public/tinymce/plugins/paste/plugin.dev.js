@@ -117,8 +117,4 @@
 	writeScripts();
 })(this);
 
-<<<<<<< HEAD
-// $hash: 4128985475d955f4e25ca4be38045cbb
-=======
 // $hash: f3e95e8badf18b4ad870bbb7bb543313
->>>>>>> develop-feature-blog
