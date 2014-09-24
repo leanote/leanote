@@ -1,0 +1,68 @@
+{{template "lea/header.html" .}}
+{{if eq .nav "recommend"}}
+	{{set $ "baseUrl" "/lea/index" }}
+{{else}}
+	{{set $ "baseUrl" "/lea/latest" }}
+{{end}}
+<div id="content">
+	<!-- 分类 -->
+	<ul class="clearfix sort-nav">
+		<li {{if not .tag}}class="active"{{end}}>
+			<a class="category" href="{{$.baseUrl}}">全部</a>
+		</li>
+		{{range $v := .tags}}
+		<li {{if eq $v $.tag}}class="active"{{end}}>
+			<a class="category" data-category-id="{{$v}}" href="{{$.baseUrl}}?tag={{$v}}">{{$v}}</a>
+		</li>
+		{{end}}
+	</ul>
+	<!-- 文章列表 -->
+	<ul class="thumbnails">
+		{{range .blogs}}
+		<li>
+			<div class="article">
+				<a class="title" href="/blog/view/{{.NoteId.Hex}}" title="{{.Title}} {{msg $ "fullBlog"}}" target="_blank">{{.Title}}</a>
+				<a class="avatar maleskine-author" href="/blog/{{.UserId.Hex}}" target="_blank" title="{{.User.Username}}">
+					{{ if .User.Logo}}
+						<img src="{{.User.Logo}}">
+					{{else}}
+						<img src="/images/blog/default_avatar.png">
+					{{end}}
+				</a>
+				<div class="content">
+					{{.Desc | raw}}
+				</div>
+				<div class="article-info">
+					<a class="author" href="/blog/{{.User.Username}}">
+					<span class="fa fa-user"></span>
+			          {{.User.Username}}
+					</a>
+					
+					<!--
+					<span class="fa fa-comments-o"></span>9
+					<span class="fa fa-heart-o"></span>6
+					-->
+
+					<span class="fa fa-bookmark-o"></span>
+					{{if .Tags}} 
+						{{blogTags .Tags}}
+					{{else}}
+						{{msg $ "noTag"}}
+					{{end}}
+				</div>
+			</div>
+		</li>
+		{{end}}
+	</ul>
+	
+	<div id="pagination" class="clearfix">
+		{{if eq .nav "recommend"}}
+			{{set . "url" (urlConcat "/lea/index" "keywords" .keywords)}}
+		{{else}}
+			{{set . "url" (urlConcat "/lea/latest" "keywords" .keywords)}}
+		{{end}}
+		{{template "lea/page.html" .}}
+	</div>
+</div>
+
+{{template "lea/footer.html" .}}

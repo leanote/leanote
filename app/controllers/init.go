@@ -24,6 +24,7 @@ var albumService *service.AlbumService
 var noteImageService *service.NoteImageService 
 var fileService *service.FileService
 var attachService *service.AttachService
+var configService *service.ConfigService
 
 var pageSize = 1000
 var defaultSortField = "UpdatedTime"
@@ -116,6 +117,7 @@ func InitService() {
 	pwdService = service.PwdS
 	suggestionService = service.SuggestionS
 	authService = service.AuthS
+	configService = service.ConfigS
 }
 
 func init() {

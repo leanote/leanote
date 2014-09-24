@@ -39,6 +39,7 @@ var Files *mgo.Collection
 var Attachs *mgo.Collection
 
 var NoteImages *mgo.Collection
+var Configs *mgo.Collection
 
 // 初始化时连接数据库
 func Init() {
@@ -110,6 +111,8 @@ func Init() {
 	Attachs = Session.DB(dbname).C("attachs")
 	
 	NoteImages = Session.DB(dbname).C("note_images")
+	
+	Configs = Session.DB(dbname).C("configs")
 }
 
 func init() { 

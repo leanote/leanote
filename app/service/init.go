@@ -21,6 +21,7 @@ var noteImageService, NoteImageS *NoteImageService
 var fileService, FileS *FileService
 var albumService, AlbumS *AlbumService
 var attachService, AttachS *AttachService
+var configService, ConfigS *ConfigService
 var PwdS *PwdService
 var SuggestionS *SuggestionService
 var AuthS *AuthService
@@ -40,6 +41,7 @@ func InitService() {
 	FileS = &FileService{}
 	AlbumS = &AlbumService{}
 	AttachS = &AttachService{}
+	ConfigS = &ConfigService{}
 	PwdS = &PwdService{}
 	SuggestionS = &SuggestionService{}
 	AuthS = &AuthService{}
@@ -57,4 +59,5 @@ func InitService() {
 	fileService = FileS
 	albumService = AlbumS
 	attachService = AttachS
+	configService = ConfigS
 }

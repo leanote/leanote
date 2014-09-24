@@ -99,6 +99,29 @@ func (this *UserService) ListUserInfosByUserIds(userIds []bson.ObjectId) []info.
 	db.ListByQ(db.Users, bson.M{"_id": bson.M{"$in": userIds}}, &users)
 	return users
 }
+// 用户信息和博客设置信息
+func (this *UserService) MapUserInfoAndBlogInfosByUserIds(userIds []bson.ObjectId) map[bson.ObjectId]info.User {
+	users := []info.User{}
+	db.ListByQ(db.Users, bson.M{"_id": bson.M{"$in": userIds}}, &users)
+	
+	userBlogs := []info.UserBlog{}
+	db.ListByQWithFields(db.UserBlogs, bson.M{"_id": bson.M{"$in": userIds}}, []string{"Logo"}, &userBlogs)
+	
+	userBlogMap := make(map[bson.ObjectId]info.UserBlog, len(userBlogs))
+	for _, user := range userBlogs {
+		userBlogMap[user.UserId] = user
+	}
+	
+	userMap := make(map[bson.ObjectId]info.User, len(users))
+	for _, user := range users {
+		if userBlog, ok := userBlogMap[user.UserId]; ok {
+			user.Logo = userBlog.Logo
+		}
+		userMap[user.UserId] = user
+	}
+	
+	return userMap
+}
 
 // 通过ids得到users, 按id的顺序组织users
 func (this *UserService) GetUserInfosOrderBySeq(userIds []bson.ObjectId) []info.User {
@@ -135,7 +158,7 @@ func (this *UserService) LoginGetUserInfo(emailOrUsername, md5Pwd string) info.U
 
 // 更新username
 func (this *UserService) UpdateUsername(userId, username string) (bool, string) {
-	if userId == "" || username == "" {
+	if userId == "" || username == "" || username == "admin" { // admin用户是内置的, 不能设置
 		return false, "用户已存在"
 	}
 	usernameRaw := username // 原先的, 可能是同一个, 但有大小写
@@ -296,4 +319,25 @@ func (this *UserService)UpdateColumnWidth(userId string, notebookWidth, noteList
 // 左侧是否隐藏
 func  (this *UserService)UpdateLeftIsMin(userId string, leftIsMin bool) bool {
 	return db.UpdateByQMap(db.Users, bson.M{"_id": bson.ObjectIdHex(userId)}, bson.M{"LeftIsMin": leftIsMin})
+}
+
+//-------------
+// user admin
+func (this *UserService) ListUsers(pageNumber, pageSize int, sortField string, isAsc bool, email string) (page info.Page, users []info.User) {
+	users = []info.User{}
+	skipNum, sortFieldR := parsePageAndSort(pageNumber, pageSize, sortField, isAsc)
+	query := bson.M{}
+	if email != "" {
+		query["Email"] = bson.M{"$regex": bson.RegEx{".*?" + email + ".*", "i"}}
+	}
+	q := db.Users.Find(query);
+	// 总记录数
+	count, _ := q.Count()
+	// 列表
+	q.Sort(sortFieldR).
+		Skip(skipNum).
+		Limit(pageSize).
+		All(&users)
+	page = info.NewPage(pageNumber, pageSize, count, nil)
+	return
 }

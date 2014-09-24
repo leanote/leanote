@@ -32,6 +32,7 @@ func (c Auth) DoLogin(email, pwd string) revel.Result {
 		c.SetSession(userInfo)
 		// 必须要redirect, 不然用户刷新会重复提交登录信息
 //		return c.Redirect("/")
+		configService.InitUserConfigs(userInfo.UserId.Hex())
 		return c.RenderJson(info.Re{Ok: true})
 	}
 //	return c.RenderTemplate("login.html")

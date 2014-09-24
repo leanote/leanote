@@ -10,6 +10,7 @@ type BlogItem struct {
 	Note
 	Content string // 可能是content的一部分, 截取. 点击more后就是整个信息了
 	HasMore bool   // 是否是否还有
+	User User // 用户信息
 }
 
 type UserBlogBase struct {

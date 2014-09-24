@@ -20,6 +20,7 @@ type User struct {
 	Pwd         string        `bson:"Pwd" json:"-"`
 	CreatedTime time.Time     `CreatedTime`
 
+	Logo string `Logo` // 9-24
 	// 主题
 	Theme string `Theme`
 

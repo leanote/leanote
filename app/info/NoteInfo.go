@@ -17,9 +17,11 @@ type Note struct {
 
 	ImgSrc  string   `ImgSrc` // 图片, 第一张缩略图地址
 	Tags    []string `Tags,omitempty`
+	
 	IsTrash bool     `IsTrash` // 是否是trash, 默认是false
 
 	IsBlog bool `IsBlog,omitempty` // 是否设置成了blog 2013/12/29 新加
+	IsRecommend bool `IsRecommend,omitempty` // 是否为推荐博客 2014/9/24新加
 	IsTop  bool `IsTop,omitempty`  // blog是否置顶
 
 	IsMarkdown bool `IsMarkdown` // 是否是markdown笔记, 默认是false
