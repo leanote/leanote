@@ -208,3 +208,6 @@ a:hover {
 .mce-btn {
   background: none !important;
 }
+#posts img {
+  max-width: 700px;
+}
