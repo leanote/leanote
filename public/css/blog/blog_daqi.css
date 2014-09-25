@@ -1,3 +1,6 @@
+#posts img {
+  max-width: 100%;
+}
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
@@ -170,7 +173,4 @@ a:hover {
   list-style: none;
   margin-bottom: 10px ;
   padding-left: 20px;
-}
-#posts img {
-  max-width: 700px;
 }

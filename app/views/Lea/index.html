@@ -56,13 +56,40 @@
 	</ul>
 	
 	<div id="pagination" class="clearfix">
-		{{if eq .nav "recommend"}}
-			{{set . "url" (urlConcat "/lea/index" "keywords" .keywords)}}
-		{{else}}
-			{{set . "url" (urlConcat "/lea/latest" "keywords" .keywords)}}
-		{{end}}
-		{{template "lea/page.html" .}}
+		<ul class="pagination pagination-sm m-t-none m-b-none">
+		{{set . "url" (urlConcat .baseUrl "keywords" .keywords)}}
+		</ul>
 	</div>
 </div>
+
+<script src="/js/jquery-1.9.0.min.js"></script>
+<script src="/js/bootstrap-min.js"></script>
+<script src="/js/jquery.pagination.js"></script>
+<script>
+$(function() {
+	var totalPage = {{.pageInfo.TotalPage}};
+	if(totalPage > 1) {
+		var baseUrl = "{{.url}}";
+		var count = {{.pageInfo.Count}};
+		var curPage = {{.pageInfo.CurPage}}-1;
+		$(".pagination").pagination(count, {
+			items_per_page: 10,
+			prev_text:"&lt;",
+			next_text:"&gt;",
+			current_page: curPage,
+			callback: function(pageNum) {
+				pageNum++;
+				var url = baseUrl;
+				if(baseUrl.indexOf("?") > 0) {
+					url += "&page=" + pageNum;
+				} else {
+					url += "?page=" + pageNum;
+				}
+				location.href = url;
+			}
+	    });
+    }
+});
+</script>
 
 {{template "lea/footer.html" .}}
