@@ -216,3 +216,4 @@ leanote还有很多问题, 如果你喜欢它, 欢迎加入我们一起完善lea
 ## 讨论
 * [leanote bbs](http://bbs.leanote.com)
 * [leanote google group](https://groups.google.com/forum/#!forum/leanote)
+* QQ群158716820
