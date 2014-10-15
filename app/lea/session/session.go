@@ -2,7 +2,7 @@ package session
 
 import (
 	"github.com/robfig/revel"
-	"leanote/app/lea/memcache"
+	"github.com/leanote/leanote/app/lea/memcache"
 //	. "leanote/app/lea"
 )
 

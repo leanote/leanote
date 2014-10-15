@@ -5,8 +5,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="keywords" content="leanote,leanote.com">
-<meta name="description" content="leanote, your own cloud note">
-<title>leanote, your own cloud note</title>
+<meta name="description" content="leanote, {{msg $ "moto"}}">
+<title>leanote, {{msg $ "moto"}}</title>
 
 <link href="css/bootstrap.css" rel="stylesheet" />
 <!-- 先加载, 没有样式, 宽度不定 -->
@@ -164,10 +164,6 @@ function log(o) {
 					</div>
 				</div>
 
-				<div class="pull-right" style="line-height: 60px; margin:0 10px">
-					<a target="_blank" title="lea++, leanote blog platform" href="/lea/index">lea++</a>
-				</div>
-				
 				<div class="pull-right" style="margin: 0 10px" id="topNav">
 					<a target="_blank" href="/blog/{{.userInfo.Username}}"> 
 						{{msg . "myBlog"}}

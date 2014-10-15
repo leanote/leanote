@@ -2,7 +2,7 @@
 
 ## 1. Introduction
 
-Leanote, your own cloud note.
+Leanote, note just a notebook!
 
 **Some Features**
 
@@ -109,7 +109,7 @@ Please fork this repository and contribute back using [pull requests](https://gi
 
 ## 1. 介绍
 
-Leanote, 你的私人云笔记!
+Leanote, 不只是笔记!
 
 **特性**
 
@@ -214,6 +214,6 @@ $> sudo sh run.sh
 leanote还有很多问题, 如果你喜欢它, 欢迎加入我们一起完善leanote.
 
 ## 讨论
-* [leanote bbs](http://bbs.leanote.com)
-* [leanote google group](https://groups.google.com/forum/#!forum/leanote)
+* [leanote 社区](http://bbs.leanote.com)
 * QQ群158716820
+* [leanote google group](https://groups.google.com/forum/#!forum/leanote)
