@@ -3,7 +3,7 @@
 <div id="postsContainer">
 	<div class="container">
 		{{if .notebookId}}
-		<h2>{{msg . "blogClass"}}: {{.notebook.Title}}</h2>
+		<h2>{{msg . "blogClass"}} - {{.notebook.Title}}</h2>
 		{{end}}
 	</div>
 	<div id="posts">
@@ -11,30 +11,35 @@
 		{{range .blogs}}
 		<div class="each-post">
 			<div class="title">
-				<a href="/blog/view/{{.NoteId.Hex}}" title="{{msg $G "fullBlog"}}">
+				<a href="{{$.viewUrl}}/{{.NoteId.Hex}}" title="{{msg $ "fullBlog"}}">
 					{{.Title}}
 				</a>
 			</div>
 			<div class="created-time">
-				<i class="fa fa-bookmark-o" style="color: #666"></i>
+				<i class="fa fa-bookmark-o"></i>
 				{{if .Tags}} 
-					{{blogTags .Tags}}
+					{{blogTags $ .Tags}}
 				{{else}}
-					{{msg $G "noTag"}}
+					{{msg $ "noTag"}}
 				{{end}}
 				|
-				<i class="fa fa-calendar" style="color: #666"></i> {{msg $G "updatedTime"}} {{.UpdatedTime | datetime}} | 
-				<i class="fa fa-calendar" style="color: #666"></i> {{msg $G "createdTime"}} {{.CreatedTime | datetime}}
+				<i class="fa fa-calendar"></i> {{msg $ "updatedTime"}} {{.UpdatedTime | datetime}} | 
+				<i class="fa fa-calendar"></i> {{msg $ "createdTime"}} {{.CreatedTime | datetime}}
 			</div>
 			<div class="desc">
 				{{.Content | raw}}
 			</div>
-			<a class="more" href="/blog/view/{{.NoteId.Hex}}" title="{{msg $G "fullBlog"}}">More...</a>
+			<a class="more" href="{{$.viewUrl}}/{{.NoteId.Hex}}" title="{{msg $ "fullBlog"}}">{{msg $ "more"}}.</a>
 		</div>
 		{{end}}
 		<!-- 分页 -->
 		<ul class="pager">
-			{{page .userInfo.Username .notebookId .page .pageSize .count}}
+			{{if .notebookId}}
+				{{set $ "pageUrl" (concatStr $.cateUrl "/" .notebookId)}}
+			{{else}}
+				{{set $ "pageUrl" $.indexUrl}}
+			{{end}}
+			{{page $.pageUrl .page .pageSize .count}}
 		</ul>
 	</div>
 </div>

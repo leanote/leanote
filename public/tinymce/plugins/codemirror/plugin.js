@@ -19,11 +19,12 @@ tinymce.PluginManager.add('codemirror', function(editor, url) {
 		editor.selection.setContent('<span class="CmCaReT" style="display:none">&#0;</span>');
 
 		// Open editor window
+		var height = $(document).height();
 		var win = editor.windowManager.open({
 			title: 'HTML source code',
 			url: url + '/source.html',
 			width: 800,
-			height: 550,
+			height: height-150,
 			resizable : true,
 			maximizable : true,
 			buttons: [

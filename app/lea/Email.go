@@ -22,7 +22,7 @@ func InitEmail() {
 var bodyTpl = `
 	<html>
 	<body>
-		<div style="width: 800px; margin:auto; border-radius:5px; border: 1px solid #ccc; padding: 20px;">
+		<div style="width: 600px; margin:auto; border-radius:5px; border: 1px solid #ccc; padding: 20px;">
 			<div>
 				<div>
 					<div style="float:left; height: 40px;">
@@ -56,7 +56,7 @@ var bodyTpl = `
 	</body>
 	</html>
 `
-func SendEmail(to, subject, title, body string) bool {
+func SendEmailOld(to, subject, body string) bool {
 	hp := strings.Split(host, ":")
 	auth := smtp.PlainAuth("", username, password, hp[0])
 	
@@ -69,9 +69,8 @@ func SendEmail(to, subject, title, body string) bool {
 		content_type = "Content-Type: text/plain" + "; charset=UTF-8"
 	}
 	
-	// 登录之
-	body = strings.Replace(bodyTpl, "$body", body, 1)
-	body = strings.Replace(body, "$title", title, 1)
+	//body = strings.Replace(bodyTpl, "$body", body, 1)
+	//body = strings.Replace(body, "$title", title, 1)
 
 	msg := []byte("To: " + to + "\r\nFrom: " + username + "<"+ username +">\r\nSubject: " + subject + "\r\n" + content_type + "\r\n\r\n" + body)
 	send_to := strings.Split(to, ";")
@@ -84,7 +83,7 @@ func SendEmail(to, subject, title, body string) bool {
 	return true
 }
 
-func SendToLeanote(subject, title, body string) {
+func SendToLeanoteOld(subject, title, body string) {
 	to := "leanote@leanote.com"
-	SendEmail(to, subject, title, body);
+	SendEmailOld(to, subject, body);
 }

@@ -2,38 +2,38 @@
 
 <div id="postsContainer">
 	<div class="container">
-	<h2>搜索  {{.key}} </h2>
+		<h2>{{msg . "search"}} - {{.key}} </h2>
 	</div>
 
 	<div id="posts">
 		{{range .blogs}}
 		<div class="each-post">
 			<div class="title">
-				<a href="/blog/view/{{.NoteId.Hex}}" title="全文">
+				<a href="{{$.viewUrl}}/{{.NoteId.Hex}}" title="{{msg $ "fullBlog"}}">
 					{{.Title}}
 				</a>
 			</div>
 			<div class="created-time">
-				<i class="fa fa-bookmark-o" style="color: #666"></i>
+				<i class="fa fa-bookmark-o"></i>
 				{{if .Tags}} 
-					{{blogTags .Tags}}
+					{{blogTags $ .Tags}}
 				{{else}}
-				无
+					{{msg $ "noTag"}}
 				{{end}}
 				|
-				<i class="fa fa-calendar" style="color: #666"></i> 更新 {{.UpdatedTime | datetime}} | 
-				<i class="fa fa-calendar" style="color: #666"></i> 创建 {{.CreatedTime | datetime}}
+				<i class="fa fa-calendar"></i> {{msg $ "updatedTime"}} {{.UpdatedTime | datetime}} | 
+				<i class="fa fa-calendar"></i> {{msg $ "createdTime"}}  {{.CreatedTime | datetime}}
 			</div>
 			<div class="desc">
 				{{.Content | raw}}
 			</div>
-			<a class="more" href="/blog/view/{{.NoteId.Hex}}" title="更多">More...</a>
+			<a class="more" href="{{$.viewUrl}}/{{.NoteId.Hex}}" title="{{msg $ "fullBlog"}}">{{msg $ "more"}}</a>
 		</div>
 		{{end}}
 		
 		{{if not .blogs }}
 			<div class="each-post">
-				无			
+				{{msg . "none"}}
 			</div>
 		{{end}}
 	</div>

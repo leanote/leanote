@@ -27,6 +27,7 @@ type User struct {
 	// 用户配置
 	NotebookWidth int  `NotebookWidth` // 笔记本宽度
 	NoteListWidth int  `NoteListWidth` // 笔记列表宽度
+	MdEditorWidth int  `MdEditorWidth` // markdown 左侧编辑器宽度
 	LeftIsMin     bool `LeftIsMin`     // 左侧是否是隐藏的, 默认是打开的
 
 	// 这里 第三方登录

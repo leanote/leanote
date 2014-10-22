@@ -39,6 +39,7 @@ var cmdPath = "/usr/local/bin/uglifyjs"
 
 func cmdError(err error) {
 	if err != nil {
+		fmt.Println(err)
 		fmt.Fprintf(os.Stderr, "The command failed to perform: %s (Command: %s, Arguments: %s)", err, "", "")
 	} else {
 		fmt.Println("OK")
@@ -63,6 +64,7 @@ func combineJs() {
 	
 	for _, js := range jss {
 		to := base + js + "-min.js"
+		fmt.Println(to)
 		compressJs(js)
 		
 		// 每个压缩后的文件放入之
@@ -85,6 +87,7 @@ func dev() {
 		"notebook.js": "notebook-min.js",
 		"share.js": "share-min.js",
 		"tag.js": "tag-min.js",
+		"main.js": "main-min.js",
 		"jquery.contextmenu.js": "jquery.contextmenu-min.js",
 		"editor/editor.js": "editor/editor-min.js",
 		"/public/mdeditor/editor/scrollLink.js": "/public/mdeditor/editor/scrollLink-min.js",
@@ -108,7 +111,8 @@ func tinymce() {
 //	cmd := exec.Command("/Users/life/Documents/eclipse-workspace/go/leanote_release/tinymce-master/node_modules/jake/bin/cli.js", "minify", "bundle[themes:modern,plugins:table,paste,advlist,autolink,link,image,lists,charmap,hr,searchreplace,visualblocks,visualchars,code,nav,tabfocus,contextmenu,directionality,codemirror,codesyntax,textcolor,fullpage]")
 	cmd := exec.Command("/Users/life/Documents/eclipse-workspace/go/leanote_release/tinymce-master/node_modules/jake/bin/cli.js", "minify")
 	cmd.Dir = "/Users/life/Documents/eclipse-workspace/go/leanote_release/tinymce-master"
-	_, err := cmd.CombinedOutput()
+	c, err := cmd.CombinedOutput()
+	fmt.Println(string(c))
 	cmdError(err)
 }
 
@@ -116,11 +120,12 @@ func main() {
 	dev();
 	
 	// 其它零散的需要压缩的js
-	otherJss := []string{"tinymce/tinymce", "js/app/page", "js/contextmenu/jquery.contextmenu", 
+	otherJss := []string{"tinymce/tinymce", "js/main", "js/app/page", "js/contextmenu/jquery.contextmenu", 
 		"mdeditor/editor/scrollLink", 
 		"mdeditor/editor/editor",
 		"mdeditor/editor/jquery.waitforimages",
 		"mdeditor/editor/pagedown/local/Markdown.local.zh",
+		"mdeditor/editor/pagedown/local/Markdown.local.en",
 		"mdeditor/editor/pagedown/Markdown.Editor",
 		"mdeditor/editor/pagedown/Markdown.Sanitizer",
 		"mdeditor/editor/pagedown/Markdown.Converter",

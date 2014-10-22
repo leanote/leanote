@@ -5,6 +5,7 @@ import (
 //	"encoding/json"
 	"gopkg.in/mgo.v2/bson"
 	. "github.com/leanote/leanote/app/lea"
+	"github.com/leanote/leanote/app/lea/netutil"
 	"github.com/leanote/leanote/app/info"
 	"io/ioutil"
 	"os"
@@ -22,7 +23,7 @@ type File struct {
 func (c File) UploadBlogLogo() revel.Result {
 	re := c.uploadImage("logo", "");
 	
-	c.RenderArgs["fileUrlPath"] = siteUrl + "/" + re.Id
+	c.RenderArgs["fileUrlPath"] = re.Id
 	c.RenderArgs["resultCode"] = re.Code
 	c.RenderArgs["resultMsg"] = re.Msg
 
@@ -47,6 +48,24 @@ func (c File) PasteImage(noteId string) revel.Result {
 				// 怎么可能在这个笔记下paste图片呢?
 				// 正常情况下不会
 			}
+		}
+	}
+	
+	return c.RenderJson(re)
+}
+
+// 头像设置
+func (c File) UploadAvatar() revel.Result {
+	re := c.uploadImage("logo", "");
+	
+	c.RenderArgs["fileUrlPath"] = re.Id
+	c.RenderArgs["resultCode"] = re.Code
+	c.RenderArgs["resultMsg"] = re.Msg
+	
+	if re.Ok {
+		re.Ok = userService.UpdateAvatar(c.GetUserId(), re.Id)
+		if re.Ok {
+			c.UpdateSession("Logo", re.Id);
 		}
 	}
 	
@@ -239,6 +258,38 @@ func (c File) CopyImage(userId, fileId, toUserId string) revel.Result {
 	re := info.NewRe()
 	
 	re.Ok, re.Id = fileService.CopyImage(userId, fileId, toUserId)
+	
+	return c.RenderJson(re)
+}
+
+// 复制外网的图片, 成公共图片 放在/upload下
+func (c File) CopyHttpImage(src string) revel.Result {
+	re := info.NewRe()
+	fileUrlPath := "upload/" + c.GetUserId() + "/images"
+	dir := revel.BasePath + "/public/" +  fileUrlPath
+	err := os.MkdirAll(dir, 0755)
+	if err != nil {
+		return c.RenderJson(re)
+	}
+	filesize, filename, _, ok := netutil.WriteUrl(src, dir)
+	
+	if !ok {
+		re.Msg = "copy error"
+		return c.RenderJson(re)
+	}
+	
+	// File
+	fileInfo := info.File{Name: filename,
+		Title: filename,
+		Path: fileUrlPath + "/" + filename,
+		Size: filesize}
+		
+	id := bson.NewObjectId();
+	fileInfo.FileId = id
+	
+	re.Id = id.Hex()
+	re.Item = fileInfo.Path
+	re.Ok = fileService.AddImage(fileInfo, "", c.GetUserId())
 	
 	return c.RenderJson(re)
 }

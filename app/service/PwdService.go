@@ -2,11 +2,9 @@ package service
 
 import (
 	"gopkg.in/mgo.v2/bson"
-	"github.com/revel/revel"
 	"github.com/leanote/leanote/app/db"
 	"github.com/leanote/leanote/app/info"
 	. "github.com/leanote/leanote/app/lea"
-	"fmt"
 )
 
 // 找回密码
@@ -32,14 +30,7 @@ func (this *PwdService) FindPwd(email string) (ok bool, msg string) {
 	}
 	
 	// 发送邮件
-	siteUrl, _ := revel.Config.String("site.url")
-	url := siteUrl + "/findPassword/" + token
-	body := fmt.Sprintf("请点击链接修改密码: <a href='%v'>%v</a>. %v小时后过期.", url, url, int(overHours));
-	if !SendEmail(email, "leanote-找回密码", "找回密码", body) {
-		return false, "邮箱发送失败"
-	}
-	
-	ok = true
+	ok, msg = emailService.FindPwdSendEmail(token, email)
 	return
 }
 

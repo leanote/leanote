@@ -45,7 +45,7 @@ $(function() {
 				ajaxPost("/auth/doRegister", getFormJsonData("add_user_form"), function(ret){
 					$(t).button('reset')
 					if(!ret.Ok) {
-						art.alert(ret.Msg)
+						art.alert(ret.Msg);
 					} else {
 						art.tips("Success");
 					}

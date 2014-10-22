@@ -5,11 +5,13 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"encoding/json"
 	"github.com/leanote/leanote/app/info"
+//	. "github.com/leanote/leanote/app/lea"
 //	"io/ioutil"
 //	"fmt"
 	"math"
 	"strconv"
 	"strings"
+	"bytes"
 )
 
 // 公用Controller, 其它Controller继承它
@@ -54,15 +56,21 @@ func (c BaseController) GetUsername() string {
 // 得到用户信息
 func (c BaseController) GetUserInfo() info.User {
 	if userId, ok := c.Session["UserId"]; ok && userId != "" {
+		return userService.GetUserInfo(userId);
+		/*
 		notebookWidth, _ := strconv.Atoi(c.Session["NotebookWidth"])
 		noteListWidth, _ := strconv.Atoi(c.Session["NoteListWidth"])
+		mdEditorWidth, _ := strconv.Atoi(c.Session["MdEditorWidth"])
+		LogJ(c.Session)
 		user := info.User{UserId: bson.ObjectIdHex(userId), 
 			Email: c.Session["Email"], 
+			Logo: c.Session["Logo"], 
 			Username: c.Session["Username"], 
 			UsernameRaw: c.Session["UsernameRaw"], 
 			Theme: c.Session["Theme"], 
 			NotebookWidth: notebookWidth, 
 			NoteListWidth: noteListWidth,
+			MdEditorWidth: mdEditorWidth, 
 			}
 		if c.Session["Verified"] == "1" {
 			user.Verified = true
@@ -71,10 +79,19 @@ func (c BaseController) GetUserInfo() info.User {
 			user.LeftIsMin = true
 		}
 		return user
+		*/
 	}
 	return info.User{}
 }
 
+// 这里的session都是cookie中的, 与数据库session无关
+func (c BaseController) GetSession(key string) string {
+	v, ok := c.Session[key]
+	if !ok {
+		v = ""
+	}
+	return v
+}
 func (c BaseController) SetSession(userInfo info.User) {
 	if userInfo.UserId.Hex() != "" {
 		c.Session["UserId"] = userInfo.UserId.Hex()
@@ -82,6 +99,7 @@ func (c BaseController) SetSession(userInfo info.User) {
 		c.Session["Username"] = userInfo.Username
 		c.Session["UsernameRaw"] = userInfo.UsernameRaw
 		c.Session["Theme"] = userInfo.Theme
+		c.Session["Logo"] = userInfo.Logo
 		
 		c.Session["NotebookWidth"] = strconv.Itoa(userInfo.NotebookWidth)
 		c.Session["NoteListWidth"] = strconv.Itoa(userInfo.NoteListWidth)
@@ -165,6 +183,12 @@ func (c BaseController) SetLocale() string {
 		lang = "en";
 	}
 	c.RenderArgs["locale"] = lang;
+	c.RenderArgs["siteUrl"] = siteUrl;
+	
+	c.RenderArgs["blogUrl"] = configService.GetBlogUrl()
+	c.RenderArgs["leaUrl"] = configService.GetLeaUrl()
+	c.RenderArgs["noteUrl"] = configService.GetNoteUrl()
+	
 	return lang
 }
 
@@ -172,4 +196,47 @@ func (c BaseController) SetLocale() string {
 func (c BaseController) SetUserInfo() {
 	userInfo := c.GetUserInfo()
 	c.RenderArgs["userInfo"] = userInfo
+}
+
+// life
+// 返回解析后的字符串, 只是为了解析模板得到字符串
+func (c BaseController) RenderTemplateStr(templatePath string) string {
+	// Get the Template.
+	// 返回 GoTemplate{tmpl, loader}
+	template, err := revel.MainTemplateLoader.Template(templatePath)
+	if err != nil {
+	}
+
+	tpl := &revel.RenderTemplateResult{
+		Template:   template,
+		RenderArgs: c.RenderArgs, // 把args给它
+	}
+	
+	var buffer bytes.Buffer
+	tpl.Template.Render(&buffer, c.RenderArgs)
+	return buffer.String();
+}
+
+// json, result
+// 为了msg
+// msg-v1-v2-v3
+func (c BaseController) RenderRe(re info.Re) revel.Result {
+	if re.Msg != "" {
+		if(strings.Contains(re.Msg, "-")) {
+			msgAndValues := strings.Split(re.Msg, "-")
+			if len(msgAndValues) == 2 {
+				re.Msg = c.Message(msgAndValues[0], msgAndValues[1])
+			} else {
+				others := msgAndValues[0:]
+				a := make([]interface{}, len(others))
+				for i, v := range others {
+					a[i] = v
+				}
+				re.Msg = c.Message(msgAndValues[0], a...)
+			}
+		} else {
+			re.Msg = c.Message(re.Msg)
+		}
+	}
+	return c.RenderJson(re)
 }

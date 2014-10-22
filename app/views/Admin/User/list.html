@@ -1,24 +1,18 @@
 {{template "admin/top.html" .}}
-<div class="m-b-md"> <h3 class="m-b-none">User</h3></div>
+<div class="m-b-md"> <h3 class="m-b-none">Users</h3></div>
 
 <section class="panel panel-default">
 	<div class="row wrapper">
 		<div class="col-sm-5 m-b-xs">
 			<select class="input-sm form-control input-s-sm inline v-middle">
-				<option value="0">
+				<option value="">
 					Bulk action
 				</option>
 				<option value="1">
-					Delete selected
-				</option>
-				<option value="2">
-					Bulk edit
-				</option>
-				<option value="3">
-					Export
+					Send Email
 				</option>
 			</select>
-			<button class="btn btn-sm btn-default">
+			<button class="btn btn-sm btn-default bulk-btn">
 				Apply
 			</button>
 		</div>
@@ -90,7 +84,7 @@
 				{{range .users}}
 				<tr>
 					<td>
-						<input type="checkbox" name="post[]" value="2">
+						<input type="checkbox" class="ck" data-email="{{.Email}}" value="2">
 					</td>
 					<td>
 						{{.Email}}
@@ -103,15 +97,9 @@
 					</td>
 					<td>
 						{{.CreatedTime|datetime}}
-						<a href="#" class="active" data-toggle="class">
-							<i class="fa fa-check text-success text-active">
-							</i>
-							<i class="fa fa-times text-danger text">
-							</i>
-						</a>
 					</td>
 					<td>
-						<a href="#" class="btn btn-default">Send Email</a>
+						<a href="#" class="btn btn-default send-email" data-email="{{.Email}}">Send Email</a>
 					</td>
 				</tr>
 				{{end}}
@@ -122,32 +110,21 @@
 		<div class="row">
 			<div class="col-sm-4 hidden-xs">
 				<select class="input-sm form-control input-s-sm inline v-middle">
-					<option value="0">
+					<option value="">
 						Bulk action
 					</option>
 					<option value="1">
-						Delete selected
-					</option>
-					<option value="2">
-						Bulk edit
-					</option>
-					<option value="3">
-						Export
+						Send Email
 					</option>
 				</select>
-				<button class="btn btn-sm btn-default">
+				<button class="btn btn-sm btn-default bulk-btn">
 					Apply
 				</button>
 			</div>
-			<div class="col-sm-4 text-center">
-				<small class="text-muted inline m-t-sm m-b-sm">
-					showing 20-30 of 50 items
-				</small>
-			</div>
-			<div class="col-sm-4 text-right text-center-xs">
+			
+			<div class="col-sm-8 text-right text-center-xs">
 				{{set . "url" (urlConcat "/adminUser/index" "sorter" .sorter "keywords" .keywords)}}
 				{{template "admin/user/page.html" .}}
-				
 			</div>
 		</div>
 	</footer>
@@ -157,6 +134,23 @@
 
 <script>
 $(function() {
+	$(".send-email").click(function() {
+		openSendEmailDialog($(this).data("email"));
+	});
+	$(".bulk-btn").click(function() {
+		// email
+		if($(this).prev().val() == "1") {
+			var emails = [];
+			$(".ck:checked").each(function() {
+				emails.push($(this).data("email"));
+			});
+			if(emails.length == 0) {
+				art.alert("No user");
+				return;
+			}
+			openSendEmailDialog(emails.join(","));
+		}
+	});
 });
 </script>
 

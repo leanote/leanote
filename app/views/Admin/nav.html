@@ -1,8 +1,21 @@
 <nav class="nav-primary hidden-xs">
 	<ul class="nav" id="nav">
 	
-		<li class="active" id="adminUserNav">
-			<a href="index.html">
+		<li class="active">
+			<a href="/admin/index">
+				<i class="fa fa-dashboard icon">
+					<b class="bg-success">
+					</b>
+				</i>
+				<span>
+					Dashboard
+				</span>
+			</a>
+		</li>
+		
+	
+		<li id="adminUserNav">
+			<a href="#">
 				<i class="fa fa-users icon">
 					<b class="bg-danger">
 					</b>
@@ -22,7 +35,7 @@
 				<li>
 					<a href="/adminUser/index">
 						<span>
-							List
+							Users
 						</span>
 					</a>
 				</li>
@@ -47,11 +60,65 @@
 				</span>
 			</a>
 		</li>
+		<li id="adminEmailNav">
+			<a href="#layout">
+				<i class="fa fa-envelope-o icon">
+					<b class="bg-warning">
+					</b>
+				</i>
+				<span class="pull-right">
+					<i class="fa fa-angle-down text">
+					</i>
+					<i class="fa fa-angle-up text-active">
+					</i>
+				</span>
+				<span>
+					Email
+				</span>
+			</a>
+			<ul class="nav lt">
+				<li>
+					<a href="/admin/t?t=email/set">
+						<span>
+							Configuration
+						</span>
+					</a>
+				</li>
+				<li>
+					<a href="/admin/t?t=email/template">
+						<span>
+							Template
+						</span>
+					</a>
+				</li>
+				<li>
+					<a href="/admin/t?t=email/sendToUsers">
+						<span>
+							Send Email to Users
+						</span>
+					</a>
+				</li>
+				<li>
+					<a href="/admin/t?t=email/send">
+						<span>
+							Send Email
+						</span>
+					</a>
+				</li>
+				<li>
+					<a href="/adminEmail/list">
+						<span>
+							Email Logs
+						</span>
+					</a>
+				</li>
+			</ul>
+		</li>
 		
 		<li id="adminSettingNav">
 			<a href="#layout">
 				<i class="fa fa-cog icon">
-					<b class="bg-warning">
+					<b class="bg-info">
 					</b>
 				</i>
 				<span class="pull-right">
@@ -66,60 +133,56 @@
 			</a>
 			<ul class="nav lt">
 				<li>
-					<a href="layout-c.html">
-						<span>
-							Register
-						</span>
-					</a>
-				</li>
-				<li>
-					<a href="layout-c.html">
-						<span>
-							Login
-						</span>
-					</a>
-				</li>
-				<li>
-					<a href="layout-r.html">
-						<span>
-							Email
-						</span>
-					</a>
-				</li>
-				<li>
-					<a href="layout-h.html">
-						<span>
-							Share
-						</span>
-					</a>
-				</li>
-				<li>
-					<a href="/adminSetting/blog">
-						<span>
-							Blog
-						</span>
-					</a>
-				</li>
-				<li>
-					<a href="/adminSetting/demo">
+					<a href="/admin/t?t=setting/demo">
 						<span>
 							Demo User
 						</span>
 					</a>
 				</li>
+				
+				<li>
+					<a href="/admin/t?t=setting/shareNote">
+						<span>
+							Register Share Note
+						</span>
+					</a>
+				</li>
 			</ul>
 		</li>
-	
+		
 		<li>
-			<a href="#layout">
+			<a href="#">
 				<i class="fa fa-columns icon">
-					<b class="bg-warning">
+					<b class="bg-success">
 					</b>
 				</i>
+				<span class="pull-right">
+					<i class="fa fa-angle-down text">
+					</i>
+					<i class="fa fa-angle-up text-active">
+					</i>
+				</span>
+				
 				<span>
-					Others
+					Data
 				</span>
 			</a>
+			<ul class="nav lt">
+				<li>
+					<a href="/admin/t?t=data/configuration">
+						<span>
+							Mongodb Tool Configuration
+						</span>
+					</a>
+				</li>
+				<li>
+					<a href="/adminData/index">
+						<span>
+							Backup & Restore
+						</span>
+					</a>
+				</li>
+			</ul>
 		</li>
 	</ul>
 </nav>

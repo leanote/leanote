@@ -1,6 +1,7 @@
 # leanote
+app=leanote
 moto=Not Just A Notebook!
-moto2=Knowledge, Sharing, Cooperation, Blog... all in leanote
+moto2=Knowledge, Blog, Sharing, Cooperation... all in leanote
 moto3=Brief But Not Simple
 fork github=Fork leanote on Github
 
@@ -27,6 +28,10 @@ blogInfo=You can public your knowledge and leanote is your blog!
 suggestionsInfo=help us to improve our service.
 yourContact=Your contact
 emailOrOthers=Email or other contact way
+captcha=Captcha
+reloadCaptcha=Reload Captcha
+captchaError=Captcha Do Not Match
+inputCaptcha=Captcha is required
 
 hi=Hi
 welcomeUseLeanote=Welcome!
@@ -53,7 +58,7 @@ hadAcount = Already have an account?
 hasAcount = Do not have an account?
 
 # 注册
-registerSuccessAndRdirectToNote=register success, now redirect to my note...
+registerSuccessAndRdirectToNote=Register success, redirecting...
 
 # 找回密码
 passwordTips=The length is at least 6
@@ -75,11 +80,17 @@ save=Save
 editorTips=Tips
 editorTipsInfo=<h4>1. Short cuts</h4>ctrl+shift+c Toggle code <br /> ctrl+shift+i Insert/edit image <h4>2. shift+enter Get out of current block</h4> eg. <img src="/images/outofcode.png" style="width: 90px"/> in this situation you can use shift+enter to get out of current code block.
 newNote=New note
+newMarkdownNote=New Markdown Note
+noNoteNewNoteTips=The notebook is empty, why not...
+canntNewNoteTips=Sorry, cannot new note in here, please choose a notebook at first.
+new=New
 newMarkdown=New markdown note
 clickAddTag=Click to add Tag
 notebook=Notebook
 myNotebook=My notebook
 addNotebook=Add notebook
+search=Search
+clearSearch=Clear Search
 all=Newest
 trash=Trash
 delete=Delete
@@ -113,12 +124,14 @@ green=green
 # 设置
 accountSetting=Account
 themeSetting=Theme
+setAvatar=Avatar
 logout=Logout
 basicInfo=Basic
 updateEmail=Update email
 usernameSetting=Update username
 oldPassword=Old password
 newPassword=New password
+admin=Admin
 
 default=Default
 simple=Simple
@@ -138,6 +151,88 @@ howToInstallLeanote=How to install leanote
 # 
 attachments = Attachments
 donate = Donate
+
+# contextmenu
+shareToFriends=Share to friends
+publicAsBlog=Public as blog
+cancelPublic=Cancel public
+move=Move
+copy=Copy
+rename=Rename
+addChildNotebook=Add child notebook
+deleteAllShared=Delete shared user
+deleteSharedNotebook=Delete shared notebook
+copyToMyNotebook=Copy to my notebook
+
+####note-dev
+emailInSending=In sending to 
+checkEmail=Check email
+setUsername=Set username
+setUsernameTips=Your current email is: <code>%s</code>. You can set a unique username. <br />Username' length is at least 4 and cannot contains special characters.
+currentEmail=Your current email is: <code>%s</code> 
+updateEmail=Update email
+updateEmailTips=You must verify the email after you update the email. The verified email will be your new account.
+sendVerifiedEmail=Send verification email
+verified=Verified
+unVerified=Unverfied
+verifiedNow=Verify now
+resendVerifiedEmail=Resend verification email
+
+# 分享
+defaulthhare=Default
+addShare=Add Friend
+friendEmail=Friend email
+permission=Permission
+readOnly=Read only
+writable=Writable
+inputFriendEmail=Friend email is required
+clickToChangePermission=Click to change permission
+sendInviteEmailToYourFriend=Send invite email to your friend
+copySuccess=Copy success
+copyFailed=Copy failed
+friendNotExits=Your friend hasn't %s's account, invite register link: %s
+emailBodyRequired=Email body is required
+clickToCopy=Click to copy
+sendSuccess=success
+inviteEmailBody=Hi,I am %s, %s is awesome, come on!
+
+# 历史记录
+historiesNum=We have saved at most <b>10</b> latest histories with each note
+noHistories=No histories
+fold=Fold
+unfold=Unfold
+datetime=Datetime
+restoreFromThisVersion=Restore from this version
+confirmBackup=Are you sure to restore from this version? We will backup the current note.
+createAccount=Create account
+createAccountSuccess=Account create success
+createAccountFailed=Account create failed
+thirdCreateAcountTips=You are using the 3th account to login %(app)s, you can create a %(app)s account too. <br />After you create %(app)s account, you can use the account and the 3th account to login %(app)s.
+
+## valid msg
+inputUsername=input username
+updateUsernameSuccess=Update username success
+usernameIsExisted=Username is already exists
+noSpecialChars=username cannot contains special chars
+minLength=The length is at least %s
+errorEmail=Please input the right email
+verifiedEmaiHasSent=The verification email has been sent, please check your email.
+emailSendFailed=Email send failed
+inputPassword=Password is required
+inputNewPassword=The new password is required
+inputPassword2=Please input the new password again
+errorPassword=The passowd's length is at least 6 and be sure as complex as possible
+confirmPassword=Password not matched
+updatePasswordSuccess=Update password success
+errorDomain=The custom domain is invalid, eg. www.myblog.com
+domainExisted=Custom domain is already existed
+errorSubDomain=Please input the valid sub domain, the length is at least 4 and no special chars
+subDomainExisted=Sub domain is already existed
+
+# lea++
+leaDesc=leanote blog platform
+recommend=Recommend
+latest=Latest
 
 # error 
 notFound=This page cann't found.

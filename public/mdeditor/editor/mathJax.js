@@ -1,3 +1,12 @@
+// 这一步非常耗时
+try {
+	// mobile不要
+	if(!Mobile.isMobile()) {
+		require(['//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML']);
+	}
+} catch(e) {
+}
+
 function bindMathJaxHooks(converter) {
 
     var msie = /msie/.test(navigator.userAgent.toLowerCase());

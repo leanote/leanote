@@ -14,10 +14,14 @@ updatedTime=更新
 createdTime=创建
 fullBlog=全文
 blogNav=导航
+more=更多...
+previous=上一页
+next=下一页
 
 #
 # set blog
 #
+blogSet=博客设置
 baseInfoSet=基本设置
 commentSet=评论设置
 themeSet=主题设置
@@ -25,17 +29,69 @@ theme=主题
 blogName=博客标题
 blogLogo=博客Logo
 blogDesc=博客描述
+aboutMe=关于我
+
+#domain
+domainSet=域名设置
+subDomain=博客子域名
+domain=自定义域名
 
 # theme
 elegant=大气
 navFixed=导航左侧固定
 
 openComment=开启评论?
-commentSys=leanote 使用 <a href="http://disqus.com" target="_blank">Disqus</a> 作为评论系统
+chooseComment=选择评论系统
 disqusHelp=请填写您申请的Disqus唯一url前缀. 建议您申请Disqus帐号, 这样可以自己管理评论. 或使用leanote的默认Disqus Id. 
 needHelp=需要帮助?
 blogLogoTips=上传logo将显示logo(替代博客标题)
 saveSuccess=保存成功
+
+community=社区
+home=主页
+none=无
+moreShare=更多分享
+sinaWeibo=新浪微博
+weixin=微信
+tencentWeibo=腾讯微博
+qqZone=QQ空间
+renren=人人网
+report=举报
+like=赞
+unlike=取消赞
+viewers=人读过
+author=作者
+delete=删除
+reply=回复
+comment=评论
+comments=条评论
+cancel=取消
+confirm=确认
+signIn=登录
+signUp=注册
+submitComment=发表评论
+reportReason1=不友善内容
+reportReason2=广告等垃圾信息
+reportReason3=违法违规内容
+reportReason4=不宜公开讨论的政治内容
+other=其它
+reportReason=举报理由
+chooseReason=请选择举报理由
+reportSuccess=举报成功, 我们处理后会通知作者, 感谢您的监督
+error=错误
+reportComment?=举报该评论?
+reportBlog?=举报该博客?
+confirmDeleteComment=确定删除该评论?
+scanQRCode=打开微信扫一扫二维码
+
+justNow=刚刚
+minutesAgo=分钟前
+hoursAgo=个小时前
+daysAgo=天前
+weeksAgo=周前
+monthsAgo=个月前
+
+
 
 
 a=a

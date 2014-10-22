@@ -4,9 +4,10 @@ import (
 	"gopkg.in/mgo.v2/bson"
 //	"github.com/leanote/leanote/app/db"
 	"github.com/leanote/leanote/app/info"
-	"github.com/revel/revel"
+//	"github.com/revel/revel"
 	. "github.com/leanote/leanote/app/lea"
 	"fmt"
+	"strconv"
 )
 
 // 登录与权限
@@ -16,7 +17,8 @@ type AuthService struct {
 
 // pwd已md5了
 func (this *AuthService) Login(emailOrUsername, pwd string) info.User {
-	return userService.LoginGetUserInfo(emailOrUsername, Md5(pwd))
+	userInfo := userService.LoginGetUserInfo(emailOrUsername, Md5(pwd))
+	return userInfo
 }
 
 // 注册
@@ -56,20 +58,30 @@ func (this *AuthService) register(user info.User) (bool, string) {
 		email := user.Email
 		
 		// 添加leanote -> 该用户的共享
-		leanoteUserId, _ := revel.Config.String("register.sharedUserId"); // "5368c1aa99c37b029d000001";
-		nk1, _ := revel.Config.String("register.sharedUserShareNotebookId"); // 5368c1aa99c37b029d000002" // leanote
-		welcomeNoteId, _ := revel.Config.String("register.welcomeNoteId") // "5368c1b919807a6f95000000" // 欢迎来到leanote
-		
-		if leanoteUserId != "" && nk1 != "" && welcomeNoteId != "" {
-			shareService.AddShareNotebook(nk1, 0, leanoteUserId, email);
-			shareService.AddShareNote(welcomeNoteId, 0, leanoteUserId, email);
+		registerSharedUserId := configService.GetGlobalStringConfig("registerSharedUserId")
+		if(registerSharedUserId != "") {
+			registerSharedNotebooks := configService.GetGlobalArrMapConfig("registerSharedNotebooks")
+			registerSharedNotes := configService.GetGlobalArrMapConfig("registerSharedNotes")
+			registerCopyNoteIds := configService.GetGlobalArrayConfig("registerCopyNoteIds")
 			
-			// 将welcome copy给我
-			note := noteService.CopySharedNote(welcomeNoteId, title2Id["life"].Hex(), leanoteUserId, user.UserId.Hex());
+			// 添加共享笔记本
+			for _, notebook := range registerSharedNotebooks {
+				perm, _ := strconv.Atoi(notebook["perm"])
+				shareService.AddShareNotebook(notebook["notebookId"], perm, registerSharedUserId, email);
+			}
 			
-			// 公开为博客
-			noteUpdate := bson.M{"IsBlog": true}
-			noteService.UpdateNote(user.UserId.Hex(), user.UserId.Hex(), note.NoteId.Hex(), noteUpdate)
+			// 添加共享笔记
+			for _, note := range registerSharedNotes {
+				perm, _ := strconv.Atoi(note["perm"])
+				shareService.AddShareNote(note["noteId"], perm, registerSharedUserId, email);
+			}
+			
+			// 复制笔记
+			for _, noteId := range registerCopyNoteIds {
+				note := noteService.CopySharedNote(noteId, title2Id["life"].Hex(), registerSharedUserId, user.UserId.Hex());
+				noteUpdate := bson.M{"IsBlog": true}
+				noteService.UpdateNote(user.UserId.Hex(), user.UserId.Hex(), note.NoteId.Hex(), noteUpdate)
+			}
 		}
 		
 		//---------------

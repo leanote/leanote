@@ -22,6 +22,51 @@ function log(o) {
 </head>
 
 <body>
+<nav id="headerContainer" style="background-color:#fff" class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/index">
+				<img src="/images/logo/leanote_black.png" id="" title="leanote, {{msg $ "moto"}}"/>
+			</a>
+		</div>
+		
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav navbar-left">
+				<li><a href="/index#" target="body" class="smooth-scroll">{{msg . "home"}}</a></li>
+				<!--
+				<li><a href="/index#aboutLeanote" target="#aboutLeanote" class="smooth-scroll">{{msg . "aboutLeanote"}}</a> </li>
+				-->
+				<li><a href="/index#download" target="#download" class="smooth-scroll">{{msg . "download"}}</a> </li>
+				<li><a href="/index#donate" target="#donate" class="smooth-scroll">{{msg . "donate"}}</a> </li>
+				<li><a id="leanoteBlog" href="{{.leaUrl}}/index" target="_blank" title="lea++, leanote博客平台" class="">lea++</a></li>
+				<li style="position: relative; margin-right: 3px;">
+					<a href="http://bbs.leanote.com" target="_blank" class="">{{msg . "discussion"}}</a>
+					<div class="red-circle" style=""></div>
+				</li>
+				
+				<li id="loginBtns">
+					{{if .userInfo.Email}}
+						{{msg . "hi"}}, {{.userInfo.Username}}
+						<a href="{{$.noteUrl}}">{{msg . "myNote"}}</a>
+						<a href="/logout">{{msg . "logout"}}</a>
+					{{else}}
+					<a href="/login">{{msg . "login"}}</a>
+						{{if .openRegister}}
+						<a href="/register" class="btn-register">{{msg . "register"}}</a>
+						{{end}}
+					{{end}}
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+<!--
 <div id="headerContainer" style="background-color:#fff" class="navbar-fixed-top">
 	<div class="container" style="clearfix" id="header">
 		<div class="pull-left">
@@ -35,7 +80,7 @@ function log(o) {
 		<div class="pull-right" id="loginBtns">
 			{{if .userInfo.Email}}
 				{{msg . "hi"}}, {{.userInfo.Username}}
-				<a href="/note">{{msg . "myNote"}}</a>
+				<a href="{{$.noteUrl}}">{{msg . "myNote"}}</a>
 				<a href="/logout">{{msg . "logout"}}</a>
 			{{else}}
 			<a href="/login">{{msg . "login"}}</a>
@@ -47,12 +92,9 @@ function log(o) {
 			
 		<ul id="blogNav" class="pull-right">
 			<li><a href="/index#" target="body" class="smooth-scroll">{{msg . "home"}}</a></li>
-			<!--
-			<li><a href="/index#aboutLeanote" target="#aboutLeanote" class="smooth-scroll">{{msg . "aboutLeanote"}}</a> </li>
-			-->
 			<li><a href="/index#download" target="#download" class="smooth-scroll">{{msg . "download"}}</a> </li>
 			<li><a href="/index#donate" target="#donate" class="smooth-scroll">{{msg . "donate"}}</a> </li>
-			<li><a id="leanoteBlog" href="http://leanote.com/lea/index" target="_blank" title="lea++, leanote博客平台" class="">lea++</a></li>
+			<li><a id="leanoteBlog" href="{{.leaUrl}}/index" target="_blank" title="lea++, leanote博客平台" class="">lea++</a></li>
 			<li style="position: relative; margin-right: 3px;">
 				<a href="http://bbs.leanote.com" target="_blank" class="">{{msg . "discussion"}}</a>
 				<div style="position: absolute;
@@ -64,6 +106,6 @@ function log(o) {
 					border-radius: 9px;"></div>
 			</li>
 		</ul>
-		
 	</div>
 </div>
+-->

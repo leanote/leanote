@@ -49,3 +49,11 @@ func (c AdminBaseController) getSorter(sorterField string, isAsc bool, okSorter 
 	c.RenderArgs["sorter"] = sorter
 	return sorterField, isAsc;
 }
+
+func (c AdminBaseController) updateConfig(keys []string) {
+	userId := c.GetUserId()
+	for _, key := range keys {
+		v := c.Params.Values.Get(key)
+		configService.UpdateGlobalStringConfig(userId, key, v)
+	}
+}

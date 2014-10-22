@@ -5,32 +5,26 @@
 			</section>
 		</section>
 	</section>
-	<!-- Bootstrap -->
-	<!-- App -->
-	<script src="/js/jquery-1.9.0.min.js"></script>
-	<script src="/js/bootstrap.js"></script>
-	<script src="/public/admin/js/artDialog/jquery.artDialog.js?skin=default"></script>
-	<script src="/public/js/common.js"></script>
-	<script src="/public/admin/js/admin.js"></script>
-	<script>
-		$(function(){ 
-			var pathname = location.pathname;
-			var arr = pathname.split("/");
-			if(arr.length == 0){
-				return;
-			}
-			var controller = "";
-			var action = "";
-			if(arr[0] == "") {
-				arr = arr.slice(1);
-			}
-			controller = arr[0];
-			if(arr.length > 1) {
-				action = arr[1];
-			}
-			$("#nav > li").removeClass("active");
-			$("#" + controller + "Nav").addClass("active");
-			
-			$('a[href="' + pathname + '"]').parent().addClass("active");
-		});
-	</script>
+
+<script src="/js/jquery-1.9.0.min.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/public/admin/js/artDialog/jquery.artDialog.js?skin=default"></script>
+<script src="/public/js/common.js"></script>
+<script src="/public/admin/js/admin.js"></script>
+<script>
+$(function() { 
+	var pathname = location.pathname; // admin/t
+	var search = location.search; // ?t=xxx, 如果有?page呢
+	var fullPath = pathname;
+	if(search.indexOf("?t=") >= 0) {
+		var fullPath = pathname + search; // /admin/t?t=xxx
+	}
+	
+	$("#nav > li").removeClass("active");
+	// 自己
+	var $thisLi = $('#nav a[href^="' + fullPath + '"]').parent();
+	$thisLi.addClass("active");
+	// 父也active
+	$thisLi.parent().parent().addClass('active');
+});
+</script>

@@ -1,24 +1,24 @@
 # blog
 
-blog=Blog
-aboutMe=About me
-blogSet=Set blog
-
 blogNavs=Navs
 quickLinks=Quick links
 latestPosts=Latest posts
 
 noBlog=No blog
 noTag=No tag
-blogClass=Classification
+blogClass=Category
 updatedTime=Updated at
 createdTime=Created at
 fullBlog=Full blog
 blogNav=Blog nav
+more=More...
+previous=Previous
+next=Next
 
 #
 # set blog
 #
+blogSet=Blog configuration
 baseInfoSet=Base info
 commentSet=Comment
 themeSet=Theme
@@ -26,16 +26,66 @@ theme=Theme
 blogName=Title
 blogLogo=Logo
 blogDesc=Description
+aboutMe=About Me
+
+#domain
+domainSet=Domain
+subDomain=Sub domain
+domain=Custom domain
 
 # theme
 elegant=Elegant
 navFixed=Nav fixed at left side
 
 openComment=Open comment?
-commentSys=leanote use <a href="http://disqus.com" target="_blank">Disqus</a> as comment system
-disqusHelp=Please input your Disqus Id or use "leanote"
+chooseComment=Comment System
+disqusHelp=Please input your Disqus Id
 needHelp=Need help?
 blogLogoTips=Upload image to replace blog title
 saveSuccess=Save success
+
+community=Community
+home=Home
+none=None
+moreShare=More
+sinaWeibo=Weibo
+weixin=Weichat
+tencentWeibo=Tencent Weibo
+qqZone=QQ Zone
+renren=Renren
+report=Report
+like=Like
+unlike=Unlike
+viewers=Viewers
+author=Author
+delete=Delete
+reply=Reply
+comment=Comment
+comments=Comments
+cancel=Cancel
+confirm=Confirm
+signIn=Sign In
+signUp=Sign Up
+submitComment=Submit
+reportReason1=不友善内容
+reportReason2=广告等垃圾信息
+reportReason3=违法违规内容
+reportReason4=不宜公开讨论的政治内容
+other=Other
+reportReason=Reason
+chooseReason=请选择举报理由
+reportSuccess=举报成功, 我们处理后会通知作者, 感谢您的监督
+error=Error
+reportComment?=举报该评论?
+reportBlog?=举报该博客?
+confirmDeleteComment=Are you sure?
+scanQRCode=Open weichat and scan the QR code
+justNow=Just now
+minutesAgo=minutes ago
+hoursAgo=hours ago
+daysAgo=days ago
+weeksAgo=weeks ago
+monthsAgo=months ago
+
 
 a=a

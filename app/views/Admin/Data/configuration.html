@@ -1,0 +1,55 @@
+{{template "admin/top.html" .}}
+<div class="m-b-md"> <h3 class="m-b-none">Mongodb Tool Configuration</h3></div>
+
+<div class="row">
+
+<div class="col-sm-6">
+	<form id="data_form">
+		<section class="panel panel-default">
+			<div class="panel-body">
+				<div class="form-group">
+					<label>mongodump path</label>
+					<input type="text" class="form-control" name="mongodumpPath" value="{{.str.mongodumpPath}}" placeholder="">
+					Please input the bin mongodump's absolute path
+				</div>
+				<div class="form-group">
+					<label>mongorestore path</label>
+					<input type="text" class="form-control" name="mongorestorePath" value="{{.str.mongorestorePath}}" placeholder="">
+					Please input the bin mongorestore's absolute path
+				</div>
+			</div>
+			
+			<footer class="panel-footer text-right bg-light lter">
+				<button type="submit" id="submit" class="btn btn-success btn-s-xs">Submit</button>
+			</footer>
+		</section>
+	</form>
+</div>
+
+</div>
+
+{{template "admin/footer.html" .}}
+<script src="/public/admin/js/jquery-validation-1.13.0/jquery.validate.js"></script>
+<script>
+$(function() {
+	init_validator("#data_form");
+	
+	$("#submit").click(function(e){
+			e.preventDefault();
+			var t = this;
+			if($("#data_form").valid()) {
+				$(t).button('loading');
+				ajaxPost("/adminSetting/mongodb", getFormJsonData("data_form"), function(ret){
+					$(t).button('reset')
+					if(!ret.Ok) {
+						art.alert(ret.Msg)
+					} else {
+						art.tips("Success");
+					}
+				});
+			}
+		});
+});
+</script>
+
+{{template "admin/end.html" .}}

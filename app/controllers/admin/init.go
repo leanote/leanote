@@ -25,6 +25,8 @@ var noteImageService *service.NoteImageService
 var fileService *service.FileService
 var attachService *service.AttachService
 var configService *service.ConfigService
+var emailService *service.EmailService
+var upgradeService *service.UpgradeService
 
 var adminUsername = "admin"
 // 拦截器
@@ -115,12 +117,18 @@ func InitService() {
 	suggestionService = service.SuggestionS
 	authService = service.AuthS
 	configService = service.ConfigS
+	emailService = service.EmailS
+	upgradeService = service.UpgradeS
 }
 
 func init() {
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &Admin{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &AdminSetting{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &AdminUser{})
+	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &AdminBlog{})
+	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &AdminEmail{})
+	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &AdminUpgrade{})
+	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &AdminData{})
 	revel.OnAppStart(func() {
 		adminUsername, _ = revel.Config.String("adminUsername")
 	})

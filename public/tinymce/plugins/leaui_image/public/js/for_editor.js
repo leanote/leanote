@@ -1,11 +1,8 @@
 // for editor.
 // drag image to editor
 // Copyright leaui
-var urlPrefix = window.location.protocol + "//" + window.location.host;
+var urlPrefix = UrlPrefix; // window.location.protocol + "//" + window.location.host;
 define('leaui_image', ['jquery.ui.widget', 'fileupload'], function(){
-	var editor = tinymce.activeEditor;
-	var dom = editor.dom;
-	
 	// 当url改变时, 得到图片的大小
 	function getImageSize(url, callback) {
 		var img = document.createElement('img');
@@ -36,6 +33,9 @@ define('leaui_image', ['jquery.ui.widget', 'fileupload'], function(){
 	
 	var i = 1;
 	function insertImage(data) {
+		var editor = tinymce.activeEditor;
+		var dom = editor.dom;
+	
 		var renderImage = function(data2) {
 			// 这里, 如果图片宽度过大, 这里设置成500px
 			var d = {};
@@ -44,7 +44,7 @@ define('leaui_image', ['jquery.ui.widget', 'fileupload'], function(){
 			d.id = '__mcenew' + (i++);
 			d.src = "http://leanote.com/images/loading-24.gif";
 			imgElm = dom.createHTML('img', d);
-			editor.insertContent(imgElm);
+			tinymce.activeEditor.insertContent(imgElm);
 			imgElm = dom.get(d.id);
 			
 			function callback (wh) {

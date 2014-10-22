@@ -134,6 +134,7 @@ a:hover {
     height: auto;
 	margin-top: 3px;
 	border-color: #ccc;
+	float: right;
 }
 #keywords:focus {
     outline: none;
@@ -173,7 +174,7 @@ a:hover {
 // 文章列表
 .thumbnails {
 	padding: 0;
-	margin: 35px 0 0;
+	margin: 25px 0 0;
 }
 .thumbnails > li {
 	position: relative;
@@ -182,13 +183,20 @@ a:hover {
 	padding-bottom: 15px;
 	border-bottom: 1px dashed #d9d9d9;
 }
+a:hover {
+	color: #2a6496;
+}
 .article {
 	.title {
-		padding-right: 40px;
+		display: inline-block;
+		margin-right: 40px;
 		color: #3b3b3b;
 		font-size: 24px;
 		font-weight: bold;
 		line-height: 36px;
+		&:hover {
+			color: #2a6496;
+		}
 	}
 	.content {
 		color: #717171;
@@ -198,40 +206,44 @@ a:hover {
 	}
 	.article-info {
 		margin-top: 5px;
+		color: #999999;
 		a {
 			color: #999999;
+			
 		}
+
 	}
 	.article-info>a {
 		margin-right: 10px;
 	}
-   .avatar {
-		position: absolute;
-		top: 1px;
-		right: 1px;
-		width: 32px;
-		height: 32px;
-		overflow: hidden;
+}
+.avatar {
+	position: absolute;
+	top: 1px;
+	right: 1px;
+	width: 32px;
+	height: 32px;
+	overflow: hidden;
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+	img {
+		max-height: 32px;
+		border: 2px solid white;
 		-webkit-border-radius: 50%;
 		-moz-border-radius: 50%;
 		border-radius: 50%;
-		img {
-			max-height: 32px;
-			border: 2px solid white;
-			-webkit-border-radius: 50%;
-			-moz-border-radius: 50%;
-			border-radius: 50%;
-			-webkit-box-sizing: border-box;
-			-moz-box-sizing: border-box;
-			box-sizing: border-box;
-			-webkit-transition: border-color 0.3s !important;
-			-moz-transition: border-color 0.3s !important;
-			-ms-transition: border-color 0.3s !important;
-			-o-transition: border-color 0.3s !important;
-			transition: border-color 0.3s !important;
-		}
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+		-webkit-transition: border-color 0.3s !important;
+		-moz-transition: border-color 0.3s !important;
+		-ms-transition: border-color 0.3s !important;
+		-o-transition: border-color 0.3s !important;
+		transition: border-color 0.3s !important;
 	}
 }
+
 
 #pagination {
 	text-align: center;
@@ -252,5 +264,104 @@ a:hover {
 	color: #ccc;
 	a {
 		color: #ccc;
+	}
+}
+
+#navbarUser {
+	a {
+		color: #666;
+	}
+	float: right;
+	line-height: 50px;
+	margin-right: 10px;
+	.my-logo {
+		max-height: 32px;
+		border: 2px solid white;
+		max-width: 100px;
+		border-radius: 50%;
+		margin-top: -3px;
+	}
+}
+.dropdown-menu:before {
+	content: "";
+	width: 20px;
+	height: 12px;
+	position: absolute;
+	top: -12px;
+	right: 20px;
+	background-image: url("../../images/triangle_2x.png");
+	background-size: 20px 12px;
+}
+// 动画
+.open > .dropdown-menu, .dropdown-submenu:hover > .dropdown-menu {
+  opacity: 1;
+  transform: scale(1, 1); 
+  -webkit-transform: scale(1, 1);
+  -moz-transform: scale(1, 1);
+  -o-transform: scale(1, 1);
+}
+.dropdown-menu {
+  opacity: 0;
+  display: block;
+  
+  -webkit-transform: scale(0, 0);
+  -webkit-transform-origin: top;
+  -webkit-animation-fill-mode: forwards;  
+  -webkit-transition: all 0.2s cubic-bezier(0.34, 1.21, 0.4, 1);
+  
+  -o-transform: scale(0, 0);
+  -o-transform-origin: top;
+  -o-animation-fill-mode: forwards;  
+  -o-transition: all 0.2s cubic-bezier(0.34, 1.21, 0.4, 1);
+  
+  -moz-transform: scale(0, 0);
+  -moz-transform-origin: top;
+  -moz-animation-fill-mode: forwards;  
+  -moz-transition: all 0.2s cubic-bezier(0.34, 1.21, 0.4, 1);
+  
+  transform: scale(0, 0);
+  transform-origin: top;
+  animation-fill-mode: forwards; 
+  transition: all 0.2s cubic-bezier(0.34, 1.21, 0.4, 1);
+  
+}
+a:focus {
+	text-decoration: none;
+}
+
+@media screen and (max-width: 780px) {
+	#navbarUser {
+		display: none;
+	}
+	#keywords {
+		float: none;
+		width: 100%;
+	}
+	#navbar {
+		padding: 0 10px;
+		width: 100%;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	#content {
+		width: 100%;
+		padding: 0 10px;
+	}
+}
+
+#searchInfo {
+	margin-top: 20px;
+	.keywords-info, .keywords-title {
+		display: inline-block;
+		margin-right: 10px;
+		font-size: 18px;
+	}
+	.keywords-title {
+		font-weight: bold;
+	}
+	.clear-search {
+		display: inline-block;
+		color: #a94442;
 	}
 }

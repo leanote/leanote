@@ -73,7 +73,7 @@
   border: solid 2px #FF7300;
 }
 #imageList li img {
-  max-width: 120px;
+  max-width: 100%;
   vertical-align: middle;
 }
 #imageList li .tools {
@@ -103,7 +103,7 @@
   margin-bottom: 3px;
 }
 .tabs {
-  height: 350px;
+  /*height: 350px;*/
 }
 #preview {
   margin: 0;
@@ -172,4 +172,42 @@
 }
 #previewAttrs label {
   font-weight: normal;
+}
+
+@media screen and (max-width:700px) {
+	#previewAttrs {
+		display: none;
+	}
+	#drop {
+		min-height: initial;
+		padding: 10px 0;
+	}
+	#drop a {
+		position: initial;
+		margin: auto;
+	}
+	#url form {
+		margin: 0 !important;
+		margin: auto;
+	}
+	.form-inline .form-group {
+		display: inline-block;
+		margin-bottom: 0;
+		vertical-align: middle;
+	}
+	.form-inline .form-control {
+		width: auto;
+		display: inline-block;
+	}
+	#preview li:nth-child(3n),
+	#preview li:nth-child(4n),
+	#preview li:nth-child(5),
+	#preview li:nth-child(7),
+	#preview li:nth-child(10)
+	 {
+		display: none;
+	}
+	#imageList li {
+	  width: 90px;
+	}
 }

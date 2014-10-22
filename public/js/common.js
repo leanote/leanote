@@ -17,6 +17,7 @@ var Note = {
 var Tag = {};
 var Notebook = {};
 var Share = {};
+var Mobile = {}; // 手机端处理
 
 // markdown
 var Converter;
@@ -184,7 +185,7 @@ function _ajax(type, url, param, successFunc, failureFunc, async) {
 	} else {
 		async = false;
 	}
-	$.ajax({
+	return $.ajax({
 		type: type,
 		url: url,
 		data: param,
@@ -209,7 +210,7 @@ function _ajax(type, url, param, successFunc, failureFunc, async) {
  * @returns
  */
 function ajaxGet(url, param, successFunc, failureFunc, async) {
-	_ajax("GET", url, param, successFunc, failureFunc, async);
+	return _ajax("GET", url, param, successFunc, failureFunc, async);
 }
 
 /**
@@ -322,8 +323,8 @@ function setEditorContent(content, isMarkdown, preview) {
 	}
 	if(!isMarkdown) {
 		$("#editorContent").html(content);
-		var editor = tinymce.activeEditor;
-		if(editor) {
+		if(typeof tinymce != "undefined" && tinymce.activeEditor) {
+			var editor = tinymce.activeEditor;
 			editor.setContent(content);
 			editor.undoManager.clear(); // 4-7修复BUG
 		} else {
@@ -480,8 +481,14 @@ function showDialogRemote(url, data) {
 	$("#leanoteDialogRemote").modal({remote: url});
 }
 
-function hideDialogRemote() {
-	$("#leanoteDialogRemote").modal('hide');
+function hideDialogRemote(timeout) {
+	if(timeout) {
+		setTimeout(function() {
+			$("#leanoteDialogRemote").modal('hide');
+		}, timeout);
+	} else {
+		$("#leanoteDialogRemote").modal('hide');
+	}
 }
 //---------------
 // notify
@@ -651,12 +658,11 @@ function hideAlert(id, timeout) {
 function post(url, param, func, btnId) {
 	var btnPreText;
 	if(btnId) {
-		btnPreText = $(btnId).html();
-		$(btnId).html("正在处理").addClass("disabled");
+		$(btnId).button("loading"); // html("正在处理").addClass("disabled");
 	}
 	ajaxPost(url, param, function(ret) {
-		if(btnPreText) {
-			$(btnId).html(btnPreText).removeClass("disabled");
+		if(btnId) {
+			$(btnId).button("reset");
 		}
 		if (typeof ret == "object") {
 			if(typeof func == "function") {
@@ -684,9 +690,9 @@ function isEmailFromInput(inputId, msgId, selfBlankMsg, selfInvalidMsg) {
 		}
 	}
 	if(!val) {
-		msg(msgId, selfBlankMsg || "请输入邮箱");
+		msg(msgId, selfBlankMsg || getMsg("inputEmail"));
 	} else if(!isEmail(val)) {
-		msg(msgId, selfInvalidMsg || "请输入正确的邮箱");
+		msg(msgId, selfInvalidMsg || getMsg("errorEmail"));
 	} else {
 		return val;
 	}
@@ -716,7 +722,7 @@ function hideLoading() {
 // 注销, 先清空cookie
 function logout() {
 	$.removeCookie("LEANOTE_SESSION");
-	location.href = "/logout?id=1";
+	location.href = UrlPrefix + "/logout?id=1";
 }
 
 // 得到图片width, height, callback(ret); ret = {width:11, height:33}
@@ -849,15 +855,295 @@ function restoreBookmark() {
 }
 
 // 是否是手机浏览器
-var u = navigator.userAgent;
-LEA.isMobile = /Mobile|Android|iPhone/i.test(u);
+// var u = navigator.userAgent;
+// LEA.isMobile = /Mobile|Android|iPhone/i.test(u);
 // LEA.isMobile = u.indexOf('Android')>-1 || u.indexOf('Linux')>-1;
 // LEA.isMobile = false;
 //if($("body").width() < 600) {
 //	location.href = "/mobile/index";
 //}
 
-// 国际化 i18n
-function getMsg(key) {
-	return MSG[key] || key;
-}
+// 表单验证
+var vd = {
+	isInt: function(o) {
+	    var intPattern=/^0$|^[1-9]\d*$/; //整数的正则表达式
+	    result=intPattern.test(o);
+	    return result;
+	},
+	isNumeric: function(o) {
+		return $.isNumeric(o);
+	},
+	isFloat: function(floatValue){
+	    var floatPattern=/^0(\.\d+)?$|^[1-9]\d*(\.\d+)?$/; //小数的正则表达式
+	    result=floatPattern.test(floatValue);
+	    return result;
+	},
+	isEmail: function(emailValue){
+	    var emailPattern=/^[^@.]+@([^@.]+\.)+[^@.]+$/; //邮箱的正则表达式
+	    result=emailPattern.test(emailValue);
+	    return result;
+	},
+	isBlank: function(o) { 
+		return !$.trim(o);
+	},
+	has_special_chars: function(o) {
+		return /['"#$%&\^<>\?*]/.test(o);
+	},
+	
+	// life
+	// 动态验证
+	// rules = {max: function() {}};
+	// <input data-rules='[{rule: 'requried', msg:"请填写标题"}]' data-msg_target="#msg"/>
+	init: function(form, rule_funcs) {
+		var get_val = function(target) {
+			if(target.is(":checkbox")) {
+				var name = target.attr('name');
+				var val = $('input[name="' + name + '"]:checked').length;
+				return val;
+			} else if(target.is(":radio")) {
+			} else {
+				return target.val();
+			}
+		}
+		var default_rule_funcs = {
+			// 必须输入
+			required: function(target) {
+				return get_val(target);
+			},
+			// 最少
+			min: function(target, rule) {
+				var val = get_val(target);
+				if(val === "" && !is_required(target)) {
+					return true;
+				}
+				if(val < rule.data) {
+					return false;
+				}
+				return true;
+			},
+			minLength: function(target, rule) {
+				var val = get_val(target);
+				if(val === "" && !is_required(target)) {
+					return true;
+				}
+				if(val.length < rule.data) {
+					return false;
+				}
+				return true;
+			},
+			email: function(target, rule) {
+				var val = get_val(target);
+				if(val === "" && !is_required(target)) {
+					return true;
+				}
+				return isEmail(val);
+			},
+			noSpecialChars: function(target) {
+				var val = get_val(target);
+				if(!val) {
+					return true;
+				}
+				if(/[^0-9a-zzA-Z_\-]/.test(val)) {
+					return false;
+				}
+				return true;
+			},
+			password: function(target, rule) {
+				var val = get_val(target);
+				if(val === "" && !is_required(target)) {
+					return true;
+				}
+				return val.length >= 6
+			},
+			equalTo: function(target, rule) {
+				var val = get_val(target);
+				if(val === "" && !is_required(target)) {
+					return true;
+				}
+				return $(rule.data).val() == val;
+			}
+		}
+		rule_funcs = rule_funcs || {};
+		rule_funcs = $.extend(default_rule_funcs, rule_funcs);
+		var rules = {}; // name对应的
+		var msg_targets = {};
+		// 是否是必须输入的
+		function is_required(target) { 
+			var name = get_name(target);
+			var rules = get_rules(target, name);
+			var required_rule = rules[0];
+			if(required_rule['rule'] == "required")  {
+				return true;
+			}
+			return false;
+		}
+		// 先根据msg_target_name, 再根据name
+		function get_rules(target, name) {
+			if(!rules[name]) {
+				rules[name] = eval("(" + target.data("rules") + ")");
+			}
+			return rules[name];
+		}
+		
+		// 以name为索引, 如果多个input name一样, 但希望有不同的msg怎么办?
+		// 添加data-u_name=""
+		function get_msg_target(target, name) {
+			if(!msg_targets[name]) {
+				var t = target.data("msg_target");
+				if(!t) {
+					// 在其父下append一个
+					var msg_o = $('<div class="help-block alert alert-warning" style="display: block;"></div>');
+					target.parent().append(msg_o);
+					msg_targets[name] = msg_o;
+				} else {
+					msg_targets[name] = $(t);
+				}
+			}
+			
+			return msg_targets[name];
+		}
+		function hide_msg(target, name) {
+			var msgT = get_msg_target(target, name);
+			// 之前是正确信息, 那么不隐藏
+			if(!msgT.hasClass("alert-success")) {
+				msgT.hide();
+			}
+		}
+		function show_msg(target, name, msg, msgData) {
+			var t = get_msg_target(target, name);
+			t.html(getMsg(msg, msgData)).removeClass("hide alert-success").addClass("alert-danger").show();
+		}
+		
+		// 验证前修改
+		function pre_fix(target) {
+			var fix_name = target.data("pre_fix");
+			if(!fix_name) {
+				return;
+			}
+			switch(fix_name) {
+				case 'int': int_fix(target);
+				break;
+				case 'price': price_fix(target);
+				break;
+				case 'decimal': decimal_fix(target);
+				break;
+			}
+		}
+		
+		// 验证各个rule
+		// 正确返回true
+		function apply_rules(target, name) {
+			var rules = get_rules(target, name);
+			
+			// 是否有前置fix data-pre_fix
+			pre_fix(target);
+			
+			if(!rules) {
+				return true;
+			}
+			for(var i = 0; i < rules.length; ++i) {
+				var rule = rules[i];
+				var rule_func_name = rule.rule;
+				var msg = rule.msg;
+				var msgData = rule.msgData;
+				if(!rule_funcs[rule_func_name](target, rule)) {
+					show_msg(target, name, msg, msgData);
+					return false;
+				}
+			}
+			
+			hide_msg(target, name);
+			
+			// 这里, 如果都正确, 是否有sufix验证其它的
+			var post_rule = target.data('post_rule');
+			if(post_rule) {
+				setTimeout(function() {
+					var post_target = $(post_rule);
+					apply_rules(post_target, get_name(post_target));
+				},0);
+			}
+			
+			return true;
+		}
+		
+		function focus_func(e) {
+			var target = $(e.target);
+			var name = get_name(target);
+			// 验证如果有错误, 先隐藏
+			hide_msg(target, name);
+			
+			// key up的时候pre_fix
+			pre_fix(target);
+		}
+		function unfocus_func(e) {
+			var target = $(e.target);
+			var name = get_name(target);
+			// 验证各个rule
+			apply_rules(target, name);
+		}
+		
+		// u_name是唯一名, msg, rule的索引
+		function get_name(target) {
+			return target.data('u_name') || target.attr("name") || target.attr("id");
+		}
+		
+		var $allElems = $(form).find('[data-rules]');
+		var $form = $(form);
+		$form.on({
+			keyup: function(e) {
+				if(e.keyCode != 13) { // 不是enter
+					focus_func(e)
+				}
+			},
+			blur: unfocus_func,
+		}, 'input[type="text"], input[type="password"]');
+		$form.on({
+			change: function(e) {
+				if($(this).val()) {
+					focus_func(e);
+				} else {
+					unfocus_func(e);
+				}
+			}
+		}, 'select');
+		$form.on({
+			change: function(e) {
+				unfocus_func(e);
+			}
+		}, 'input[type="checkbox"]');
+		
+		// 验证所有的
+		this.valid = function() {
+			var $ts = $allElems;
+			var is_valid = true;
+			for(var i = 0; i < $ts.length; ++i) {
+				var target = $ts.eq(i);
+				var name = get_name(target);
+				// 验证各个rule
+				if(!apply_rules(target, name)) {
+					is_valid = false;
+					target.focus();
+					return false
+				} else {
+				}
+			}
+			return is_valid;
+		}
+		
+		// 验证某一元素(s)
+		// .num-in, #life
+		this.validElement = function(targets) {
+			var targets = $(targets);
+			var ok = true;
+			for(var i = 0; i < targets.length; ++i) {
+				var target = targets.eq(i);
+				var name = get_name(target);
+				// 验证各个rule
+				if(!apply_rules(target, name)) {
+					ok = false;
+				}
+			}
+			return ok;
+		}
+	}
+};

@@ -10,8 +10,18 @@ html {
 * {
   font-family: 'Open Sans', 'Helvetica Neue', Arial, 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;
 }
-
-.mce-item-table, .mce-item-table td, .mce-item-table th, .mce-item-table caption {
-	border: 1px solid #9B9898;
-	border-collapse: collapse;
+.mce-item-table,
+.mce-item-table td,
+.mce-item-table th,
+.mce-item-table caption {
+  border: 1px solid #9B9898;
+  border-collapse: collapse;
+}
+img {
+  max-width: 100% !important;
+}
+@media screen and (max-width: 500px) {
+  * {
+    font-size: 16px;
+  }
 }

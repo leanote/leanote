@@ -13,7 +13,7 @@ function retIsOk(ret) {
 	return false;
 }
 
-var urlPrefix = window.location.protocol + "//" + window.location.host;
+var urlPrefix = top.UrlPrefix;
 
 // load image
 function getImageSize(url, callback) {
@@ -262,8 +262,11 @@ var o = {
 				var classes = "";
 				// life edit
 				// 之前的
-				if(each.Path != "" && each.Path.substr(0, 7) == "/upload") {
-					var src = urlPrefix + each.Path;
+				if(each.Path != "" && each.Path[0] == "/") {
+					each.Path = each.Path.substr(1);
+				}
+				if(each.Path != "" && each.Path.substr(0, 7) == "upload/") {
+					var src = urlPrefix + "/" + each.Path;
 				} else {
 					var src = urlPrefix + "/file/outputImage?fileId=" + each.FileId;
 				}
@@ -272,7 +275,7 @@ var o = {
 					classes = 'class="selected"';
 				}
 				html += '<li ' + classes + '>';
-				html += '<a title="" href="javascript:;" class="a-img"><img  alt="" data-original="' + src + '" ></a>';
+				html += '<a title="" href="javascript:;" class="a-img"><img  alt="" src="' + src + '" data-original="' + src + '" ></a>';
 				// html += '<div class="tools"><a href="javascript:;" class="del" data-id="' + each.FileId + '"><span class="glyphicon glyphicon-trash"></span></a></div>';
 				html += '<div class="tools clearfix" data-id="' + each.FileId + '"><div class="file-title pull-left">' + each.Title + '</div><div class="pull-right"><a href="javascript:;" class="del" data-id="' + each.FileId + '"><span class="glyphicon glyphicon-trash"></span></a></div></div>';
 				html += "</li>";
@@ -286,7 +289,7 @@ var o = {
     		}
 
     		// $("#imageList img").lazyload({effect : "fadeIn"});
-    		$("#imageList img").lazyload();
+    		// $("#imageList img").lazyload();
     	});
     },
 
@@ -358,7 +361,13 @@ var o = {
 		if(typeof $li == "object") {
 			var src = $li.find("img").attr('src');
 		} else {
-			src = urlPrefix + "/file/outputImage?fileId=" + $li;
+			// 也有可能来自url
+			if($li.indexOf("http://") != -1 || $li.indexOf("https://") != -1) {
+				src = $li;
+			} else {
+				// 来自内部
+				src = urlPrefix + "/file/outputImage?fileId=" + $li;
+			}
 		}
 		this.selectedImages.push(src);
 		this.reRenderSelectedImages(false, src);

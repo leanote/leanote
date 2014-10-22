@@ -3,7 +3,7 @@ package controllers
 import (
 	"github.com/revel/revel"
 	"github.com/leanote/leanote/app/info"
-	. "github.com/leanote/leanote/app/lea"
+//	. "github.com/leanote/leanote/app/lea"
 )
 
 // 首页
@@ -29,7 +29,7 @@ func (c Index) Suggestion(addr, suggestion string) revel.Result {
 	
 	// 发给我
 	go func() {
-		SendToLeanote("建议", "建议", "UserId: " + c.GetUserId() + " <br /> Suggestions: " + suggestion)
+		emailService.SendEmail("leanote@leanote.com", "建议", "UserId: " + c.GetUserId() + " <br /> Suggestions: " + suggestion)
 	}();
 	
 	return c.RenderJson(re)

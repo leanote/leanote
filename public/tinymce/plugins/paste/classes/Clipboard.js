@@ -1,3 +1,5 @@
+// Included from: js/tinymce/plugins/paste/classes/Clipboard.js
+
 /**
  * Clipboard.js
  *
@@ -41,6 +43,20 @@ define("tinymce/pasteplugin/Clipboard", [
 		 *
 		 * @param {String} html HTML code to paste into the current selection.
 		 */
+		 function copyImage(src, ids) {
+			ajaxPost("/file/copyHttpImage", {src: src}, function(ret) {
+				if(reIsOk(ret)) {
+					// 将图片替换之
+					var src = urlPrefix + "/" + ret.Item;
+					var dom = editor.dom
+					for(var i in ids) {
+						var id = ids[i];
+						var imgElm = dom.get(id);
+						dom.setAttrib(imgElm, 'src', src);
+					}
+				}
+			});
+		}
 		// 粘贴HTML
 		// 当在pre下时不能粘贴成HTML
 		// life add text
@@ -67,7 +83,7 @@ define("tinymce/pasteplugin/Clipboard", [
 					dom.remove(tempBody);
 					html = args.node.innerHTML;
 				}
-
+				
 				if (!args.isDefaultPrevented()) {
 					// life
 					var node = editor.selection.getNode();
@@ -87,7 +103,41 @@ define("tinymce/pasteplugin/Clipboard", [
 						text = text.replace(/>/g, "&gt;");
 						editor.insertRawContent(text);
 					} else {
-						editor.insertContent(html);
+						// life 这里得到图片img, 复制到leanote下
+						if(!self.copyImage) {
+							editor.insertContent(html);
+						} else {
+							var urlPrefix = UrlPrefix;
+							var needCopyImages = {}; // src => [id1,id2]
+							var time = (new Date()).getTime();
+							try {
+								var $html = $("<div>" + html + "</div");
+								var $imgs = $html.find("img");
+								for(var i = 0; i < $imgs.length; ++i) {
+									var $img = $imgs.eq(i)
+									var src = $img.attr("src");
+									// 是否是外链
+									if(src.indexOf(urlPrefix) == -1) {
+										time++;
+										var id = "__LEANOTE_IMAGE_" + time;
+										$img.attr("id", id);
+										if(needCopyImages[src]) {
+											needCopyImages[src].push(id);
+										} else {
+											needCopyImages[src] = [id];
+										}
+									}
+								}
+								editor.insertContent($html.html());
+								
+								for(var src in needCopyImages) {
+									var ids = needCopyImages[src];
+									copyImage(src, ids);
+								}
+							} catch(e) {
+								editor.insertContent(html);
+							}
+						}
 					}
 				}
 			}
@@ -308,7 +358,7 @@ define("tinymce/pasteplugin/Clipboard", [
 				    			return;
 				    		}
 				    		// 这里, 如果图片宽度过大, 这里设置成500px
-							var urlPrefix = window.location.protocol + "//" + window.location.host;
+							var urlPrefix = UrlPrefix; // window.location.protocol + "//" + window.location.host;
 							var src = urlPrefix + "/file/outputImage?fileId=" + re.Id;
 							getImageSize(src, function(wh) {
 								// life 4/25

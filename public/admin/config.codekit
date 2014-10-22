@@ -1,0 +1,2004 @@
+{
+"CodeKitInfo": "This is a CodeKit 2.x project configuration file. It is designed to sync project settings across multiple machines. MODIFYING THE CONTENTS OF THIS FILE IS A POOR LIFE DECISION. If you do so, you will likely cause CodeKit to crash. This file is not useful unless accompanied by the project that created it in CodeKit 2. This file is not backwards-compatible with CodeKit 1.x. For more information, see: http:\/\/incident57.com\/codekit",
+"creatorBuild": "17670",
+"files": {
+	"\/css\/admin.css": {
+		"fileType": 16,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/css\/admin.css",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/css\/admin.less": {
+		"allowInsecureImports": 0,
+		"createSourceMap": 0,
+		"disableJavascript": 0,
+		"fileType": 1,
+		"ieCompatibility": 1,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/css\/admin.less",
+		"outputAbbreviatedPath": "\/css\/admin.css",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 0,
+		"relativeURLS": 0,
+		"shouldRunAutoprefixer": 0,
+		"shouldRunBless": 0,
+		"strictImports": 0,
+		"strictMath": 0,
+		"strictUnits": 0
+		},
+	"\/css\/bootstrap.3.2.0.min.css": {
+		"fileType": 16,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/css\/bootstrap.3.2.0.min.css",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/js\/admin.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/admin.js",
+		"outputAbbreviatedPath": "\/js\/min\/admin-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/js\/artDialog\/artDialog.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/artDialog\/artDialog.js",
+		"outputAbbreviatedPath": "\/js\/artDialog\/min\/artDialog-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/js\/artDialog\/artDialog.source.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/artDialog\/artDialog.source.js",
+		"outputAbbreviatedPath": "\/js\/artDialog\/min\/artDialog.source-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/js\/artDialog\/jquery.artDialog.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/artDialog\/jquery.artDialog.js",
+		"outputAbbreviatedPath": "\/js\/artDialog\/min\/jquery.artDialog-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/js\/artDialog\/skins\/aero.css": {
+		"fileType": 16,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/aero.css",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/js\/artDialog\/skins\/aero\/aero_s.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 2381,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/aero_s.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/aero_s.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/aero\/aero_s2.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 188,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/aero_s2.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/aero_s2.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/aero\/ie6\/aui_close.hover.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 190,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_close.hover.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_close.hover.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/aero\/ie6\/aui_close.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 190,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_close.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_close.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/aero\/ie6\/aui_e.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 1352,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_e.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_e.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/aero\/ie6\/aui_n.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 2043,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_n.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_n.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/aero\/ie6\/aui_ne.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 601,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_ne.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_ne.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/aero\/ie6\/aui_nw.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 528,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_nw.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_nw.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/aero\/ie6\/aui_s.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 971,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_s.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_s.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/aero\/ie6\/aui_se.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 471,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_se.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_se.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/aero\/ie6\/aui_sw.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 470,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_sw.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_sw.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/aero\/ie6\/aui_title_icon.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 233,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_title_icon.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_title_icon.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/aero\/ie6\/aui_w.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 1361,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_w.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/aero\/ie6\/aui_w.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/black.css": {
+		"fileType": 16,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/black.css",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/js\/artDialog\/skins\/black\/bg.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 2971,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/bg.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/bg.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/black\/bg2.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 186,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/bg2.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/bg2.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/black\/bg_css3.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 2163,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/bg_css3.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/bg_css3.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/black\/bg_css3_2.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 119,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/bg_css3_2.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/bg_css3_2.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/black\/ie6\/close.hover.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 961,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/close.hover.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/close.hover.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/black\/ie6\/close.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 687,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/close.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/close.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/black\/ie6\/e.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 822,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/e.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/e.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/black\/ie6\/n.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 1125,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/n.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/n.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/black\/ie6\/ne.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 565,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/ne.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/ne.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/black\/ie6\/nw.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 489,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/nw.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/nw.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/black\/ie6\/s.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 776,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/s.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/s.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/black\/ie6\/se.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 360,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/se.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/se.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/black\/ie6\/sw.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 364,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/sw.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/sw.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/black\/ie6\/w.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 829,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/w.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/black\/ie6\/w.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/blue.css": {
+		"fileType": 16,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/blue.css",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/js\/artDialog\/skins\/blue\/bg.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 2924,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/bg.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/bg.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/blue\/bg2.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 209,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/bg2.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/bg2.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/blue\/bg_css3.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 2237,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/bg_css3.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/bg_css3.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/blue\/bg_css3_2.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 133,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/bg_css3_2.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/bg_css3_2.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/blue\/ie6\/close.hover.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 1000,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/close.hover.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/close.hover.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/blue\/ie6\/close.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 701,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/close.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/close.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/blue\/ie6\/e.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 878,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/e.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/e.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/blue\/ie6\/n.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 947,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/n.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/n.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/blue\/ie6\/ne.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 514,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/ne.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/ne.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/blue\/ie6\/nw.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 459,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/nw.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/nw.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/blue\/ie6\/s.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 1429,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/s.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/s.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/blue\/ie6\/se.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 363,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/se.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/se.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/blue\/ie6\/sw.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 365,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/sw.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/sw.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/blue\/ie6\/w.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 866,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/w.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/blue\/ie6\/w.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/chrome.css": {
+		"fileType": 16,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/chrome.css",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/js\/artDialog\/skins\/chrome\/border.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 260,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/chrome\/border.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/chrome\/border.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/chrome\/chrome_s.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 1202,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/chrome\/chrome_s.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/chrome\/chrome_s.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/default.css": {
+		"fileType": 16,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/default.css",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/js\/artDialog\/skins\/green.css": {
+		"fileType": 16,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/green.css",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/js\/artDialog\/skins\/green\/bg.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 3062,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/bg.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/bg.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/green\/bg2.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 201,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/bg2.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/bg2.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/green\/bg_css3.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 2358,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/bg_css3.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/bg_css3.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/green\/bg_css3_2.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 119,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/bg_css3_2.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/bg_css3_2.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/green\/color_bg.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 3062,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/color_bg.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/color_bg.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/green\/ie6\/close.hover.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 1079,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/close.hover.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/close.hover.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/green\/ie6\/close.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 814,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/close.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/close.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/green\/ie6\/e.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 828,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/e.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/e.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/green\/ie6\/n.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 925,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/n.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/n.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/green\/ie6\/ne.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 495,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/ne.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/ne.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/green\/ie6\/nw.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 435,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/nw.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/nw.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/green\/ie6\/s.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 771,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/s.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/s.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/green\/ie6\/se.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 355,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/se.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/se.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/green\/ie6\/sw.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 357,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/sw.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/sw.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/green\/ie6\/w.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 762,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/w.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/green\/ie6\/w.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/icons\/error.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 2149,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/icons\/error.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/icons\/error.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/icons\/face-sad.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 6790,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/icons\/face-sad.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/icons\/face-sad.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/icons\/face-smile.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 6881,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/icons\/face-smile.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/icons\/face-smile.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/icons\/question.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 2148,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/icons\/question.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/icons\/question.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/icons\/succeed.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 2182,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/icons\/succeed.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/icons\/succeed.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/icons\/warning.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 1728,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/icons\/warning.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/icons\/warning.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/idialog.css": {
+		"fileType": 16,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog.css",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/js\/artDialog\/skins\/idialog\/idialog_s.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 3811,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/idialog_s.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/idialog_s.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/idialog\/idialog_s2.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 184,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/idialog_s2.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/idialog_s2.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/idialog\/ie6\/aui_close.hover.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 1847,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_close.hover.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_close.hover.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/idialog\/ie6\/aui_close.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 1876,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_close.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_close.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/idialog\/ie6\/aui_e.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 766,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_e.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_e.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/idialog\/ie6\/aui_n.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 399,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_n.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_n.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/idialog\/ie6\/aui_ne.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 266,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_ne.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_ne.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/idialog\/ie6\/aui_nw.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 248,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_nw.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_nw.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/idialog\/ie6\/aui_s.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 527,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_s.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_s.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/idialog\/ie6\/aui_se.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 301,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_se.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_se.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/idialog\/ie6\/aui_sw.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 295,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_sw.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_sw.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/idialog\/ie6\/aui_w.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 767,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_w.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/idialog\/ie6\/aui_w.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/opera.css": {
+		"fileType": 16,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/opera.css",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/js\/artDialog\/skins\/opera\/ie6\/aui_close.hover.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 429,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_close.hover.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_close.hover.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/opera\/ie6\/aui_close.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 429,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_close.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_close.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/opera\/ie6\/aui_e.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 800,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_e.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_e.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/opera\/ie6\/aui_n.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 2369,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_n.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_n.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/opera\/ie6\/aui_ne.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 700,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_ne.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_ne.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/opera\/ie6\/aui_nw.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 659,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_nw.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_nw.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/opera\/ie6\/aui_s.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 556,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_s.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_s.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/opera\/ie6\/aui_se.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 464,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_se.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_se.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/opera\/ie6\/aui_sw.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 464,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_sw.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_sw.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/opera\/ie6\/aui_w.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 796,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_w.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/ie6\/aui_w.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/opera\/s1.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 2818,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/s1.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/s1.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/opera\/s2.png": {
+		"fileType": 32768,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"initialSize": 177,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/s2.png",
+		"outputAbbreviatedPath": "\/js\/artDialog\/skins\/opera\/s2.png",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"processed": 0
+		},
+	"\/js\/artDialog\/skins\/simple.css": {
+		"fileType": 16,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/simple.css",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/js\/artDialog\/skins\/twitter.css": {
+		"fileType": 16,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/artDialog\/skins\/twitter.css",
+		"outputAbbreviatedPath": "No Output Path",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0
+		},
+	"\/js\/excanvas.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/excanvas.js",
+		"outputAbbreviatedPath": "\/js\/min\/excanvas-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/js\/html5shiv.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/html5shiv.js",
+		"outputAbbreviatedPath": "\/js\/min\/html5shiv-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/js\/jquery-validation-1.13.0\/additional-methods.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/jquery-validation-1.13.0\/additional-methods.js",
+		"outputAbbreviatedPath": "\/js\/jquery-validation-1.13.0\/min\/additional-methods-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/js\/jquery-validation-1.13.0\/additional-methods.min.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/jquery-validation-1.13.0\/additional-methods.min.js",
+		"outputAbbreviatedPath": "\/js\/jquery-validation-1.13.0\/min\/additional-methods.min-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/js\/jquery-validation-1.13.0\/jquery.validate.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/jquery-validation-1.13.0\/jquery.validate.js",
+		"outputAbbreviatedPath": "\/js\/jquery-validation-1.13.0\/min\/jquery.validate-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/js\/jquery-validation-1.13.0\/jquery.validate.min.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/jquery-validation-1.13.0\/jquery.validate.min.js",
+		"outputAbbreviatedPath": "\/js\/jquery-validation-1.13.0\/min\/jquery.validate.min-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/js\/min\/admin-min.js": {
+		"fileType": 64,
+		"ignore": 1,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/min\/admin-min.js",
+		"outputAbbreviatedPath": "\/js\/min\/min\/admin-min-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		},
+	"\/js\/respond.min.js": {
+		"fileType": 64,
+		"ignore": 0,
+		"ignoreWasSetByUser": 0,
+		"inputAbbreviatedPath": "\/js\/respond.min.js",
+		"outputAbbreviatedPath": "\/js\/min\/respond.min-min.js",
+		"outputPathIsOutsideProject": 0,
+		"outputPathIsSetByUser": 0,
+		"outputStyle": 1,
+		"syntaxCheckerStyle": 1
+		}
+	},
+"hooks": [
+	],
+"lastSavedByUser": "life",
+"manualImportLinks": {
+	},
+"projectAttributes": {
+	"bowerAbbreviatedPath": "",
+	"displayValue": "admin",
+	"displayValueWasSetByUser": 0,
+	"iconImageName": "harddrive_gray"
+	},
+"projectSettings": {
+	"alwaysUseExternalServer": 0,
+	"animateCSSInjections": 1,
+	"autoApplyPSLanguageSettingsStyle": 0,
+	"autoprefixerBrowserString": "> 1%, last 2 versions, Firefox ESR, Opera 12.1",
+	"autoSyncProjectSettingsFile": 1,
+	"browserRefreshDelay": 0,
+	"coffeeAutoOutputPathEnabled": 1,
+	"coffeeAutoOutputPathFilenamePattern": "*.js",
+	"coffeeAutoOutputPathRelativePath": "",
+	"coffeeAutoOutputPathReplace1": "",
+	"coffeeAutoOutputPathReplace2": "",
+	"coffeeAutoOutputPathStyle": 0,
+	"coffeeCreateSourceMap": 0,
+	"coffeeLintFlags2": {
+		"arrow_spacing": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"camel_case_classes": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"colon_assignment_spacing": {
+			"active": 0,
+			"flagValue": 1
+			},
+		"cyclomatic_complexity": {
+			"active": 0,
+			"flagValue": 10
+			},
+		"duplicate_key": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"empty_constructor_needs_parens": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"indentation": {
+			"active": 1,
+			"flagValue": 2
+			},
+		"line_endings": {
+			"active": 0,
+			"flagValue": 0
+			},
+		"max_line_length": {
+			"active": 0,
+			"flagValue": 150
+			},
+		"missing_fat_arrows": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"newlines_after_classes": {
+			"active": 0,
+			"flagValue": 3
+			},
+		"no_backticks": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"no_debugger": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"no_empty_functions": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"no_empty_param_list": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"no_implicit_braces": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"no_implicit_parens": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"no_interpolation_in_single_quotes": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"no_plusplus": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"no_stand_alone_at": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"no_tabs": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"no_throwing_strings": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"no_trailing_semicolons": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"no_trailing_whitespace": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"no_unnecessary_double_quotes": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"no_unnecessary_fat_arrows": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"non_empty_constructor_needs_parens": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"space_operators": {
+			"active": 0,
+			"flagValue": -1
+			}
+		},
+	"coffeeMinifyOutput": 1,
+	"coffeeOutputStyle": 0,
+	"coffeeSyntaxCheckerStyle": 1,
+	"externalServerAddress": "http:\/\/localhost:8888",
+	"externalServerPreviewPathAddition": "",
+	"genericWebpageFileExtensionsString": "html, htm, shtml, shtm, xhtml, php, jsp, asp, aspx, erb, ctp",
+	"hamlAutoOutputPathEnabled": 1,
+	"hamlAutoOutputPathFilenamePattern": "*.html",
+	"hamlAutoOutputPathRelativePath": "",
+	"hamlAutoOutputPathReplace1": "",
+	"hamlAutoOutputPathReplace2": "",
+	"hamlAutoOutputPathStyle": 0,
+	"hamlEscapeHTMLCharacters": 0,
+	"hamlNoEscapeInAttributes": 0,
+	"hamlOutputFormat": 2,
+	"hamlOutputStyle": 0,
+	"hamlUseCDATA": 0,
+	"hamlUseDoubleQuotes": 0,
+	"hamlUseUnixNewlines": 0,
+	"jadeAutoOutputPathEnabled": 1,
+	"jadeAutoOutputPathFilenamePattern": "*.html",
+	"jadeAutoOutputPathRelativePath": "",
+	"jadeAutoOutputPathReplace1": "",
+	"jadeAutoOutputPathReplace2": "",
+	"jadeAutoOutputPathStyle": 0,
+	"jadeCompileDebug": 1,
+	"jadeOutputStyle": 0,
+	"javascriptAutoOutputPathEnabled": 1,
+	"javascriptAutoOutputPathFilenamePattern": "*-min.js",
+	"javascriptAutoOutputPathRelativePath": "\/min",
+	"javascriptAutoOutputPathReplace1": "",
+	"javascriptAutoOutputPathReplace2": "",
+	"javascriptAutoOutputPathStyle": 2,
+	"javascriptCreateSourceMap": 1,
+	"javascriptOutputStyle": 1,
+	"javascriptSyntaxCheckerStyle": 1,
+	"jsCheckerReservedNamesString": "",
+	"jsHintFlags2": {
+		"asi": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"bitwise": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"boss": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"browser": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"camelcase": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"couch": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"curly": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"debug": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"devel": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"dojo": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"eqeqeq": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"eqnull": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"es3": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"esnext": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"evil": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"expr": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"forin": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"freeze": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"funcscope": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"globalstrict": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"immed": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"indent": {
+			"active": 0,
+			"flagValue": 4
+			},
+		"iterator": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"jquery": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"lastsemic": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"latedef": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"laxbreak": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"laxcomma": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"loopfunc": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"maxcomplexity": {
+			"active": 0,
+			"flagValue": 10
+			},
+		"maxdepth": {
+			"active": 0,
+			"flagValue": 3
+			},
+		"maxlen": {
+			"active": 0,
+			"flagValue": 150
+			},
+		"maxparams": {
+			"active": 0,
+			"flagValue": 3
+			},
+		"maxstatements": {
+			"active": 0,
+			"flagValue": 4
+			},
+		"mootools": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"moz": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"multistr": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"newcap": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"noarg": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"node": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"noempty": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"nonbsp": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"nonew": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"nonstandard": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"notypeof": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"noyield": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"onecase": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"phantom": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"plusplus": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"proto": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"prototypejs": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"regexp": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"rhino": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"scripturl": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"shadow": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"shelljs": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"strict": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"sub": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"supernew": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"typed": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"undef": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"unused": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"withstmt": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"worker": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"wsh": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"yui": {
+			"active": 0,
+			"flagValue": -1
+			}
+		},
+	"jsLintFlags2": {
+		"ass": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"bitwise": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"browser": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"closure": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"continue": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"debug": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"devel": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"eqeq": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"evil": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"forin": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"indent": {
+			"active": 0,
+			"flagValue": 4
+			},
+		"maxlen": {
+			"active": 0,
+			"flagValue": 150
+			},
+		"newcap": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"node": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"nomen": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"plusplus": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"properties": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"regexp": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"rhino": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"sloppy": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"stupid": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"sub": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"todo": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"unparam": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"vars": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"white": {
+			"active": 0,
+			"flagValue": -1
+			}
+		},
+	"kitAutoOutputPathEnabled": 1,
+	"kitAutoOutputPathFilenamePattern": "*.html",
+	"kitAutoOutputPathRelativePath": "",
+	"kitAutoOutputPathReplace1": "",
+	"kitAutoOutputPathReplace2": "",
+	"kitAutoOutputPathStyle": 0,
+	"lessAllowInsecureImports": 0,
+	"lessAutoOutputPathEnabled": 1,
+	"lessAutoOutputPathFilenamePattern": "*.css",
+	"lessAutoOutputPathRelativePath": "..\/css",
+	"lessAutoOutputPathReplace1": "less",
+	"lessAutoOutputPathReplace2": "css",
+	"lessAutoOutputPathStyle": 2,
+	"lessCreateSourceMap": 0,
+	"lessDisableJavascript": 0,
+	"lessIeCompatibility": 1,
+	"lessOutputStyle": 0,
+	"lessRelativeURLS": 0,
+	"lessStrictImports": 0,
+	"lessStrictMath": 0,
+	"lessStrictUnits": 0,
+	"markdownAutoOutputPathEnabled": 1,
+	"markdownAutoOutputPathFilenamePattern": "*.html",
+	"markdownAutoOutputPathRelativePath": "",
+	"markdownAutoOutputPathReplace1": "",
+	"markdownAutoOutputPathReplace2": "",
+	"markdownAutoOutputPathStyle": 0,
+	"markdownEnableFootnotes": 0,
+	"markdownEnableSmartyPants": 1,
+	"markdownExpandTabs": 1,
+	"reloadFileURLs": 0,
+	"sassAutoOutputPathEnabled": 1,
+	"sassAutoOutputPathFilenamePattern": "*.css",
+	"sassAutoOutputPathRelativePath": "..\/css",
+	"sassAutoOutputPathReplace1": "sass",
+	"sassAutoOutputPathReplace2": "css",
+	"sassAutoOutputPathStyle": 2,
+	"sassCreateSourceMap": 0,
+	"sassDebugStyle": 0,
+	"sassDecimalPrecision": 5,
+	"sassOutputStyle": 0,
+	"sassUseLibsass": 0,
+	"shouldRunAutoprefixer": 0,
+	"shouldRunBless": 0,
+	"skippedItemsString": "_cache, logs, _logs, cache, \/js, .git, log, .svn, .hg",
+	"slimAutoOutputPathEnabled": 1,
+	"slimAutoOutputPathFilenamePattern": "*.html",
+	"slimAutoOutputPathRelativePath": "",
+	"slimAutoOutputPathReplace1": "",
+	"slimAutoOutputPathReplace2": "",
+	"slimAutoOutputPathStyle": 0,
+	"slimCompileOnly": 0,
+	"slimLogicless": 0,
+	"slimOutputStyle": 1,
+	"slimRailsCompatible": 0,
+	"stylusAutoOutputPathEnabled": 1,
+	"stylusAutoOutputPathFilenamePattern": "*.css",
+	"stylusAutoOutputPathRelativePath": "..\/css",
+	"stylusAutoOutputPathReplace1": "stylus",
+	"stylusAutoOutputPathReplace2": "css",
+	"stylusAutoOutputPathStyle": 2,
+	"stylusDebugStyle": 0,
+	"stylusImportCSS": 0,
+	"stylusOutputStyle": 0,
+	"stylusResolveRelativeURLS": 0,
+	"typescriptAutoOutputPathEnabled": 1,
+	"typescriptAutoOutputPathFilenamePattern": "*.js",
+	"typescriptAutoOutputPathRelativePath": "\/js",
+	"typescriptAutoOutputPathReplace1": "",
+	"typescriptAutoOutputPathReplace2": "",
+	"typescriptAutoOutputPathStyle": 2,
+	"typescriptCreateDeclarationFile": 0,
+	"typescriptCreateSourceMap": 0,
+	"typescriptMinifyOutput": 0,
+	"typescriptModuleType": 0,
+	"typescriptNoImplicitAny": 0,
+	"typescriptNoResolve": 0,
+	"typescriptRemoveComments": 0,
+	"typescriptTargetECMAVersion": 0,
+	"uglifyDefinesString": "",
+	"uglifyFlags2": {
+		"ascii-only": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"booleans": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"bracketize": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"cascade": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"comments": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"comparisons": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"compress": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"conditionals": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"dead_code": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"drop_debugger": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"eval": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"evaluate": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"hoist_funs": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"hoist_vars": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"if_return": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"indent-level": {
+			"active": 0,
+			"flagValue": 4
+			},
+		"indent-start": {
+			"active": 0,
+			"flagValue": 0
+			},
+		"inline-script": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"join_vars": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"loops": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"mangle": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"max-line-len": {
+			"active": 1,
+			"flagValue": 32000
+			},
+		"properties": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"quote-keys": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"screw-ie8": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"semicolons": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"sequences": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"sort": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"space-colon": {
+			"active": 1,
+			"flagValue": -1
+			},
+		"toplevel": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"unsafe": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"unused": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"warnings": {
+			"active": 0,
+			"flagValue": -1
+			},
+		"width": {
+			"active": 1,
+			"flagValue": 80
+			}
+		},
+	"uglifyReservedNamesString": "$",
+	"websiteRelativeRoot": ""
+	},
+"settingsFileVersion": "2"
+}

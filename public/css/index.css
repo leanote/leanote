@@ -58,6 +58,21 @@ a:hover {
   background-color: #fff;
   -webkit-box-shadow: 1px 1px 8px -1px rgba(0, 0, 0, 0.1);
   box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.1);
+  margin: 0;
+}
+#headerContainer .navbar-brand {
+  padding: 0;
+  padding-left: 10px;
+  line-height: 60px;
+}
+#headerContainer .navbar-brand img {
+  height: 50px;
+  display: inline-block;
+  margin-top: -5px;
+}
+#headerContainer .navbar-nav a {
+  line-height: 60px;
+  padding: 0 10px;
 }
 #postsContainer,
 #suggestion {
@@ -99,6 +114,7 @@ section {
   margin: auto;
   width: 850px;
   text-align: center;
+  overflow: hidden;
 }
 .preview .img-header {
   height: 40px;
@@ -115,7 +131,7 @@ section {
 }
 .preview .mobile {
   position: absolute;
-  bottom: 0px;
+  bottom: -80px;
   right: 0;
 }
 .preview .mobile .mobile-header {
@@ -130,7 +146,7 @@ section {
 .preview .mobile img {
   border: 3px solid #2e3e4e;
   border-bottom: 0;
-  width: 160px;
+  width: 200px;
 }
 /* header */
 #header {
@@ -143,30 +159,18 @@ section {
   padding: 0;
   line-height: 45px;
 }
-#blogNav {
-  margin: 0;
-  padding: 0;
-  line-height: 60px;
-}
-#blogNav li {
-  display: inline-block;
-}
-#blogNav li a {
-  display: inline-block;
-  padding: 0 10px;
-  color: #1b252e;
-}
-#blogNav li a:hover {
-  background-color: #eee;
+#navbar {
+  float: right;
+  background: #fff;
 }
 #loginBtns {
   border-left: 1px solid #eee;
   border-color: rgba(200, 200, 200, 0.5);
   padding-left: 10px;
-  line-height: 30px;
   margin-top: 15px;
 }
 #loginBtns a {
+  line-height: 30px !important;
   display: inline-block;
   color: #1b252e;
   padding: 0 10px;
@@ -176,6 +180,50 @@ section {
   background-color: #8ec165;
   border-color: #8ec165;
   border-radius: 2px;
+}
+.red-circle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: red;
+  top: 15px;
+  right: 5px;
+  border-radius: 9px;
+}
+.navbar-toggle {
+  padding: 14px 10px;
+}
+@media screen and (max-width: 700px) {
+  #loginBtns {
+    border: none;
+  }
+  .red-circle {
+    display: none;
+  }
+  #navbar {
+    padding: 0;
+  }
+  .navbar-nav {
+    margin: 0;
+    padding: 0;
+    border: 1px solid #ccc;
+  }
+  .navbar-nav li {
+    border-bottom: 1px solid #ccc;
+  }
+  .navbar-nav #loginBtns {
+    padding-right: 10px;
+    padding-bottom: 5px;
+  }
+}
+@media screen and (max-width: 600px) {
+  .header .btn {
+    display: block;
+    margin: 0;
+  }
+  .mobile {
+    top: 0 !important;
+  }
 }
 /* posts */
 #posts {
@@ -514,4 +562,9 @@ input,
   -moz-animation-name: fadeInDownBig;
   -o-animation-name: fadeInDownBig;
   animation-name: fadeInDownBig;
+}
+@media screen and (max-width: 500px) {
+  * {
+    max-width: 100% !important;
+  }
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/leanote/leanote/app/info"
 //	"github.com/leanote/leanote/app/types"
 //	"io/ioutil"
-	"fmt"
+//	"fmt"
 //	"math"
 //	"os"
 //	"path"
@@ -19,43 +19,48 @@ type User struct {
 	BaseController
 }
 
+func (c User) Account(tab int) revel.Result {
+	userInfo := c.GetUserInfo()
+	c.RenderArgs["userInfo"] = userInfo
+	c.RenderArgs["tab"] = tab
+	c.SetLocale()
+	return c.RenderTemplate("user/account.html")
+}
+
 // 修改用户名, 需要重置session
 func (c User) UpdateUsername(username string) revel.Result {
 	re := info.NewRe();
-	// 判断是否满足最基本的, 4位, 不含特殊字符, 大小写无关. email大小写无关
-	if len(username) < 4 {
-		re.Ok = false
-		re.Msg = "至少4位"
-		return c.RenderJson(re);
+	if(c.GetUsername() == "demo") {
+		re.Msg = "cannotUpdateDemo"
+		return c.RenderRe(re);
 	}
-	if !IsUsername(username) {
-		re.Ok = false
-		re.Msg = "不能包含特殊字符"
-		return c.RenderJson(re);
+	
+	if re.Ok, re.Msg = Vd("username", username); !re.Ok {
+		return c.RenderRe(re);
 	}
 	
 	re.Ok, re.Msg = userService.UpdateUsername(c.GetUserId(), username)
 	if(re.Ok) {
 		c.UpdateSession("Username", username)
 	}
-	return c.RenderJson(re);
+	return c.RenderRe(re);
 }
 
 // 修改密码
 func (c User) UpdatePwd(oldPwd, pwd string) revel.Result {
 	re := info.NewRe();
-	if oldPwd == "" {
-		re.Msg = "旧密码错误"
-		return c.RenderJson(re);
+	if(c.GetUsername() == "demo") {
+		re.Msg = "cannotUpdateDemo"
+		return c.RenderRe(re);
 	}
-	
-	re.Ok, re.Msg = IsGoodPwd(pwd)
-	if !re.Ok {
-		return c.RenderJson(re);
+	if re.Ok, re.Msg = Vd("password", oldPwd); !re.Ok {
+		return c.RenderRe(re);
 	}
-	
+	if re.Ok, re.Msg = Vd("password", pwd); !re.Ok {
+		return c.RenderRe(re);
+	}
 	re.Ok, re.Msg = userService.UpdatePwd(c.GetUserId(), oldPwd, pwd)
-	return c.RenderJson(re);
+	return c.RenderRe(re);
 }
 
 // 更新主题
@@ -75,14 +80,7 @@ func (c User) SendRegisterEmail(content, toEmail string) revel.Result {
 		return c.RenderJson(re);
 	}
 	
-	// 发送邮件
-	var userInfo = c.GetUserInfo();
-	siteUrl, _ := revel.Config.String("site.url")
-	url := siteUrl + "/register?from=" + userInfo.Username
-	body := fmt.Sprintf("点击链接注册leanote: <a href='%v'>%v</a>. ", url, url);
-	body = content + "<br />" + body
-	re.Ok = SendEmail(toEmail, userInfo.Username + "邀请您注册leanote", "邀请注册", body)
-	
+	re.Ok = emailService.SendInviteEmail(c.GetUserInfo(), toEmail, content)
 	return c.RenderJson(re);
 }
 
@@ -91,15 +89,23 @@ func (c User) SendRegisterEmail(content, toEmail string) revel.Result {
 // 重新发送激活邮件
 func (c User) ReSendActiveEmail() revel.Result {
 	re := info.NewRe()
-	re.Ok = userService.RegisterSendActiveEmail(c.GetUserId(), c.GetEmail())
+	re.Ok = emailService.RegisterSendActiveEmail(c.GetUserInfo(), c.GetEmail())
 	return c.RenderJson(re)
 }
 
 // 修改Email发送激活邮箱
 func (c User) UpdateEmailSendActiveEmail(email string) revel.Result {
 	re := info.NewRe()
-	re.Ok, re.Msg = userService.UpdateEmailSendActiveEmail(c.GetUserId(), email)
-	return c.RenderJson(re)
+	if(c.GetUsername() == "demo") {
+		re.Msg = "cannotUpdateDemo"
+		return c.RenderJson(re);
+	}
+	if re.Ok, re.Msg = Vd("email", email); !re.Ok {
+		return c.RenderRe(re);
+	}
+	
+	re.Ok, re.Msg = emailService.UpdateEmailSendActiveEmail(c.GetUserInfo(), email)
+	return c.RenderRe(re)
 }
 
 // 通过点击链接
@@ -145,22 +151,12 @@ func (c User) ActiveEmail(token string) revel.Result {
 // 第三方账号添加leanote账号
 func (c User) AddAccount(email, pwd string) revel.Result {
 	re := info.NewRe()
-		
-	if email == "" {
-		re.Msg = "请输入邮箱"
-		return c.RenderJson(re)
-	} else if !IsEmail(email) {
-		re.Msg = "请输入正确的邮箱"
-		return c.RenderJson(re)
-	}
 	
-	// 密码
-	if pwd == "" {
-		re.Msg = "请输入密码"
-		return c.RenderJson(re)
-	} else if len(pwd) < 6 {
-		re.Msg = "密码长度至少6位"
-		return c.RenderJson(re)
+	if re.Ok, re.Msg = Vd("email", email); !re.Ok {
+		return c.RenderRe(re);
+	}
+	if re.Ok, re.Msg = Vd("password", pwd); !re.Ok {
+		return c.RenderRe(re);
 	}
 	
 	re.Ok, re.Msg = userService.ThirdAddUser(c.GetUserId(), email, pwd)
@@ -169,17 +165,20 @@ func (c User) AddAccount(email, pwd string) revel.Result {
 		c.UpdateSession("Email", email);
 	}
 	
-	return c.RenderJson(re)
+	return c.RenderRe(re)
 }
 
 //-----------------
 // 用户偏爱
-func (c User) UpdateColumnWidth(notebookWidth, noteListWidth int) revel.Result {
+func (c User) UpdateColumnWidth(notebookWidth, noteListWidth, mdEditorWidth int) revel.Result {
 	re := info.NewRe()
-	re.Ok = userService.UpdateColumnWidth(c.GetUserId(), notebookWidth, noteListWidth)
+	re.Ok = userService.UpdateColumnWidth(c.GetUserId(), notebookWidth, noteListWidth, mdEditorWidth)
 	if re.Ok {
 		c.UpdateSession("NotebookWidth", strconv.Itoa(notebookWidth));
-		c.UpdateSession("NoteListWidth", strconv.Itoa(noteListWidth));
+		c.UpdateSession("NoteListWidth", strconv.Itoa(noteListWidth)); 
+		c.UpdateSession("MdEditorWidth", strconv.Itoa(mdEditorWidth)); 
+		
+		LogJ(c.Session)
 	}
 	return c.RenderJson(re)
 }
