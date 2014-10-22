@@ -84,10 +84,10 @@
 				{{range .users}}
 				<tr>
 					<td>
-						<input type="checkbox" class="ck" data-email="{{.Email}}" value="2">
+						<input type="checkbox" class="ck" data-email="{{.Email}}" data-id="{{.UserId.Hex}}">
 					</td>
 					<td>
-						{{.Email}}
+						<a target="_blank" href="/blog/{{.UserId.Hex}}">{{.Email}}</a>
 					</td>
 					<td>
 						{{.Username}}

@@ -295,7 +295,7 @@ func (this *ConfigService) Backup(remark string) (ok bool, msg string) {
 		binPath += " -u " + username + " -p " + password
 	}
 	// 保存的路径
-	dir := revel.BasePath + "/backup/" + this.getBackupDirname()
+	dir := revel.BasePath + "/mongodb_backup/" + this.getBackupDirname()
 	binPath += " -o " + dir
 	err := os.MkdirAll(dir, 0755)
 	if err != nil {

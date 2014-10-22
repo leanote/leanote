@@ -62,7 +62,7 @@
 $(function() {
 	// leanote动态
 	// http://leanote.com/blog/cate/5446753cfacfaa4f56000000
-	var url = "http://localhost:9000/blog/listCateLatest/54269c83e5276724ac000000";
+	var url = "http://leanote.leanote.com/cate/5446753cfacfaa4f56000000";
 	function renderItem(item) {
 		return '<li class="list-group-item"><p><a target="_blank" href="http://leanote.com/blog/view/' + item.NoteId + '">' + item.Title + '</a></p><small class="block text-muted"><i class="fa fa-clock-o"></i> ' + goNowToDatetime(item.PublicTime) + '</small></li>';
 	}
