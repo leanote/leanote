@@ -4,57 +4,51 @@
         <div class="col-md-4">
           <h3>{{msg . "blogNavs"}}</h3>
           <ul>
-          	<li><a href="/blog/{{$userId}}">{{msg . "home"}}</a></li>
+          	<li><a href="{{$.blogUrl}}/{{$.userInfo.Username}}">{{msg . "home"}}</a></li>
           	{{range .notebooks}}
 			<li>
-				<a href="/blog/{{$userId}}/{{.NotebookId.Hex}}">{{.Title}}</a>
+				<a href="{{$.cateUrl}}/{{.NotebookId.Hex}}">{{.Title}}</a>
 			</li>
 			{{end}}
-          	<li><a href="/blog/aboutMe/{{$userId}}">{{msg . "aboutMe"}}</a></li>
+          	<li><a href="{{$.aboutMeUrl}}">{{msg . "aboutMe"}}</a></li>
           </ul>
         </div>
         <div class="col-md-4">
           <h3>{{msg . "latestPosts"}}</h3>
           <ul>
           	{{range .recentBlogs}}
-          	<li title="{{.Title}}"><a href="/blog/view/{{.NoteId.Hex}}/">{{.Title}}</a></li>
+          	<li title="{{.Title}}"><a href="{{$.blogUrl}}/view/{{.NoteId.Hex}}/">{{.Title}}</a></li>
           	{{end}}
           </ul>
        </div>
         <div class="col-md-4">
           <h3>{{msg . "quickLinks"}}</h3>
           <ul>
-			<li><a href="/note">{{msg . "myNote"}}</a></li>
-			<li><a href="/login">{{msg . "login"}}</a></li>
-			<li><a href="http://leanote.com" target="_blank">leanote</a></li>
+			<li><a href="{{$.noteUrl}}">{{msg . "myNote"}}</a></li>
+			<li><a href="{{$.siteUrl}}/login">leanote {{msg . "login"}}</a></li>
+			<li><a href="http://leanote.com" target="_blank">leanote {{msg . "home"}}</a></li>
+			<li><a href="http://lea.leanote.com" target="_blank">lea++</a></li>
+			<li><a href="http://bbs.leanote.com" target="_blank">leanote {{msg . "community"}}</a></li>
 			<li><a href="https://github.com/leanote/leanote" target="_blank">leanote github</a></li>
 		 </ul>
         </div>
     </div>
 </div>
-<script src="/js/jquery-1.9.0.min.js"></script>
-<script src="/js/bootstrap-min.js"></script>
-
+<script src="{{$.siteUrl}}/js/jquery-1.9.0.min.js"></script>
+<script src="{{$.siteUrl}}/js/bootstrap-min.js"></script>
+<script src="{{$.siteUrl}}/js/bootstrap-hover-dropdown.js"></script>
+<script src="{{$.siteUrl}}/js/i18n/blog.{{.locale}}.js"></script>
+{{if not .isMe}}
+<script src="{{$.siteUrl}}/blog/isMe.js?userId={{.userBlog.UserId.Hex}}"></script>
+{{end}}
 <script>
-$(function() {
-	/*
-	$("#searchInput").click(function() {
-		$("#search").width("130px");
-		$("#searchInput").width("100px");
-	});
-	$("#searchInput").blur(function() {
-		$("#search").width(0);
-		$("#searchInput").width(0);
-	});
-	*/
-});
 // 搜索
 function search(e) {
 	var key = $("#searchInput").val();
 	if(!key) {
-		location.href = "/blog/" + UserInfo.Username;
+		location.href = "{{$.searchUrl}}";
 	} else {
-		var tpl = '<form action="/blog/searchBlog/' + UserInfo.Username +'" method="get">';
+		var tpl = '<form action="{{$.searchUrl}}" method="get">';
 		tpl += '<input name="key" value="' + key + '" />';
 		tpl += "</form";
 		$(tpl).submit();

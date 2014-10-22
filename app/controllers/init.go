@@ -25,6 +25,8 @@ var noteImageService *service.NoteImageService
 var fileService *service.FileService
 var attachService *service.AttachService
 var configService *service.ConfigService
+var emailService *service.EmailService
+var sessionService *service.SessionService
 
 var pageSize = 1000
 var defaultSortField = "UpdatedTime"
@@ -47,10 +49,15 @@ var commonUrl = map[string]map[string]bool{"Index": map[string]bool{"Index": tru
 		"FindPasswordUpdate": true,
 		"Suggestion": true,
 	},
+	"Note": map[string]bool{"ToImage": true},
 	"Blog": map[string]bool{"Index": true,
 		"View": true,
 		"AboutMe": true,
-		"SearchBlog": true,
+		"Cate": true,
+		"Search": true,
+		"GetLikeAndComments": true,
+		"IncReadNum": true,
+		"ListComments": true,
 		},
 	// 用户的激活与修改邮箱都不需要登录, 通过链接地址
 	"User": map[string]bool{"UpdateEmail": true,
@@ -118,6 +125,8 @@ func InitService() {
 	suggestionService = service.SuggestionS
 	authService = service.AuthS
 	configService = service.ConfigS
+	emailService = service.EmailS
+	sessionService = service.SessionS
 }
 
 func init() {

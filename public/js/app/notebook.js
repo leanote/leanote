@@ -21,6 +21,30 @@ Notebook.getCurNotebookId = function() {
 	return Notebook.curNotebookId;
 };
 
+// 笔记本的笔记数量更新
+Notebook._updateNotebookNumberNotes = function(notebookId, n) {
+	var self = this;
+	var notebook = self.getNotebook(notebookId);
+	if(!notebook) {
+		return;
+	}
+	notebook.NumberNotes += n;
+	if(notebook.NumberNotes < 0) {
+		notebook.NumberNotes = 0;
+	}
+	$("#numberNotes_" + notebookId).html(notebook.NumberNotes);
+};
+// addNote, copyNote, moveNote
+Notebook.incrNotebookNumberNotes = function(notebookId) {
+	var self = this;
+	self._updateNotebookNumberNotes(notebookId, 1);
+};
+// moteNote, deleteNote
+Notebook.minusNotebookNumberNotes = function(notebookId) {
+	var self = this;
+	self._updateNotebookNumberNotes(notebookId, -1);
+};
+
 // 得到notebook标题, 给note显示其notebook标题用
 // called by Note
 Notebook.getNotebook = function(notebookId) {
@@ -58,6 +82,7 @@ Notebook.getTreeSetting = function(isSearch, isShare){
 		icoObj.before(switchObj);
 		if(!isShare) {
 			if(!Notebook.isAllNotebookId(treeNode.NotebookId) && !Notebook.isTrashNotebookId(treeNode.NotebookId)) {
+				icoObj.after($('<span class="notebook-number-notes" id="numberNotes_' + treeNode.NotebookId + '">' + (treeNode.NumberNotes || 0) + '</span>'));
 				icoObj.after($('<span class="fa notebook-setting" title="setting"></span>'));
 			}
 		} else {
@@ -772,16 +797,16 @@ $(function() {
 	//-------------------
 	// 右键菜单
 	var notebookListMenu = {
-		width: 150, 
+		width: 180, 
 		items: [
-			{ text: "分享给好友", alias: 'shareToFriends', icon: "", faIcon: "fa-share-square-o", action: Notebook.listNotebookShareUserInfo},
+			{ text: getMsg("shareToFriends"), alias: 'shareToFriends', icon: "", faIcon: "fa-share-square-o", action: Notebook.listNotebookShareUserInfo},
 			{ type: "splitLine" },
-			{ text: "公开为博客", alias: 'set2Blog', icon: "", action: Notebook.setNotebook2Blog },
-			{ text: "取消公开为博客", alias: 'unset2Blog', icon: "", action: Notebook.setNotebook2Blog }, // Unset
+			{ text: getMsg("publicAsBlog"), alias: 'set2Blog', faIcon: "fa-bold", action: Notebook.setNotebook2Blog },
+			{ text: getMsg("cancelPublic"), alias: 'unset2Blog',faIcon: "fa-undo", action: Notebook.setNotebook2Blog }, // Unset
 			{ type: "splitLine" },
-			{ text: "添加子笔记本", icon: "", action: Notebook.addChildNotebook },
-			{ text: "重命名", icon: "", action: Notebook.updateNotebookTitle },
-			{ text: "删除", icon: "", alias: 'delete', faIcon: "fa-trash-o", action: Notebook.deleteNotebook }
+			{ text: getMsg("addChildNotebook"), faIcon: "fa-sitemap", action: Notebook.addChildNotebook },
+			{ text: getMsg("rename"), faIcon: "fa-pencil", action: Notebook.updateNotebookTitle },
+			{ text: getMsg("delete"), icon: "", alias: 'delete', faIcon: "fa-trash-o", action: Notebook.deleteNotebook }
 		],
 		onShow: applyrule,
     	onContextMenu: beforeContextMenu,
@@ -789,16 +814,17 @@ $(function() {
     	children: "li a"
 	}
 	
+	// for search
 	var notebookListMenu2 = {
-		width: 150, 
+		width: 180, 
 		items: [
-			{ text: "分享给好友", alias: 'shareToFriends', icon: "", faIcon: "fa-share-square-o", action: Notebook.listNotebookShareUserInfo},
+			{ text: getMsg("shareToFriends"), alias: 'shareToFriends', icon: "", faIcon: "fa-share-square-o", action: Notebook.listNotebookShareUserInfo},
 			{ type: "splitLine" },
-			{ text: "公开为博客", alias: 'set2Blog', icon: "", action: Notebook.setNotebook2Blog },
-			{ text: "取消公开为博客", alias: 'unset2Blog', icon: "", action: Notebook.setNotebook2Blog }, // Unset
+			{ text: getMsg("publicAsBlog"), alias: 'set2Blog', faIcon: "fa-bold", action: Notebook.setNotebook2Blog },
+			{ text: getMsg("cancelPublic"), alias: 'unset2Blog',faIcon: "fa-undo", action: Notebook.setNotebook2Blog }, // Unset
 			{ type: "splitLine" },
-			{ text: "重命名", icon: "", action: Notebook.updateNotebookTitle },
-			{ text: "删除", icon: "", alias: 'delete', faIcon: "fa-trash-o", action: Notebook.deleteNotebook }
+			{ text: getMsg("rename"), icon: "", action: Notebook.updateNotebookTitle },
+			{ text: getMsg("delete"), icon: "", alias: 'delete', faIcon: "fa-trash-o", action: Notebook.deleteNotebook }
 		],
 		onShow: applyrule,
     	onContextMenu: beforeContextMenu,

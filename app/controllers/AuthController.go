@@ -4,6 +4,7 @@ import (
 	"github.com/revel/revel"
 	"github.com/leanote/leanote/app/info"
 	. "github.com/leanote/leanote/app/lea"
+//	"strconv"
 )
 
 // 用户登录/注销/找回密码
@@ -14,11 +15,19 @@ type Auth struct {
 
 //--------
 // 登录
-func (c Auth) Login(email string) revel.Result {
+func (c Auth) Login(email, from string) revel.Result {
 	c.RenderArgs["title"] = c.Message("login")
 	c.RenderArgs["subTitle"] = c.Message("login")
 	c.RenderArgs["email"] = email
+	c.RenderArgs["from"] = from
 	c.RenderArgs["openRegister"] = openRegister
+	
+	sessionId := c.Session.Id()
+	if sessionService.LoginTimesIsOver(sessionId) {
+		c.RenderArgs["needCaptcha"] = true
+	}
+	
+	c.SetLocale()
 	
 	if c.Has("demo") {
 		c.RenderArgs["demo"] = true
@@ -26,36 +35,68 @@ func (c Auth) Login(email string) revel.Result {
 	}
 	return c.RenderTemplate("home/login.html")
 }
-func (c Auth) DoLogin(email, pwd string) revel.Result {
+
+// 为了demo和register
+func (c Auth) doLogin(email, pwd string) revel.Result {
+	sessionId := c.Session.Id()
+	var msg = ""
+	
 	userInfo := authService.Login(email, pwd)
 	if userInfo.Email != "" {
 		c.SetSession(userInfo)
-		// 必须要redirect, 不然用户刷新会重复提交登录信息
-//		return c.Redirect("/")
-		configService.InitUserConfigs(userInfo.UserId.Hex())
+		sessionService.ClearLoginTimes(sessionId)
 		return c.RenderJson(info.Re{Ok: true})
+	} else {
+		// 登录错误, 则错误次数++
+		msg = "wrongUsernameOrPassword"
 	}
-//	return c.RenderTemplate("login.html")
-	return c.RenderJson(info.Re{Ok: false, Msg: c.Message("wrongUsernameOrPassword")})
+	
+	return c.RenderJson(info.Re{Ok: false, Item: sessionService.LoginTimesIsOver(sessionId) , Msg: c.Message(msg)})
+}
+func (c Auth) DoLogin(email, pwd string, captcha string) revel.Result {
+	sessionId := c.Session.Id()
+	var msg = ""
+	
+	// > 5次需要验证码, 直到登录成功
+	if sessionService.LoginTimesIsOver(sessionId) && sessionService.GetCaptcha(sessionId) != captcha {
+		msg = "captchaError"
+	} else {
+		userInfo := authService.Login(email, pwd)
+		if userInfo.Email != "" {
+			c.SetSession(userInfo)
+			sessionService.ClearLoginTimes(sessionId)
+			return c.RenderJson(info.Re{Ok: true})
+		} else {
+			// 登录错误, 则错误次数++
+			msg = "wrongUsernameOrPassword"
+			sessionService.IncrLoginTimes(sessionId)
+		}
+	}
+	
+	return c.RenderJson(info.Re{Ok: false, Item: sessionService.LoginTimesIsOver(sessionId) , Msg: c.Message(msg)})
 }
 // 注销
 func (c Auth) Logout() revel.Result {
+	sessionId := c.Session.Id()
+	sessionService.Clear(sessionId)
 	c.ClearSession()
 	return c.Redirect("/login")
 }
 
 // 体验一下
 func (c Auth) Demo() revel.Result {
-	c.DoLogin("demo@leanote.com", "demo@leanote.com")
+	c.doLogin(configService.GetGlobalStringConfig("demoUsername"), configService.GetGlobalStringConfig("demoPassword"))
 	return c.Redirect("/note")
 }
 
 //--------
 // 注册
-func (c Auth) Register() revel.Result {
+func (c Auth) Register(from string) revel.Result {
 	if !openRegister {
 		return c.Redirect("/index")
 	}
+	c.SetLocale()
+	c.RenderArgs["from"] = from
 	
 	c.RenderArgs["title"] = c.Message("register")
 	c.RenderArgs["subTitle"] = c.Message("register")
@@ -68,21 +109,11 @@ func (c Auth) DoRegister(email, pwd string) revel.Result {
 	
 	re := info.NewRe();
 	
-	if email == "" {
-		re.Msg = c.Message("inputEmail")
-		return c.RenderJson(re)
-	} else if !IsEmail(email) {
-		re.Msg = c.Message("wrongEmail")
-		return c.RenderJson(re)
+	if re.Ok, re.Msg = Vd("email", email); !re.Ok {
+		return c.RenderRe(re);
 	}
-	
-	// 密码
-	if pwd == "" {
-		re.Msg = c.Message("inputPassword")
-		return c.RenderJson(re)
-	} else if len(pwd) < 6 {
-		re.Msg = c.Message("wrongPassword")
-		return c.RenderJson(re)
+	if re.Ok, re.Msg = Vd("password", pwd); !re.Ok {
+		return c.RenderRe(re);
 	}
 	
 	// 注册
@@ -90,10 +121,10 @@ func (c Auth) DoRegister(email, pwd string) revel.Result {
 	
 	// 注册成功, 则立即登录之
 	if re.Ok {
-		c.DoLogin(email, pwd)
+		c.doLogin(email, pwd)
 	}
 	
-	return c.RenderJson(re)
+	return c.RenderRe(re)
 }
 
 //--------
@@ -130,13 +161,12 @@ func (c Auth) FindPassword2(token string) revel.Result {
 // 找回密码修改密码
 func (c Auth) FindPasswordUpdate(token, pwd string) revel.Result {
 	re := info.NewRe();
-	
-	re.Ok, re.Msg = IsGoodPwd(pwd)
-	if !re.Ok {
-		return c.RenderJson(re)
+
+	if re.Ok, re.Msg = Vd("password", pwd); !re.Ok {
+		return c.RenderRe(re);
 	}
 
 	// 修改之
 	re.Ok, re.Msg = pwdService.UpdatePwd(token, pwd)
-	return c.RenderJson(re)
+	return c.RenderRe(re)
 }

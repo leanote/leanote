@@ -4,22 +4,11 @@
 <section class="panel panel-default">
 	<div class="row wrapper">
 		<div class="col-sm-5 m-b-xs">
-			<select class="input-sm form-control input-s-sm inline v-middle">
-				<option value="0">
-					Bulk action
-				</option>
-				<option value="1">
-					Delete selected
-				</option>
-				<option value="2">
-					Bulk edit
-				</option>
-				<option value="3">
-					Export
-				</option>
-			</select>
 			<button class="btn btn-sm btn-default">
-				Apply
+				Action1
+			</button>
+			<button class="btn btn-sm btn-default">
+				Action2
 			</button>
 		</div>
 		<div class="col-sm-4 m-b-xs">
@@ -62,16 +51,7 @@
 							<i class="fa fa-sort"></i>
 						</span>
 					</th>
-					<th
-					{{sorterTh $url "isRecommend" .sorter}}
-					>
-						isRecommend
-						<span class="th-sort">
-							<i class="fa fa-sort-down"></i>
-							<i class="fa fa-sort-up"></i>
-							<i class="fa fa-sort"></i>
-						</span>
-					</th>
+					
 					<th
 					{{sorterTh $url "createdTime" .sorter}}
 					>
@@ -81,8 +61,6 @@
 							<i class="fa fa-sort-up"></i>
 							<i class="fa fa-sort"></i>
 						</span>
-					</th>
-					<th width="30">
 					</th>
 				</tr>
 			</thead>
@@ -101,19 +79,7 @@
 						</a>
 					</td>
 					<td>
-						<button data-loading-text="..." class="btn btn-default change-recommend" data-id="{{.NoteId.Hex}}" data-recommend="{{if .IsRecommend}}1{{else}}0{{end}}">
-						{{if .IsRecommend}}
-							Y
-						{{else}}
-							N	
-						{{end}}
-						</button>
-					</td>
-					<td>
 						{{.CreatedTime|datetime}}
-					</td>
-					<td>
-						<a href="#" class="btn btn-default">Send Email</a>
 					</td>
 				</tr>
 				{{end}}
@@ -123,22 +89,11 @@
 	<footer class="panel-footer">
 		<div class="row">
 			<div class="col-sm-4 hidden-xs">
-				<select class="input-sm form-control input-s-sm inline v-middle">
-					<option value="0">
-						Bulk action
-					</option>
-					<option value="1">
-						Delete selected
-					</option>
-					<option value="2">
-						Bulk edit
-					</option>
-					<option value="3">
-						Export
-					</option>
-				</select>
 				<button class="btn btn-sm btn-default">
-					Apply
+					Action1
+				</button>
+				<button class="btn btn-sm btn-default">
+					Action2
 				</button>
 			</div>
 			<div class="col-sm-4 text-center">

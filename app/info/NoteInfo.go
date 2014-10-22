@@ -15,21 +15,28 @@ type Note struct {
 	Title         string        `Title` // 标题
 	Desc          string        `Desc`  // 描述, 非html
 
-	ImgSrc  string   `ImgSrc` // 图片, 第一张缩略图地址
-	Tags    []string `Tags,omitempty`
-	
-	IsTrash bool     `IsTrash` // 是否是trash, 默认是false
+	ImgSrc string   `ImgSrc` // 图片, 第一张缩略图地址
+	Tags   []string `Tags,omitempty`
 
-	IsBlog bool `IsBlog,omitempty` // 是否设置成了blog 2013/12/29 新加
+	IsTrash bool `IsTrash` // 是否是trash, 默认是false
+
+	IsBlog      bool `IsBlog,omitempty`      // 是否设置成了blog 2013/12/29 新加
 	IsRecommend bool `IsRecommend,omitempty` // 是否为推荐博客 2014/9/24新加
-	IsTop  bool `IsTop,omitempty`  // blog是否置顶
+	IsTop       bool `IsTop,omitempty`       // blog是否置顶
+
+	// 2014/9/28 添加评论社交功能
+	ReadNum    int `ReadNum,omitempty`    // 阅读次数 2014/9/28
+	LikeNum    int `LikeNum,omitempty`    // 点赞次数 2014/9/28
+	CommentNum int `CommentNum,omitempty` // 评论次数 2014/9/28
 
 	IsMarkdown bool `IsMarkdown` // 是否是markdown笔记, 默认是false
 
-	AttachNum  int `AttachNum`  // 2014/9/21, attachments num
+	AttachNum int `AttachNum` // 2014/9/21, attachments num
 
 	CreatedTime   time.Time     `CreatedTime`
 	UpdatedTime   time.Time     `UpdatedTime`
+	RecommendTime time.Time     `RecommendTime,omitempty`        // 推荐时间
+	PublicTime    time.Time     `PublicTime,omitempty`           // 发表时间, 公开为博客则设置
 	UpdatedUserId bson.ObjectId `bson:"UpdatedUserId"` // 如果共享了, 并可写, 那么可能是其它他修改了
 }
 

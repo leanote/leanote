@@ -1,7 +1,7 @@
 package service
 
 import (
-
+	"github.com/revel/revel"
 )
 
 // init service, for share service bettween services
@@ -24,7 +24,12 @@ var attachService, AttachS *AttachService
 var configService, ConfigS *ConfigService
 var PwdS *PwdService
 var SuggestionS *SuggestionService
+var emailService, EmailS *EmailService
 var AuthS *AuthService
+var UpgradeS *UpgradeService
+var SessionS, sessionService *SessionService
+
+var siteUrl string
 
 // onAppStart调用
 func InitService() {
@@ -45,6 +50,9 @@ func InitService() {
 	PwdS = &PwdService{}
 	SuggestionS = &SuggestionService{}
 	AuthS = &AuthService{}
+	EmailS = NewEmailService()
+	UpgradeS = &UpgradeService{}
+	SessionS = &SessionService{}
 	
 	notebookService = NotebookS
 	noteService = NoteS
@@ -60,4 +68,9 @@ func InitService() {
 	albumService = AlbumS
 	attachService = AttachS
 	configService = ConfigS
+	emailService = EmailS
+	sessionService = SessionS
+	
+	//
+	siteUrl, _ = revel.Config.String("site.url")
 }

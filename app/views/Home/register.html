@@ -10,7 +10,8 @@
 		<div id="boxForm">
 			<div id="boxHeader">{{msg . "register"}}</div>
 			<form>
-				<div class="alert alert-danger" id="loginMsg"></div>
+				<div class="alert alert-danger" id="loginMsg"></div> 
+				<input id="from" type="hidden" value="{{.from}}" />
 				<div class="form-group"> 
 					<label class="control-label" for="email">{{msg . "email"}}</label>
 					<input type="text" class="form-control" id="email" name="email"> 
@@ -103,7 +104,8 @@ $(function() {
 			$("#registerBtn").html("{{msg . "register"}}").removeClass("disabled");
 			if(e.Ok) {
 				$("#registerBtn").html("{{msg . "registerSuccessAndRdirectToNote"}}");
-				location.href = '/note';
+				var from = $("#from").val() || "{{.noteUrl}}" || "/note";
+				location.href = from;
 			} else {
 				showMsg(e.Msg, "email");
 			}

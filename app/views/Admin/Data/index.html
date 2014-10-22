@@ -1,0 +1,115 @@
+{{template "admin/top.html" .}}
+<div class="m-b-md"> <h3 class="m-b-none">Backup & Restore</h3></div>
+
+<style>
+.break-all {
+	word-break:break-all; /*支持IE，chrome，FF不支持*/
+	word-wrap:break-word;/*支持IE，chrome，FF*/
+}
+</style>
+<section class="panel panel-default">
+	
+	<div class="row wrapper">
+		<div class="col-sm-5 m-b-xs">
+			<button class="btn btn-primary backup-btn">Backup</button>
+		</div>
+		
+	</div>
+	
+	<div class="table-responsive">
+		<table class="table table-striped b-t b-light">
+			<thead>
+				<tr>
+					<th width="136px">
+						Date
+					</th>
+					<th width="">
+						Remark
+					</th>
+					<th>
+						Path
+					</th>
+					<th width="170px">
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range $each := .backups}}
+				<tr>
+					<td>
+						{{$each.createdTime|unixDatetime}}
+					</td>
+					<td>
+						<textarea class="remark" data-id="{{$each.createdTime}}">{{$each.remark}}</textarea>
+					</td>
+					<td class="break-all">
+						{{$each.path}}
+					</td>
+					<td>
+						<button href="#" class="btn btn-sm btn-danger restore-btn" data-id="{{$each.createdTime}}">Restore</button>
+						<a class="btn btn-sm btn-default download-attach" href="/adminData/download?createdTime={{$each.createdTime}}" target="_blank" title="Download"  data-id=""><i class="fa fa-download"></i></a>
+						<button class="btn btn-sm btn-warning delete-btn" title="Delete" data-id="{{$each.createdTime}}"><i class="fa fa-trash-o"></i></button>
+					</td>
+				</tr>
+				{{end}}
+			</tbody>
+		</table>
+	</div>
+</section>
+	
+{{template "admin/footer.html" .}}
+
+<script>
+$(function() {
+	$(".backup-btn").click(function(){ 
+		ajaxGet("/adminData/backup", {}, function(ret) {
+			if(ret.Ok) {
+				art.tips("Success");
+				location.reload();
+			} else {
+				art.alert(ret.Msg);
+			}
+		});
+	});
+	// 还原
+	$(".restore-btn").click(function() {
+		var createdTime = $(this).data("id");
+		art.confirm("Are you sure? <br />Note. Leanote will do the following steps: <br />1)Backup the current database first. <br />2) And then delete the database. <br />3) Restore database from the selected version.", function() {
+			ajaxGet("/adminData/restore", {createdTime: createdTime}, function(ret) {
+				if(ret.Ok) {
+					art.tips("Success");
+					location.reload();
+				} else {
+					art.alert(ret.Msg);
+				}
+			});
+		});
+	});
+	$(".delete-btn").click(function() {
+		var createdTime = $(this).data("id");
+		art.confirm("Are you sure?", function() {
+			ajaxGet("/adminData/delete", {createdTime: createdTime}, function(ret) {
+				if(ret.Ok) {
+					art.tips("Success");
+					location.reload();
+				} else {
+					art.alert(ret.Msg);
+				}
+			});
+		});
+	});
+	$(".remark").change(function() {
+		var createdTime = $(this).data("id");
+		var remark = $(this).val();
+		ajaxPost("/adminData/updateRemark", {createdTime: createdTime, remark: remark}, function(ret) {
+			if(ret.Ok) {
+				art.tips("Update Remark Success");
+			} else {
+				art.alert(ret.Msg);
+			}
+		});
+	});
+});
+</script>
+
+{{template "admin/end.html" .}}

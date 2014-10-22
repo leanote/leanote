@@ -1,0 +1,85 @@
+{{template "admin/top.html" .}}
+<div class="m-b-md"> <h3 class="m-b-none">Send Email</h3></div>
+
+<div class="row">
+
+<div class="col-sm-12">
+	<form id="formContainer">
+		<section class="panel panel-default">
+			<header class="panel-heading font-bold">Email</header>
+			<div class="panel-body">
+				<div class="form-group">
+					<label>Email List</label>
+					<textarea type="text" rows="10" class="form-control" name="sendEmails">{{.str.sendEmails}}</textarea>
+					input email line by line
+				</div>
+				
+				<div class="form-group">
+					<label>Select Old Email</label>
+					<select class="form-control old-emails">
+						<option value="">---Select---</option>
+						{{range $subject, $body := .map.oldEmails}}
+							<option>
+								{{$subject}}
+							</option>
+						{{end}}
+					</select>
+				</div>
+				
+				<div class="form-group">
+					<label>Subject</label>
+					<input type="text" class="form-control" id="latestEmailSubject" name="latestEmailSubject" value="{{$.str.latestEmailSubject}}">
+				</div>
+				
+				<div class="form-group">
+					<label>Body</label>
+					<textarea type="text" rows="10" id="latestEmailBody" class="form-control" name="latestEmailBody">{{$.str.latestEmailBody}}</textarea>
+				</div>
+				<label class="checkbox-inline"> <input type="checkbox" id="saveAsOldEmail" name="saveAsOldEmail" value="1"> Save As Old Email </label>
+			</div>
+			
+			<footer class="panel-footer text-right bg-light lter">
+				<button type="submit" id="submit" class="btn btn-success btn-s-xs">Submit</button>
+			</footer>
+		</section>
+	</form>
+</div>
+
+</div>
+
+{{template "admin/footer.html" .}}
+<script src="/public/admin/js/jquery-validation-1.13.0/jquery.validate.js"></script>
+<script>
+var oldEmails = eval("(" + {{json .map.oldEmails}} + ")");
+$(function() {
+	init_validator("#formContainer");
+	
+	$(".old-emails").change(function() {
+		var subject = $(this).val();
+		var body = oldEmails[subject];
+		if(subject) {
+			$("#latestEmailSubject").val(subject);
+			$("#latestEmailBody").val(body);
+			$("#saveAsOldEmail").prop("checked", false);
+		}
+	});
+	
+	$("#submit").click(function(e){
+			e.preventDefault();
+			var t = this;
+			if($("#formContainer").valid()) {
+				$(t).button('loading');
+				ajaxPost("/adminEmail/sendEmailToEmails", getFormJsonData("formContainer"), function(ret){
+					$(t).button('reset')
+					if(!ret.Ok) {
+						art.alert(ret.Msg)
+					} else {
+						art.tips("Success");
+					}
+				});
+			}
+		});
+});
+</script>
+
+{{template "admin/end.html" .}}

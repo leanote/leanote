@@ -7,7 +7,7 @@ LEA.cmroot = 1;
         option = $.extend({ alias: cmroot, width: 150 }, option);
         var ruleName = null, target = null,
 	    groups = {}, mitems = {}, actions = {}, showGroups = [],
-        itemTpl = '<div class="b-m-$[type]" unselectable="on"><div class="clearfix"><div class="b-m-icon pull-left"><i class="fa $[faIcon]"></i>$[imgIcon]</div><div class="pull-left"><span class="c-text" unselectable="on">$[text]</span></div></div></div>';
+        itemTpl = '<div class="b-m-$[type]" unselectable="on"><div class="clearfix cm-item"><div class="b-m-icon pull-left"><i class="fa $[faIcon]"></i>$[imgIcon]</div><div class="pull-left cm-text"><span class="c-text" unselectable="on">$[text]</span></div></div></div>';
 		itemNoIconTpl = "<div class='b-m-$[type]' unselectable=on><nobr unselectable=on><span align='absmiddle'></span><span class='c-text' unselectable=on>$[text]</span></nobr></div>";
         var gTemplet = $("<div/>").addClass("b-m-mpanel").attr("unselectable", "on").css("display", "none");
         var iTemplet = $("<div/>").addClass("b-m-item").attr("unselectable", "on");

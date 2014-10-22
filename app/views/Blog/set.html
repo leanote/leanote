@@ -1,11 +1,12 @@
 {{template "Blog/header.html" .}}
 
-<!--  -->
-<link rel="stylesheet" href="/tinymce/skins/custom/skin.min.css" type="text/css">
+<!-- set页面不是自定义域名和二级域名页  -->
+<link rel="stylesheet" href="{{.siteUrl}}/tinymce/skins/custom/skin.min.css" type="text/css">
 <style>
 .tab-pane {
 	padding-top: 10px;
 }
+
 </style>
 <div id="postsContainer">
 	<div id="posts">
@@ -20,9 +21,18 @@
 			<div class="tab-pane" id="styleInfo">
 				<form class="form-horizontal" role="form">
 					<div class="form-group">
-						<label for="Style" class="col-sm-2 control-label">{{msg . "theme"}}</label>
+						<label class="col-sm-2 control-label"></label>
 						<div class="col-sm-10">
-							<label><input type="radio" name="Style"
+							<div class="alert alert-success" id="styleMsg" style="display: none; margin-bottom: 3px;"></div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label for="Style" class="col-sm-2 control-label">{{msg . "theme"}}</label>
+						<div class="col-sm-10" style="margin-top: 6px;" id="themeList">
+							<label>
+							<img class="preview" src="{{$.siteUrl}}/images/blog/theme/default.png" />
+							<input type="radio" name="Style"
 								value="blog_default" 
 								{{if not .userBlog.Style}}
 									checked="checked"
@@ -31,53 +41,85 @@
 										checked="checked"
 									{{end}}
 								{{end}}>
-								{{msg . "default"}} </label> 
-								<label><input type="radio" name="Style"
+								{{msg . "default"}} 
+								</label> 
+								<label>
+								<img class="preview" src="{{$.siteUrl}}/images/blog/theme/elegent.png" />
+								<input type="radio" name="Style"
 								value="blog_daqi" 
 								{{if eq .userBlog.Style "blog_daqi"}}checked="checked"{{end}}>
-								{{msg . "elegant"}}</label>
-								<label><input type="radio" name="Style"
+								{{msg . "elegant"}}
+								</label>
+								<label>
+								<img class="preview"  src="{{$.siteUrl}}/images/blog/theme/left_nav_fix.png" />
+								<input type="radio" name="Style"
 								value="blog_left_fixed" 
 								{{if eq .userBlog.Style "blog_left_fixed"}}checked="checked"{{end}}>
-								{{msg . "navFixed"}}</label>
+								{{msg . "navFixed"}}
+								</label>
 						</div>
+					</div>
 						<div class="form-group">
 							<div class="col-sm-offset-2 col-sm-10">
 								<button class="btn btn-success">{{msg . "save"}}</button>
 								<span class="msg"></span>
 							</div>
 						</div>
-					</div>
 				</form>
 			</div>
 			<div class="tab-pane" id="commentInfo">
 				<form class="form-horizontal" role="form">
 					<div class="form-group">
-						<label for="subTitle" class="col-sm-2 control-label">{{msg . "openComment"}}</label>
+						<label class="col-sm-2 control-label"></label>
 						<div class="col-sm-10">
-							<input type="checkbox" id="CanComment" name="CanComment"
-								{{if .userBlog.CanComment}}checked="checked"{{end}} >
+							<div class="alert alert-success" id="commentMsg" style="display: none; margin-bottom: 3px;"></div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="subTitle" class="col-sm-2 control-label">{{msg . "chooseComment"}}</label>
+						<div class="col-sm-10">
+							<label>
+								<input type="checkbox" id="CanComment" name="CanComment"
+									{{if .userBlog.CanComment}}checked="checked"{{end}} > {{msg . "openComment"}}
+							</label>
+							
 							<br />
-							{{msg . "commentSys"}}
-							<div id="disqusSet">
-								<label for="DisqusId">Disqus Id</label> <input type="text"
-									class="form-control" style="display: inline; width: 50%"
-									id="DisqusId" name="DisqusId"
-									value="{{if .userBlog.DisqusId}}{{.userBlog.DisqusId}}{{else}}leanote{{end}}">
-								<br /> 
-								{{msg . "disqusHelp"}}
-								<a target="_blank" href="http://leanote.com/blog/view/52db8463e01c530ef8000001">{{msg . "needHelp"}}</a>)
+							
+							<div id="commentSet" {{if not .userBlog.CanComment}}style="display: none"{{end}}>
+								<label>
+									<input type="radio"
+										name="commentType"
+										value="default"
+										{{if or (not .userBlog.CommentType) (eq .userBlog.CommentType "default")}}checked="checked"{{end}} > Default
+								</label>
+									
+								<label>
+									<input type="radio" name="commentType" id="disqus"
+										value="disqus"
+										{{if eq .userBlog.CommentType "disqus"}}checked="checked"{{end}} > Disqus
+								</label>
+					
+								<div id="disqusSet" {{if not (eq .userBlog.CommentType "disqus")}}style="display: none"{{end}}>
+									<label for="DisqusId">Disqus Id</label> <input type="text"
+										class="form-control" style="display: inline; width: 50%"
+										id="DisqusId" name="DisqusId"
+										value="{{if .userBlog.DisqusId}}{{.userBlog.DisqusId}}{{else}}leanote{{end}}">
+									<br /> 
+									{{msg . "disqusHelp"}}
+									<a target="_blank" href="http://leanote.com/blog/view/52db8463e01c530ef8000001">{{msg . "needHelp"}}</a>
+								</div>
 							</div>
 						</div>
-						<div class="form-group">
-							<div class="col-sm-offset-2 col-sm-10">
-								<button class="btn btn-success">{{msg . "save"}}</button>
-								<span class="msg"></span>
-							</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<button class="btn btn-success">{{msg . "save"}}</button>
+							<span class="msg"></span>
 						</div>
 					</div>
 				</form>
 			</div>
+			
 			<div class="tab-pane active" id="baseInfo">
 				<div class="form-horizontal" role="form" id="userBlogForm">
 					<div class="form-group">
@@ -101,7 +143,7 @@
 						<div class="col-sm-10">
 							<input type="hidden" name="Logo" id="Logo"
 								value="{{.userBlog.Logo}}" />
-							<form id="formLogo" action="/file/uploadBlogLogo" method="post"
+							<form id="formLogo" action="{{$.siteUrl}}/file/uploadBlogLogo" method="post"
 								enctype="multipart/form-data" target="logoTarget"
 								onsubmit="inProgress()">
 								<input type="file" class="form-control" id="logo2" name="file"
@@ -126,7 +168,7 @@
 						<div class="col-sm-10">
 							<input type="text" class="form-control" id="SubTitle"
 								name="SubTitle" value="{{.userBlog.SubTitle}}"
-								placeholder="eg: leanote, {{msg $ "moto"}}">
+								placeholder="eg: leanote, Not Just A Notebook">
 						</div>
 					</div>
 
@@ -158,11 +200,11 @@
 
 	{{template "Blog/footer.html" .}}
 	
-	<script src="/js/common-min.js"></script>
-	
-	<script type="text/javascript" src="/tinymce/tinymce.min.js"></script>
+	<script src="{{.siteUrl}}/js/common-min.js"></script>
+	<script type="text/javascript" src="{{.siteUrl}}/tinymce/tinymce.min.js"></script>
 
 <script>
+var urlPrefix = "{{.siteUrl}}";
 $(function() {
 	tinymce.init({
 		selector : "#AboutMe",
@@ -197,12 +239,19 @@ $(function() {
 
 	$("#CanComment").click(function() {
 		if ($(this).is(":checked")) {
+			$("#commentSet").show();
+		} else {
+			$("#commentSet").hide();
+		}
+	});
+	
+	$("input[name='commentType']").click(function() {
+		if ($("input[name='commentType']:checked").val() == "disqus") {
 			$("#disqusSet").show();
 		} else {
 			$("#disqusSet").hide();
 		}
 	});
-	$("#CanComment").trigger("click").trigger("click"); // 恶心的想法
 	
 	
 	// 基本设置
@@ -219,7 +268,7 @@ $(function() {
 			$("#blogDesc").html(data.SubTitle);
 			$("#logo").html(data.Title);
 			if(data.Logo) {
-				$("#logo").html(t('<img src="?" />', data.Logo));
+				$("#logo").html(t('<img src="?" />', urlPrefix + "/" + data.Logo));
 			}
 		}, this);
 	});
@@ -228,18 +277,20 @@ $(function() {
 		e.preventDefault();
 		var data = {
 			CanComment : $("#CanComment").is(":checked"),
+			CommentType: $("input[name='commentType']:checked").val(),
 			DisqusId : $("#DisqusId").val(),
 		}	
 		post("/blog/setUserBlogComment", data, function(ret) {
 			showMsg2($("#commentInfo .msg"), "{{msg . "saveSuccess"}}", 2000);
 		}, this);
 	});
+	
 	// 主题
 	$("#styleInfo .btn-success").click(function(e) {
 		e.preventDefault();
 		var data = {
 			Style : $("input[name='Style']:checked").val()
-		}	
+		}
 		post("/blog/setUserBlogStyle", data, function(ret) {
 			showMsg2($("#styleInfo .msg"), "{{msg . "saveSuccess"}}", 2000);
 		}, this);
@@ -256,7 +307,7 @@ function inProgress() {
 function uploadFinish(ret) {
 	if (ret) {
 		if (ret.resultCode == '1') {
-			$("#logoImg img").attr("src", ret.filename).parent().show();
+			$("#logoImg img").attr("src", urlPrefix + "/" + ret.filename).parent().show();
 			$("#Logo").val(ret.filename);
 			return;
 		}
@@ -265,32 +316,6 @@ function uploadFinish(ret) {
 	}
 	// 上传出错
 	alert("上传出错");
-}
-
-function submit() {
-	var tpl = '<form action="/blog/setBlog" method="post"><input name="Title" value="?" />';
-	tpl += '<input name="SubTitle" value="?" />';
-	tpl += '<input name="Logo" value="?" />';
-	tpl += '<input name="CanComment" value="?" />';
-	tpl += '<input name="DisqusId" value="?" />';
-	tpl += '<input name="Style" value="?" />';
-	tpl += '<textarea name="AboutMe">?</textarea>';
-	tpl += "</form";
-	var data = {
-		Title : $("#Title").val(),
-		SubTitle : $("#SubTitle").val(),
-		Logo : $("#Logo").val(),
-		AboutMe : getEditorContent(),
-		CanComment : $("#CanComment").is(":checked"),
-		DisqusId : $("#DisqusId").val(),
-		Style : $("input[name='Style']:checked").val()
-	}
-	if (!data.DisqusId) {
-		data.DisqusId = "leanote";
-	}
-	$(t(tpl, data.Title, data.SubTitle, data.Logo,
-					data.CanComment, data.DisqusId, data.Style,
-					data.AboutMe)).submit();
 }
 </script>
 </div>

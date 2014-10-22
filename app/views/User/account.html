@@ -1,0 +1,272 @@
+<div class="modal-dialog modal-sm" id="accountInfoDialog">
+	<div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="modalTitle">{{msg . "accountSetting"}}</h4>
+      </div>
+      
+      {{if .userInfo.Email}}
+		<div class="modal-body">
+			<ul class="nav nav-tabs" id="infoTabs">
+			  <li class="active"><a href="#baseInfo" data-toggle="tab">{{msg . "basicInfo"}}</a></li>
+			  <li><a href="#emailInfo" data-toggle="tab">{{msg . "updateEmail"}}</a></li>
+			  <li><a href="#updatePwd" data-toggle="tab">{{msg . "updatePassword"}}</a></li>
+			</ul>
+			<div class="tab-content">
+			
+			  <div class="tab-pane active" id="baseInfo">
+			  	<form>
+	  				<div class="alert alert-danger" id="usernameMsg" style="display: none"></div>
+	  				<label for="username">{{msg . "setUsername"}}</label>
+				    <input type="text" class="form-control" id="username"
+				    	value="{{.userInfo.Username}}"
+				    	data-rules='[
+				    		{rule: "required", msg: "inputUsername"}, 
+				    		{rule: "noSpecialChars", msg: "noSpecialChars"},
+				    		{rule: "minLength", data: 4, msg: "minLength", msgData: 4}
+				    		]'
+				    	data-msg_target="#usernameMsg"
+				    />
+  					{{msg . "setUsernameTips" .userInfo.Email}}
+  			
+  					<div>
+					    <button id="usernameBtn" class="btn btn-success">{{msg . "submit"}}</button>
+				    </div>
+  			
+		  		</form>
+			  </div>
+			  
+			  <div class="tab-pane" id="emailInfo">
+			  	<form>
+			  		
+		  				{{msg . "currentEmail" .userInfo.Email}}
+		  				{{if .userInfo.Verified}}
+		  					<span class="label label-green">{{msg . "verified"}}</span>
+		  				{{else}}
+		  					<span class="label label-red">{{msg . "unVerified"}}</span>
+							<a class="raw nowToActive">{{msg . "verifiedNow"}}</a> 
+							{{msg . "or"}}
+							<a class="raw reSendActiveEmail">{{msg . "resendVerifiedEmail"}}</a> 
+		  				{{end}}
+		  				<br />
+		  				<label for="email">{{msg . "updateEmail"}}</label>
+		  				<div class="alert alert-danger" id="emailMsg" style="display: none" placeholder="New Email"></div>
+					    <input type="text" class="form-control" 
+					    	id="email" 
+					    	data-rules='[
+						    	{rule: "required", msg: "inputEmail"},
+						    	{rule: "email", msg: "errorEmail"}
+					    	]'
+					    	data-msg_target="#emailMsg"
+					    />
+					    {{msg . "updateEmailTips"}}
+		  			
+			  			<div>
+						    <button id="emailBtn" class="btn btn-success">{{msg . "sendVerifiedEmail"}}</button>
+						</div>
+		  		</form>
+			  </div>
+			  <div class="tab-pane" id="updatePwd">
+			  <form>
+				<div class="alert alert-danger" id="pwdMsg" style="display: none"></div>
+				
+				<div class="form-group">
+					<label class="control-label" for="oldPwd">{{msg . "oldPassword"}}</label>
+					 <input type="password" class="form-control" id="oldPwd" name="oldPwd"
+				    	data-rules='[
+					    	{rule: "required", msg: "inputPassword"}
+				    	]'
+				    	data-msg_target="#pwdMsg"
+				    />
+				</div>
+				<div class="form-group"> 
+					<label class="control-label" for="pwd">{{msg . "newPassword"}}</label>
+					<input type="password" class="form-control" id="pwd" name="pwd"
+					    data-rules='[
+					    	{rule: "required", msg: "inputNewPassword"},
+					    	{rule: "password", msg: "errorPassword"}
+				    	]'
+				    	data-msg_target="#pwdMsg"
+				    >
+					{{msg . "passwordTips"}}
+				</div>
+				<div class="form-group"> 
+					<label class="control-label" for="pwd2">{{msg . "password2"}}</label>
+					 <input type="password" class="form-control" id="pwd2" name="pwd2"
+					    data-rules='[
+					    	{rule: "required", msg: "inputPassword2"},
+					    	{rule: "equalTo", data:"#pwd", msg: "confirmPassword"}
+				    	]'
+				    	data-msg_target="#pwdMsg"
+				    />
+				</div>
+				
+				<button id="pwdBtn" class="btn btn-success">{{msg . "submit"}}</button>
+				</form>
+			  </div>
+			</div>
+		</div>
+		{{else}}
+		<div class="modal-body">
+			<ul class="nav nav-tabs" id="thirdMyTabs">
+			  <li class="active"><a href="#accountInfo" data-toggle="tab">{{msg . "createAccount"}}</a></li>
+			</ul>
+			<div class="tab-content">
+			  <div class="tab-pane active" id="accountInfo">
+			  {{msg . "thirdCreateAcountTips"}}
+			  <form>
+				<div class="alert alert-danger" id="thirdAccountMsg" style="display: none"></div> 
+				<div class="form-group">
+					<label class="control-label" for="thirdEmail">{{msg . "email"}}</label>
+					<input type="text" class="form-control" id="thirdEmail" name="email"
+						data-rules='[
+					    	{rule: "required", msg: "inputEmail"},
+					    	{rule: "email", msg: "errorEmail"}
+				    	]'
+				    	data-msg_target="#thirdAccountMsg"
+					> 
+				</div>
+				<div class="form-group"> 
+					<label class="control-label" for="thirdPwd">{{msg . "password"}}</label>
+					<input type="password" class="form-control" id="thirdPwd" name="pwd"
+					  data-rules='[
+					    	{rule: "required", msg: "inputPassword"},
+					    	{rule: "password", msg: "errorPassword"}
+				    	]'
+				    	data-msg_target="#thirdAccountMsg"
+					/>
+					{{msg . "passwordTips"}} 
+				</div>
+				<div class="form-group"> 
+					<label class="control-label" for="thirdPwd2">{{msg . "password2"}}</label>
+					<input type="password" class="form-control" id="thirdPwd2" name="pwd2" 
+					 	data-rules='[
+					    	{rule: "required", msg: "inputPassword2"},
+					    	{rule: "equalTo", data:"#thirdPwd", msg: "confirmPassword"}
+				    	]'
+				    	data-msg_target="#thirdAccountMsg"
+					>
+				</div>
+				
+				<button id="accountBtn" class="btn btn-success">{{msg . "submit"}}</button>
+				</form>
+			  </div>
+			</div>
+		</div>
+		{{end}}
+		
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">{{msg . "close"}}</button>
+		</div>
+	</div>
+</div>
+
+<script>
+$('#infoTabs a').eq({{.tab}}).tab('show');
+
+//--------------
+// 第三方账号设置
+var acountVd = new vd.init("#accountInfo");
+$("#accountInfoDialog").on("click", "#accountBtn", function(e) {
+	e.preventDefault();
+	if(!acountVd.valid()) {
+		return;
+	}
+	var email = $("#thirdEmail").val();
+	var pwd = $("#thirdPwd").val();
+	var pwd2 = $("#thirdPwd2").val();
+	post("/user/addAccount", {email: email, pwd: pwd}, function(ret) {
+		if(ret.Ok) {
+			showAlert("#thirdAccountMsg", getMsg("createAccountSuccess"), "success");
+			UserInfo.Email = email;
+			$("#curEmail").html(email);
+			hideDialogRemote(1000);
+		} else {
+			showAlert("#thirdAccountMsg", ret.Msg || getMsg("createAccountFailed"), "danger");
+		}
+	}, this);
+});
+
+//-------------
+var usernameVd = new vd.init("#baseInfo");
+$("#usernameBtn").click(function(e) {
+	e.preventDefault();
+	
+	if(!usernameVd.valid()) {
+		return;
+	}
+	var username = $("#username").val();
+	post("/user/updateUsername", {username: username}, function(ret) {
+		if(ret.Ok) {
+			UserInfo.UsernameRaw = username;
+			UserInfo.Username = username.toLowerCase();
+			$(".username").html(username);
+			showAlert('#usernameMsg', getMsg("updateUsernameSuccess"), "success");
+		} else {
+			showAlert('#usernameMsg', ret.Msg || getMsg("usernameIsExisted"), "danger");
+		}
+	}, "#usernameBtn");
+	
+});
+
+// 修改邮箱
+var emailVd = new vd.init("#emailInfo");
+$("#emailBtn").click(function(e) {
+	e.preventDefault();
+	if(!emailVd.valid()) {
+		return;
+	}
+	var email = $("#email").val();
+	post("/user/updateEmailSendActiveEmail", {email: email}, function(e) {
+		if(e.Ok) {
+			var url = getEmailLoginAddress(email);
+			showAlert("#emailMsg", getMsg("verifiedEmaiHasSent") +" <a href='" + url + "' target='_blank'>" + getMsg("checkEmail") + "</a>", "success");
+		} else {
+			showAlert("#emailMsg", e.Msg || getMsg("emailSendFailed"), "danger");
+		}
+	}, "#emailBtn");
+});
+
+// 修改密码
+var updatePwdVd = new vd.init("#updatePwd");
+$("#pwdBtn").click(function(e) {
+	e.preventDefault();
+	if(!updatePwdVd.valid()) {
+		return;
+	}
+	var oldPwd = $("#oldPwd").val();
+	var pwd = $("#pwd").val();
+	post("/user/updatePwd", {oldPwd: oldPwd, pwd: pwd}, function(e) {
+		if(e.Ok) {
+			showAlert("#pwdMsg", getMsg("updatePasswordSuccess"), "success");
+		} else {
+			showAlert("#pwdMsg", e.Msg, "danger");
+		}
+	}, "#pwdBtn");
+});
+
+// 重新发送
+$(".reSendActiveEmail").click(function() {
+	// 弹框出来
+	showDialog("reSendActiveEmailDialog", {title: getMsg("sendVerifiedEmail"), postShow: function() {
+		ajaxGet("/user/reSendActiveEmail", {}, function(ret) {
+			if (typeof ret == "object" && ret.Ok) {
+				$("#leanoteDialog .text").html(getMsg("sendSuccess"))
+				$("#leanoteDialog .viewEmailBtn").removeClass("disabled");
+				$("#leanoteDialog .viewEmailBtn").click(function() {
+					hideDialog();
+					var url = getEmailLoginAddress(UserInfo.Email);
+					window.open(url, "_blank");
+				});
+			} else {
+				$("#leanoteDialog .text").html(getMsg("sendFailed"))
+			}
+		});
+	}});
+});
+// 现在去验证
+$(".nowToActive").click(function() {
+	var url = getEmailLoginAddress(UserInfo.Email);
+	window.open(url, "_blank");
+});
+</script>

@@ -1,14 +1,20 @@
-package lea
+package route
 
 import (
 	"github.com/revel/revel"
+//	"github.com/leanote/leanote/app/service"
+//	. "github.com/leanote/leanote/app/lea"
 	"net/url"
 	"strings"
 )
 
 // overwite revel RouterFilter
 // /api/user/Info => ApiUser.Info()
+var staticPrefix = []string{"/public", "/favicon.ico", "/css", "/js", "/images", "/tinymce", "/upload", "/fonts"}
 func RouterFilter(c *revel.Controller, fc []revel.Filter) {
+	// 补全controller部分
+	path := c.Request.Request.URL.Path
+	
 	// Figure out the Controller/Action
 	var route *revel.RouteMatch = revel.MainRouter.Route(c.Request.Request)
 	if route == nil {
@@ -24,12 +30,25 @@ func RouterFilter(c *revel.Controller, fc []revel.Filter) {
 	
 	//----------
 	// life start
-	path := c.Request.Request.URL.Path
-	// Log(c.Request.Request.URL.Host)
-	if strings.HasPrefix(path, "/api") || strings.HasPrefix(path, "api") {
-		route.ControllerName = "Api" + route.ControllerName
+	/*
+	type URL struct {
+	    Scheme   string
+	    Opaque   string    // encoded opaque data
+	    User     *Userinfo // username and password information
+	    Host     string    // host or host:port
+	    Path     string
+	    RawQuery string // encoded query values, without '?'
+	    Fragment string // fragment for references, without '#'
 	}
-	// end
+	*/
+	if route.ControllerName != "Static" {
+		// api设置
+		// leanote.com/api/user/get => ApiUser::Get
+		if strings.HasPrefix(path, "/api/") || strings.HasPrefix(path, "api/") {
+			route.ControllerName = "Api" + route.ControllerName
+		}
+		// end
+	}
 	
 	// Set the action.
 	if err := c.SetAction(route.ControllerName, route.MethodName); err != nil {

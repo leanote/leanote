@@ -1,15 +1,15 @@
 {{template "admin/top.html" .}}
-	<div class="m-b-md"> <h3 class="m-b-none">Workset</h3> <small>Welcome you!</small> </div>
+	<div class="m-b-md"> <h3 class="m-b-none">Dashboard</h3></div>
 	<section class="panel panel-default"> 
 		<div class="row m-l-none m-r-none bg-light lter"> 
 			<div class="col-sm-6 col-md-3 padder-v b-r b-light"> 
 				<span class="fa-stack fa-2x pull-left m-r-sm"> 
 					<i class="fa fa-circle fa-stack-2x text-info"></i> 
-					<i class="fa fa-male fa-stack-1x text-white"></i> 
+					<i class="fa fa-users fa-stack-1x text-white"></i> 
 				</span> 
-				<a class="clear" href="#"> 
-					<span class="h3 block m-t-xs"><strong>52,000</strong></span> 
-					<small class="text-muted text-uc">users</small> 
+				<a class="clear" href="/adminUser/index"> 
+					<span class="h3 block m-t-xs"><strong>{{.countUser}}</strong></span> 
+					<small class="text-muted text-uc">Users</small> 
 				</a> 
 			</div> 
 			<div class="col-sm-6 col-md-3 padder-v b-r b-light lt"> 
@@ -17,11 +17,21 @@
 					<i class="fa fa-circle fa-stack-2x text-warning"></i> 
 					<i class="fa fa-file-o fa-stack-1x text-white"></i> 
 				</span> 
-				<a class="clear" href="#"> 
-					<span class="h3 block m-t-xs"><strong>1312,000</strong></span> 
-					<small class="text-muted text-uc">notes</small> 
+				<a class="clear" href="javascript:;"> 
+					<span class="h3 block m-t-xs"><strong>{{.countNote}}</strong></span> 
+					<small class="text-muted text-uc">Notes</small> 
 				</a> 
 			</div>
+			<div class="col-sm-6 col-md-3 padder-v b-r b-light"> 
+				<span class="fa-stack fa-2x pull-left m-r-sm"> 
+					<i class="fa fa-circle fa-stack-2x text-info"></i> 
+					<i class="fa fa-bold fa-stack-1x text-white"></i> 
+				</span> 
+				<a class="clear" href="/adminBlog/index"> 
+					<span class="h3 block m-t-xs"><strong>{{.countBlog}}</strong></span> 
+					<small class="text-muted text-uc">Blogs</small> 
+				</a> 
+			</div> 
 		</div>
 	</section>
 
@@ -30,51 +40,10 @@
 		<h4 class="font-thin padder">
 			Leanote Events
 		</h4>
-		<ul class="list-group">
-			<li class="list-group-item">
-				<p>
-					Wellcome
-					<a href="#" class="text-info">
-						@Drew Wllon
-					</a>
-					and play this web application template, have fun1
-				</p>
-				<small class="block text-muted">
-					<i class="fa fa-clock-o">
-					</i>
-					2 minuts ago
-				</small>
-			</li>
-			<li class="list-group-item">
-				<p>
-					Morbi nec
-					<a href="#" class="text-info">
-						@Jonathan George
-					</a>
-					nunc condimentum ipsum dolor sit amet, consectetur
-				</p>
-				<small class="block text-muted">
-					<i class="fa fa-clock-o">
-					</i>
-					1 hour ago
-				</small>
-			</li>
-			<li class="list-group-item">
-				<p>
-					<a href="#" class="text-info">
-						@Josh Long
-					</a>
-					Vestibulum ullamcorper sodales nisi nec adipiscing elit.
-				</p>
-				<small class="block text-muted">
-					<i class="fa fa-clock-o">
-					</i>
-					2 hours ago
-				</small>
-			</li>
-		</ul>
+		<ul class="list-group" id="eventsList"></ul>
 	</section>
 	
+	<!--
 	<section class="panel panel-default">
 		<form>
 			<textarea class="form-control no-border" rows="3" placeholder="Suggestions to leanote"></textarea>
@@ -84,23 +53,32 @@
 				POST
 			</button>
 			<ul class="nav nav-pills nav-sm">
-			<!--
-				<li>
-					<a href="#">
-						<i class="fa fa-camera text-muted">
-						</i>
-					</a>
-				</li>
-				<li>
-					<a href="#">
-						<i class="fa fa-video-camera text-muted">
-						</i>
-					</a>
-				</li>
-			</ul>
-			-->
 		</footer>
 	</section>	
+	-->
 	
 {{template "admin/footer.html" .}}
+<script>
+$(function() {
+	// leanote动态
+	// http://leanote.com/blog/cate/5446753cfacfaa4f56000000
+	var url = "http://localhost:9000/blog/listCateLatest/54269c83e5276724ac000000";
+	function renderItem(item) {
+		return '<li class="list-group-item"><p><a target="_blank" href="http://leanote.com/blog/view/' + item.NoteId + '">' + item.Title + '</a></p><small class="block text-muted"><i class="fa fa-clock-o"></i> ' + goNowToDatetime(item.PublicTime) + '</small></li>';
+	}
+	$.getJSON(url, function(data) {
+		log(data);
+		if(typeof data == "object" && data.Ok) {
+			var list = data.List;
+			var html = "";
+			for(var i = 0; i < list.length; ++i) {
+				var item = list[i];
+				html += renderItem(item);
+			}
+			$("#eventsList").html(html);
+		}
+	});
+});
+
+</script>
 {{template "admin/end.html" .}}

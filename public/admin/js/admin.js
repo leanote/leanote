@@ -25,7 +25,7 @@ function openDialog(config) {
 	var d = art.dialog(config);
 	
 	if(config.url) {
-		ajaxGetHtml(config.url, {}, function(ret) {
+		$.get(config.url, {}, function(ret) {
 			d.content(ret);
 		});
 	}
@@ -256,6 +256,18 @@ function enter_submit(btnId) {
 	if(theEvent.keyCode == 13||theEvent.keyCode == 108) {
 		$(btnId).trigger('click');
 	}
+}
+
+// send email dialog
+function openSendEmailDialog(emails) {
+	openDialog({width: 500,  url: "/adminEmail/sendEmailDialog?emails=" + emails, title: "Send Email"});
+}
+
+function goNowToDatetime(goNow) {
+	if(!goNow) {
+		return "";
+	}
+	return goNow.substr(0, 10) + " " + goNow.substr(11, 8);
 }
 
 !function ($) {

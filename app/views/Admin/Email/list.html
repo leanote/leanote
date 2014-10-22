@@ -1,0 +1,191 @@
+{{template "admin/top.html" .}}
+<div class="m-b-md"> <h3 class="m-b-none">Email Logs</h3></div>
+
+<section class="panel panel-default">
+	<div class="row wrapper">
+		<div class="col-sm-5 m-b-xs">
+			<button class="btn btn-sm btn-default bulk-send">
+				Send
+			</button>
+			<button class="btn btn-sm btn-default bulk-delete">
+				Delete
+			</button>
+		</div>
+		<div class="col-sm-4 m-b-xs">
+			
+		</div>
+		<div class="col-sm-3">
+			<div class="input-group search-group">
+				<input type="text" class="input-sm form-control" placeholder="Email" id="keywords" value="{{.keywords}}" />
+				<span class="input-group-btn">
+					<button class="btn btn-sm btn-default" type="button" data-url="/adminEmail/list">Search</button>
+				</span>
+			</div>
+		</div>
+	</div>
+	<div class="table-responsive">
+		<table class="table table-striped b-t b-light">
+			<thead>
+				<tr>
+					<th width="20">
+						<input type="checkbox">
+					</th>
+					{{$url := urlConcat "/adminEmail/list" "keywords" .keywords}}
+					<th 
+					{{sorterTh $url "email" .sorter}}
+					>
+						Email
+						<span class="th-sort">
+							<i class="fa fa-sort-down"></i>
+							<i class="fa fa-sort-up"></i>
+							<i class="fa fa-sort"></i>
+						</span>
+					</th>
+					<th
+					{{sorterTh $url "subject" .sorter}}
+					>
+						Subject
+						<span class="th-sort">
+							<i class="fa fa-sort-down"></i>
+							<i class="fa fa-sort-up"></i>
+							<i class="fa fa-sort"></i>
+						</span>
+					</th>
+					<th
+					{{sorterTh $url "ok" .sorter}}
+					>
+						Ok
+						<span class="th-sort">
+							<i class="fa fa-sort-down"></i>
+							<i class="fa fa-sort-up"></i>
+							<i class="fa fa-sort"></i>
+						</span>
+					</th>
+					<th
+					{{sorterTh $url "msg" .sorter}}
+					>
+						Msg
+						<span class="th-sort">
+							<i class="fa fa-sort-down"></i>
+							<i class="fa fa-sort-up"></i>
+							<i class="fa fa-sort"></i>
+						</span>
+					</th>
+					<th
+					{{sorterTh $url "createdTime" .sorter}}
+					>
+						Date
+						<span class="th-sort">
+							<i class="fa fa-sort-down"></i>
+							<i class="fa fa-sort-up"></i>
+							<i class="fa fa-sort"></i>
+						</span>
+					</th>
+					<th>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range .emails}}
+				<tr id="tr_{{.LogId.Hex}}">
+					<td>
+						<input type="checkbox" class="ck" data-email="{{.Email}}" data-id="{{.LogId.Hex}}">
+					</td>
+					<td>
+						{{.Email}}
+					</td>
+					<td>
+						{{.Subject}}
+					</td>
+					<td>
+						{{.Ok}}
+					</td>
+					<td>
+						{{.Msg}}
+					</td>
+					<td>
+						{{.CreatedTime|datetime}}
+					</td>
+					<td>
+						<a href="#" class="btn btn-default send-email" data-email="{{.Email}}">Send</a>
+						<a href="#" class="btn btn-default delete-email" data-id="{{.LogId.Hex}}">Delete</a>
+					</td>
+				</tr>
+				{{end}}
+			</tbody>
+		</table>
+	</div>
+	<footer class="panel-footer">
+		<div class="row">
+			<div class="col-sm-4 hidden-xs">
+				<button class="btn btn-sm btn-default bulk-send">
+					Send
+				</button>
+				<button class="btn btn-sm btn-default bulk-delete">
+					Delete
+				</button>
+			</div>
+			<div class="col-sm-4 text-right text-center-xs">
+				{{set . "url" (urlConcat "/adminEmail/list" "sorter" .sorter "keywords" .keywords)}}
+				{{template "admin/user/page.html" .}}
+			</div>
+		</div>
+	</footer>
+</section>
+	
+{{template "admin/footer.html" .}}
+
+<script>
+$(function() {
+	$(".send-email").click(function() {
+		openSendEmailDialog($(this).data("email"));
+	});
+	$(".bulk-send").click(function() {
+		var emails = [];
+		$(".ck:checked").each(function() {
+			emails.push($(this).data("email"));
+		});
+		if(emails.length == 0) {
+			art.alert("No user");
+			return;
+		}
+		openSendEmailDialog(emails.join(","));
+	});
+	
+	function deleteEmails(ids) {
+		if(!isArray(ids)) {
+			ids = [ids];
+		}
+		ajaxPost("/adminEmail/deleteEmails", {ids: ids.join(",")}, function(ret) {
+			if(ret.Ok) {
+				if(ids.length > 8) {
+					location.reload();
+				}
+				for(var i in ids) {
+					$("#tr_" + ids[i]).remove();
+				}
+			}
+		});
+	}
+	
+	$(".delete-email").click(function() {
+		var id = $(this).data('id');
+		deleteEmails(id);
+	});
+	
+	$(".bulk-delete").click(function() {
+		var ids = [];
+		$(".ck:checked").each(function() {
+			ids.push($(this).data("id"));
+		});
+		if(ids.length == 0) {
+			art.alert("No email");
+			return;
+		}
+		deleteEmails(ids);
+		
+	});
+});
+</script>
+
+{{template "admin/end.html" .}}

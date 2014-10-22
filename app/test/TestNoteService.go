@@ -189,7 +189,8 @@ func testLea() {
 
 func main() {
 	revel.BasePath = "/Users/life/Documents/Go/package/src/leanote"
-	testLea();
+	// testLea();
+	
 //	a, b := SplitFilename("http://ab/c/a.gif#??")
 //	println(a)
 //	println(b)

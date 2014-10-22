@@ -1,19 +1,16 @@
 package service
 
 import (
-	"github.com/revel/revel"
 	"github.com/leanote/leanote/app/info"
 	"github.com/leanote/leanote/app/db"
 	. "github.com/leanote/leanote/app/lea"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 	"strings"
-	"fmt"
 )
 
 type UserService struct {
 }
-
 
 // 添加用户
 func (this *UserService) AddUser(user info.User) bool {
@@ -27,7 +24,9 @@ func (this *UserService) AddUser(user info.User) bool {
 		
 		// 发送验证邮箱
 		go func() {
-			this.RegisterSendActiveEmail(user.UserId.Hex(), user.Email)
+			emailService.RegisterSendActiveEmail(user, user.Email)
+			// 发送给我 life@leanote.com
+			emailService.SendEmail("life@leanote.com", "新增用户", "{header}用户名" + user.Email + "{footer}");
 		}();
 	}
 	
@@ -69,10 +68,23 @@ func (this *UserService) GetUserInfoByAny(idEmailUsername string) info.User {
 	return this.GetUserInfoByUsername(idEmailUsername)
 }
 
+func (this *UserService) setUserLogo(user *info.User) {
+	// Logo路径问题, 有些有http: 有些没有
+	if user.Logo == "" {
+		user.Logo = "images/blog/default_avatar.png"
+	}
+	if user.Logo != "" && !strings.HasPrefix(user.Logo, "http") {
+		user.Logo = strings.Trim(user.Logo, "/")
+		user.Logo = siteUrl + "/" + user.Logo
+	}	
+}
+
 // 得到用户信息 userId
 func (this *UserService) GetUserInfo(userId string) info.User {
 	user := info.User{}
 	db.Get(db.Users, userId, &user)
+	// Logo路径问题, 有些有http: 有些没有
+	this.setUserLogo(&user)
 	return user
 }
 // 得到用户信息 email
@@ -99,28 +111,26 @@ func (this *UserService) ListUserInfosByUserIds(userIds []bson.ObjectId) []info.
 	db.ListByQ(db.Users, bson.M{"_id": bson.M{"$in": userIds}}, &users)
 	return users
 }
-// 用户信息和博客设置信息
-func (this *UserService) MapUserInfoAndBlogInfosByUserIds(userIds []bson.ObjectId) map[bson.ObjectId]info.User {
+func (this *UserService) ListUserInfosByEmails(emails []string) []info.User {
+	users := []info.User{}
+	db.ListByQ(db.Users, bson.M{"Email": bson.M{"$in": emails}}, &users)
+	return users
+}
+// 用户信息即可
+func (this *UserService) MapUserInfoByUserIds(userIds []bson.ObjectId) map[bson.ObjectId]info.User {
 	users := []info.User{}
 	db.ListByQ(db.Users, bson.M{"_id": bson.M{"$in": userIds}}, &users)
 	
-	userBlogs := []info.UserBlog{}
-	db.ListByQWithFields(db.UserBlogs, bson.M{"_id": bson.M{"$in": userIds}}, []string{"Logo"}, &userBlogs)
-	
-	userBlogMap := make(map[bson.ObjectId]info.UserBlog, len(userBlogs))
-	for _, user := range userBlogs {
-		userBlogMap[user.UserId] = user
-	}
-	
 	userMap := make(map[bson.ObjectId]info.User, len(users))
 	for _, user := range users {
-		if userBlog, ok := userBlogMap[user.UserId]; ok {
-			user.Logo = userBlog.Logo
-		}
+		this.setUserLogo(&user)
 		userMap[user.UserId] = user
 	}
-	
 	return userMap
+}
+// 用户信息和博客设置信息
+func (this *UserService) MapUserInfoAndBlogInfosByUserIds(userIds []bson.ObjectId) map[bson.ObjectId]info.User {
+	return this.MapUserInfoByUserIds(userIds)
 }
 
 // 通过ids得到users, 按id的顺序组织users
@@ -174,6 +184,12 @@ func (this *UserService) UpdateUsername(userId, username string) (bool, string) 
 	return ok, ""
 }
 
+// 修改头像
+func (this *UserService) UpdateAvatar(userId, avatarPath string) (bool) {
+	userIdO := bson.ObjectIdHex(userId)
+	return db.UpdateByQField(db.Users, bson.M{"_id": userIdO}, "Logo", avatarPath)
+}
+
 //----------------------
 // 已经登录了的用户修改密码
 func (this *UserService) UpdatePwd(userId, oldPwd, pwd string) (bool, string) {
@@ -193,59 +209,6 @@ func (this *UserService) UpdateTheme(userId, theme string) (bool) {
 
 //---------------
 // 修改email
-
-// 发送激活邮件
-
-// AddUser调用
-// 可以使用一个goroutine
-func (this *UserService) RegisterSendActiveEmail(userId string, email string) bool {
-	token := tokenService.NewToken(userId, email, info.TokenActiveEmail)
-	
-	if token == "" {
-		return false
-	}
-	
-	// 发送邮件
-	siteUrl, _ := revel.Config.String("site.url")
-	url := siteUrl + "/user/activeEmail?token=" + token
-	body := fmt.Sprintf("请点击链接验证邮箱: <a href='%v'>%v</a>. %v小时后过期.", url, url, tokenService.GetOverHours(info.TokenActiveEmail));
-	if !SendEmail(email, "leanote-验证邮箱", "验证邮箱", body) {
-		return false
-	}
-	
-	// 发送给我 life@leanote.com
-	SendEmail("life@leanote.com", "新增用户", "新增用户", "用户名" + email);
-	
-	return true
-}
-
-// 修改邮箱
-func (this *UserService) UpdateEmailSendActiveEmail(userId, email string) (ok bool, msg string) {
-	// 先验证该email是否被注册了
-	if userService.IsExistsUser(email) {
-		ok = false
-		msg = "该邮箱已注册"
-		return
-	}
-
-	token := tokenService.NewToken(userId, email, info.TokenUpdateEmail)
-	
-	if token == "" {
-		return
-	}
-	
-	// 发送邮件
-	siteUrl, _ := revel.Config.String("site.url")
-	url := siteUrl + "/user/updateEmail?token=" + token
-	body := "邮箱验证后您的登录邮箱为: <b>" + email + "</b><br />";
-	body += fmt.Sprintf("请点击链接验证邮箱: <a href='%v'>%v</a>. %v小时后过期.", url, url, tokenService.GetOverHours(info.TokenUpdateEmail));
-	if !SendEmail(email, "leanote-验证邮箱", "验证邮箱", body) {
-		msg = "发送失败, 该邮箱存在?"
-		return 
-	}
-	ok = true
-	return
-}
 
 // 注册后验证邮箱
 func (this *UserService) ActiveEmail(token string) (ok bool, msg, email string) {
@@ -308,13 +271,13 @@ func (this *UserService) ThirdAddUser(userId, email, pwd string) (ok bool, msg s
 	return
 }
 
-
 //------------
 // 偏好设置
 
 // 宽度
-func (this *UserService)UpdateColumnWidth(userId string, notebookWidth, noteListWidth int) bool {
-	return db.UpdateByQMap(db.Users, bson.M{"_id": bson.ObjectIdHex(userId)}, bson.M{"NotebookWidth": notebookWidth, "NoteListWidth": noteListWidth})
+func (this *UserService)UpdateColumnWidth(userId string, notebookWidth, noteListWidth, mdEditorWidth int) bool {
+	return db.UpdateByQMap(db.Users, bson.M{"_id": bson.ObjectIdHex(userId)}, 
+	bson.M{"NotebookWidth": notebookWidth, "NoteListWidth": noteListWidth, "mdEditorWidth": mdEditorWidth})
 }
 // 左侧是否隐藏
 func  (this *UserService)UpdateLeftIsMin(userId string, leftIsMin bool) bool {
@@ -340,4 +303,48 @@ func (this *UserService) ListUsers(pageNumber, pageSize int, sortField string, i
 		All(&users)
 	page = info.NewPage(pageNumber, pageSize, count, nil)
 	return
+}
+
+func (this *UserService) GetAllUserByFilter(userFilterEmail, userFilterWhiteList, userFilterBlackList string, verified bool) []info.User {
+	query := bson.M{}
+	
+	if verified {
+		query["Verified"] = true
+	}
+	
+	orQ := []bson.M{}
+	if userFilterEmail != "" {
+		orQ = append(orQ, bson.M{"Email": bson.M{"$regex": bson.RegEx{".*?" + userFilterEmail + ".*", "i"}}}, 
+			bson.M{"Username": bson.M{"$regex": bson.RegEx{".*?" + userFilterEmail + ".*", "i"}}},
+		)
+	}
+	if(userFilterWhiteList != "") {
+		userFilterWhiteList = strings.Replace(userFilterWhiteList, "\r", "", -1)
+		emails := strings.Split(userFilterWhiteList, "\n");
+		orQ = append(orQ, bson.M{"Email": bson.M{"$in": emails}})
+	}
+	if len(orQ) > 0 {
+		query["$or"] = orQ
+	}
+	
+	emailQ := bson.M{}
+	if(userFilterBlackList != "") {
+		userFilterWhiteList = strings.Replace(userFilterBlackList, "\r", "", -1)
+		bEmails := strings.Split(userFilterBlackList, "\n");
+		emailQ["$nin"] = bEmails
+		query["Email"] = emailQ
+	}
+
+	LogJ(query)
+	users := []info.User{}
+	q := db.Users.Find(query);
+	q.All(&users)
+	Log(len(users))
+	
+	return users
+}
+
+// 统计 
+func (this *UserService) CountUser() int {
+	return db.Count(db.Users, bson.M{})
 }

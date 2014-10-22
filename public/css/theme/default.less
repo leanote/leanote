@@ -65,7 +65,6 @@ a.raw:hover {
   li a {
 	  color: @aBlackColor;
   }
-  border-bottom: 1px solid @borderColor;
 
   /* for app */
   webkit-user-select: none; /* 还不知 */
@@ -81,8 +80,6 @@ a.raw:hover {
   	//background-color: #41586e; // #374b5e; // #65bd77;
 	padding-left: 10px;
 	padding-top: 0px;
-	border-bottom: 1px solid transparent;
-	border-color: rgba(255, 255, 255, 0.1);
 	//color: #ccc;
 }
 #logo span{
@@ -227,15 +224,7 @@ a.raw:hover {
   padding-top: 100px;
   z-index: 1000;
 }
-.noteSplit {
-  position: absolute;
-  top: 0;
-  width: 5px;
-  height: 100%;
-  overflow: hidden;
-  z-index: 5;
-  cursor: col-resize;
-}
+
 #notebookSplitter {
   left: @leftNotebookWidth;
 }
@@ -543,88 +532,7 @@ a.raw:hover {
   float: right;
 }
 
-/* item list */
-#noteItemList {
-  position: absolute;
-  left:0;
-  right:0;
-  bottom: 0;
-  top: 0;
-  width: 100%;
-  overflow-y: hidden;
-  background-color: #f7f7f7;
-  padding: 0 5px;
-}
-#noteItemList .item {
-  position: relative;
-  height: 110px;
-  overflow: hidden;
-  cursor: pointer;
-  padding: 5px;
-  border: 1px solid @borderColor;
-  border-radius: 3px;
-  margin-top: 5px;
-  background-color: #fff;
-}
 
-#noteItemList .item:hover, 
-#noteItemList .contextmenu-hover {
-  background-color: #ddd !important;
-  color: @aBlackColor;
-  .item-title {
-    // color: @aBlackColor;
-    //font-weight: 800;
-  }
-}
-
-.item-active, #noteItemList .item-active:hover {
-  background-color: @noteActiveBg !important; // #eee;/*@bgColor*/;
-  color: #fff;
-  .item-desc .fa {
-	 color: #eee !important;
-  }
-  .item-title {
-    color: #fff;
-    // font-weight: 800;
-  }
-}
-
-#noteItemList .item-thumb  {
-  width: 100px; 
-  height: 100px; 
-  overflow: hidden;
-  position: absolute; 
-  z-index: 1;
-  right: 0px;
-  height: 100px;
-  background-color: #fff;
-  margin-right: 5px;
-  line-height: 100px;
-  text-align: center;
-}
-  .item-thumb img {
-     max-width: 100px;
-  }
-#noteItemList .item-desc {
-  position: absolute; 
-  left: 0;
-  right: 100px;
-  margin-left: 4px;
-  .fa { // folder, calender 颜色暗些
-  	color: #666;
-  }
-}
-
-.item-title {
-    /*font-weight: 400;*/
-    font-size: 16px;
-    height: 22px;
-    line-height: 20px;
-    overflow: hidden;
-    margin-bottom: 0px;
-    color: @aBlackColor;
-    border-bottom: dashed 1px @borderColor;
-  }
   
 /* note */
 #noteTop {
@@ -658,26 +566,7 @@ a.raw:hover {
   outline: none !important;
   // border: 1px solid @hColor;
 }
-#editorMask {
-	position: absolute; top: 0px; bottom: 0px; right: 0; left: 0; 
-	background-color: #fff;
-	z-index: -10;
-	.fa, a {
-		font-size: 24px;
-	}
-	padding-top: 50px;
-	text-align: center;
-	a {
-		display: inline-block;
-		border-radius: 3px;
-		border: 1px solid @borderColor;
-		padding: 10px;
-		&:hover {
-			background-color: @noteActiveBg;
-			color: #fff;
-		}
-	}
-}
+
 #editor, #mdEditor{
   position: absolute; 
   z-index: 2;
@@ -1066,11 +955,6 @@ background-position:-1px -670px
 	cursor: default;
 }
 
-// 顶部导航, 博客
-#topNav a {
-	display: inline-block;
-	line-height: 60px;
-}
 
 .tab-pane {
 	padding: 5px 0 0 0;
@@ -1164,3 +1048,5 @@ background-position:-1px -670px
 	opacity: 0.8; 
 	filter:alpha(opacity=80)
 }
+
+@import "mobile.less";

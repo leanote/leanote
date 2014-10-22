@@ -126,12 +126,20 @@ func (this *NoteService) AddNote(note info.Note) info.Note {
 	note.UpdatedUserId = note.UserId
 	
 	// 设为blog
-	note.IsBlog = notebookService.IsBlog(note.NotebookId.Hex())
+	notebookId := note.NotebookId.Hex()
+	note.IsBlog = notebookService.IsBlog(notebookId)
+	
+	if note.IsBlog {
+		note.PublicTime = note.UpdatedTime
+	}
 	
 	db.Insert(db.Notes, note)
 	
 	// tag1
 	tagService.AddTags(note.UserId.Hex(), note.Tags)
+	
+	// recount notebooks' notes number
+	notebookService.ReCountNotebookNumberNotes(notebookId)
 	
 	return note
 }
@@ -276,6 +284,9 @@ func (this *NoteService) UpdateTags(noteId string, userId string, tags []string)
 // 2. 要判断之前是否是blog, 如果不是, 那么notebook是否是blog?
 func (this *NoteService) MoveNote(noteId, notebookId, userId string) info.Note {
 	if notebookService.IsMyNotebook(notebookId, userId) {
+		note := this.GetNote(noteId, userId)
+		preNotebookId := note.NotebookId.Hex()
+		
 		re := db.UpdateByIdAndUserId(db.Notes, noteId, userId, 
 			bson.M{"$set": bson.M{"IsTrash": false, 
 				"NotebookId": bson.ObjectIdHex(notebookId)}})
@@ -283,6 +294,13 @@ func (this *NoteService) MoveNote(noteId, notebookId, userId string) info.Note {
 		if re {
 			// 更新blog状态
 			this.updateToNotebookBlog(noteId, notebookId, userId)
+			
+			// recount notebooks' notes number
+			notebookService.ReCountNotebookNumberNotes(notebookId)
+			// 之前不是trash才统计, trash本不在统计中的
+			if !note.IsTrash && preNotebookId != notebookId {
+				notebookService.ReCountNotebookNumberNotes(preNotebookId)
+			}
 		}
 		
 		return this.GetNote(noteId, userId);
@@ -330,7 +348,11 @@ func (this *NoteService) CopyNote(noteId, notebookId, userId string) info.Note {
 		// 更新blog状态
 		isBlog := this.updateToNotebookBlog(note.NoteId.Hex(), notebookId, userId)
 		
+		// recount
+		notebookService.ReCountNotebookNumberNotes(notebookId)
+		
 		note.IsBlog = isBlog
+		
 		return note
 	}
 	
@@ -340,7 +362,7 @@ func (this *NoteService) CopyNote(noteId, notebookId, userId string) info.Note {
 // 复制别人的共享笔记给我
 // 将别人可用的图片转为我的图片, 复制图片
 func (this *NoteService) CopySharedNote(noteId, notebookId, fromUserId, myUserId string) info.Note {
-	Log(shareService.HasSharedNote(noteId, myUserId) || shareService.HasSharedNotebook(noteId, myUserId, fromUserId))
+	// Log(shareService.HasSharedNote(noteId, myUserId) || shareService.HasSharedNotebook(noteId, myUserId, fromUserId))
 	// 判断是否共享了给我
 	if notebookService.IsMyNotebook(notebookId, myUserId) && 
 		(shareService.HasSharedNote(noteId, myUserId) || shareService.HasSharedNotebook(noteId, myUserId, fromUserId)) {
@@ -374,6 +396,9 @@ func (this *NoteService) CopySharedNote(noteId, notebookId, fromUserId, myUserId
 		
 		// 更新blog状态
 		isBlog := this.updateToNotebookBlog(note.NoteId.Hex(), notebookId, myUserId)
+		
+		// recount
+		notebookService.ReCountNotebookNumberNotes(notebookId)
 		
 		note.IsBlog = isBlog
 		return note
@@ -482,4 +507,13 @@ func (this *NoteService) SearchNoteByTags(tags []string, userId string, pageNumb
 		Limit(pageSize).
 		All(&notes)
 	return
+}
+
+//------------
+// 统计
+func (this *NoteService) CountNote() int {
+	return db.Count(db.Notes, bson.M{"IsTrash": false})
+}
+func (this *NoteService) CountBlog() int {
+	return db.Count(db.Notes, bson.M{"IsBlog": true, "IsTrash": false})
 }

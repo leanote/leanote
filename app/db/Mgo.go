@@ -40,6 +40,15 @@ var Attachs *mgo.Collection
 
 var NoteImages *mgo.Collection
 var Configs *mgo.Collection
+var EmailLogs *mgo.Collection
+
+// blog
+var BlogLikes *mgo.Collection
+var BlogComments *mgo.Collection
+var Reports *mgo.Collection
+
+// session
+var Sessions *mgo.Collection
 
 // 初始化时连接数据库
 func Init() {
@@ -113,12 +122,17 @@ func Init() {
 	NoteImages = Session.DB(dbname).C("note_images")
 	
 	Configs = Session.DB(dbname).C("configs")
-}
-
-func init() { 
-	revel.OnAppStart(func() {
-		Init()
-	})
+	EmailLogs = Session.DB(dbname).C("email_logs")
+	
+	// 社交
+	BlogLikes = Session.DB(dbname).C("blog_likes")
+	BlogComments = Session.DB(dbname).C("blog_comments")
+	
+	// 举报
+	Reports = Session.DB(dbname).C("reports")
+	
+	// session
+	Sessions = Session.DB(dbname).C("sessions")
 }
 
 func close() {

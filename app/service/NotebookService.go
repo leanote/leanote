@@ -5,7 +5,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"github.com/leanote/leanote/app/db"
 	"github.com/leanote/leanote/app/info"
-//	. "github.com/leanote/leanote/app/lea"
+	. "github.com/leanote/leanote/app/lea"
 	"sort"
 	"time"
 )
@@ -96,6 +96,11 @@ func (this *NotebookService) GetNotebook(notebookId, userId string) info.Noteboo
 	db.GetByIdAndUserId(db.Notebooks, notebookId, userId, &notebook)
 	return notebook
 }
+func (this *NotebookService) GetNotebookById(notebookId string) info.Notebook {
+	notebook := info.Notebook{}
+	db.Get(db.Notebooks, notebookId, &notebook)
+	return notebook
+}
 
 // 得到用户下所有的notebook
 // 排序好之后返回
@@ -168,11 +173,15 @@ func (this *NotebookService) UpdateNotebook(userId, notebookId string, needUpdat
 	
 	// 如果有IsBlog之类的, 需要特殊处理
 	if isBlog, ok := needUpdate["IsBlog"]; ok {
-		// 设为blog/取消
+		// 设为blog/取消, 把它下面所有的note都设为isBlog
 		if is, ok2 := isBlog.(bool); ok2 {
 			q := bson.M{"UserId": bson.ObjectIdHex(userId), 
 				"NotebookId": bson.ObjectIdHex(notebookId)}
-			db.UpdateByQMap(db.Notes, q, bson.M{"IsBlog": is})
+			data := bson.M{"IsBlog": is}
+			if is {
+				data["PublicTime"] = time.Now()
+			}
+			db.UpdateByQMap(db.Notes, q, data)
 				
 			// noteContents也更新, 这个就麻烦了, noteContents表没有NotebookId
 			// 先查该notebook下所有notes, 得到id
@@ -248,4 +257,27 @@ func (this *NotebookService) DragNotebooks(userId string, curNotebookId string, 
 	}
 	
 	return true
+}
+
+// 重新统计笔记本下的笔记数目
+// noteSevice: AddNote, CopyNote, CopySharedNote, MoveNote
+// trashService: DeleteNote (recove不用, 都统一在MoveNote里了)
+func (this *NotebookService) ReCountNotebookNumberNotes(notebookId string) bool {
+	notebookIdO := bson.ObjectIdHex(notebookId)
+	count := db.Count(db.Notes, bson.M{"NotebookId": notebookIdO, "IsTrash": false})
+	Log(count)
+	Log(notebookId)
+	return db.UpdateByQField(db.Notebooks, bson.M{"_id": notebookIdO}, "NumberNotes", count)
+}
+
+func (this *NotebookService) ReCountAll() {
+	/*
+	// 得到所有笔记本
+	notebooks := []info.Notebook{}
+	db.ListByQWithFields(db.Notebooks, bson.M{}, []string{"NotebookId"}, &notebooks)
+	
+	for _, each := range notebooks {
+		this.ReCountNotebookNumberNotes(each.NotebookId.Hex())
+	}
+	*/
 }

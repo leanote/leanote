@@ -10,8 +10,8 @@ import (
 
 // convert revel msg to js msg
 
-var msgBasePath = "/Users/life/Documents/Go/package/src/github.com/leanote/leanote/messages/"
-var targetBasePath = "/Users/life/Documents/Go/package/src/github.com/leanote/leanote/public/js/i18n/"
+var msgBasePath = "/Users/life/Documents/Go/package1/src/github.com/leanote/leanote/messages/"
+var targetBasePath = "/Users/life/Documents/Go/package1/src/github.com/leanote/leanote/public/js/i18n/"
 func parse(filename string) {
 	file, err := os.Open(msgBasePath + filename)
 	reader := bufio.NewReader(file)
@@ -62,11 +62,28 @@ func parse(filename string) {
 	if err2 != nil {
 		file2, err2 = os.Create(targetName)
 	}
-	file2.WriteString("var MSG = " + str + ";")
+	file2.WriteString("var MSG = " + str + ";" + `
+function getMsg(key, data) {
+	var msg = MSG[key]
+	if(msg) {
+		if(data) {
+			if(!isArray(data)) {
+				data = [data];
+			}
+			for(var i = 0; i < data.length; ++i) {
+				msg = msg.replace("%s", data[i]);
+			}
+		}
+		return msg;
+	}
+	return key;
+}`)
 }
 
 // 生成js的i18n文件
 func main() {
 	parse("msg.en")
 	parse("msg.zh")
+	parse("blog.zh")
+	parse("blog.en")
 }

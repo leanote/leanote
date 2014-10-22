@@ -28,7 +28,13 @@ func (this *TrashService) DeleteNote(noteId, userId string) bool {
 	// 首先删除其共享
 	if shareService.DeleteShareNoteAll(noteId, userId) {
 		// 更新note isTrash = true
-		return db.UpdateByIdAndUserId(db.Notes, noteId, userId, bson.M{"$set": bson.M{"IsTrash": true}})
+		if db.UpdateByIdAndUserId(db.Notes, noteId, userId, bson.M{"$set": bson.M{"IsTrash": true}}) {
+			// recount notebooks' notes number
+			notebookIdO := noteService.GetNotebookId(noteId)
+			notebookId := notebookIdO.Hex()
+			notebookService.ReCountNotebookNumberNotes(notebookId)
+			return true
+		}
 	}
 	return false
 }

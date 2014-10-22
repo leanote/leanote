@@ -13,7 +13,7 @@ import (
 // toPath 文件保存的目录
 // 默认是/tmp
 // 返回文件的完整目录
-func WriteUrl(url string, toPath string) (path string, ok bool) {
+func WriteUrl(url string, toPath string) (length int64, newFilename, path string, ok bool) {
 	if url == "" {
 		return;
 	}
@@ -22,6 +22,8 @@ func WriteUrl(url string, toPath string) (path string, ok bool) {
 		return;
 	}
 	
+	length = int64(len(content))
+	
 	// a.html?a=a11&xxx
 	url = trimQueryParams(url)
 	_, ext := SplitFilename(url)
@@ -29,13 +31,8 @@ func WriteUrl(url string, toPath string) (path string, ok bool) {
 		toPath = "/tmp"
 	}
 //	dir := filepath.Dir(toPath)
-	newFilename := NewGuid() + ext
+	newFilename = NewGuid() + ext
 	fullPath := toPath + "/" + newFilename
-	/*
-	if err := os.MkdirAll(dir, 0777); err != nil {
-		return 
-	}
-	*/
 	
 	// 写到文件中
 	file, err := os.Create(fullPath)
@@ -54,6 +51,7 @@ func WriteUrl(url string, toPath string) (path string, ok bool) {
 func GetContent(url string) (content []byte, err error) {
 	var resp *http.Response
 	resp, err = http.Get(url)
+	Log(err)
 	if(resp != nil && resp.Body != nil) {
 		defer resp.Body.Close()
 	} else {
@@ -65,6 +63,7 @@ func GetContent(url string) (content []byte, err error) {
     var buf []byte
    	buf, err = ioutil.ReadAll(resp.Body)
    	if(err != nil) {
+   		Log(err)
 		return
 	}
 	

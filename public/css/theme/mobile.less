@@ -1,0 +1,269 @@
+@media screen and (max-width:700px) {
+@green: #65bd77;
+
+#toggleEditorMode,
+#lea,
+#myBlog,
+#demoRegister,
+.noteSplit,
+#logo,
+#tipsBtn,
+#contentHistory,
+#curNotebookForNewNote,
+#curNotebookForNewSharedNote,
+.for-split,
+#listNotebookDropdownMenu,
+#listShareNotebookDropdownMenu,
+.new-markdown-text, 
+.new-note-text,
+.username,
+#notebookMin,
+.ui-loader 
+{
+	display: none !important;
+}
+*,
+.ztree li a.level0 span,
+.ztree li a.level1 span,
+.label
+{
+	font-size: 16px;
+}
+.label i {
+	opacity: 1;
+	width: 20px;
+	&:hover, &:focus {
+		color: @green !important;
+	}
+}
+a:focus, a:hover, a:active {
+	color: @green !important;
+}
+#noteItemList .item {
+	height: 120px;
+}
+// 为防止进入min模式
+@leftNotebookWidth: 140px;
+#leftNotebook {
+	width: @leftNotebookWidth !important;
+	max-width: @leftNotebookWidth;
+}
+#notebook {
+	display: block !important;
+}
+#leftNotebook .slimScrollDiv {
+	display: block !important;
+}
+
+#switcher {
+	padding-top: 0; 
+	padding-right: 0;
+	i {
+		padding: 20px 0;
+		font-size: 20px;
+	}
+}
+#newNoteMarkdownBtn {
+	width: 10px;
+	overflow: hidden;
+}
+#noteAndEditor {
+	left: @leftNotebookWidth !important;
+	// left: 0 !important;
+}
+
+#noteList {
+	display: block;
+	width: 100% !important;
+}
+#note {
+	visibility: hidden;
+	z-index: -1; // 把note放到后面, 这样手机端滚动才平滑
+	overflow-x: hidden;
+	#editor {
+		visibility: hidden;
+	}
+	.mce-tinymce  {
+		visibility: hidden !important;
+	}
+	left: 0 !important;
+}
+#note.editor-show {
+	visibility: visible;
+	z-index: initial;
+	#editor {
+		visibility: visible;
+	}
+	.mce-tinymce  {
+		visibility: visible !important;
+	}
+}
+#leftSwitcher {
+	display: block !important;
+}
+#leftSwitcher2 {
+	display: none !important;
+}
+.full-editor {
+	#leftNotebook {
+		display: none;
+	}
+	#noteAndEditor {
+		left: 0 !important;
+	}
+	#noteList {
+		display: none;
+	}
+}
+#searchWrap {
+	margin-left: 3px;
+}
+#searchNote {
+	border-top: none;
+	border-bottom: none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	padding-right: 10px;
+	input {
+		width: 55px;
+		padding-left: 5px;
+		padding-right: 2px;
+		margin-top: 3px;
+		-webkit-transform: translate3d(0, 0, 0);
+		-webkit-transition: 0.3s ease;
+		-moz-transition: 0.3s ease;
+		transition: 0.3s ease;
+	}
+	input:focus {
+		width: 100px;
+	}
+}
+
+#tool {
+	position: relative;
+}
+#tag {
+	position: absolute;
+	right: 140px;
+	left:0;
+	top:0;
+	bottom:0;
+	overflow: hidden;
+
+	#tags {
+		position: absolute;
+		left: 50px;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		overflow-y: hidden;
+		overflow-x: scroll;
+		-webkit-overflow-scrolling: touch !important; // for iphone
+		position: absolute;
+		line-height: 40px;
+		line-height: inherit !important;
+	}
+	#tagDropdown {
+		float: left;
+		width: 50px;
+		line-height: 40px;
+		overflow: hidden;
+		padding-left: 3px;
+	}
+	.add-tag-text {
+		display: none;
+	}
+	#addTagInput {
+		width: 30px;
+		display: inline-block;
+	}
+	#tagColor {
+		display: none !important;
+	}
+}
+#left-column {
+	width: 100% !important;
+}
+#mdEditor #wmd-input {
+	font-size: 16px;
+}
+#md-section-helper {
+	display: none;
+}
+#right-column {
+	display: none !important;
+}
+.new-markdown-text-abbr, .new-note-text-abbr {
+	display: inline;
+}
+.my-link {
+	display: block;
+}
+
+#themeForm img {
+	height: 70px !important;
+}
+
+// 去除slimscroll
+.slimScrollBar, .slimScrollRail {
+	display: none !important;
+}
+#noteItemList, #notebook, #leftNotebook, 
+.slimScrollDiv,
+#editorContent_ifr,
+.mce-edit-area,.mce-container-body,.mce-tinymce,
+#editor .mce-ifr,
+.wmd-input{
+	overflow: scroll !important;
+	-webkit-overflow-scrolling: touch !important; // for iphone
+}
+
+#noteReadContent {
+	-webkit-overflow-scrolling: touch !important; // for iphone
+}
+
+#attachMenu {
+	width: 320px;
+}
+#attachList {
+	max-height: 200px;
+	-webkit-overflow-scrolling: touch !important; // for iphone
+}
+#attachList li .attach-title {
+	width: 170px;
+}
+#dropAttach .btn {
+	padding: 5px 3px;
+	margin-top: 3px;
+	display: block;
+}
+#myTag .folderBody li {
+	margin: 5px;
+	a:hover {
+		span {
+			color: @green;
+		}
+	}
+}
+
+// 中部列表
+#noteItemList .item-thumb {
+	width: 80px;
+	height: 80px;
+	margin-top: 15px;
+}
+#noteItemList .item {
+	height: 118px;
+}
+#noteItemList .item-setting, #noteItemList .item-blog {
+	font-size: 16px;
+	width: 30px;
+	display: inline-block;
+}
+
+#noteMaskForLoading {
+	opacity: .8
+}
+
+}

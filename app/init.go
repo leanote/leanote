@@ -4,9 +4,13 @@ import (
 	"github.com/revel/revel"
 	. "github.com/leanote/leanote/app/lea"
 	"github.com/leanote/leanote/app/service"
+	"github.com/leanote/leanote/app/db"
 	"github.com/leanote/leanote/app/controllers"
 	"github.com/leanote/leanote/app/controllers/admin"
 	_ "github.com/leanote/leanote/app/lea/binder"
+	"github.com/leanote/leanote/app/lea/session"
+	"github.com/leanote/leanote/app/lea/memcache"
+	"github.com/leanote/leanote/app/lea/route"
 	"reflect"
 	"fmt"
 	"html/template"
@@ -14,20 +18,24 @@ import (
 	"strings"
 	"strconv"
 	"time"
+	"encoding/json"
 )
 
 func init() {
 	// Filters is the default set of global filters.
 	revel.Filters = []revel.Filter{
 		revel.PanicFilter,             // Recover from panics and display an error page instead.
-		RouterFilter,
+		route.RouterFilter,
 		// revel.RouterFilter,            // Use the routing table to select the right Action
 		// AuthFilter,						// Invoke the action.
 		revel.FilterConfiguringFilter, // A hook for adding or removing per-Action filters.
 		revel.ParamsFilter,            // Parse parameters into Controller.Params.
-		revel.SessionFilter,           // Restore and write the session cookie.
+		// revel.SessionFilter,           // Restore and write the session cookie.
 		
-//		session.SessionFilter,         // leanote memcache session life
+		// 使用SessionFilter标准版从cookie中得到sessionID, 然后通过MssessionFilter从Memcache中得到
+		// session, 之后MSessionFilter将session只存sessionID然后返回给SessionFilter返回到web
+		session.SessionFilter,         // leanote session 
+		// session.MSessionFilter,         // leanote memcache session 
 		
 		revel.FlashFilter,             // Restore and write the flash cookie.
 		revel.ValidationFilter,        // Restore kept validation errors and save new ones from cookie.
@@ -48,10 +56,32 @@ func init() {
 		i = i - 1;
 		return i
 	}
+	revel.TemplateFuncs["join"] = func(arr []string) template.HTML {
+		if arr == nil {
+			return template.HTML("")
+		}
+		return template.HTML(strings.Join(arr, ","))
+	}
 	revel.TemplateFuncs["concat"] = func(s1, s2 string) template.HTML {
 		return template.HTML(s1 + s2)
 	}
+	revel.TemplateFuncs["concatStr"] = func(strs ...string) string {
+		str := ""
+		for _, s := range strs {
+			str += s
+		}
+		return str
+	}
+	revel.TemplateFuncs["json"] = func(i interface{}) string {
+		b, _ := json.Marshal(i) 
+		return string(b)
+	}
 	revel.TemplateFuncs["datetime"] = func(t time.Time) template.HTML {
+		return template.HTML(t.Format("2006-01-02 15:04:05"))
+	}
+	revel.TemplateFuncs["unixDatetime"] = func(unixSec string) template.HTML {
+		sec, _ := strconv.Atoi(unixSec)
+		t := time.Unix(int64(sec), 0)
 		return template.HTML(t.Format("2006-01-02 15:04:05"))
 	}
 	
@@ -63,6 +93,26 @@ func init() {
 	}
 
 	// tags
+	revel.TemplateFuncs["blogTags"] = func(renderArgs map[string]interface{}, tags []string) template.HTML {
+		if tags == nil || len(tags) == 0 {
+			return ""
+		}
+		locale, _ := renderArgs[revel.CurrentLocaleRenderArg].(string)
+		tagStr := ""
+		lenTags := len(tags)
+		for i, tag := range tags {
+			str := revel.Message(locale, tag)
+			if strings.HasPrefix(str, "???") {
+				str = tag
+			}
+			tagStr += str
+			if i != lenTags - 1 {
+				tagStr += ","
+			}
+		}
+		return template.HTML(tagStr)
+	}
+	/*
 	revel.TemplateFuncs["blogTags"] = func(tags []string) template.HTML {
 		if tags == nil || len(tags) == 0 {
 			return ""
@@ -83,7 +133,7 @@ func init() {
 		}
 		return template.HTML(tagStr)
 	}
-	
+	*/
 	revel.TemplateFuncs["li"] = func(a string) string {
 		Log(a)
 		Log("life==")
@@ -130,6 +180,15 @@ func init() {
 		return ""
 	}
 	
+	// http://stackoverflow.com/questions/14226416/go-lang-templates-always-quotes-a-string-and-removes-comments
+	revel.TemplateFuncs["rawMsg"] = func(renderArgs map[string]interface{}, message string, args ...interface{}) template.JS {
+		str, ok := renderArgs[revel.CurrentLocaleRenderArg].(string)
+		if !ok {
+			return ""
+		}
+		return template.JS(revel.Message(str, message, args...))
+	}
+	
 	// 为后台管理sorter th使用
 	// 必须要返回HTMLAttr, 返回html, golang 会执行安全检查返回ZgotmplZ
 	// sorterI 可能是nil, 所以用interfalce{}来接收
@@ -155,7 +214,7 @@ func init() {
 	}
 	
 	// pagination
-	revel.TemplateFuncs["page"] = func(userId, notebookId string, page, pageSize, count int) template.HTML {
+	revel.TemplateFuncs["page"] = func(urlBase string, page, pageSize, count int) template.HTML {
 		if count == 0 {
 			return "";
 		}
@@ -169,11 +228,6 @@ func init() {
 		nextClass := ""
 		nextPage := page + 1
 		var preUrl, nextUrl string
-		
-		urlBase := "/blog/" + userId
-		if notebookId != "" {
-			urlBase += "/" + notebookId
-		}
 		
 		preUrl = urlBase + "?page="  + strconv.Itoa(prePage)
 		nextUrl = urlBase + "?page=" + strconv.Itoa(nextPage)
@@ -238,8 +292,13 @@ func init() {
 	
 	// init Email
 	revel.OnAppStart(func() {
+		// 数据库
+		db.Init()
+		// email配置
 		InitEmail()
-		
+		InitVd()
+		memcache.InitMemcache() // session服务
+		// 其它service
 		service.InitService()
 		controllers.InitService()
 		admin.InitService()

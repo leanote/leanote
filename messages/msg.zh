@@ -1,4 +1,5 @@
 # leanote
+app=leanote
 moto=不只是笔记!
 moto2=知识管理, 博客, 分享, 协作... 尽在leanote
 moto3=简约而不简单
@@ -27,6 +28,30 @@ blogInfo=将笔记公开, 让知识传播的更远!
 suggestionsInfo=帮助我们完善leanote
 yourContact=您的联系方式
 emailOrOthers=Email或其它联系方式
+captcha=验证码
+reloadCaptcha=刷新验证码
+captchaError=验证码错误
+inputCaptcha=请输入验证码
+
+hi=Hi
+welcomeUseLeanote=Welcome!
+myNote=My note
+curUser=Email
+
+# form
+submit=submit
+register=Sign up
+login=Sign in
+password2=Confirm your password
+email=Email
+inputUsername=Username(email) is required
+inputEmail=Email is required
+wrongEmail=Wrong email
+wrongUsernameOrPassword=Wrong username or password
+inputPassword=Password is required
+wrongPassword=Wrong password
+logining=Sign in
+loginSuccess=login success
 
 hi=Hi
 welcomeUseLeanote=欢迎使用leanote
@@ -53,7 +78,7 @@ hadAcount = 已有帐户?
 hasAcount = 还无帐户?
 
 # 注册
-registerSuccessAndRdirectToNote=注册成功, 正在转至我的笔记...
+registerSuccessAndRdirectToNote=注册成功, 正在跳转...
 
 # 找回密码
 passwordTips=密码至少6位
@@ -76,11 +101,17 @@ save=保存
 editorTips=帮助
 editorTipsInfo=<h4>1. 快捷键</h4>ctrl+shift+c 代码块切换 <br /> ctrl+shift+i 插入/修改图片<h4>2. shift+enter 跳出当前区域</h4>比如在代码块中<img src="/images/outofcode.png" style="width: 90px"/>按shift+enter可跳出当前代码块.
 newNote=新建笔记
+newMarkdownNote=新建Markdown笔记
+noNoteNewNoteTips=该笔记本下空空如也...何不
+canntNewNoteTips=Sorry, 这里不能添加笔记的. 你需要先选择一个笔记本.
+new=新建
 newMarkdown=新建Markdown笔记
 clickAddTag=点击添加标签
 notebook=笔记本
 myNotebook=我的笔记本
 addNotebook=添加笔记本
+search=搜索
+clearSearch=清除搜索
 all=最新
 trash=废纸篓
 delete=删除
@@ -114,12 +145,14 @@ green=绿色
 # 设置
 accountSetting=帐户设置
 themeSetting=主题设置
+setAvatar=头像设置
 logout=退出
 basicInfo=基本信息
 updateEmail=修改Email
 usernameSetting=用户名设置
 oldPassword=旧密码
 newPassword=新密码
+admin=后台管理
 
 default=默认
 simple=简约
@@ -143,6 +176,89 @@ howToInstallLeanote=leanote安装步骤
 attachments = 附件
 donate = 捐赠
 
+# contextmenu
+shareToFriends=分享给好友
+publicAsBlog=公开为博客
+cancelPublic=取消公开为博客
+move=移动
+copy=复制
+rename=重命名
+addChildNotebook=添加子笔记本
+deleteAllShared=删除所有共享
+deleteSharedNotebook=删除共享笔记本
+copyToMyNotebook=复制到我的笔记本
+
+####note-dev
+emailInSending=正在发送邮件到
+checkEmail=查看邮件
+setUsername=用户名设置
+setUsernameTips=你的邮箱是 <code>%s</code>, 可以再设置一个唯一的用户名.<br />用户名至少4位, 不可含特殊字符.
+currentEmail=当前邮箱为: <code>%s</code> 
+updateEmail=修改邮箱
+updateEmailTips=邮箱修改后, 验证之后才有效, 验证之后新的邮箱地址将会作为登录帐号使用.
+sendVerifiedEmail=发送验证邮箱
+sendSuccess=发送成功
+sendFailed=发送失败
+verified=已验证
+unVerified=未验证
+verifiedNow=现在去验证
+resendVerifiedEmail=重新发送验证邮件
+# 分享
+defaulthhare=默认共享
+addShare=添加分享
+friendEmail=好友邮箱
+permission=权限
+readOnly=只读
+writable=可写
+inputFriendEmail=请输入好友邮箱
+clickToChangePermission=点击改变权限
+sendInviteEmailToYourFriend=发送邀请email给Ta
+copySuccess=复制成功
+copyFailed=对不起, 复制失败, 请自行复制
+friendNotExits=该用户还没有注册%s, 复制邀请链接发送给Ta, 邀请链接: %s
+emailBodyRequired=邮件内容不能为空
+clickToCopy=点击复制
+sendSuccess=发送成功
+inviteEmailBody=Hi, 你好, 我是%s, %s非常好用, 快来注册吧!
+
+# 历史记录
+historiesNum=leanote会保存笔记的最近<b>10</b>份历史记录
+noHistories=无历史记录
+fold=折叠
+unfold=展开
+datetime=日期
+restoreFromThisVersion=从该版本还原
+confirmBackup=确定要从该版还原? 还原前leanote会备份当前版本到历史记录中.
+createAccount=创建帐号
+createAccountSuccess=帐号创建成功
+createAccountFailed=帐号创建失败
+thirdCreateAcountTips=您现在使用的是第三方帐号登录%(app)s, 您也可以注册%(app)s帐号登录, 赶紧注册一个吧. <br />注册成功后仍可以使用第三方帐号登录leanote并管理您现有的笔记.
+
+## valid msg
+cannotUpdateDemo=抱歉, Demo用户不允许修改
+inputUsername=请输入用户名
+updateUsernameSuccess=用户名修改成功
+usernameIsExisted=用户名已存在
+noSpecialChars=不能包含特殊字符
+minLength=长度至少为%s
+errorEmail=请输入正确的email
+verifiedEmaiHasSent=验证邮件已发送, 请及时查阅邮件并验证.
+emailSendFailed=邮件发送失败
+inputPassword=请输入密码
+inputNewPassword=请输入新密码
+inputPassword2=请输入确认密码
+errorPassword=请输入长度不少于6位的密码, 尽量复杂
+confirmPassword=两次密码输入不正确
+updatePasswordSuccess=修改密码成功
+errorDomain=请输入正确的域名, 如www.myblog.com
+domainExisted=域名已存在
+errorSubDomain=请输入正确的博客子域名, 长度至少为4, 不能包含特殊字符
+subDomainExisted=博客子域名已存在
+
+# lea++
+leaDesc=leanote博客平台
+recommend=推荐
+latest=最新
 
 # 必须要加这个, 奇怪
 [CN]

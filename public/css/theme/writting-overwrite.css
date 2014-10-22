@@ -58,6 +58,15 @@
 #switcher span:before {
   content: "b";
 }
+.noteSplit {
+  position: absolute;
+  top: 0;
+  width: 5px;
+  height: 100%;
+  overflow: hidden;
+  z-index: 5;
+  cursor: col-resize;
+}
 .dropdown-menu {
   border-radius: 3px;
   margin: 0;
@@ -79,12 +88,14 @@
 .dropdown-submenu .dropdown-menu:before {
   background: none;
 }
-#searchNotebookForAddDropdownList:before {
+#searchNotebookForAddDropdownList,
+#searchNotebookForAddShareDropdownList {
+  left: -200px;
+}
+#searchNotebookForAddDropdownList:before,
+#searchNotebookForAddShareDropdownList:before {
   left: 190px;
   right: inherit;
-}
-#tagColor:before {
-  background: none;
 }
 .dropdown-menu li {
   list-style: none;
@@ -210,9 +221,6 @@
   line-height: 40px;
   margin-top: 10px;
 }
-#searchNotebookForAddDropdownList {
-  left: -200px;
-}
 #searchNotebookForAdd {
   line-height: normal;
   width: 200px;
@@ -224,6 +232,9 @@
 }
 #myNotebooks .folderBody {
   padding-top: 3px;
+}
+.folderBody {
+  overflow-x: hidden;
 }
 #searchNotebookForList {
   height: 30px;
@@ -282,12 +293,25 @@
   border: 1px solid #eee;
   border-radius: 3px;
 }
+.notebook-number-notes {
+  position: absolute;
+  right: 10px;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  display: inline-block;
+  line-height: 20px !important;
+  height: 20px;
+  margin-top: 5px;
+  padding: 0 3px;
+}
 .notebook-setting {
   display: none;
   position: absolute;
-  right: 3px;
+  right: 1px;
   top: 0;
   bottom: 0;
+  z-index: 2;
   line-height: 30px;
 }
 .notebook-setting:before {
@@ -345,26 +369,28 @@
   position: relative;
   margin-top: 5px;
 }
-#dropAttach {
+.dropzone {
   text-align: center;
 }
-#dropAttach input {
+.dropzone input {
   display: none;
 }
-#dropAttach.in {
+.dropzone.in {
   border: 1px solid #000000;
 }
-#dropAttach.hover {
+.dropzone.hover {
   border: 2px solid #000000;
 }
-#attachUploadMsg {
+#attachUploadMsg,
+#avatarUploadMsg {
   list-style-type: none;
   margin: 0;
   padding: 0;
   max-height: 240px;
   z-index: 3;
 }
-#attachUploadMsg .alert {
+#attachUploadMsg .alert,
+#avatarUploadMsg .alert {
   margin: 0;
   padding: 0 3px;
   margin-top: 10px;
@@ -399,6 +425,9 @@
 }
 #attachList li .attach-process {
   float: right;
+}
+#attachList li.loading {
+  text-align: center;
 }
 .animated {
   -webkit-animation-fill-mode: both;
@@ -495,6 +524,335 @@
   -moz-animation-name: fadeInUp;
   -o-animation-name: fadeInUp;
   animation-name: fadeInUp;
+}
+#historyList img {
+  max-width: 100%;
+}
+#avatar {
+  height: 60px;
+  max-width: 200px;
+  display: inline-block;
+  margin: 10px;
+}
+#noteReadTitle {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+#noteReadInfo {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  color: #666;
+}
+.my-link,
+.new-markdown-text-abbr,
+.new-note-text-abbr {
+  display: none;
+}
+#myAvatar {
+  height: 30px;
+  max-width: 30px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+#tool {
+  position: relative;
+}
+#tag {
+  position: absolute;
+  right: 270px;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+#tagColor {
+  left: 10px;
+}
+#tagColor:before {
+  content: "";
+  background-image: none;
+}
+#addTagInput {
+  width: 100px;
+}
+#notesAndSort {
+  height: 36px;
+}
+#noteItemListWrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 36px;
+  bottom: 3px;
+}
+#mdEditorPreview {
+  position: absolute;
+  top: 35px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+#left-column,
+#right-column,
+#mdSplitter {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+#mdSplitter {
+  width: 5px;
+  height: 100%;
+  overflow: hidden;
+  z-index: 5;
+  cursor: col-resize;
+  left: 450px;
+  background: none;
+}
+#left-column {
+  left: 0;
+  width: 450px;
+}
+#right-column {
+  left: 450px;
+  right: 0;
+  overflow: hidden;
+}
+.wmd-panel-editor,
+.preview-container,
+#wmd-input {
+  height: 100%;
+}
+.wmd-input,
+.wmd-input:focus,
+#md-section-helper {
+  width: 100%;
+  border: 1px #eee solid;
+  border-radius: 5px;
+  outline: none;
+  font-size: 14px;
+  resize: none;
+  overflow-x: hidden;
+}
+/* 不能为display: none */
+#md-section-helper {
+  position: absolute;
+  height: 0;
+  overflow-y: scroll;
+  padding: 0 6px;
+  top: 10px;
+  /*一条横线....*/
+  z-index: -1;
+  opacity: none;
+}
+#right-column {
+  border: 1px dashed #BBBBBB;
+  border-radius: 5px;
+  padding-left: 5px;
+}
+.preview-container {
+  overflow: auto;
+}
+.wmd-preview {
+  width: 100%;
+  font-size: 14px;
+  overflow: auto;
+  overflow-x: hidden;
+}
+.wmd-button-row,
+.preview-button-row {
+  padding: 0px;
+  height: auto;
+  margin: 0;
+}
+.wmd-spacer {
+  width: 0px;
+  height: 20px;
+  margin-left: 10px;
+  background-color: Silver;
+  display: inline-block;
+  list-style: none;
+}
+.wmd-button,
+.preview-button {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  list-style: none;
+  cursor: pointer;
+  font-size: 17px;
+}
+.wmd-button {
+  margin-left: 10px;
+}
+.preview-button {
+  margin-right: 10px;
+}
+.wmd-button > span,
+.preview-button > span {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  font-size: 14px;
+}
+.top-nav {
+  margin: 0 10px;
+  display: inline-block;
+  line-height: 60px;
+}
+.cm-item {
+  position: relative;
+}
+.cm-item .cm-text {
+  position: absolute;
+  left: 23px;
+  right: 10px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.cm-item .cm-text .c-text {
+  display: initial;
+}
+.b-m-mpanel {
+  border-radius: 3px;
+}
+/* item list */
+#noteItemList {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  overflow-y: hidden;
+  padding: 0 5px;
+}
+#noteItemList .item {
+  position: relative;
+  height: 110px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid #ebeff2;
+  border-radius: 3px;
+  margin-top: 5px;
+  background-color: #fff;
+}
+#noteItemList .item:hover,
+#noteItemList .contextmenu-hover {
+  background-color: #ddd !important;
+}
+.item-active,
+#noteItemList .item-active:hover {
+  background-color: #65bd77 !important;
+  color: #fff;
+}
+.item-active .fa,
+#noteItemList .item-active:hover .fa {
+  color: #eee !important;
+}
+.item-active .item-title,
+#noteItemList .item-active:hover .item-title {
+  color: #fff;
+}
+#noteItemList .item-thumb {
+  width: 100px;
+  overflow: hidden;
+  position: absolute;
+  z-index: 1;
+  right: 0px;
+  top: 4px;
+  height: 100px;
+  background-color: #fff;
+  margin-right: 5px;
+  line-height: 100px;
+  text-align: center;
+}
+.item-thumb img {
+  max-width: 100px;
+}
+.item-title {
+  /*font-weight: 400;*/
+  font-size: 16px;
+  height: 22px;
+  line-height: 20px;
+  overflow: hidden;
+  margin-bottom: 0px;
+  color: #000000;
+  border-bottom: dashed 1px #ebeff2;
+}
+#noteItemList .item-desc {
+  position: absolute;
+  left: 0;
+  top: 4px;
+  right: 0px;
+  margin-left: 4px;
+}
+#noteItemList .item-desc .fa {
+  color: #666;
+}
+#noteItemList .item-image .item-desc {
+  right: 100px;
+}
+.item-info {
+  margin: 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.desc {
+  margin: 0;
+}
+#editorMask {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  right: 0;
+  left: 0;
+  background-color: #fff;
+  display: none;
+  z-index: -10;
+  padding-top: 50px;
+  text-align: center;
+}
+#editorMask .fa,
+#editorMask a {
+  font-size: 24px;
+}
+#editorMask a {
+  display: inline-block;
+  border-radius: 3px;
+  border: 1px solid #ebeff2;
+  padding: 10px;
+}
+#editorMask a:hover {
+  background-color: #65bd77;
+  color: #fff;
+}
+.note-mask {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  right: 0;
+  left: 3px;
+  z-index: -1;
+}
+#noteMaskForLoading {
+  padding-top: 60px;
+  background: #fff;
+  text-align: center;
+  opacity: .3;
+}
+#themeForm td {
+  padding: 5px;
+  text-align: center;
+}
+#themeForm img {
+  border: 1px solid #eee;
+  padding: 2px;
+}
+.dropdown-menu .divider {
+  margin: 3px 0;
 }
 @font-face {
   font-family: 'Open Sans';
@@ -1279,11 +1637,15 @@ body {
   margin-left: 10px;
 }
 #newNoteWrap,
-#topNav {
+#topNav,
+#lea,
+#myBlog {
   opacity: 0;
 }
 #newNoteWrap:hover,
-#topNav:hover {
+#topNav:hover,
+#lea:hover,
+#myBlog:hover {
   opacity: 1;
 }
 #mainContainer {

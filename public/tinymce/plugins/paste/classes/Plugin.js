@@ -21,6 +21,7 @@ define("tinymce/pasteplugin/Plugin", [
 	"tinymce/pasteplugin/Quirks"
 ], function(PluginManager, Clipboard, WordFilter, Quirks) {
 	var userIsInformed;
+	var userIsInformed2;
 
 	PluginManager.add('paste', function(editor) {
 		var self = this, clipboard, settings = editor.settings;
@@ -40,6 +41,22 @@ define("tinymce/pasteplugin/Plugin", [
 					);
 
 					userIsInformed = true;
+				}
+			}
+		}
+		
+		function togglePasteCopyImage() {
+			if (clipboard.copyImage) {
+				this.active(false);
+				clipboard.copyImage = false
+			} else {
+				clipboard.copyImage = true;
+				this.active(true);
+				if (!userIsInformed2) {
+					editor.windowManager.alert(
+						"When copy other site's images (not in leanote) into editor, it will copy the image into your album."
+					);
+					userIsInformed2 = true;
 				}
 			}
 		}
@@ -98,6 +115,13 @@ define("tinymce/pasteplugin/Plugin", [
 			tooltip: 'Paste as text',
 			onclick: togglePlainTextPaste,
 			active: self.clipboard.pasteFormat == "text"
+		});
+		
+		editor.addButton('pasteCopyImage', {
+			icon: 'copy',
+			tooltip: "When Paste other site's image, copy it into my album as public image",
+			onclick: togglePasteCopyImage,
+			active: self.clipboard.copyImage === true
 		});
 
 		editor.addMenuItem('pastetext', {

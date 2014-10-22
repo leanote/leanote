@@ -61,10 +61,18 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 			return html;
 		}
 		
+		var w = $(document).width() - 10;
+		if(w > 885) {
+			w = 885;
+		}
+		var h = $(document).height() - 100;
+		if(h > 475) {
+			h = 475;
+		}
 		win = editor.windowManager.open({
 			title: "Manage Image",
-			width : 885,
-			height : 475,
+			width : w,
+			height : h,
 			html: GetTheHtml(),
 			buttons: [
 				{
@@ -146,7 +154,7 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 								(function(data) {
 									ajaxPost("/file/copyImage", {userId: UserInfo.UserId, fileId: fileId, toUserId: curNote.UserId}, function(re) {
 										if(reIsOk(re) && re.Id) {
-											var urlPrefix = window.location.protocol + "//" + window.location.host;
+											var urlPrefix = UrlPrefix; // window.location.protocol + "//" + window.location.host;
 											data.src = urlPrefix + "/file/outputImage?fileId=" + re.Id;
 										}
 										renderImage(data);

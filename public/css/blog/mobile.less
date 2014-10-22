@@ -1,0 +1,157 @@
+
+@green: #65bd77;
+@bgColor: #FBFCF7;
+@media screen and (max-width:600px) {
+	html, body {
+		overflow-x: hidden;
+		background-color: @bgColor;
+	}
+	* {
+		font-size: 16px;
+	}
+	#headerContainer, #footerContainer {
+		background-color: @bgColor;
+		margin: 10px 0;
+	}
+	#posts .each-post, #postsContainer {
+		background-color: @bgColor !important;
+	}
+	img {
+		max-width: 100%;
+	}
+	#posts .each-post {
+		padding: 10px;
+		.title {
+			font-size: 24px;
+			border-left: 5px solid @green;
+			padding-left: 10px;
+			font-weight: bold;
+			padding: 5px 0;
+			padding-left: 10px;
+			margin-bottom: 10px;
+		}
+	}
+	.container {
+		padding-right: 10px;
+		padding-left: 10px;
+	}
+	.created-time {
+		display: none;
+	}
+	.mobile-created-time {
+		display: block;
+		#userLogo {
+			display: inline-block;
+			max-height: 40px;
+			width: 40px;
+			border-radius: 50%;
+		}
+	}
+	#content {
+		margin-top: 10px;
+	}
+	.right-section {
+		// 只留下举报 
+		.dropdown, .btn {
+			display: none !important;
+		}
+	}
+	#blogNav {
+		left: initial !important;
+		right: 10px !important;
+	}
+	
+	#postsContainer .container, #footerContainer .container {
+		max-width: 100%;
+	}
+	#postsContainer {
+		margin: 0 !important;
+		max-width: 100%;
+		padding-top:10px;
+		background: #f5f5f5 url("../../images/noise.png");
+	}
+	#posts {
+		max-width: 100% !important;
+	}
+
+	#footerContainer #footer {
+		a {
+			padding: 3px;
+		}
+		a:hover, a:focus {
+			color: @green;
+		}
+	}
+
+	#headerAndNav {
+		position: initial;
+		text-align: left;
+		width: 100%;
+		border-bottom: 2px dashed #ebeff2;
+		#headerContainer {
+			width: 100%;
+			height: auto;
+			padding-top: 30px;
+		}
+		#header {
+			margin: 0;
+			padding: 0;
+			h1 {
+				display: none;
+			}
+		}
+		.navbar-collapse {
+			overflow-x: hidden;
+		}
+		#blogDesc {
+			border: none;
+			margin-top: 20px;
+			font-size: 24px;
+		}
+		.navbar-brand {
+			display: inline-block;
+			line-height: 50px;
+			padding: 0;
+			padding-left: 10px;
+			img {
+				height: 40px;
+			}
+		}
+		.navbar .container {
+			width: auto;
+			padding: 0 15px;
+		}
+		.navbar {
+			position: fixed;
+			top: 0;
+			right: 0;
+			left: 0;
+			background: @bgColor;
+			z-index: 1000;
+			border-bottom: 1px solid #DEDDDF;
+			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), inset 0 1px 0 #ffffff;
+			background-color: #FDFFF5; // #fafbfc;
+		}
+		.navbar-nav {
+			margin: 0 10px;
+			a {
+				padding-left: 10px;
+				border-radius: 5px;
+			}
+		}
+		#search {
+			width: 100%;
+			margin: 10px;
+		}
+		.navbar-form {
+			border: none;
+		}
+		.navbar-default .navbar-nav > .active > a {
+		
+		}
+	}
+
+	#myTab, .tab-content {
+		padding: 0 10px;
+	}
+}

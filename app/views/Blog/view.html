@@ -1,6 +1,5 @@
 {{template "Blog/header.html" .}}
 
-<!--  -->
 <div id="postsContainer">
 	<div id="posts">
 		<div class="each-post">
@@ -8,15 +7,30 @@
 				{{.blog.Title}}
 			</div>
 			<div class="created-time">
-				<i class="fa fa-bookmark-o" style="color: #666"></i>
+				<i class="fa fa-bookmark-o"></i>
 				{{if .blog.Tags}} 
-					{{blogTags .blog.Tags}}
+					{{blogTags $ .blog.Tags}}
 				{{else}}
 					{{msg . "noTag"}}
 				{{end}}
 				|
-				<i class="fa fa-calendar" style="color: #666"></i> {{msg . "updatedTime"}} {{.blog.UpdatedTime | datetime}} | 
-				<i class="fa fa-calendar" style="color: #666"></i> {{msg . "createdTime"}} {{.blog.CreatedTime | datetime}}
+				<i class="fa fa-calendar"></i> {{msg . "updatedTime"}} {{.blog.UpdatedTime | datetime}} | 
+				<i class="fa fa-calendar"></i> {{msg . "createdTime"}} {{.blog.CreatedTime | datetime}}
+			</div>
+			
+			<div class="mobile-created-time">
+			{{ if .userInfo.Logo}}
+				<img src="{{.userInfo.Logo}}" id="userLogo">
+			{{else}}
+				<img src="{{$.siteUrl}}/images/blog/default_avatar.png" id="userLogo">
+			{{end}}
+			{{.userInfo.Username}}
+	
+			{{if .blog.Tags}}
+				&nbsp;
+				<i class="fa fa-bookmark-o" style="color: #666"></i>
+				{{blogTags $ .blog.Tags}}
+			{{end}}
 			</div>
 			
 			<div class="desc" id="content">
@@ -33,75 +47,41 @@
 				{{else}}
 						{{.blog.Content | raw}}
 				{{end}}
+				
+				<div id="desc" class="hide">{{.blog.Desc}}</div>
 			</div>
 			
 			<!-- comment -->
 			{{template "blog/comment.html" .}}
 		</div>
 	</div>
-	
 </div>
 {{template "Blog/footer.html" .}}
 {{template "Blog/highlight.html"}}
-
-<!-- Nav -->
-<style>
-#blogNav {
-	display: none; 
-	background-color: #fff;
-	opacity: 0.7;
-	position: fixed;
-	z-index: 10;
-	padding: 3px;
-	border-radius: 3px;
-}
-#blogNavContent {
-	overflow-y: auto;
-	max-height: 250px;
-	display: none;
-}
-#blogNavNav {
-	cursor: pointer;
-}
-#blogNav a {
-	color: #666;
-}
-#blogNav:hover {
-	opacity: 0.9;
-}
-#blogNav a:hover {
-	color: #0fb264;
-}
-#blogNav ul {
-	padding-left: 20px;
-}
-#blogNav ul .nav-h1 {
-}
-#blogNav ul .nav-h2 {
-  margin-left: 20px;
-}
-#blogNav ul .nav-h3 {
-  margin-left: 30px;
-}
-#blogNav ul .nav-h4 {
-  margin-left: 40px;
-}
-#blogNav ul .nav-h5 {
-  margin-left: 50px;
-}
-</style>
 <div id="blogNav">
 	<div id="blogNavNav">
 		<i class="fa fa-align-justify" title="文档导航"></i>
 		<span>{{msg . "blogNav"}}</span>
 	</div>
-	<div id="blogNavContent" style="max-width: 200px">
+	<div id="blogNavContent">
 	</div>
 </div>
-<script src="/public/js/app/blog/nav.js"></script>
+
+<script>
+var visitUserInfo = eval("(" + {{.visitUserInfoJson}} + ")");
+var urlPrefix = "{{.siteUrl}}";
+var noteId = "{{.blog.NoteId.Hex}}";
+var preLikeNum = +"{{.blog.LikeNum}}";
+var commentNum = +"{{.blog.CommentNum}}";
+</script>
+<script src="/js/app/blog/common.js"></script>
+<script src="/js/jsrender.js"></script>
+<script src="/js/jquery-cookie-min.js"></script>
+<script src="/js/bootstrap-dialog.min.js"></script>
+<script src="/js/jquery.qrcode.min.js"></script>
+<script src="/js/app/blog/view.js"></script>
 
 {{if .blog.IsMarkdown }}
-<script src="/public/mdeditor/editor/google-code-prettify/prettify.js"></script>
 <script src="/public/mdeditor/editor/pagedown/Markdown.Converter.js"></script>
 <script src="/public/mdeditor/editor/pagedown/Markdown.Sanitizer.js"></script>
 <script src="/public/mdeditor/editor/pagedown/Markdown.Editor.js"></script>
@@ -127,13 +107,19 @@ prettyPrint();
 MathJax.Hub.Queue(["Typeset",MathJax.Hub,"wmd-preview"]);
 
 initNav();
+weixin();
 </script>
 {{else}}
 <script>
 $(function() {
 	initNav();
+	weixin();
 });
 </script>
 {{end}}
+
+<!--google+
+<script type="text/javascript" src="https://apis.google.com/js/plusone.js"> {lang: 'zh-CN'} </script>
+-->
 </body>
 </html>

@@ -38,7 +38,7 @@ code.prettyprint ol.linenums,pre.prettyprint ol.linenums {
 }
 
 code.prettyprint ol.linenums li,pre.prettyprint ol.linenums li {
-	padding-left: 12px;
+	padding-left: 0;
 	color: #bebec5;
 	line-height: 20px;
 }
