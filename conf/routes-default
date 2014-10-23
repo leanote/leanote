@@ -1,0 +1,72 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+module:testrunner
+
+# Home is My Blog
+Get 	/											Blog.Index
+GET     /note   	                                Note.Index
+# leanote home
+GET     /index   	                                Index.Index
+
+GET     /login                                     	Auth.Login
+POST     /doLogin                                   Auth.DoLogin
+GET     /logout                                     Auth.Logout
+Get     /demo                                   	Auth.Demo
+
+Get 	 /register									Auth.Register
+POST     /doRegister                                Auth.DoRegister
+
+GET 	/findPassword/:token						Auth.FindPassword2
+GET 	/findPassword								Auth.FindPassword
+POST 	/doFindPassword								Auth.DoFindPassword
+POST	/findPasswordUpdate							Auth.FindPasswordUpdate
+
+# mobile
+GET 	/mobile										Mobile.Index
+
+# blog
+
+GET		/blog/getLikeAndComments			Blog.GetLikeAndComments
+GET		/blog/getLike						Blog.GetLike
+GET		/blog/listLikes						Blog.ListLikes
+GET		/blog/incReadNum					Blog.IncReadNum
+POST		/blog/likeBlog					Blog.LikeBlog
+POST		/blog/likeComment				Blog.LikeComment
+POST		/blog/deleteComment				Blog.DeleteComment
+GET		/blog/listComments					Blog.ListComments
+POST		/blog/comment					Blog.Comment
+GET /blog/ListComments Blog.ListComments
+
+
+GET		/blog/search/:userIdOrEmail	Blog.Search
+GET		/blog/search	Blog.Search
+GET		/blog/set						Blog.Set
+GET		/blog/aboutMe/:userIdOrEmail	Blog.AboutMe
+GET		/blog/aboutMe	Blog.AboutMe
+GET		/blog/view/:noteId			Blog.View
+POST	/blog/setUserBlogBase		Blog.SetUserBlogBase
+POST	/blog/setUserBlogComment	Blog.SetUserBlogComment
+POST	/blog/setUserBlogStyle		Blog.SetUserBlogStyle
+GET		/blog/cate/:notebookId		Blog.Cate
+GET		/blog/listCateLatest/:notebookId	Blog.ListCateLatest
+GET		/blog/isMe.js				Blog.IsMe
+GET		/blog/:userIdOrEmail		Blog.Index
+GET		/blog						Blog.Index
+
+# Map static resources from the /app/public folder to the /public path
+GET     /favicon.ico                            Static.Serve("public/images/favicon.ico")
+GET     /public/*filepath                       Static.Serve("public")
+GET     /js/*filepath                       Static.Serve("public/js")
+GET     /images/*filepath                       Static.Serve("public/images")
+GET     /img/*filepath                       Static.Serve("public/img")
+GET     /css/*filepath                       Static.Serve("public/css")
+GET     /fonts/*filepath                       Static.Serve("public/fonts")
+GET     /tinymce/*filepath                       Static.Serve("public/tinymce")
+#GET     /plugins/*filepath                       Static.Serve("public/tinymce/plugins")
+GET     /upload/*filepath                       Static.Serve("public/upload")
+
+# common
+*       /:controller/:action                    :controller.:action
+*       /api/:controller/:action                :controller.:action
