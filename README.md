@@ -41,12 +41,11 @@ The mongodb data is in `[PATH_TO_LEANOTE]/mongodb_backup/leanote_install_data`
 $> mongorestore -h localhost -d leanote --directoryperdb PATH_TO_LEANOTE/mongodb_backup/leanote_install_data
 ```
 
-The initial database contains three users:
+The initial database contains two users:
 
 ```
-user1 username: leanote, password: abc123
-user2 username: admin, password: abc123
-user3 username: demo@leanote.com, password: demo@leanote.com (this user is for demo)
+user2 username: admin, password: abc123 (administrator)
+user3 username: demo, password: demo@leanote.com (this user is for demo)
 ```
 
 ### 3.4. Configuration
@@ -63,21 +62,10 @@ db.username=
 db.password=
 ```
 
-``http.port``
+``app.secret`` **required** **important**
+The secret key used for cryptographic operations (revel.Sign).
 
-Default is 80
-
-``site.url``
-
-Default is `http://localhost`, you must edit this when hosting leanote anywhere else. This is used when uploading images.
-
-``email``
-
-For password recovery mails
-
-``adminUsername``
-
-Default is `admin`. The landing page is the admin user's blog.
+FOR SECURITY, YOU MUST CHANGE IT!!
 
 For more infomation please see `app/app.conf` and the [revel manuals](https://revel.github.io/)
 
@@ -104,6 +92,7 @@ Please fork this repository and contribute back using [pull requests](https://gi
 ## Discussion
 * [leanote bbs](http://bbs.leanote.com)
 * [leanote google group](https://groups.google.com/forum/#!forum/leanote)
+* QQ Group: 158716820
 
 -----------------------------------------------------------------------
 
@@ -156,8 +145,7 @@ $> mongorestore -h localhost -d leanote --directoryperdb PATH_TO_LEANOTE/mongodb
 初始数据包含三个用户:
 
 ```
-user1 username: leanote, password: abc123
-user2 username: admin, password: abc123
+user2 username: admin, password: abc123 (管理员, 重要!)
 user3 username: demo@leanote.com, password: demo@leanote.com (为体验使用)
 ```
 
@@ -175,21 +163,8 @@ db.username=
 db.password=
 ```
 
-``http.port``
-
-默认为 80
-
-``site.url``
-
-默认是 `http://localhost`, 这会在上传图片后的图片路径中用户, 还有发邮件, 找回密码验证邮箱时用到.
-
-``email``
-
-找回密码和验证邮箱时使用
-
-``adminUsername``
-
-默认是 `admin`. 首页即为该用户的博客
+``app.secret`` **重要**
+请随意修改一个, app的密钥, 不能使用默认的, 不然会有安全问题
 
 更多配置请查看 `app/app.conf` 和 [revel 手册](https://revel.github.io/)
 
@@ -215,5 +190,5 @@ leanote还有很多问题, 如果你喜欢它, 欢迎加入我们一起完善lea
 
 ## 讨论
 * [leanote 社区](http://bbs.leanote.com)
-* QQ群158716820
+* QQ群: 158716820
 * [leanote google group](https://groups.google.com/forum/#!forum/leanote)
