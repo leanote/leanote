@@ -20,7 +20,7 @@ func (c Auth) Login(email, from string) revel.Result {
 	c.RenderArgs["subTitle"] = c.Message("login")
 	c.RenderArgs["email"] = email
 	c.RenderArgs["from"] = from
-	c.RenderArgs["openRegister"] = openRegister
+	c.RenderArgs["openRegister"] = configService.IsOpenRegister()
 	
 	sessionId := c.Session.Id()
 	if sessionService.LoginTimesIsOver(sessionId) {
@@ -92,7 +92,7 @@ func (c Auth) Demo() revel.Result {
 //--------
 // 注册
 func (c Auth) Register(from string) revel.Result {
-	if !openRegister {
+	if !configService.IsOpenRegister() {
 		return c.Redirect("/index")
 	}
 	c.SetLocale()
@@ -103,7 +103,7 @@ func (c Auth) Register(from string) revel.Result {
 	return c.RenderTemplate("home/register.html")
 }
 func (c Auth) DoRegister(email, pwd string) revel.Result {
-	if !openRegister {
+	if !configService.IsOpenRegister() {
 		return c.Redirect("/index")
 	}
 	

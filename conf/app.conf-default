@@ -6,9 +6,6 @@ http.port=80
 
 site.url=http://localhost # or http://x.com:8080, http://www.xx.com:9000
 
-# the administrator username
-adminUsername=admin
-
 # mongdb
 db.host=localhost
 db.port=27017

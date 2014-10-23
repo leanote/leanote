@@ -26,7 +26,7 @@ func (this *UserService) AddUser(user info.User) bool {
 		go func() {
 			emailService.RegisterSendActiveEmail(user, user.Email)
 			// 发送给我 life@leanote.com
-			emailService.SendEmail("life@leanote.com", "新增用户", "{header}用户名" + user.Email + "{footer}");
+			// emailService.SendEmail("life@leanote.com", "新增用户", "{header}用户名" + user.Email + "{footer}");
 		}();
 	}
 	

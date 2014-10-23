@@ -30,9 +30,8 @@ var sessionService *service.SessionService
 
 var pageSize = 1000
 var defaultSortField = "UpdatedTime"
-var leanoteUserId = "52d26b4e99c37b609a000001"
+var leanoteUserId = "admin" // 不能更改
 var siteUrl = "http://leanote.com"
-var openRegister = true
 
 // 拦截器
 // 不需要拦截的url
@@ -142,8 +141,6 @@ func init() {
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &NoteContentHistory{})
 	
 	revel.OnAppStart(func() {
-		leanoteUserId, _ = revel.Config.String("adminUsername")
 		siteUrl, _ = revel.Config.String("site.url")
-		openRegister, _ = revel.Config.Bool("register.open")
 	})
 }

@@ -38,9 +38,11 @@
 					<a href="/findPassword" class="pull-right m-t-xs"><small>{{msg . "forgetPassword"}}</small></a>
 					<button id="loginBtn" class="btn btn-success">{{msg . "login"}}</button>
 				</div>
+				<!--
 				<div class="line line-dashed"></div>
 				
 				<a href="#" id="github" class="btn btn-github btn-block m-b-sm"><i class="fa fa-github pull-left"></i>{{msg . "use"}} Github</a>
+				-->
 				
 				<div class="line line-dashed"></div>
 				
@@ -48,9 +50,8 @@
 				
 				{{if .openRegister}}
 				<a href="/register" class="btn btn-default btn-block">{{msg . "register"}}</a>
-				{{end}}
-				
 				{{msg . "or"}}
+				{{end}}
 				
 				<a id="loginBtn" href="/demo" class="btn btn-default btn-block">{{msg . "try"}}</a>
 			</form>	

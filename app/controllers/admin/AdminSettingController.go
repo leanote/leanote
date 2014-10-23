@@ -104,6 +104,12 @@ func (c AdminSetting) DoSubDomain(noteSubDomain, blogSubDomain, leaSubDomain, bl
 	return c.RenderJson(re)
 }
 
+func (c AdminSetting) OpenRegister(openRegister string) revel.Result {
+	re := info.NewRe()
+	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "openRegister", openRegister)
+	return c.RenderJson(re)
+}
+
 func (c AdminSetting) Mongodb(mongodumpPath, mongorestorePath string) revel.Result {
 	re := info.NewRe()
 	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "mongodumpPath", mongodumpPath)

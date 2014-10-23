@@ -16,7 +16,7 @@ type Index struct {
 func (c Index) Index() revel.Result {
 	c.SetUserInfo()
 	c.RenderArgs["title"] = "leanote"
-	c.RenderArgs["openRegister"] = openRegister
+	c.RenderArgs["openRegister"] = configService.GlobalStringConfigs["openRegister"]
 	lang := c.SetLocale()
 	
 	return c.RenderTemplate("home/index_" + lang + ".html");

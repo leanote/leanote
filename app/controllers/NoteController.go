@@ -33,7 +33,7 @@ func (c Note) Index() revel.Result {
 		return c.Redirect("/login")
 	}
 	
-	c.RenderArgs["openRegister"] = openRegister
+	c.RenderArgs["openRegister"] = configService.IsOpenRegister()
 	
 	// 已登录了, 那么得到所有信息
 	notebooks := notebookService.GetNotebooks(userId)
