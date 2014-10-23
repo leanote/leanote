@@ -53,8 +53,7 @@ func (c Note) Index() revel.Result {
 	// 当然, 还需要得到第一个notes的content
 	//...
 	
-	adminUsername, _ := revel.Config.String("adminUsername")
-	c.RenderArgs["isAdmin"] = adminUsername == userInfo.Username
+	c.RenderArgs["isAdmin"] = leanoteUserId == userInfo.Username
 	c.RenderArgs["userInfo"] = userInfo
 	c.RenderArgs["userInfoJson"] = c.Json(userInfo)
 	c.RenderArgs["notebooks"] = c.Json(notebooks)

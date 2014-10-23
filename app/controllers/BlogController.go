@@ -161,7 +161,7 @@ func (c Blog) Cate(notebookId string) revel.Result {
 }
 
 // 显示分类的最近博客, json
-func (c Blog) ListCateLatest(notebookId string) revel.Result {
+func (c Blog) ListCateLatest(notebookId, callback string) revel.Result {
 	if notebookId == "" {
 		return c.E404()
 	}
@@ -192,7 +192,7 @@ func (c Blog) ListCateLatest(notebookId string) revel.Result {
 	re := info.NewRe()
 	re.Ok = true
 	re.List = blogs
-	return c.RenderJson(re)
+	return c.RenderJsonP(callback, re)
 }
 
 func (c Blog) Index(userIdOrEmail string) revel.Result {

@@ -129,7 +129,4 @@ func init() {
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &AdminEmail{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &AdminUpgrade{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &AdminData{})
-	revel.OnAppStart(func() {
-		adminUsername, _ = revel.Config.String("adminUsername")
-	})
 }
