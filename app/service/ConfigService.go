@@ -349,7 +349,7 @@ func (this *ConfigService) Restore(createdTime string) (ok bool, msg string) {
 	port, _ := revel.Config.String("db.port")
 	username, _ := revel.Config.String("db.username")
 	password, _ := revel.Config.String("db.password")
-	// mongorestore -h localhost -d leanote -o /root/mongodb_backup/leanote-9-22/ -u leanote -p nKFAkxKnWkEQy8Vv2LlM
+	// mongorestore -h localhost -d leanote -o /root/mongodb_backup/leanote-9-22/ -u leanote -p kk
 	binPath = binPath + " --drop -h " + host + " -d " + dbname + " -port " + port
 	if username != "" {
 		binPath += " -u " + username + " -p " + password
