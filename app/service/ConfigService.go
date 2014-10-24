@@ -293,7 +293,7 @@ func (this *ConfigService) Backup(remark string) (ok bool, msg string) {
 	port, _ := revel.Config.String("db.port")
 	username, _ := revel.Config.String("db.username")
 	password, _ := revel.Config.String("db.password")
-	// mongodump -h localhost -d leanote -o /root/mongodb_backup/leanote-9-22/ -u leanote -p nKFAkxKnWkEQy8Vv2LlM
+	// mongodump -h localhost -d leanote -o /root/mongodb_backup/leanote-10-25/ -u leanote -p xx
 	binPath = binPath + " -h " + host + " -d " + dbname + " -port " + port
 	if username != "" {
 		binPath += " -u " + username + " -p " + password

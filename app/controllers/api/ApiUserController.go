@@ -11,12 +11,13 @@ import (
 //	"fmt"
 //	"math"
 //	"os"
+
 //	"path"
 //	"strconv"
 )
 
 type ApiUser struct {
-	*revel.Controller
+	ApiBaseContrller
 }
 
 // 修改用户名, 需要重置session
