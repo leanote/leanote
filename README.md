@@ -142,7 +142,7 @@ MongodbDB初始数据在 `[PATH_TO_LEANOTE]/mongodb_backup/leanote_install_data`
 $> mongorestore -h localhost -d leanote --directoryperdb PATH_TO_LEANOTE/mongodb_backup/leanote_install_data
 ```
 
-初始数据包含三个用户:
+初始数据包含两个用户:
 
 ```
 user2 username: admin, password: abc123 (管理员, 重要!)
