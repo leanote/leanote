@@ -290,25 +290,25 @@
 		"strictMath": 0,
 		"strictUnits": 0
 		},
-	"\/font-awesome-4.0.3\/css\/font-awesome.css": {
+	"\/font-awesome-4.2.0\/css\/font-awesome.css": {
 		"fileType": 16,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/font-awesome.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/font-awesome.css",
 		"outputAbbreviatedPath": "No Output Path",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0
 		},
-	"\/font-awesome-4.0.3\/css\/font-awesome.min.css": {
+	"\/font-awesome-4.2.0\/css\/font-awesome.min.css": {
 		"fileType": 16,
 		"ignore": 0,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/font-awesome.min.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/font-awesome.min.css",
 		"outputAbbreviatedPath": "No Output Path",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0
 		},
-	"\/font-awesome-4.0.3\/less\/bordered-pulled.less": {
+	"\/font-awesome-4.2.0\/less\/bordered-pulled.less": {
 		"allowInsecureImports": 0,
 		"createSourceMap": 0,
 		"disableJavascript": 0,
@@ -316,8 +316,8 @@
 		"ieCompatibility": 1,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/less\/bordered-pulled.less",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/bordered-pulled.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/less\/bordered-pulled.less",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/bordered-pulled.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -328,7 +328,7 @@
 		"strictMath": 0,
 		"strictUnits": 0
 		},
-	"\/font-awesome-4.0.3\/less\/core.less": {
+	"\/font-awesome-4.2.0\/less\/core.less": {
 		"allowInsecureImports": 0,
 		"createSourceMap": 0,
 		"disableJavascript": 0,
@@ -336,8 +336,8 @@
 		"ieCompatibility": 1,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/less\/core.less",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/core.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/less\/core.less",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/core.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -348,7 +348,7 @@
 		"strictMath": 0,
 		"strictUnits": 0
 		},
-	"\/font-awesome-4.0.3\/less\/fixed-width.less": {
+	"\/font-awesome-4.2.0\/less\/fixed-width.less": {
 		"allowInsecureImports": 0,
 		"createSourceMap": 0,
 		"disableJavascript": 0,
@@ -356,8 +356,8 @@
 		"ieCompatibility": 1,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/less\/fixed-width.less",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/fixed-width.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/less\/fixed-width.less",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/fixed-width.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -368,7 +368,7 @@
 		"strictMath": 0,
 		"strictUnits": 0
 		},
-	"\/font-awesome-4.0.3\/less\/font-awesome.less": {
+	"\/font-awesome-4.2.0\/less\/font-awesome.less": {
 		"allowInsecureImports": 0,
 		"createSourceMap": 0,
 		"disableJavascript": 0,
@@ -376,8 +376,8 @@
 		"ieCompatibility": 1,
 		"ignore": 0,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/less\/font-awesome.less",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/font-awesome.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/less\/font-awesome.less",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/font-awesome.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -388,7 +388,7 @@
 		"strictMath": 0,
 		"strictUnits": 0
 		},
-	"\/font-awesome-4.0.3\/less\/icons.less": {
+	"\/font-awesome-4.2.0\/less\/icons.less": {
 		"allowInsecureImports": 0,
 		"createSourceMap": 0,
 		"disableJavascript": 0,
@@ -396,8 +396,8 @@
 		"ieCompatibility": 1,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/less\/icons.less",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/icons.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/less\/icons.less",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/icons.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -408,7 +408,7 @@
 		"strictMath": 0,
 		"strictUnits": 0
 		},
-	"\/font-awesome-4.0.3\/less\/larger.less": {
+	"\/font-awesome-4.2.0\/less\/larger.less": {
 		"allowInsecureImports": 0,
 		"createSourceMap": 0,
 		"disableJavascript": 0,
@@ -416,8 +416,8 @@
 		"ieCompatibility": 1,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/less\/larger.less",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/larger.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/less\/larger.less",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/larger.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -428,7 +428,7 @@
 		"strictMath": 0,
 		"strictUnits": 0
 		},
-	"\/font-awesome-4.0.3\/less\/list.less": {
+	"\/font-awesome-4.2.0\/less\/list.less": {
 		"allowInsecureImports": 0,
 		"createSourceMap": 0,
 		"disableJavascript": 0,
@@ -436,8 +436,8 @@
 		"ieCompatibility": 1,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/less\/list.less",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/list.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/less\/list.less",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/list.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -448,7 +448,7 @@
 		"strictMath": 0,
 		"strictUnits": 0
 		},
-	"\/font-awesome-4.0.3\/less\/mixins.less": {
+	"\/font-awesome-4.2.0\/less\/mixins.less": {
 		"allowInsecureImports": 0,
 		"createSourceMap": 0,
 		"disableJavascript": 0,
@@ -456,8 +456,8 @@
 		"ieCompatibility": 1,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/less\/mixins.less",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/mixins.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/less\/mixins.less",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/mixins.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -468,7 +468,7 @@
 		"strictMath": 0,
 		"strictUnits": 0
 		},
-	"\/font-awesome-4.0.3\/less\/path.less": {
+	"\/font-awesome-4.2.0\/less\/path.less": {
 		"allowInsecureImports": 0,
 		"createSourceMap": 0,
 		"disableJavascript": 0,
@@ -476,8 +476,8 @@
 		"ieCompatibility": 1,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/less\/path.less",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/path.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/less\/path.less",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/path.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -488,7 +488,7 @@
 		"strictMath": 0,
 		"strictUnits": 0
 		},
-	"\/font-awesome-4.0.3\/less\/rotated-flipped.less": {
+	"\/font-awesome-4.2.0\/less\/rotated-flipped.less": {
 		"allowInsecureImports": 0,
 		"createSourceMap": 0,
 		"disableJavascript": 0,
@@ -496,8 +496,8 @@
 		"ieCompatibility": 1,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/less\/rotated-flipped.less",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/rotated-flipped.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/less\/rotated-flipped.less",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/rotated-flipped.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -508,7 +508,7 @@
 		"strictMath": 0,
 		"strictUnits": 0
 		},
-	"\/font-awesome-4.0.3\/less\/spinning.less": {
+	"\/font-awesome-4.2.0\/less\/spinning.less": {
 		"allowInsecureImports": 0,
 		"createSourceMap": 0,
 		"disableJavascript": 0,
@@ -516,8 +516,8 @@
 		"ieCompatibility": 1,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/less\/spinning.less",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/spinning.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/less\/spinning.less",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/spinning.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -528,7 +528,7 @@
 		"strictMath": 0,
 		"strictUnits": 0
 		},
-	"\/font-awesome-4.0.3\/less\/stacked.less": {
+	"\/font-awesome-4.2.0\/less\/stacked.less": {
 		"allowInsecureImports": 0,
 		"createSourceMap": 0,
 		"disableJavascript": 0,
@@ -536,8 +536,8 @@
 		"ieCompatibility": 1,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/less\/stacked.less",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/stacked.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/less\/stacked.less",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/stacked.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -548,7 +548,7 @@
 		"strictMath": 0,
 		"strictUnits": 0
 		},
-	"\/font-awesome-4.0.3\/less\/variables.less": {
+	"\/font-awesome-4.2.0\/less\/variables.less": {
 		"allowInsecureImports": 0,
 		"createSourceMap": 0,
 		"disableJavascript": 0,
@@ -556,8 +556,8 @@
 		"ieCompatibility": 1,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/less\/variables.less",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/variables.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/less\/variables.less",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/variables.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -568,15 +568,15 @@
 		"strictMath": 0,
 		"strictUnits": 0
 		},
-	"\/font-awesome-4.0.3\/scss\/_bordered-pulled.scss": {
+	"\/font-awesome-4.2.0\/scss\/_bordered-pulled.scss": {
 		"createSourceMap": 0,
 		"debugStyle": 0,
 		"decimalPrecision": 5,
 		"fileType": 4,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/scss\/_bordered-pulled.scss",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/_bordered-pulled.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/scss\/_bordered-pulled.scss",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/_bordered-pulled.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -584,15 +584,15 @@
 		"shouldRunBless": 0,
 		"useLibsass": 0
 		},
-	"\/font-awesome-4.0.3\/scss\/_core.scss": {
+	"\/font-awesome-4.2.0\/scss\/_core.scss": {
 		"createSourceMap": 0,
 		"debugStyle": 0,
 		"decimalPrecision": 5,
 		"fileType": 4,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/scss\/_core.scss",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/_core.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/scss\/_core.scss",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/_core.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -600,15 +600,15 @@
 		"shouldRunBless": 0,
 		"useLibsass": 0
 		},
-	"\/font-awesome-4.0.3\/scss\/_fixed-width.scss": {
+	"\/font-awesome-4.2.0\/scss\/_fixed-width.scss": {
 		"createSourceMap": 0,
 		"debugStyle": 0,
 		"decimalPrecision": 5,
 		"fileType": 4,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/scss\/_fixed-width.scss",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/_fixed-width.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/scss\/_fixed-width.scss",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/_fixed-width.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -616,15 +616,15 @@
 		"shouldRunBless": 0,
 		"useLibsass": 0
 		},
-	"\/font-awesome-4.0.3\/scss\/_icons.scss": {
+	"\/font-awesome-4.2.0\/scss\/_icons.scss": {
 		"createSourceMap": 0,
 		"debugStyle": 0,
 		"decimalPrecision": 5,
 		"fileType": 4,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/scss\/_icons.scss",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/_icons.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/scss\/_icons.scss",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/_icons.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -632,15 +632,15 @@
 		"shouldRunBless": 0,
 		"useLibsass": 0
 		},
-	"\/font-awesome-4.0.3\/scss\/_larger.scss": {
+	"\/font-awesome-4.2.0\/scss\/_larger.scss": {
 		"createSourceMap": 0,
 		"debugStyle": 0,
 		"decimalPrecision": 5,
 		"fileType": 4,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/scss\/_larger.scss",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/_larger.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/scss\/_larger.scss",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/_larger.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -648,15 +648,15 @@
 		"shouldRunBless": 0,
 		"useLibsass": 0
 		},
-	"\/font-awesome-4.0.3\/scss\/_list.scss": {
+	"\/font-awesome-4.2.0\/scss\/_list.scss": {
 		"createSourceMap": 0,
 		"debugStyle": 0,
 		"decimalPrecision": 5,
 		"fileType": 4,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/scss\/_list.scss",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/_list.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/scss\/_list.scss",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/_list.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -664,15 +664,15 @@
 		"shouldRunBless": 0,
 		"useLibsass": 0
 		},
-	"\/font-awesome-4.0.3\/scss\/_mixins.scss": {
+	"\/font-awesome-4.2.0\/scss\/_mixins.scss": {
 		"createSourceMap": 0,
 		"debugStyle": 0,
 		"decimalPrecision": 5,
 		"fileType": 4,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/scss\/_mixins.scss",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/_mixins.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/scss\/_mixins.scss",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/_mixins.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -680,15 +680,15 @@
 		"shouldRunBless": 0,
 		"useLibsass": 0
 		},
-	"\/font-awesome-4.0.3\/scss\/_path.scss": {
+	"\/font-awesome-4.2.0\/scss\/_path.scss": {
 		"createSourceMap": 0,
 		"debugStyle": 0,
 		"decimalPrecision": 5,
 		"fileType": 4,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/scss\/_path.scss",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/_path.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/scss\/_path.scss",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/_path.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -696,15 +696,15 @@
 		"shouldRunBless": 0,
 		"useLibsass": 0
 		},
-	"\/font-awesome-4.0.3\/scss\/_rotated-flipped.scss": {
+	"\/font-awesome-4.2.0\/scss\/_rotated-flipped.scss": {
 		"createSourceMap": 0,
 		"debugStyle": 0,
 		"decimalPrecision": 5,
 		"fileType": 4,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/scss\/_rotated-flipped.scss",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/_rotated-flipped.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/scss\/_rotated-flipped.scss",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/_rotated-flipped.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -712,15 +712,15 @@
 		"shouldRunBless": 0,
 		"useLibsass": 0
 		},
-	"\/font-awesome-4.0.3\/scss\/_spinning.scss": {
+	"\/font-awesome-4.2.0\/scss\/_spinning.scss": {
 		"createSourceMap": 0,
 		"debugStyle": 0,
 		"decimalPrecision": 5,
 		"fileType": 4,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/scss\/_spinning.scss",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/_spinning.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/scss\/_spinning.scss",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/_spinning.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -728,15 +728,15 @@
 		"shouldRunBless": 0,
 		"useLibsass": 0
 		},
-	"\/font-awesome-4.0.3\/scss\/_stacked.scss": {
+	"\/font-awesome-4.2.0\/scss\/_stacked.scss": {
 		"createSourceMap": 0,
 		"debugStyle": 0,
 		"decimalPrecision": 5,
 		"fileType": 4,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/scss\/_stacked.scss",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/_stacked.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/scss\/_stacked.scss",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/_stacked.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -744,15 +744,15 @@
 		"shouldRunBless": 0,
 		"useLibsass": 0
 		},
-	"\/font-awesome-4.0.3\/scss\/_variables.scss": {
+	"\/font-awesome-4.2.0\/scss\/_variables.scss": {
 		"createSourceMap": 0,
 		"debugStyle": 0,
 		"decimalPrecision": 5,
 		"fileType": 4,
 		"ignore": 1,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/scss\/_variables.scss",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/_variables.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/scss\/_variables.scss",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/_variables.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,
@@ -760,15 +760,15 @@
 		"shouldRunBless": 0,
 		"useLibsass": 0
 		},
-	"\/font-awesome-4.0.3\/scss\/font-awesome.scss": {
+	"\/font-awesome-4.2.0\/scss\/font-awesome.scss": {
 		"createSourceMap": 0,
 		"debugStyle": 0,
 		"decimalPrecision": 5,
 		"fileType": 4,
 		"ignore": 0,
 		"ignoreWasSetByUser": 0,
-		"inputAbbreviatedPath": "\/font-awesome-4.0.3\/scss\/font-awesome.scss",
-		"outputAbbreviatedPath": "\/font-awesome-4.0.3\/css\/font-awesome.css",
+		"inputAbbreviatedPath": "\/font-awesome-4.2.0\/scss\/font-awesome.scss",
+		"outputAbbreviatedPath": "\/font-awesome-4.2.0\/css\/font-awesome.css",
 		"outputPathIsOutsideProject": 0,
 		"outputPathIsSetByUser": 0,
 		"outputStyle": 0,

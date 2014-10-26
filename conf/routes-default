@@ -23,9 +23,6 @@ GET 	/findPassword								Auth.FindPassword
 POST 	/doFindPassword								Auth.DoFindPassword
 POST	/findPasswordUpdate							Auth.FindPasswordUpdate
 
-# mobile
-GET 	/mobile										Mobile.Index
-
 # blog
 
 GET		/blog/getLikeAndComments			Blog.GetLikeAndComments
@@ -67,6 +64,9 @@ GET     /tinymce/*filepath                       Static.Serve("public/tinymce")
 #GET     /plugins/*filepath                       Static.Serve("public/tinymce/plugins")
 GET     /upload/*filepath                       Static.Serve("public/upload")
 
+# API
+# the prefix of api's controllername is "Api"
+
 # common
 *       /:controller/:action                    :controller.:action
-*       /api/:controller/:action                :controller.:action
+*       /api/:controller/:action                :controller.:action # 需要
