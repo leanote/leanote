@@ -1,0 +1,33 @@
+{{if gt .pageInfo.TotalPage 1}}
+<ul class="pagination pagination-sm m-t-none m-b-none">
+	<li class="{{if eq $.pageInfo.CurPage 1}}disabled{{end}}" >
+		<a href="{{if eq $.pageInfo.CurPage 1}}javascript:;{{else}}{{sub $.pageInfo.CurPage | urlConcat $.url "page" }}{{end}}">
+			<i class="fa fa-chevron-left">
+			</i>
+		</a>
+	</li>
+	
+	{{range $i := N 1 .pageInfo.TotalPage}}
+		{{if eq $i $.pageInfo.CurPage}}
+			<li class="active">
+				<a href="javascript:;">
+					{{$i}}
+				</a>
+			</li>
+		{{else}}
+			<li class="">
+				<a href="{{urlConcat $.url "page" $i}}">
+					{{$i}}
+				</a>
+			</li>
+		{{end}}
+	{{end}}
+	
+	<li class="{{if eq .pageInfo.CurPage .pageInfo.TotalPage}}disabled{{end}}" >
+		<a href="{{if eq .pageInfo.CurPage .pageInfo.TotalPage}}javascript:;{{else}}{{add $.pageInfo.CurPage | urlConcat $.url "page" }}{{end}}">
+			<i class="fa fa-chevron-right">
+			</i>
+		</a>
+	</li>
+</ul>
+{{end}}

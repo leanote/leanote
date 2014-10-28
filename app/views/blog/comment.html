@@ -1,0 +1,204 @@
+<!-- 赞 -->
+<div class="entry-controls clearfix">
+	<div class="vote-section-wrapper clearfix">
+		<button class="btn btn-default btn-zan" id="likeBtn"><i class="fa fa-thumbs-o-up"></i> <span id="likeNum">{{.blog.LikeNum}}</span> {{msg . "like"}}</button>
+		<span class="control-item read-counts"><i class="fa fa-eye"></i> {{if .blog.ReadNum}}{{.blog.ReadNum}}{{else}}1{{end}} {{msg . "viewers"}}</span>
+	</div>
+	<div class="right-section">
+		<div id="weixinQRCode"></div>
+		<!-- google+
+		<g:plusone size=”medium”></g:plusone>
+		-->
+		<button class="btn btn-share btn-default btn-weibo"><i class="fa fa-weibo"></i> {{msg . "sinaWeibo"}}</button>
+		<button class="btn btn-share btn-default btn-weixin"><i class="fa fa-wechat"></i> {{msg . "weixin"}}</button>
+		<div class="dropdown" style="display: inline-block; cursor: pointer; padding: 5px 10px;">
+			<!-- open -->
+			<div class="dropdown-toggle" data-hover="dropdown" data-toggle="dropdown">
+				<i class="fa fa-share-square-o"></i>
+			{{msg . "moreShare"}}
+			</div>
+			<ul class="dropdown-menu" role="menu">
+				<li><a href="#" class="btn-share tencent-weibo"><i class="fa fa-tencent-weibo"></i> {{msg . "tencentWeibo"}}</a></li>
+				<li><a href="#" class="btn-share qq"><i class="fa fa-qq"></i> {{msg . "qqZone"}}</a></li>
+				<li><a href="#" class="btn-share renren"><i class="fa fa-renren"></i> {{msg . "renren"}}</a></li>
+			</ul>
+		</div>
+		<!-- 举报 -->
+		{{if eq .locale "zh"}}
+		<div style="display: inline-block">
+			<a id="reportBtn"><i class="fa fa-flag-o"></i> {{msg . "report"}}</a>
+		</div>
+		{{end}}
+	</div>
+	<div class="voters clearfix" id="likers">
+	</div>
+</div>
+
+<script type="text/x-jsrender" id="tLikers">
+[[for users]]
+	<a id="liker_[[:UserId]]" href="[[:~root.blogUrl]]/[[:Username]]" target="_blank" class="voter">
+		[[if Logo]]
+			<img alt="avatar" class="avatar-small" src="[[:Logo]]">
+		[[else]]
+			<img alt="avatar" class="avatar-small" src="/images/blog/default_avatar.png">
+		[[/if]]
+	</a>
+[[/for]]
+</script>
+{{if and .userBlog.CanComment (not (eq .userBlog.CommentType "disqus"))}}
+
+<script type="text/x-jsrender" id="tComments">
+[[for comments]]
+	<li class="comment-item">
+		<!-- 头像 -->
+		<a ui-hovercard="" target="_blank" class="avatar-link" title="[[:UserInfo.Username]]" href="[[:~root.blogUrl]]/[[:UserInfo.Username]]">
+			<img class="avatar" src="[[:UserInfo.Logo]]">
+		</a>
+		<!-- 评论 -->
+		<div class="comment-body">
+			<div class="comment-hd">
+				<a href="[[:~root.blogUrl]]/[[:UserInfo.Username]]" target="_blank" >[[:UserInfo.Username]]</a>
+				[[if IsAuthorComment]]
+				<span>({{msg . "author"}})</span>
+				[[/if]]
+				
+				<!-- 回复其它人 -->
+				[[if ToUserInfo]]
+					<span class="in-reply-to">
+			        {{rawMsg . "reply"}}
+			        <a href="[[:~root.blogUrl]]/[[:ToUserInfo.Username]]">[[:ToUserInfo.Username]]</a>
+					</span>
+					[[if ToUserIsAuthor]]
+					<span>({{msg . "author"}})</span>
+					[[/if]]
+				[[/if]]
+			</div>
+			<div class="comment-content ng-binding" ng-bind-html="comment.content">
+				[[html:Content]]
+			</div>
+			<div class="comment-ft clearfix" data-comment-id="[[:CommentId]]" >
+				<span title="" ui-time="" class="date">[[:PublishDate]] </span>
+				<span class="like-num [[if !LikeNum]]hide[[/if]]" title="[[:LikeNum]] {{rawMsg . "like"}}"><span class="like-num-i">[[:LikeNum]]</span> {{rawMsg . "like"}}</span></span>
+				
+				[[if ~root.visitUserInfo.UserId]]
+					[[if IsMyNote && !IsMyComment]]
+						<a href="javascript:;" class="comment-trash op-link "><i class="fa fa-trash"></i> {{rawMsg . "delete"}}</a>
+					[[/if]]
+					[[if !IsMyComment]]
+					<a href="javascript:;" class="comment-reply op-link ">
+						<i class="fa fa-reply"></i>
+						{{rawMsg . "reply"}} 
+					</a>
+					<a href="javascript:;" class="comment-like op-link"><i class="fa fa-thumbs-o-up"></i> <span class="like-text">[[if IsILikeIt]]{{rawMsg . "unlike"}}[[else]]{{rawMsg . "like"}}[[/if]]</span></a>
+					{{if eq .locale "zh"}}
+					<a href="javascript:;" class="comment-report op-link "><i class="fa fa-flag-o"></i> {{rawMsg . "report"}}</a>
+					{{end}}
+					[[else]]
+					<a href="javascript:;" class="comment-trash op-link "><i class="fa fa-trash"></i> {{rawMsg . "delete"}}</a>
+					[[/if]]
+				[[/if]]
+			</div>
+			
+			<!-- 回复该评论 -->
+			[[if ~root.visitUserInfo.UserId]]
+			<form class="comment-form comment-box-ft">
+				<div class="clearfix">
+					<div class="avatar-wrap">
+						<img class="avatar" src="[[:~root.visitUserInfo.Logo]]">
+					</div>
+					<div class="editor-wrap">
+						<textarea class="editable" id="commentContent" name="commentContent" placeholder="{{rawMsg . "reply"}}"></textarea>
+					</div>
+				</div>
+				
+				<div class="command clearfix" style="display: block;">
+					<button class="reply-comment-btn save btn btn-primary" data-comment-id="[[:CommentId]]">{{rawMsg . "comment"}}</button>
+					<a class="cancel reply-cancel btn-link">{{rawMsg . "cancel"}}</a>
+				</div>
+			</form>
+			[[/if]]
+		</div>
+	</li>
+[[/for]]
+</script>
+
+<!-- 评论 -->
+<div class="comment-box hide">
+    {{if .visitUserInfo.UserId}}
+	<form class="comment-form comment-box-ft" id="commentForm">
+		<div class="clearfix">
+			<div class="avatar-wrap">
+				<img class="avatar" src="{{.visitUserInfo.Logo}}">
+			</div>
+			<div class="editor-wrap">
+				<textarea class="editable" id="commentContent" name="commentContent" placeholder="{{msg . "comment"}}" style="height: 100px;"></textarea>
+			</div>
+		</div>
+		<div class="command clearfix" style="display: block;">
+			<button id="commentBtn" class="reply-comment-btn save btn btn-primary">{{msg . "comment"}}</button>
+		</div>
+	</form>
+	{{else}}
+	<div class="needLogin">
+		<a onclick="goLogin()">{{msg . "signIn"}}</a>, {{msg . "submitComment"}}.
+		<br />
+		没有帐号? <a onclick="goRegister()">{{msg . "signUp"}}</a>
+	</div>
+	{{end}}
+	<div class="box-header">
+	    <span class="counter">
+	      <i class="icon icon-comment"></i><span id="commentNum">{{.blog.CommentNum}}</span> {{msg . "comments"}}
+	    </span>
+    </div>
+	<ul id="comments">
+	</ul>
+</div>
+
+<div id="moreComments">
+	<div class="hide comments-more">
+		<a>More...</a>
+	</div>
+	<div class="comments-loading">
+		<img src="/images/loading-32.gif" />
+	</div>
+</div>
+
+{{if eq .locale "zh"}}
+<div id="reportMsg" class="hide">
+    <form class="report-form" name="reportForm">
+      <ul class="options clearfix">
+        <li><label><input required="" value="{{msg . "reportReason1"}}" name="reason" type="radio">{{msg . "reportReason1"}}</label></li>
+        <li><label><input required="" value="{{msg . "reportReason2"}}" name="reason" type="radio">{{msg . "reportReason2"}}</label></li>
+        <li><label><input required="" value="{{msg . "reportReason3"}}" name="reason" type="radio">{{msg . "reportReason3"}}</label></li>
+        <li><label><input required="" value="{{msg . "reportReason4"}}" name="reason" type="radio">{{msg . "reportReason4"}}</label></li>
+        <li><label><input required="" value="" name="reason" type="radio">{{msg . "other"}}</label></li>
+      </ul>
+      <p class="input-container" style="display: none">
+		<input placeholder="{{msg . "reportReason"}}" type="text" name="detail" class="form-control reason-text basic-input" />
+      </p>
+      <p class="footnote"></p>
+    </form>
+</div>
+{{end}}
+
+{{end}}
+
+{{if and .userBlog.CanComment (eq .userBlog.CommentType "disqus")}}
+
+<div id="disqus_thread"></div>
+<!-- comment -->
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = '{{.userBlog.DisqusId}}'; // required: replace example with your forum shortname
+    var disqus_identifier = '{{.userBlog.UserId.Hex}}/{{.blog.NoteId.Hex}}/{{.blog.Title}}'; // 博客链接
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+{{end}}	

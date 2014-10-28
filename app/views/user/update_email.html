@@ -1,0 +1,35 @@
+{{template "home/header_box.html" .}}
+
+<section id="box" class="animated fadeInUp">
+	<div>
+		<h1 id="logo">leanote</h1>
+		<div id="boxForm">
+			<div id="boxHeader">验证邮箱 - {{if .ok}}成功{{else}}失败{{end}}</div>
+			<form>
+				<div class="alert alert-danger" id="loginMsg"> </div>
+				您的邮箱 {{.email}} 验证 
+				{{if .ok}}成功{{else}}失败{{end}}
+				{{if .ok}}
+				<br />
+				您的新登录邮箱为 {{.email}}
+				{{end}}
+				
+				{{if .msg}}<br />{{.msg}}{{end}}
+				
+				<br />
+				<a href="/note">回到我的笔记</a>
+			</form>		
+		</div>
+    </div>
+</section>
+
+<div id="boxFooter">
+	<p>
+		<a href="/index">{{msg . "home"}}</a>
+	</p>
+	<p>
+		<a href="/index">leanote</a> © 2014
+	</p>
+</div>
+</body>
+</html>

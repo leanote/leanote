@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="apple-touch-fullscreen" content="yes">
+<meta name=”apple-mobile-web-app-capable” content=”yes” />
+<meta name="keywords" content="leanote,leanote.com">
+<meta name="description" content="leanote, Not Just A Notebook">
+<title>leanote, Not Just A Notebook</title>
+
+<link href="/css/bootstrap.css" rel="stylesheet" />
+<!-- 先加载, 没有样式, 宽度不定 -->
+<link rel="stylesheet" href="tinymce/skins/custom/skin.min.css" rel="stylesheet"/>
+
+<!-- leanote css -->
+<link href="css/font-awesome-4.2.0/css/font-awesome.css" rel="stylesheet" />
+<link href="css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+<script>
+var hash = location.hash;
+if(hash == "#writing") {
+	var files = '<link rel="stylesheet" href="css/theme/writting-overwrite.css" type="text/css" id="themeLink" />';
+} else {
+	var files ='<link rel="stylesheet" href="css/theme/{{if .userInfo.Theme}}{{.userInfo.Theme}}{{else}}default{{end}}.css" type="text/css" id="themeLink" />';
+}
+document.write(files);
+</script>
+
+
+<!-- For Develop writting mod -->
+<script>
+function log(o) {
+	
+}
+</script>
+</head>
+<body>
+	<div id="page">
+		<div id="pageInner">
+
+			<!-- 头部 -->
+			<!-- <div id="headerContainer"> -->
+			<div id="header">
+
+			<!--  
+				<div id="headerLeft" class="pull-left">
+				</div>
+			-->
+				<div id="logo" class="pull-left">
+					<!--<span>lea</span>note -->
+					<!--<img style="height: 45px;" src="/images/logo/leanote_white.png" title="leanote, 不一样的笔记" alt="leanote">-->
+				</div>
+				<div id="switcher" class="pull-left">
+					 <i class="fa fa-align-justify" id="leftSwitcher" title="{{msg . "leftHidden"}}"></i>
+					 <span id="leftSwitcher2" title="{{msg . "leftShow"}}"></span>
+				</div>
+				<!-- search -->
+				<div class="pull-left" id="searchWrap">
+					<form class="navbar-form form-inline col-lg-2" id="searchNote">
+						<input class="form-control" placeholder="Search" type="text" id="searchNoteInput">
+					</form>
+				</div>
+
+				<!-- 全局按钮 -->
+				<div class="pull-left" style="" id="newNoteWrap">
+					<!-- 新建笔记 -->
+					<div id="newMyNote">
+						<a id="newNoteBtn" title="{{msg . "newNote"}}">
+							<i class="fa fa-file-o"></i>
+							<span class="new-note-text">{{msg . "newNote"}}</span>
+							<span class="new-note-text-abbr">{{msg . "new"}}</span>
+						</a>
+						<span class="new-split">|</span>
+						<a id="newNoteMarkdownBtn" title="{{msg . "newMarkdown"}}">
+							<span class="new-markdown-text">Markdown</span>
+							<span class="new-markdown-text-abbr">Md</span>
+						</a>
+						<span class="for-split"> - </span>
+						<span id="curNotebookForNewNote" notebookId=""></span>
+						<div class="dropdown" style="display: inline-block">
+							<a class="ios7-a dropdown-toggle"
+								id="listNotebookDropdownMenu" data-toggle="dropdown"> 
+								<i class="fa fa-angle-down"></i>
+							</a>
+							<div class="dropdown-menu dropdown-list" id="searchNotebookForAddDropdownList">
+								<input type="text" placeholder="Search notebook" class="form-control" id="searchNotebookForAdd"/>
+								<ul class="clearfix" role="menu" aria-labelledby="listNotebookDropdownMenu" id="notebookNavForNewNote">
+								</ul>
+							</div>
+						</div>
+					</div>
+					
+					<!-- 只为新建别人的笔记 -->
+					<div id="newSharedNote" style="display: none">
+						<a id="newSharedNoteBtn">
+							<i class="fa fa-file-o"></i>
+							<span class="new-note-text">{{msg . "newNote"}}</span>
+							<span class="new-note-text-abbr">{{msg . "new"}}</span>
+						</a>
+						<span class="new-split">|</span>
+						<a id="newShareNoteMarkdownBtn" title="{{msg . "newMarkdown"}}">
+							<span class="new-markdown-text">Markdown</span>
+							<span class="new-markdown-text-abbr">Md</span>
+						</a>
+						<span class="for-split"> - </span>
+						<span id="curNotebookForNewSharedNote" notebookId="" userId=""></span>
+						<div class="dropdown" style="display: inline-block">
+							<a id="listShareNotebookDropdownMenu" class="ios7-a dropdown-toggle" data-toggle="dropdown"> 
+								<i class="fa fa-angle-down"></i>
+							</a>
+							<div class="dropdown-menu dropdown-list" id="searchNotebookForAddShareDropdownList" >
+								<ul id="notebookNavForNewSharedNote"></ul>
+							</div>
+						</div>
+					</div>				
+				</div>
+				
+				<div class="pull-left" id="leanoteMsg">
+					<span id="msg" style="display: inline-block;"></span>
+					<span id="loading">
+					</span>
+				</div>
+					
+				<div class="pull-right" style="margin: 0 10px" id="myProfile">
+					<div class="dropdown">
+						<a class="dropdown-toggle" title="{{.userInfo.Username}}" data-toggle="dropdown" style="line-height: 60px;"> 
+							<img alt="{{.userInfo.Username}}" title="{{.userInfo.Username}}" src="{{if .userInfo.Logo}}{{.userInfo.Logo}}{{else}}/images/blog/default_avatar.png{{end}}" id="myAvatar"/> 
+							<span class="username">
+								{{if .userInfo.UsernameRaw}}
+									{{.userInfo.UsernameRaw}}
+								{{else}}
+									{{.userInfo.Username}}
+								{{end}}
+							</span>
+							<i class="fa fa-angle-down"></i>
+						</a>
+						<ul class="dropdown-menu li-a" role="menu">
+							<li role="presentation" id="setInfo">
+								<a>
+								<i class="fa fa-info"></i> 
+								{{msg . "accountSetting"}}
+								</a>
+							</li>
+							<li role="presentation" id="setAvatarMenu">
+								<a>
+								<i class="fa fa-smile-o"></i> 
+								{{msg . "setAvatar"}}
+								</a>
+							</li>
+							<li role="presentation" id="setTheme">
+								<a>
+								<i class="fa fa-sun-o"></i> 
+								{{msg . "themeSetting"}}
+								</a>
+							</li>
+							<!--
+							<li role="presentation" id="yourSuggestions">
+								<i class="fa fa-comment-o"></i> 
+								{{msg . "yourSuggestions"}}
+							</li>
+							-->
+							<li role="presentation" class="my-link" >
+								<a target="_blank" href="{{$.blogUrl}}/{{.userInfo.Username}}">
+								<i class="fa fa-bold"></i>
+								{{msg . "myBlog"}}</a>
+							</li>
+							
+							{{if .isAdmin}}
+							<li role="presentation" class="divider"></li>
+							<li role="presentation">
+								<a target="_blank" title="{{msg . "amdin"}}" href="/admin/index">
+									<i class="fa fa-dashboard"></i> 
+									{{msg . "admin"}}
+								</a>
+							</li>
+							{{end}}
+							<li role="presentation" class="divider"></li>
+							<li role="presentation" onclick="logout()">
+								<i class="fa fa-sign-out"></i> 
+								{{msg . "logout"}}
+							</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="pull-right top-nav" id="myBlog">
+					<a target="_blank" href="{{$.blogUrl}}/{{.userInfo.Username}}"> 
+						{{msg . "myBlog"}}
+					</a>
+				</div>
+
+				<div class="pull-right" style="line-height: 60px; margin-right:10px" id="toggleEditorMode">
+					<a href="#writing">{{msg . "writingMode"}}</a>
+				</div>
+				
+				{{if eq .userInfo.Email "demo@leanote.com"}}
+				{{if .openRegister}}					
+				<div class="pull-right" style="line-height: 60px; margin-right:10px" id="demoRegister">
+					<span>
+						{{msg . "demoRegister"}}
+					</span>
+				</div>
+				{{end}}
+				{{end}}
+				
+				<!--
+				<ul id="setting" class="pull-right">
+					<li class="dropdown messages">
+						<a class="dropdown-toggle" data-toggle="dropdown"> 
+							<span aria-hidden="true" class="icon se7en-flag"></span>
+							<div class="sr-only">Messages</div>
+							<p class="counter">3</p>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="#"> c@c.com 共享了笔记给你 是否接受? </a></li>
+							<li><a href="#"> d@c.com 共享了笔记给你 是否接受? </a></li>
+						</ul>
+					</li>
+
+					<li class="dropdown settings">
+						<a class="dropdown-toggle" data-toggle="dropdown"> 
+							<span aria-hidden="true" class="icon se7en-gear"></span>
+							<div class="sr-only">Settings</div>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a class="settings-link blue"><span></span>Blue</a></li>
+							<li><a class="settings-link green"><span></span>Green</a></li>
+							<li><a class="settings-link orange"><span></span>Orange</a>
+							</li>
+							<li><a class="settings-link magenta"><span></span>Magenta</a>
+							</li>
+							<li><a class="settings-link gray"><span></span>Gray</a></li>
+						</ul>
+					</li>
+				</ul>
+				-->
+				<div style="clear: both"></div>
+			</div>
+
+			<div id="mainContainer" class="clearfix">
+				<div id="mainMask">
+					<img src="/images/loading-30.gif" />
+					<br />
+					<br />
+					loading...
+				</div>
+				<div id="leftNotebook">
+					<div id="notebook">
+						<div class="folderNote opened" id="myNotebooks">
+							<div class="folderHeader clearfix">
+								<i class="fa fa-book pull-left fa-left"></i> 
+								<span class="pull-left">
+									{{msg . "notebook"}}
+								</span>
+								<div class="pull-right" id="addNotebookPlus" title="{{msg . "addNotebook"}}">
+									<i class="fa  fa-plus" title="{{msg . "addNotebook"}}"></i>
+								</div>
+							</div>
+							
+							<div class="folderBody">
+								<input type="text" class="form-control" id="searchNotebookForList" placeholder="Search notebook"/>							
+								<ul class="ztree" id="notebookList"></ul>
+								<ul class="ztree" id="notebookListForSearch"></ul>
+							</div>
+						</div>
+						
+						<div class="folderNote closed" id="myTag">
+							<div class="folderHeader">
+								<i class="fa fa-bookmark fa-left"></i>
+								<span>
+									{{msg . "tag"}}
+								</span>
+							</div>
+	
+							<ul class="folderBody clearfix" id="tagNav">
+								<li data-tag="red"><a> <span class="label label-red">{{msg . "red"}}</span></a></li>
+								<li data-tag="blue"><a> <span class="label label-blue">{{msg . "blue"}}</span></a></li>
+								<li data-tag="yellow"><a> <span class="label label-yellow">{{msg . "yellow"}}</span></a></li>
+								<li data-tag="green"><a> <span class="label label-green">{{msg . "green"}}</span></a></li>
+							</ul>
+						</div>
+						
+						<div class="folderNote closed" id="myShareNotebooks">
+							<div class="folderHeader">
+								<i class="fa fa-user fa-left"></i>
+								<span>
+									{{msg . "share"}}
+								</span>
+							</div>
+	
+							<ul class="folderBody" id="shareNotebooks">
+								
+							</ul>
+						</div>
+	
+					</div>
+					
+					<!-- 缩小版 todo 不要展示, 点击展开即可 -->
+					<div id="notebookMin">
+						<!-- 这里隐藏, 不要 -->
+						<div target="#notebookList" title="{{msg . "notebook"}}" class="minContainer">
+							<i class="fa fa-book"></i>
+							<ul class="dropdown-menu" id="minNotebookList">
+							</ul>
+						</div>
+						<div target="#tagNav" title="{{msg . "myTag"}}" class="minContainer">
+							<i class="fa fa-bookmark"></i>
+							<ul class="dropdown-menu" id="minTagNav">
+							</ul>
+						</div>
+						<div id="minShareNotebooks">
+							<div class="minContainer" target="#friendContainer0" title="{{msg . "share"}}">
+								<i class="fa fa-user"></i>
+							</div>
+						</div>
+					</div>
+					
+					<!-- 
+					底下隐藏/展开 
+					<div id="notebookBottom">
+						<i class="fa fa-angle-left" id="leftSwitcher"></i>
+					</div>
+					-->
+				</div>
+
+				<div class="noteSplit" id="notebookSplitter"></div>
+				
+				<div id="noteAndEditor">
+					<div id="noteList">
+					<div class="clearfix" id="notesAndSort" style="position: relative">
+						<div class="pull-left">
+							<!-- 我的笔记本 -->
+							<div class="dropdown" id="myNotebookNavForListNav">
+								<a class="ios7-a dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">
+									<span id="curNotebookForListNote">{{msg . "all"}}</span>
+									<!--
+									<i class="fa fa-angle-down"></i>
+									-->
+								</a>
+								<!-- 如果notebook过多, 则会产生滚动 弃用
+								<div class="dropdown-menu dropdown-list" style="left: 5px;">
+									<ul role="menu" aria-labelledby="dropdownMenu1" id="notebookNavForListNote"></ul>
+								</div>
+								-->
+							</div>
+							
+							<!-- 共享的笔记本 -->
+							<div class="dropdown" id="sharedNotebookNavForListNav" style="display: none">
+								<a class="ios7-a dropdown-toggle" id="dropdownMenu2" data-toggle="dropdown">
+									<span id="curSharedNotebookForListNote">{{msg . "all"}}</span>
+									<!--
+									<i class="fa fa-angle-down"></i>
+									-->
+								</a>
+								<ul class="dropdown-menu" role="menu"
+									aria-labelledby="dropdownMenu2" style="left: 5px;" id="sharedNotebookNavForListNote">
+								</ul>
+							</div>
+
+						</div>
+
+						<div class="pull-left" id="tagSearch" style="line-height: 38px">
+						</div>
+						<div id="sortType">
+							<div class="dropdown">
+								<a class="ios7-a dropdown-toggle" id="dropdownMenu1"
+									data-toggle="dropdown"> 
+									<!--  
+									<i class="fa fa-sort-alpha-asc">
+									</i>Sort <i class="fa fa-angle-down"></i>
+									-->
+								</a>
+								<!--
+								<ul class="dropdown-menu" role="menu"
+									aria-labelledby="dropdownMenu1"
+									style="right: 3px; ! important; left: -100px; min-width: 100px;">
+									<li role="presentation"><a role="menuitem" tabindex="-1"
+										href="#">创建日期</a></li>
+									<li role="presentation"><a role="menuitem" tabindex="-1"
+										href="#">修改日期</a></li>
+									<li role="presentation"><a role="menuitem" tabindex="-1"
+										href="#">标题</a></li>
+									<li role="presentation" class="divider"></li>
+									<li role="presentation"><a role="menuitem" tabindex="-1"
+										href="#">Separated </a></li>
+								</ul>
+								-->
+							</div>
+						</div>
+					</div>
+
+					<!-- 笔记列表 -->
+					<!-- wrap 为了slimScroll -->
+					<div id="noteItemListWrap">
+						<ul id="noteItemList">
+						</ul>
+					</div>
+				</div>
+				
+					<div class="noteSplit" id="noteSplitter"></div>
+					
+					<div id="note">
+					<!-- 只读模式 -->
+					<div id="noteRead">
+						<div id="noteReadContainer">
+							<div id="noteReadTop">
+								<h2 id="noteReadTitle"></h2>
+								<div class="clearfix" id="noteReadInfo">
+									<i class="fa fa-bookmark-o"></i>												
+									<span id="noteReadTags"></span>
+									
+									<!-- 修改时间 -->
+									<i class="fa fa-calendar"></i>{{msg . "update"}} 
+									<span id="noteReadUpdatedTime"></span>  
+									
+									<!-- 修改时间 -->
+									<i class="fa fa-calendar"></i>{{msg . "create"}} 										
+									<span id="noteReadCreatedTime"></span>
+								</div>
+							</div>
+							
+							<div id="noteReadContent">
+							</div>
+						</div>
+					</div>
+					<!-- 遮罩, 为了resize3Columns用 -->
+					<div id="noteMask" class="note-mask"></div>
+					<div id="noteMaskForLoading" class="note-mask">
+						<img src="/images/loading-24.gif"/>
+						<br />
+						loading...
+					</div>
+					<div id="editorMask">
+						{{msg . "noNoteNewNoteTips"}}
+						<br />
+						<br />
+						<div id="editorMaskBtns">
+							<a class="note">{{msg . "newNote"}}</a>
+							<a class="markdown">{{msg . "newMarkdownNote"}}</a>
+						</div>
+						<div id="editorMaskBtnsEmpty">
+							{{msg . "canntNewNoteTips"}}
+						</div>
+					</div>
+					<div id="noteTop">
+						<!-- 左侧放tag, 右侧放按钮, 比如save, info, move, delete -->
+						<div id="tool" class="clearfix">
+							<!-- tag可以参考 mac的文件tag, 预定义一些颜色, 用户也可以自己输入-->
+							
+							<!--
+							<div class="pull-left" id="noteTitleDiv">
+								<input name="noteTitle" id="noteTitle" value="" placeholder="无标题">
+							</div>
+							-->
+							
+							<div class="pull-left" id="tag">
+								<div id="tags" style="display: inline-block; line-height: 25px;">
+								</div>
+
+								<div class="dropdown" style="display: inline-block"
+									id="tagDropdown">
+									<i class="fa fa-bookmark-o"></i> 
+									<a
+										class="metro-a dropdown-toggle" data-toggle="dropdown"
+										id="addTagTrigger" style="cursor: text; padding-left: 0">
+										<span class="add-tag-text">
+										{{msg . "clickAddTag"}}
+										</span>
+									</a> 
+									<input type="text" id="addTagInput" />
+									<ul class="dropdown-menu" role="menu" id="tagColor">
+										<li role="presentation"><span class="label label-red">{{msg . "red"}}</span>
+										</li>
+										<li role="presentation"><span class="label label-blue">{{msg . "blue"}}</span>
+										</li>
+										<li role="presentation"><span class="label label-yellow">{{msg . "yellow"}}</span></li>
+										<li role="presentation"><span class="label label-green">{{msg . "green"}}</span></li>
+									</ul>
+								</div>
+							</div>
+							
+							<ul class="pull-right" id="editorTool">
+								<li><a class="ios7-a " id="saveBtn" title="ctrl+s"
+									data-toggle="dropdown">
+									<span class="fa fa-save"></span>
+									{{msg . "save"}}</a></li>
+									
+								<li class="dropdown" id="attachDropdown">
+									<a class="ios7-a dropdown-toggle" data-toggle="dropdown" id="showAttach">
+										<span class="fa fa-paperclip"></span>
+										{{msg . "attachments"}}<span id="attachNum"></span>
+									</a>
+									<div class="dropdown-menu" id="attachMenu">
+										<ul id="attachList">
+											
+										</ul>
+										<form id="uploadAttach" method="post" action="/attach/UploadAttach" enctype="multipart/form-data">
+							                <div id="dropAttach" class="dropzone">
+							                    <a class="btn btn-success btn-choose-file">
+													<i class="fa fa-upload"></i>
+							                    	<span>Choose File</span>
+							                    </a>
+							                    <a class="btn btn-default" id="downloadAllBtn">
+								                    <i class="fa fa-download"></i>
+							                    	<span>Download All</span>
+							                    </a>
+							                    <a class="btn btn-default" id="linkAllBtn">
+								                    <i class="fa fa-link"></i>
+							                    	<span>Link All</span>
+							                    </a>
+							                    <input type="file" name="file" multiple/>
+							                </div>
+							                <div id="attachUploadMsg">
+							                </div>
+							            </form>
+									</div>
+								</li>
+								
+								<li><a class="ios7-a " id="tipsBtn"
+									data-toggle="dropdown">
+									<span class="fa fa-question"></span>
+									{{msg . "editorTips"}}</a></li>
+								<li><a class="ios7-a " id="contentHistory"
+									data-toggle="dropdown">
+									<span class="fa fa-history"></span>
+									{{msg . "history"}}</a></li>
+							</ul>
+						</div>
+
+						<div id="noteTitleDiv">
+							<input name="noteTitle" id="noteTitle" value="" placeholder="{{msg . "unTitled"}}" tabindex="1" />
+						</div>
+					</div>
+
+					<div id="editor">
+						<!-- 编辑器 -->
+						<div id="mceToolbar">
+							<div id="popularToolbar"
+								style="position: absolute; right: 30px; left: 0"></div>
+							<a
+								style="dispaly: block; position: absolute; cursor: pointer; right: 10px; padding: 3px 10px"
+								id="moreBtn"> <i class="fa fa-angle-down"></i>
+							</a>
+						</div>
+						<div class="editorBg"></div>
+						<div id="leanoteNav">
+							<h1>
+								<i class="fa fa-align-justify" title="文档导航"></i>
+								<span>{{msg . "nav"}}</span>
+							</h1>
+							<div id="leanoteNavContent">
+							</div>
+						</div>
+						
+						<!-- leaui image drop image to editor-->
+						<form id="upload" method="post" action="/file/uploadImageLeaui" enctype="multipart/form-data" style="margin-top: 5px;">
+			                <div id="drop">
+			                       Drop images to here
+			                    <input type="file" name="file" multiple style="display: none"/>
+			                </div>
+			                <ul id="uploadMsg">
+			                </ul>
+			            </form>
+	            
+						<!-- 由此可以算高度 -->
+						<div id="editorContent" name="editorContent" tabindex="2" />
+							{{.noteContent}}
+				       </div>
+					</div>
+					
+					<div id="mdEditor">
+						<div id="wmd-button-bar" id="mdBar"></div>
+						<div class="editorBg"></div>
+						<!-- 为了scroll -->
+	                    
+						<div class="clearfix" id="mdEditorPreview">
+							<div id="left-column">
+				                <div id="wmd-panel-editor" class="wmd-panel-editor">
+				                    <textarea class="wmd-input theme" id="wmd-input" spellcheck="false" tabindex="3"></textarea>
+				                </div>
+				            </div>
+				            <div id="mdSplitter"></div>
+				            <div id="right-column">
+				                <div id="wmd-panel-preview" class="wmd-panel-preview preview-container">
+				                    <div id="wmd-preview" class="wmd-preview"></div>
+				                </div>
+				            </div>
+						</div>
+	                    <textarea id="md-section-helper"></textarea>
+					</div>
+				</div>	
+			</div>
+			
+			<!-- mdEditor -->
+			<!-- Hidden Popup Modal -->
+			<div class="modal fade bs-modal-sm" id="editorDialog" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-sm">
+				    <div class="modal-content">
+				
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				        <h4 class="modal-title" id="editorDialog-title"></h4>
+				      </div>
+				      
+				      <div class="modal-body">
+							<p></p>
+							<div class="input-group">
+							  <span class="input-group-addon">
+							  	<i></i>
+							  </span>
+							  <input type="text" class="form-control" placeholder="">
+							</div>
+				      </div>
+				      
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">{{msg . "cancel"}}</button>
+				        <button type="button" class="btn btn-primary" id="editorDialog-confirm">{{msg . "confirm"}}</button>
+				      </div>
+				      
+				    </div><!-- /.modal-content -->
+				  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			<!-- 弹出框 模板 -->
+			<div class="modal fade bs-modal-sm" id="leanoteDialogRemote" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+			</div>
+			
+			<div class="modal fade bs-modal-sm" id="leanoteDialog" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+			  <div class="modal-dialog modal-sm">
+			    <div class="modal-content">
+			
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			        <h4 class="modal-title" id="modalTitle">操作</h4>
+			      </div>
+			      
+			      <div class="modal-body">
+					内容区
+			      </div>
+			      
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			        <button type="button" class="btn btn-primary">Save changes</button>
+			      </div>
+			      
+			    </div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			
+			<div class="modal fade bs-modal-sm" id="sendRegisterEmailDialog" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+			  <div class="modal-dialog modal-sm">
+			    <div class="modal-content">
+			
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			        <h4 class="modal-title" class="modalTitle">邀请好友</h4>
+			      </div>
+			      
+				   <div class="modal-body">
+						<form role="form">
+						  <div class="form-group">
+						  	<div id="registerEmailMsg" class="alert alert-warning" style="display: none">
+						  	</div>
+						  	<input type="hidden" id="toEmail"/>
+						    <label for="emailContent">邮件内容</label>
+						    <textarea class="form-control" id="emailContent">Hi, 我是life, leanote非常好用, 快来注册吧.</textarea>
+						  </div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+						<button type="button" class="btn btn-success" id="registerEmailBtn">发送</button>
+					</div>
+			      
+			    </div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			
+			<!-- theme -->
+			<div class="modal fade bs-modal-sm" id="setThemeDialog" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+			  <div class="modal-dialog modal-sm">
+			    <div class="modal-content">
+				  <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			        <h4 class="modal-title" class="modalTitle">{{msg . "theme"}}</h4>
+			      </div>
+					<div class="modal-body">
+				  		<table id="themeForm">
+				  			<tr>
+				  				<td>
+				  					<label>
+				  					<img src="/images/slider/all.gif" height="100px"> 
+				  					<br />
+				  					<input type="radio" name="theme" value="default"> {{msg . "default"}}
+				  					</label>
+				  				</td>
+				  				<td>
+					  				<label> 
+				  					<img src="/images/slider/all-simple.gif" height="100px"> 
+				  					<br />
+				  					<input type="radio" name="theme" value="simple"> {{msg . "simple"}}
+				  					</label>
+				  				</td>
+				  			</tr>
+				  		</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">{{msg . "close"}}</button>
+					</div>
+			    </div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			
+			<!-- 编辑器提示 -->
+			<div class="modal fade bs-modal-sm" id="tipsDialog" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+			  <div class="modal-dialog modal-sm">
+			    <div class="modal-content">
+			    
+				  <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			        <h4 class="modal-title" class="modalTitle">{{msg . "editorTips"}}</h4>
+			      </div>
+					<div class="modal-body">
+						{{msg . "editorTipsInfo"}}
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">{{msg . "close"}}</button>
+					</div>
+				    
+			    </div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			
+			<!-- avatar -->
+			<div class="modal fade bs-modal-sm" id="avatarDialog" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+			  <div class="modal-dialog modal-sm">
+			    <div class="modal-content">
+				  <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			        <h4 class="modal-title" class="modalTitle">{{msg . "setAvatar"}}</h4>
+			      </div>
+					<div class="modal-body">
+						<form id="uploadAvatar" method="post" action="/file/uploadAvatar" enctype="multipart/form-data">
+			                <div id="dropAvatar" class="dropzone">
+			                	<div>
+									<img src="{{if .userInfo.Logo}}{{.userInfo.Logo}}{{else}}/images/blog/default_avatar.png{{end}}" id="avatar"/>
+								</div>
+			                    <a class="btn btn-success btn-choose-file">
+									<span class="fa fa-upload"></span> Choose Image
+			                    </a>
+			                    <input type="file" name="file" multiple/>
+			                </div>
+			                <div id="avatarUploadMsg">
+			                </div>
+				  		</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">{{msg . "close"}}</button>
+					</div>
+			    </div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+			
+			<!-- 您的建议 
+			<div class="modal fade bs-modal-sm"  id="suggestionsDialog" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+			  <div class="modal-dialog modal-sm">
+			    <div class="modal-content">
+				  <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			        <h4 class="modal-title" class="modalTitle">{{msg . "yourSuggestions"}}</h4>
+			      </div>
+					<div class="modal-body">
+						<div style="margin-bottom:20px;">
+							{{msg . "suggestionsInfo"}}<br />
+						</div>
+		
+						<div class="alert alert-warning" id="suggestionMsg" style="display: none"> </div>
+						<textarea style="width: 100%; height: 100px" id="suggestionTextarea" placeholder="{{msg . "suggestions"}}"></textarea>
+					</div>
+					<div class="modal-footer">
+						<button id="suggestionBtn" class="btn btn-success" >{{msg . "submit"}}</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">{{msg . "close"}}</button>
+					</div>
+			    </div>
+			  </div>
+			</div>
+			-->
+			
+			<!-- modal 静态区域 -->
+			<div class="display: hidden">
+			
+				<!-- 长微博 -->
+				<div id="html2ImageDialog">
+				    <div class="modal-body">
+				    	<div style="max-height: 300px; padding: 5px 0; text-align: center; overflow: scroll;" class="weibo">
+							<span class="text">
+								leanote正在努力为你生成长微博...
+							</span>
+							<br />
+							<img src="/images/loading-24.gif"/>
+				    	</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">{{msg . "cancel"}}</button>
+						
+						<button type="button" class="btn btn-share btn-default sendRRBtn disabled"><i class="fa fa-renren"></i> 人人</button>
+						<button type="button" class="btn btn-share btn-default sendQQBtn disabled"><i class="fa fa-qq"></i> QQ空间</button>
+						<button type="button" class="btn btn-share btn-primary sendTxWeiboBtn disabled"><i class="fa fa-tencent-weibo"></i> 腾讯微博</button>
+						<button type="button" class="btn btn-share btn-success sendWeiboBtn disabled"><i class="fa fa-weibo"></i> 新浪微博</button>
+					</div>
+			    </div>
+			    
+			    <!-- 激活邮件 -->
+				<div id="reSendActiveEmailDialog">
+				    <div class="modal-body">
+				    	<div style="max-height: 300px; padding: 5px 0; text-align: center; overflow-y: auto; overflow-x: hidden" class="weibo">
+							<span class="text">
+								<img src="/images/loading-24.gif"/>
+								{{msg . "emailInSending"}} {{.userInfo.Email}}...
+							</span>
+				    	</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">{{msg . "close"}}</button>
+						<button type="button" class="btn btn-success viewEmailBtn disabled">{{msg . "checkEmail"}}</button>
+					</div>
+			    </div>
+			<div class="hide" id="copyDiv"></div>
+		</div>
+	</div>
+</div>
+<script src="js/jquery-1.9.0.min.js"></script>
+<script src="js/jquery.ztree.all-3.5.js"></script>
+<script src="js/i18n/msg.{{.locale}}.js"></script>
+<script src="js/common-min.js"></script>
+<script>
+var UrlPrefix = "{{.siteUrl}}"; // 为了发weibo
+var UserInfo = json({{.userInfoJson}});
+var notebooks = json({{.notebooks}});
+var shareNotebooks = json({{.shareNotebooks}});
+var sharedUserInfos = json({{.sharedUserInfos}});
+var notes = json({{.notes}});
+var noteContentJson = json({{.noteContentJson}});
+var tagsJson = json({{.tagsJson}});
+LEA.locale = "{{.locale}}";
+</script>
+
+<!-- 渲染view -->
+<script src="tinymce/tinymce.js"></script>
+<script src="js/app/page-min.js"></script>
+<script src="/js/jQuery-slimScroll-1.3.0/jquery.slimscroll.js"></script>
+<script src="/js/contextmenu/jquery.contextmenu-min.js"></script>
+<script src="js/jquery-cookie.js"></script>
+<script src="js/bootstrap-min.js"></script>
+<script src="js/app/note-min.js"></script>
+<script src="js/app/tag-min.js"></script>
+<script src="js/app/notebook-min.js"></script>
+<script src="js/app/share-min.js"></script>
+<script src="js/object_id-min.js"></script>
+<script src="js/ZeroClipboard/ZeroClipboard-min.js"></script>
+<script>
+Notebook.renderNotebooks(notebooks);
+Share.renderShareNotebooks(sharedUserInfos, shareNotebooks);
+
+Note.setNoteCache(noteContentJson);
+Note.renderNotes(notes);
+if(!isEmpty(notes)) {
+	Note.changeNote(notes[0].NoteId);
+}
+
+// Note.chanteNote设置content
+// Note.renderNoteContent(noteContentJson)
+
+Tag.renderTagNav(tagsJson);
+
+// init notebook后才调用
+initSlimScroll();
+</script>
+ 
+<!-- context-menu -->
+<link rel="stylesheet" href="/js/contextmenu/css/contextmenu.css" type="text/css" />
+<!-- code -->
+<link href="/public/mdeditor/editor/google-code-prettify/prettify.css" rel="stylesheet" />
+<!-- js version 2.0 use require.js -->
+<script src="/js/require.js"></script>
+<script src="/js/main-min.js"></script>
+</script>
+</body>
+</html>

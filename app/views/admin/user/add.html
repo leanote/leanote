@@ -1,0 +1,58 @@
+{{template "admin/top.html" .}}
+<div class="m-b-md"> <h3 class="m-b-none">Add User</h3></div>
+
+<div class="row">
+
+<div class="col-sm-6">
+	<form id="add_user_form">
+		<section class="panel panel-default">
+			<div class="panel-body">
+				<div class="form-group">
+					<label>Email</label>
+					<input type="text" class="form-control" name="email" data-rule-required="true" data-rule-email="true">
+				</div>
+				<div class="form-group pull-in clearfix">
+					<div class="col-sm-6">
+						<label>Enter password</label>
+						<input type="password" class="form-control" data-rule-required="true" id="pwd" name="pwd" data-rule-minlength="6">
+					</div>
+					<div class="col-sm-6">
+						<label>Confirm password</label>
+						<input type="password" class="form-control parsley-validated" data-rule-equalto="#pwd" data-rule-required="true" name="password2">
+					</div>
+				</div>
+			</div>
+			<footer class="panel-footer text-right bg-light lter">
+				<button type="submit" id="submit" class="btn btn-success btn-s-xs">Submit</button>
+			</footer>
+		</section>
+	</form>
+</div>
+
+</div>
+
+{{template "admin/footer.html" .}}
+<script src="/public/admin/js/jquery-validation-1.13.0/jquery.validate.js"></script>
+<script>
+$(function() {
+	init_validator("#add_user_form");
+	
+	$("#submit").click(function(e){
+			e.preventDefault();
+			var t = this;
+			if($("#add_user_form").valid()) {
+				$(t).button('loading');
+				ajaxPost("/auth/doRegister", getFormJsonData("add_user_form"), function(ret){
+					$(t).button('reset')
+					if(!ret.Ok) {
+						art.alert(ret.Msg);
+					} else {
+						art.tips("Success");
+					}
+				});
+			}
+		});
+});
+</script>
+
+{{template "admin/end.html" .}}

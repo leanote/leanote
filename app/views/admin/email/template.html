@@ -1,0 +1,325 @@
+{{template "admin/top.html" .}}
+<div class="m-b-md"> <h3 class="m-b-none">Email Template</h3></div>
+
+<style>
+.preview {
+	overflow: auto;
+	padding: 10px 0;
+}
+
+label {
+}
+</style>
+
+<form id="add_user_form">
+<section class="panel panel-default">
+	<header class="panel-heading bg-light">
+		<ul class="nav nav-tabs nav-justified">
+			<li class="active"><a href="#tab1" data-toggle="tab">Layout</a></li>
+			<li class=""><a href="#tab2" data-toggle="tab">Register</a></li>
+			<li class=""><a href="#tab3" data-toggle="tab">Update Email</a></li>
+			<li ><a href="#tab4" data-toggle="tab">Find Passord</a></li>
+			<li ><a href="#tab5" data-toggle="tab">Invite Register</a></li>
+			<li ><a href="#tab6" data-toggle="tab">Blog Comment</a></li>
+			
+		</ul>
+	</header>
+	<div class="panel-body">
+		<div class="tab-content">
+<div class="tab-pane active" id="tab1">
+	<div class="row">
+		<div class="col-sm-12">
+			<section class="panel panel-default">
+				<div class="panel-body">
+					<b>Layout</b>
+					<div>
+						Available tokens: 
+						<code>$.subject</code>
+						<code>$.siteUrl</code>
+					</div>
+					<div class="form-group">
+						<label>Header</label>
+						<textarea type="text" id="emailHeader" rows="10" class="form-control" name="emailTemplateHeader">{{.str.emailTemplateHeader}}</textarea>
+					</div>
+					
+					<div class="form-group">
+						<label>Footer</label>
+						<textarea type="text" id="emailFooter" rows="10" class="form-control" name="emailTemplateFooter">{{.str.emailTemplateFooter}}</textarea>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+<div class="tab-pane" id="tab2">
+	<div class="row">
+		<div class="col-sm-12">
+			<section class="panel panel-default">
+				<div class="panel-body">
+					<b>Register Welcome And Email Validation:</b>
+					<div>
+						Available tokens: 
+						<code>header</code>
+						<code>footer</code>
+						<code>$.siteUrl</code>
+						<code>$.tokenUrl</code>
+						<code>$.token</code>
+						<code>$.tokenTimeout</code>
+						<code>$.user.userId</code>
+						<code>$.user.email</code>
+						<code>$.user.username</code>
+					</div>
+					<div class="form-group">
+						<label>Subject</label>
+						<input type="text" class="form-control" name="emailTemplateRegisterSubject" value="{{.str.emailTemplateRegisterSubject}}">
+					</div>
+					
+					<div class="form-group">
+						<label>Body</label>
+						<textarea type="text" rows="10" class="form-control" name="emailTemplateRegister">{{.str.emailTemplateRegister}}</textarea>
+					</div>
+					<div>
+						Preview
+						<div class="preview">
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+<div class="tab-pane" id="tab3">
+<div class="row">
+		<div class="col-sm-12">
+			<section class="panel panel-default">
+				<div class="panel-body">
+					<b>Update Email and Send Active Email</b>
+					<div>
+						Available tokens: 
+						<code>header</code>
+						<code>footer</code>
+						<code>$.siteUrl</code>
+						<code>$.tokenUrl</code>
+						<code>$.token</code>
+						<code>$.tokenTimeout</code>
+						<code>$.user.userId</code>
+						<code>$.user.email</code>
+						<code>$.user.username</code>
+					</div>
+				
+					<div class="form-group">
+						<label>Subject</label>
+						<input type="text" class="form-control" name="emailTemplateUpdateEmailSubject" value="{{.str.emailTemplateUpdateEmailSubject}}">
+					</div>
+					
+					<div class="form-group">
+						<label>Body</label>
+						<textarea type="text" rows="10" class="form-control" name="emailTemplateUpdateEmail">{{.str.emailTemplateUpdateEmail}}</textarea>
+					</div>
+					
+					<div>
+						Preview
+						<div class="preview">
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+
+<div class="tab-pane" id="tab4">
+<div class="row">
+		<div class="col-sm-12">
+			<section class="panel panel-default">
+				<div class="panel-body">
+					<b>Find Passord</b>
+					<div>
+						Available tokens: 
+						<code>header</code>
+						<code>footer</code>
+						<code>$.siteUrl</code>
+						<code>$.tokenUrl</code>
+						<code>$.token</code>
+						<code>$.tokenTimeout</code>
+					</div>
+				
+					<div class="form-group">
+						<label>Subject</label>
+						<input type="text" class="form-control" name="emailTemplateFindPasswordSubject" value="{{.str.emailTemplateFindPasswordSubject}}">
+					</div>
+					
+					<div class="form-group">
+						<label>Body</label>
+						<textarea type="text" rows="10" class="form-control" name="emailTemplateFindPassword">{{.str.emailTemplateFindPassword}}</textarea>
+					</div>
+					
+					<div>
+						Preview
+						<div class="preview">
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+
+<div class="tab-pane" id="tab5">
+<div class="row">
+		<div class="col-sm-12">
+			<section class="panel panel-default">
+				<div class="panel-body">
+					<b>Invite Register</b>
+					<div>
+						Available tokens: 
+						<code>header</code>
+						<code>footer</code>
+						<code>$.siteUrl</code>
+						<code>$.registerUrl</code>
+						<code>$.user.username</code>
+						<code>$.user.email</code>
+						<code>$.content</code>
+					</div>
+				
+					<div class="form-group">
+						<label>Subject</label>
+						<input type="text" class="form-control" name="emailTemplateInviteSubject" value="{{.str.emailTemplateInviteSubject}}">
+					</div>
+					
+					<div class="form-group">
+						<label>Body</label>
+						<textarea type="text" rows="10" class="form-control" name="emailTemplateInvite">{{.str.emailTemplateInvite}}</textarea>
+					</div>
+					
+					<div>
+						Preview
+						<div class="preview">
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+
+<div class="tab-pane" id="tab6">
+<div class="row">
+		<div class="col-sm-12">
+			<section class="panel panel-default">
+				<div class="panel-body">
+					<b>Blog Comment</b>
+					<div>
+						Available tokens: 
+						<code>header</code>
+						<code>footer</code>
+						<code>$.siteUrl</code>
+						<code>$.blogUrl</code>
+						
+						<br />
+						<code>$.commentContent</code>
+						
+						<br />
+						<code>$.blog.id</code>
+						<code>$.blog.title</code>
+						<code>$.blog.url</code>
+						
+						<br />
+						<code>$.commentUser.userId</code>
+						<code>$.commentUser.username</code>
+						<code>$.commentUser.email</code>
+						<code>$.commentUser.isBlogAuthor</code>
+						
+						<br />
+						<code>$.commentedUser.userId</code>
+						<code>$.commentedUser.username</code>
+						<code>$.commentedUser.email</code>
+						<code>$.commentedUser.isBlogAuthor</code>
+					</div>
+					
+					<div class="form-group">
+						<label>Subject</label>
+						<input type="text" class="form-control" name="emailTemplateCommentSubject" value="{{.str.emailTemplateCommentSubject}}">
+					</div>
+					
+					<div class="form-group">
+						<label>Body</label>
+						<textarea type="text" rows="10" class="form-control" name="emailTemplateComment">{{.str.emailTemplateComment}}</textarea>
+					</div>
+					
+					<div>
+						Preview
+						<div class="preview">
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+</div>
+
+		</div>
+	</div>
+</section>
+
+<footer class="panel-footer text-right bg-light lter">
+	<button type="submit" id="submit" class="btn btn-success btn-s-xs">Submit</button>
+</footer>
+
+</form>
+
+
+{{template "admin/footer.html" .}}
+<script src="/public/admin/js/jquery-validation-1.13.0/jquery.validate.js"></script>
+<script>
+$(function() {
+	$("code").each(function() {
+		var h = $(this).text();
+		$(this).text("{" + "{" + h + "}" + "}");
+	});
+	
+	function previewEmail(t) {
+		var $p = $(t).closest(".row");
+		var tpl = $(t).val();
+		var subject = $p.find("input").val() || "";
+		var $preview = $p.find(".preview");
+		
+		var header = $("#emailHeader").val();
+		var footer = $("#emailFooter").val();
+		
+		header = header.replace("{" + "{$.subject}" + "}", subject);
+		tpl = tpl.replace("{" + "{header}" + "}", header);
+		tpl = tpl.replace("{" + "{footer}" + "}", footer);
+		
+		$preview.html(tpl);
+	}
+
+	$("textarea").each(function() {
+		previewEmail(this);
+	});
+	
+	$("textarea").keyup(function() {
+		previewEmail(this);
+	});
+	
+	init_validator("#add_user_form");
+	
+	$("#submit").click(function(e){
+		e.preventDefault();
+		var t = this;
+		if($("#add_user_form").valid()) {
+			$(t).button('loading');
+			ajaxPost("/adminEmail/template", getFormJsonData("add_user_form"), function(ret){
+				$(t).button('reset')
+				if(!ret.Ok) {
+					art.alert(ret.Msg)
+				} else {
+					art.tips("Success");
+				}
+			});
+		}
+	});
+});
+</script>
+
+{{template "admin/end.html" .}}

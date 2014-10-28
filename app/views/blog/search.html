@@ -1,0 +1,45 @@
+{{template "blog/header.html" .}}
+
+<div id="postsContainer">
+	<div class="container">
+		<h2>{{msg . "search"}} - {{.key}} </h2>
+	</div>
+
+	<div id="posts">
+		{{range .blogs}}
+		<div class="each-post">
+			<div class="title">
+				<a href="{{$.viewUrl}}/{{.NoteId.Hex}}" title="{{msg $ "fullBlog"}}">
+					{{.Title}}
+				</a>
+			</div>
+			<div class="created-time">
+				<i class="fa fa-bookmark-o"></i>
+				{{if .Tags}} 
+					{{blogTags $ .Tags}}
+				{{else}}
+					{{msg $ "noTag"}}
+				{{end}}
+				|
+				<i class="fa fa-calendar"></i> {{msg $ "updatedTime"}} {{.UpdatedTime | datetime}} | 
+				<i class="fa fa-calendar"></i> {{msg $ "createdTime"}}  {{.CreatedTime | datetime}}
+			</div>
+			<div class="desc">
+				{{.Content | raw}}
+			</div>
+			<a class="more" href="{{$.viewUrl}}/{{.NoteId.Hex}}" title="{{msg $ "fullBlog"}}">{{msg $ "more"}}</a>
+		</div>
+		{{end}}
+		
+		{{if not .blogs }}
+			<div class="each-post">
+				{{msg . "none"}}
+			</div>
+		{{end}}
+	</div>
+</div>
+
+{{template "blog/footer.html" .}}
+{{template "blog/highlight.html"}}
+</body>
+</html>

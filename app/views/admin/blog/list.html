@@ -1,0 +1,130 @@
+{{template "admin/top.html" .}}
+<div class="m-b-md"> <h3 class="m-b-none">Blog</h3></div>
+
+<section class="panel panel-default">
+	<div class="row wrapper">
+		<div class="col-sm-5 m-b-xs">
+			<button class="btn btn-sm btn-default">
+				Action1
+			</button>
+			<button class="btn btn-sm btn-default">
+				Action2
+			</button>
+		</div>
+		<div class="col-sm-4 m-b-xs">
+			
+		</div>
+		<div class="col-sm-3">
+			<div class="input-group search-group">
+				<input type="text" class="input-sm form-control" placeholder="Title" id="keywords" value="{{.keywords}}" />
+				<span class="input-group-btn">
+					<button class="btn btn-sm btn-default" type="button" data-url="/adminBlog/index">Search</button>
+				</span>
+			</div>
+		</div>
+	</div>
+	<div class="table-responsive">
+		<table class="table table-striped b-t b-light">
+			<thead>
+				<tr>
+					<th width="20">
+						<input type="checkbox">
+					</th>
+					{{$url := urlConcat "/adminBlog/index" "keywords" .keywords}}
+					<th 
+					{{sorterTh $url "title" .sorter}}
+					>
+						Title	
+						<span class="th-sort">
+							<i class="fa fa-sort-down"></i>
+							<i class="fa fa-sort-up"></i>
+							<i class="fa fa-sort"></i>
+						</span>
+					</th>
+					<th
+					{{sorterTh $url "userId" .sorter}}
+					>
+						Username
+						<span class="th-sort">
+							<i class="fa fa-sort-down"></i>
+							<i class="fa fa-sort-up"></i>
+							<i class="fa fa-sort"></i>
+						</span>
+					</th>
+					
+					<th
+					{{sorterTh $url "createdTime" .sorter}}
+					>
+						Create Date
+						<span class="th-sort">
+							<i class="fa fa-sort-down"></i>
+							<i class="fa fa-sort-up"></i>
+							<i class="fa fa-sort"></i>
+						</span>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range .blogs}}
+				<tr>
+					<td>
+						<input type="checkbox" name="post[]" value="2">
+					</td>
+					<td>
+						<a href="/blog/view/{{.NoteId.Hex}}" target="_blank">{{.Title|raw}}</a>
+					</td>
+					<td>
+						<a href="/blog/{{.UserId.Hex}}" target="_blank">
+						{{.User.Username}}
+						</a>
+					</td>
+					<td>
+						{{.CreatedTime|datetime}}
+					</td>
+				</tr>
+				{{end}}
+			</tbody>
+		</table>
+	</div>
+	<footer class="panel-footer">
+		<div class="row">
+			<div class="col-sm-4 hidden-xs">
+				<button class="btn btn-sm btn-default">
+					Action1
+				</button>
+				<button class="btn btn-sm btn-default">
+					Action2
+				</button>
+			</div>
+			<div class="col-sm-4 text-center">
+				<small class="text-muted inline m-t-sm m-b-sm">
+					showing 20-30 of 50 items
+				</small>
+			</div>
+			<div class="col-sm-4 text-right text-center-xs">
+				{{set . "url" (urlConcat "/adminBlog/index" "sorter" .sorter "keywords" .keywords)}}
+				{{template "admin/user/page.html" .}}
+			</div>
+		</div>
+	</footer>
+</section>
+	
+{{template "admin/footer.html" .}}
+
+<script>
+$(function() {
+	$(".change-recommend").click(function() {
+		var isRecommend = +$(this).data("recommend");
+		var noteId = $(this).data("id");
+		var t = this;
+		$(t).button("loading");
+		ajaxGet("/adminBlog/setRecommend", {noteId: noteId, recommend: !isRecommend}, function() {
+			$(t).button("reset");
+			$(t).text(isRecommend ? "N" : "Y");
+			$(t).data("recommend", !isRecommend);
+		});
+	});
+});
+</script>
+
+{{template "admin/end.html" .}}

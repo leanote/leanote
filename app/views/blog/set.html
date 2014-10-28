@@ -1,0 +1,323 @@
+{{template "blog/header.html" .}}
+
+<!-- set页面不是自定义域名和二级域名页  -->
+<link rel="stylesheet" href="{{.siteUrl}}/tinymce/skins/custom/skin.min.css" type="text/css">
+<style>
+.tab-pane {
+	padding-top: 10px;
+}
+
+</style>
+<div id="postsContainer">
+	<div id="posts">
+		<ul id="myTab" class="nav nav-tabs">
+			<li class="active"><a href="#baseInfo" data-toggle="tab">{{msg . "baseInfoSet"}}</a></li>
+			<li class=""><a href="#commentInfo" data-toggle="tab">{{msg . "commentSet"}}</a></li>
+			<li class=""><a href="#styleInfo" data-toggle="tab">{{msg . "themeSet"}}</a></li>
+		</ul>
+
+		<!-- Tab panes -->
+		<div class="tab-content">
+			<div class="tab-pane" id="styleInfo">
+				<form class="form-horizontal" role="form">
+					<div class="form-group">
+						<label class="col-sm-2 control-label"></label>
+						<div class="col-sm-10">
+							<div class="alert alert-success" id="styleMsg" style="display: none; margin-bottom: 3px;"></div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label for="Style" class="col-sm-2 control-label">{{msg . "theme"}}</label>
+						<div class="col-sm-10" style="margin-top: 6px;" id="themeList">
+							<label>
+							<img class="preview" src="{{$.siteUrl}}/images/blog/theme/default.png" />
+							<input type="radio" name="Style"
+								value="blog_default" 
+								{{if not .userBlog.Style}}
+									checked="checked"
+								{{else}} 
+									{{if eq .userBlog.Style "blog_default"}}
+										checked="checked"
+									{{end}}
+								{{end}}>
+								{{msg . "default"}} 
+								</label> 
+								<label>
+								<img class="preview" src="{{$.siteUrl}}/images/blog/theme/elegent.png" />
+								<input type="radio" name="Style"
+								value="blog_daqi" 
+								{{if eq .userBlog.Style "blog_daqi"}}checked="checked"{{end}}>
+								{{msg . "elegant"}}
+								</label>
+								<label>
+								<img class="preview"  src="{{$.siteUrl}}/images/blog/theme/left_nav_fix.png" />
+								<input type="radio" name="Style"
+								value="blog_left_fixed" 
+								{{if eq .userBlog.Style "blog_left_fixed"}}checked="checked"{{end}}>
+								{{msg . "navFixed"}}
+								</label>
+						</div>
+					</div>
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+								<button class="btn btn-success">{{msg . "save"}}</button>
+								<span class="msg"></span>
+							</div>
+						</div>
+				</form>
+			</div>
+			<div class="tab-pane" id="commentInfo">
+				<form class="form-horizontal" role="form">
+					<div class="form-group">
+						<label class="col-sm-2 control-label"></label>
+						<div class="col-sm-10">
+							<div class="alert alert-success" id="commentMsg" style="display: none; margin-bottom: 3px;"></div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="subTitle" class="col-sm-2 control-label">{{msg . "chooseComment"}}</label>
+						<div class="col-sm-10">
+							<label>
+								<input type="checkbox" id="CanComment" name="CanComment"
+									{{if .userBlog.CanComment}}checked="checked"{{end}} > {{msg . "openComment"}}
+							</label>
+							
+							<br />
+							
+							<div id="commentSet" {{if not .userBlog.CanComment}}style="display: none"{{end}}>
+								<label>
+									<input type="radio"
+										name="commentType"
+										value="default"
+										{{if or (not .userBlog.CommentType) (eq .userBlog.CommentType "default")}}checked="checked"{{end}} > Default
+								</label>
+									
+								<label>
+									<input type="radio" name="commentType" id="disqus"
+										value="disqus"
+										{{if eq .userBlog.CommentType "disqus"}}checked="checked"{{end}} > Disqus
+								</label>
+					
+								<div id="disqusSet" {{if not (eq .userBlog.CommentType "disqus")}}style="display: none"{{end}}>
+									<label for="DisqusId">Disqus Id</label> <input type="text"
+										class="form-control" style="display: inline; width: 50%"
+										id="DisqusId" name="DisqusId"
+										value="{{if .userBlog.DisqusId}}{{.userBlog.DisqusId}}{{else}}leanote{{end}}">
+									<br /> 
+									{{msg . "disqusHelp"}}
+									<a target="_blank" href="http://leanote.com/blog/view/52db8463e01c530ef8000001">{{msg . "needHelp"}}</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<button class="btn btn-success">{{msg . "save"}}</button>
+							<span class="msg"></span>
+						</div>
+					</div>
+				</form>
+			</div>
+			
+			<div class="tab-pane active" id="baseInfo">
+				<div class="form-horizontal" role="form" id="userBlogForm">
+					<div class="form-group">
+						<label class="col-sm-2 control-label"></label>
+						<div class="col-sm-10">
+							<div class="alert alert-success" id="msg"
+								style="display: none; margin-bottom: 3px;"></div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="title" class="col-sm-2 control-label">{{msg . "blogName"}}</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="Title" name="Title"
+								placeholder="eg: leanote's blog"
+								value="{{if .userBlog.Title}}{{.userBlog.Title}}{{else}}{{.userInfo.Email}} 's blog{{end}}">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="logo" class="col-sm-2 control-label">{{msg . "blogLogo"}}</label>
+						<div class="col-sm-10">
+							<input type="hidden" name="Logo" id="Logo"
+								value="{{.userBlog.Logo}}" />
+							<form id="formLogo" action="{{$.siteUrl}}/file/uploadBlogLogo" method="post"
+								enctype="multipart/form-data" target="logoTarget"
+								onsubmit="inProgress()">
+								<input type="file" class="form-control" id="logo2" name="file"
+									onChange='$("#formLogo").submit();' /> 
+									{{msg . "blogLogoTips"}}
+								<div id="logoImg"
+									{{if .userBlog.Logo }}	
+						{{else}}
+						style="display: none"{{end}}
+						>
+									<img src="{{.userBlog.Logo}}" style="height: 40px" /> <a
+										href="#" id="deleteLogo">{{msg . "delete"}}</a>
+								</div>
+							</form>
+							<iframe id="logoTarget" name="logoTarget" src="#"
+								style="display: none"></iframe>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="subTitle" class="col-sm-2 control-label">{{msg . "blogDesc"}}</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="SubTitle"
+								name="SubTitle" value="{{.userBlog.SubTitle}}"
+								placeholder="eg: leanote, Not Just A Notebook">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="aboutMe" class="col-sm-2 control-label"></label>
+						<div class="col-sm-10">
+							<div id="popularToolbar"></div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="aboutMe" class="col-sm-2 control-label">{{msg . "aboutMe"}}</label>
+						<div class="col-sm-10">
+							<textarea id="AboutMe" name="AboutMe">{{.userBlog.AboutMe}}</textarea>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<button class="btn btn-success">{{msg . "save"}}</button>
+							<span class="msg"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	{{template "blog/footer.html" .}}
+	
+	<script src="{{.siteUrl}}/js/common-min.js"></script>
+	<script type="text/javascript" src="{{.siteUrl}}/tinymce/tinymce.min.js"></script>
+
+<script>
+var urlPrefix = "{{.siteUrl}}";
+$(function() {
+	tinymce.init({
+		selector : "#AboutMe",
+		content_css : [ "/css/bootstrap.css", "/css/editor/editor.css" ],
+		skin : "custom",
+		language : "{{.locale}}",
+		height : 300,
+		width : "100%",
+		skin : "custom",
+		plugins : [
+				"advlist autolink link leanote_image lists charmap hr ",
+				"searchreplace visualblocks visualchars leanote_code tabfocus",
+				"table contextmenu directionality textcolor paste fullpage textcolor"],
+		toolbar1 : "formatselect |fontselect fontsizeselect| forecolor backcolor | bold italic underline strikethrough | bullist numlist |",
+		menubar : false,
+		toolbar_items_size : 'small',
+		statusbar : false,
+		font_formats : "Arial=arial,helvetica,sans-serif;"
+				+ "Arial Black=arial black,avant garde;"
+				+ "Times New Roman=times new roman,times;"
+				+ "Courier New=courier new,courier;"
+				+ "Tahoma=tahoma,arial,helvetica,sans-serif;"
+				+ "Verdana=verdana,geneva;" + "宋体=SimSun;"
+				+ "新宋体=NSimSun;" + "黑体=SimHei;"
+				+ "微软雅黑=Microsoft YaHei",
+		block_formats : "Header 1=h1;Header 2=h2;Header 3=h3; Header 4=h4;Pre=pre;Paragraph=p"
+	});
+	$("#deleteLogo").click(function() {
+		$("#Logo").val("");
+		$("#logoImg").hide();
+	});
+
+	$("#CanComment").click(function() {
+		if ($(this).is(":checked")) {
+			$("#commentSet").show();
+		} else {
+			$("#commentSet").hide();
+		}
+	});
+	
+	$("input[name='commentType']").click(function() {
+		if ($("input[name='commentType']:checked").val() == "disqus") {
+			$("#disqusSet").show();
+		} else {
+			$("#disqusSet").hide();
+		}
+	});
+	
+	
+	// 基本设置
+	$("#baseInfo .btn-success").click(function() {
+		var data = {
+			Title : $("#Title").val(),
+			SubTitle : $("#SubTitle").val(),
+			Logo : $("#Logo").val(),
+			AboutMe : getEditorContent()
+		}
+		
+		post("/blog/setUserBlogBase", data, function(ret) {
+			showMsg2($("#baseInfo .msg"), "{{msg . "saveSuccess"}}", 2000);
+			$("#blogDesc").html(data.SubTitle);
+			$("#logo").html(data.Title);
+			if(data.Logo) {
+				$("#logo").html(t('<img src="?" />', urlPrefix + "/" + data.Logo));
+			}
+		}, this);
+	});
+	// 评论
+	$("#commentInfo .btn-success").click(function(e) {
+		e.preventDefault();
+		var data = {
+			CanComment : $("#CanComment").is(":checked"),
+			CommentType: $("input[name='commentType']:checked").val(),
+			DisqusId : $("#DisqusId").val(),
+		}	
+		post("/blog/setUserBlogComment", data, function(ret) {
+			showMsg2($("#commentInfo .msg"), "{{msg . "saveSuccess"}}", 2000);
+		}, this);
+	});
+	
+	// 主题
+	$("#styleInfo .btn-success").click(function(e) {
+		e.preventDefault();
+		var data = {
+			Style : $("input[name='Style']:checked").val()
+		}
+		post("/blog/setUserBlogStyle", data, function(ret) {
+			showMsg2($("#styleInfo .msg"), "{{msg . "saveSuccess"}}", 2000);
+		}, this);
+	});
+	$("input[name='Style']").click(function() {
+		$("#styleLink").attr("href", "/css/blog/" + $(this).val() + ".css");
+	});
+});
+
+function inProgress() {
+}
+
+// filename, result, resultCode
+function uploadFinish(ret) {
+	if (ret) {
+		if (ret.resultCode == '1') {
+			$("#logoImg img").attr("src", urlPrefix + "/" + ret.filename).parent().show();
+			$("#Logo").val(ret.filename);
+			return;
+		}
+		alert(ret.result);
+		return;
+	}
+	// 上传出错
+	alert("上传出错");
+}
+</script>
+</div>
+</body>
+</html>

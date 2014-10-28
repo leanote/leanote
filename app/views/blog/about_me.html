@@ -1,0 +1,19 @@
+{{template "blog/header.html" .}}
+
+<div id="postsContainer">
+	<div id="posts">
+		<div class="each-post">
+			<div class="title">
+				{{msg . "aboutMe"}}
+			</div>
+			<div class="created-time">
+			</div>
+			<div class="desc">
+				{{.userBlog.AboutMe | raw}}
+				
+			</div>
+		</div>
+	</div>
+</div>
+
+{{template "blog/footer.html" .}}

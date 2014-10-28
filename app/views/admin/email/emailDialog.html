@@ -1,0 +1,76 @@
+<div class="row" style="width: 500px;
+height: 500px;
+overflow-y: scroll;">
+
+<div class="col-sm-12">
+	<form id="sendEmailForm">
+		<section class="panel panel-default">
+			<header class="panel-heading font-bold">Email</header>
+			<div class="panel-body">
+				<div class="form-group">
+					<label>Email List</label>
+					<textarea type="text" rows="10" class="form-control" name="emails">{{.emailsNl}}</textarea>
+					input email line by line
+				</div>
+				
+				<div class="form-group">
+					<label>Select Old Email</label>
+					<select class="form-control old-emails">
+						<option value="">---Select---</option>
+						{{range $subject, $body := .map.oldEmails}}
+							<option>
+								{{$subject}}
+							</option>
+						{{end}}
+					</select>
+				</div>
+				
+				<div class="form-group">
+					<label>Subject</label>
+					<input type="text" class="form-control" id="latestEmailSubject" name="latestEmailSubject" value="{{$.str.latestEmailSubject}}">
+				</div>
+				
+				<div class="form-group">
+					<label>Body</label>
+					<textarea type="text" rows="10" id="latestEmailBody" class="form-control" name="latestEmailBody">{{$.str.latestEmailBody}}</textarea>
+				</div>
+				<label class="checkbox-inline"> <input type="checkbox" id="saveAsOldEmail" name="saveAsOldEmail" value="1"> Save As Old Email </label>
+			</div>
+			
+			<footer class="panel-footer text-right bg-light lter">
+				<button type="submit" id="submitEmail" class="btn btn-success btn-s-xs">Submit</button>
+			</footer>
+		</section>
+	</form>
+</div>
+
+</div>
+
+<script>
+var oldEmails = eval("(" + {{json .map.oldEmails}} + ")");
+$(function() {
+	$(".old-emails").change(function() {
+		var subject = $(this).val();
+		var body = oldEmails[subject];
+		if(subject) {
+			$("#latestEmailSubject").val(subject);
+			$("#latestEmailBody").val(body);
+			$("#saveAsOldEmail").prop("checked", false);
+		}
+	});
+	
+	$("#submitEmail").click(function(e){
+		e.preventDefault();
+		var t = this;
+		$(t).button('loading');
+		ajaxPost("/adminEmail/sendToUsers2", getFormJsonData("sendEmailForm"), function(ret){
+			$(t).button('reset')
+			if(!ret.Ok) {
+				art.alert(ret.Msg)
+			} else {
+				art.tips("Success");
+			}
+		});
+	});
+});
+</script>

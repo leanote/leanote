@@ -1,0 +1,89 @@
+{{template "admin/top.html" .}}
+	<div class="m-b-md"> <h3 class="m-b-none">Dashboard</h3></div>
+	<section class="panel panel-default"> 
+		<div class="row m-l-none m-r-none bg-light lter"> 
+			<div class="col-sm-6 col-md-3 padder-v b-r b-light"> 
+				<span class="fa-stack fa-2x pull-left m-r-sm"> 
+					<i class="fa fa-circle fa-stack-2x text-info"></i> 
+					<i class="fa fa-users fa-stack-1x text-white"></i> 
+				</span> 
+				<a class="clear" href="/adminUser/index"> 
+					<span class="h3 block m-t-xs"><strong>{{.countUser}}</strong></span> 
+					<small class="text-muted text-uc">Users</small> 
+				</a> 
+			</div> 
+			<div class="col-sm-6 col-md-3 padder-v b-r b-light lt"> 
+				<span class="fa-stack fa-2x pull-left m-r-sm"> 
+					<i class="fa fa-circle fa-stack-2x text-warning"></i> 
+					<i class="fa fa-file-o fa-stack-1x text-white"></i> 
+				</span> 
+				<a class="clear" href="javascript:;"> 
+					<span class="h3 block m-t-xs"><strong>{{.countNote}}</strong></span> 
+					<small class="text-muted text-uc">Notes</small> 
+				</a> 
+			</div>
+			<div class="col-sm-6 col-md-3 padder-v b-r b-light"> 
+				<span class="fa-stack fa-2x pull-left m-r-sm"> 
+					<i class="fa fa-circle fa-stack-2x text-info"></i> 
+					<i class="fa fa-bold fa-stack-1x text-white"></i> 
+				</span> 
+				<a class="clear" href="/adminBlog/index"> 
+					<span class="h3 block m-t-xs"><strong>{{.countBlog}}</strong></span> 
+					<small class="text-muted text-uc">Blogs</small> 
+				</a> 
+			</div> 
+		</div>
+	</section>
+
+	<!-- 最新动态 -->
+	<section class="panel panel-default">
+		<h4 class="font-thin padder">
+			Leanote Events
+		</h4>
+		<ul class="list-group" id="eventsList"></ul>
+	</section>
+	
+	<!--
+	<section class="panel panel-default">
+		<form>
+			<textarea class="form-control no-border" rows="3" placeholder="Suggestions to leanote"></textarea>
+		</form>
+		<footer class="panel-footer bg-light lter">
+			<button class="btn btn-info pull-right btn-sm">
+				POST
+			</button>
+			<ul class="nav nav-pills nav-sm">
+		</footer>
+	</section>	
+	-->
+	
+{{template "admin/footer.html" .}}
+<script>
+$(function() {
+	// leanote动态
+	var url = "http://leanote.com/blog/listCateLatest/5446753cfacfaa4f56000000";
+	function renderItem(item) {
+		return '<li class="list-group-item"><p><a target="_blank" href="http://leanote.com/blog/view/' + item.NoteId + '">' + item.Title + '</a></p><small class="block text-muted"><i class="fa fa-clock-o"></i> ' + goNowToDatetime(item.PublicTime) + '</small></li>';
+	}
+	$.ajax({ 
+        dataType: "jsonp",//跨域访问 dataType 必须是jsonp 类型。  
+        url: url,  
+        type: "GET",  
+        jsonp: "callback",
+		jsonpCallback: "jsonpCallback",
+        success: function(data) { 
+        	if(typeof data == "object" && data.Ok) {
+				var list = data.List;
+				var html = "";
+				for(var i = 0; i < list.length; ++i) {
+					var item = list[i];
+					html += renderItem(item);
+				}
+				$("#eventsList").html(html);
+			}
+        }
+    });
+});
+
+</script>
+{{template "admin/end.html" .}}

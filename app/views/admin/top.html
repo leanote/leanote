@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" class="app">
+<head>
+	<meta charset="utf-8" />
+	<title>
+		leanote admin
+	</title>
+	<meta name="description" content="leanote admin"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+	<link href="/css/font-awesome-4.2.0/css/font-awesome.css" rel="stylesheet">
+	<link href="/public/admin/css/bootstrap.3.2.0.min.css" rel="stylesheet">
+	<link href="/public/admin/css/admin.css" rel="stylesheet">
+	<!--[if lt IE 9]>
+		<script src="/public/admin/js/ie/html5shiv.js"></script>
+		<script src="/public/admin/js/ie/respond.min.js"></script>
+		<script src="/public/admin/js/ie/excanvas.js"></script>
+	<![endif]-->
+</head>
+<body class="">
+	<section class="vbox">
+		<header class="bg-dark dk header navbar navbar-fixed-top-xs">
+			<div class="navbar-header aside-md clearfix" id="logo">
+				<a href="/admin/index" class="navbar-brand" data-toggle="fullscreen"></a>
+				<div>Admin</div>
+			</div>
+			
+			<ul class="nav navbar-nav navbar-right m-n hidden-xs nav-user">
+				<li class="hidden-xs">
+					<a href="http://leanote.com" class="dk" target="_blank">
+						Leanote Home
+					</a>
+				</li>
+				<li class="hidden-xs">
+					<a href="https://github.com/leanote/leanote" class="dk" target="_blank">
+						Leanote Github
+					</a>
+				</li>
+				<li class="hidden-xs">
+					<a href="http://lea.leanote.com" class="dk" target="_blank">
+						lea++
+					</a>
+				</li>
+				<li class="hidden-xs">
+					<a href="/note" class="dk" target="_blank">
+						My Note
+					</a>
+				</li>
+				<li class="hidden-xs">
+					<a href="/blog/admin" class="dk" target="_blank">
+						My Blog
+					</a>
+				</li>
+				<li class="hidden-xs">
+					<a href="/logout" class="dk">
+						Logout
+					</a>
+				</li>
+			</ul>
+		</header>
+		<section>
+			<section class="hbox stretch">
+				<!-- .aside -->
+				<aside class="bg-light lter b-r aside-md hidden-print hidden-xs" id="nav">
+					<section class="vbox">
+						<!--
+						<header class="header bg-primary lter text-center clearfix">
+							<div class="btn-group">
+								<div class="hidden-nav-xs">
+									<a class="btn btn-sm btn-primary">
+										Welcome, admin!
+									</a>
+								</div>
+							</div>
+						</header>
+						-->
+	
+						<section class="w-f scrollable">
+							<div class="slim-scroll" data-height="auto" data-disable-fade-out="true"
+							data-distance="0" data-size="5px" data-color="#333333">
+								<!-- nav -->
+								{{template "admin/nav.html" .}}
+								<!-- / nav -->
+							</div>
+						</section>
+						<footer class="footer lt hidden-xs b-t b-light" style="min-height: initial;
+padding: 10px 15px;text-align:center;">
+							<a href="http://leanote.com" target="_blank">leanote</a> © 2014
+							<!--
+							<a href="#nav" data-toggle="class:nav-xs" class="pull-right btn btn-sm btn-default btn-icon">
+								<i class="fa fa-angle-left text">
+								</i>
+								<i class="fa fa-angle-right text-active">
+								</i>
+							</a>
+							-->
+						</footer>
+					</section>
+				</aside>
+				<!-- /.aside -->
+				<section id="content">
+					<section class="vbox">
+						<section class="scrollable padder">
+							<!-- 导航 
+							<ul class="breadcrumb no-border no-radius b-b b-light pull-in">
+								<li>
+									<a href="index.html">
+										<i class="fa fa-home">
+										</i>
+										Home
+									</a>
+								</li>
+								<li>
+									<a href="#">
+										Elements
+									</a>
+								</li>
+								<li class="active">
+									Components
+								</li>
+							</ul>
+							-->
+							<!-- 主要内容区 -->
+							

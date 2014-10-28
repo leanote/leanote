@@ -1,0 +1,125 @@
+{{template "blog/header.html" .}}
+
+<div id="postsContainer">
+	<div id="posts">
+		<div class="each-post">
+			<div class="title">
+				{{.blog.Title}}
+			</div>
+			<div class="created-time">
+				<i class="fa fa-bookmark-o"></i>
+				{{if .blog.Tags}} 
+					{{blogTags $ .blog.Tags}}
+				{{else}}
+					{{msg . "noTag"}}
+				{{end}}
+				|
+				<i class="fa fa-calendar"></i> {{msg . "updatedTime"}} {{.blog.UpdatedTime | datetime}} | 
+				<i class="fa fa-calendar"></i> {{msg . "createdTime"}} {{.blog.CreatedTime | datetime}}
+			</div>
+			
+			<div class="mobile-created-time">
+			{{ if .userInfo.Logo}}
+				<img src="{{.userInfo.Logo}}" id="userLogo">
+			{{else}}
+				<img src="{{$.siteUrl}}/images/blog/default_avatar.png" id="userLogo">
+			{{end}}
+			{{.userInfo.Username}}
+	
+			{{if .blog.Tags}}
+				&nbsp;
+				<i class="fa fa-bookmark-o" style="color: #666"></i>
+				{{blogTags $ .blog.Tags}}
+			{{end}}
+			</div>
+			
+			<div class="desc" id="content">
+				{{if .blog.IsMarkdown }}
+					<div id="markdownContent" style="display: none">
+						<!-- 用textarea装html, 防止得到的值失真 -->
+						<textarea>
+						{{.blog.Content | raw}}
+						</textarea>
+					</div>
+					<div style="padding: 20px; text-align: center">
+						<img src="/images/loading-32.gif" />
+					</div>
+				{{else}}
+						{{.blog.Content | raw}}
+				{{end}}
+				
+				<div id="desc" class="hide">{{.blog.Desc}}</div>
+			</div>
+			
+			<!-- comment -->
+			{{template "blog/comment.html" .}}
+		</div>
+	</div>
+</div>
+{{template "blog/footer.html" .}}
+{{template "blog/highlight.html"}}
+<div id="blogNav">
+	<div id="blogNavNav">
+		<i class="fa fa-align-justify" title="文档导航"></i>
+		<span>{{msg . "blogNav"}}</span>
+	</div>
+	<div id="blogNavContent">
+	</div>
+</div>
+
+<script>
+var visitUserInfo = eval("(" + {{.visitUserInfoJson}} + ")");
+var urlPrefix = "{{.siteUrl}}";
+var noteId = "{{.blog.NoteId.Hex}}";
+var preLikeNum = +"{{.blog.LikeNum}}";
+var commentNum = +"{{.blog.CommentNum}}";
+</script>
+<script src="/js/app/blog/common.js"></script>
+<script src="/js/jsrender.js"></script>
+<script src="/js/jquery-cookie-min.js"></script>
+<script src="/js/bootstrap-dialog.min.js"></script>
+<script src="/js/jquery.qrcode.min.js"></script>
+<script src="/js/app/blog/view.js"></script>
+
+{{if .blog.IsMarkdown }}
+<script src="/public/mdeditor/editor/pagedown/Markdown.Converter.js"></script>
+<script src="/public/mdeditor/editor/pagedown/Markdown.Sanitizer.js"></script>
+<script src="/public/mdeditor/editor/pagedown/Markdown.Editor.js"></script>
+<script src="/public/mdeditor/editor/pagedown/local/Markdown.local.zh.js"></script>
+<script src="/public/mdeditor/editor/Markdown.Extra.js"></script>
+
+<!--mathjax-->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ["\\(","\\)"]], processEscapes: true },  messageStyle: "none"});
+</script>
+<script src="/public/mdeditor/editor/mathJax.js"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+var content = $.trim($("#markdownContent textarea").val());
+
+// $("#markdownContent").html("");
+var converter = Markdown.getSanitizingConverter();
+Markdown.Extra.init(converter, {extensions: ["tables", "fenced_code_gfm", "def_list"]});
+var html = converter.makeHtml(content);
+$("#content").html(html);
+$("pre").addClass("prettyprint linenums");
+prettyPrint();
+MathJax.Hub.Queue(["Typeset",MathJax.Hub,"wmd-preview"]);
+
+initNav();
+weixin();
+</script>
+{{else}}
+<script>
+$(function() {
+	initNav();
+	weixin();
+});
+</script>
+{{end}}
+
+<!--google+
+<script type="text/javascript" src="https://apis.google.com/js/plusone.js"> {lang: 'zh-CN'} </script>
+-->
+</body>
+</html>
