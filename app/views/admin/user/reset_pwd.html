@@ -1,0 +1,52 @@
+<div class="row" style="width: 500px;">
+<div class="col-sm-12">
+	<form id="dataForm">
+		<section class="panel panel-default">
+			<header class="panel-heading font-bold">Email</header>
+			<div class="panel-body">
+				<div class="form-group pull-in clearfix">
+					<div class="col-sm-12">
+						<label>New password</label>
+						<input id="pwd" type="password" class="form-control" data-rule-required="true" id="pwd" name="pwd" data-rule-minlength="6">
+					</div>
+				</div>
+				<div class="form-group pull-in clearfix">
+					<div class="col-sm-12">
+						<label>Confirm password</label>
+						<input type="password" class="form-control parsley-validated" data-rule-equalto="#pwd" data-rule-required="true" name="password2">
+					</div>
+				</div>
+			</div>
+			
+			<footer class="panel-footer text-right bg-light lter">
+				<button type="submit" id="resetPwdBtn" class="btn btn-success btn-s-xs">Submit</button>
+			</footer>
+		</section>
+	</form>
+</div>
+
+</div>
+
+<script src="/public/admin/js/jquery-validation-1.13.0/jquery.validate.js"></script>
+<script>
+$(function() {
+	var userId = "{{.userInfo.UserId.Hex}}";
+	init_validator("#dataForm");
+	$("#resetPwdBtn").click(function(e){
+		e.preventDefault();
+		var t = this;
+		if($("#dataForm").valid()) {
+			$(t).button('loading');
+			ajaxPost("/adminUser/doResetPwd", {userId: userId, pwd: $("#pwd").val()}, function(ret){
+				$(t).button('reset')
+				if(!ret.Ok) {
+					art.alert(ret.Msg);
+				} else {
+					art.tips("Success");
+					closeDialog();
+				}
+			});
+		}
+	});
+});
+</script>

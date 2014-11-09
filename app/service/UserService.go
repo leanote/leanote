@@ -254,26 +254,22 @@ func (this *UserService) UpdatePwd(userId, oldPwd, pwd string) (bool, string) {
 	return ok, ""
 }
 
+// 管理员重置密码
+func (this *UserService) ResetPwd(adminUserId, userId, pwd string) (ok bool, msg string) {
+	adminInfo := this.GetUserInfoByAny(adminUsername)
+	if adminInfo.UserId.Hex() != adminUserId {
+		return
+	}
+	ok = db.UpdateByQField(db.Users, bson.M{"_id": bson.ObjectIdHex(userId)}, "Pwd", Md5(pwd))
+	return
+}
+
 // 修改主题
 func (this *UserService) UpdateTheme(userId, theme string) (bool) {
 	ok := db.UpdateByQField(db.Users, bson.M{"_id": bson.ObjectIdHex(userId)}, "Theme", theme)
 	return ok
 }
 
-// 帐户类型设置
-func (this *UserService) UpdateAccount(userId, accountType string, accountStartTime, accountEndTime time.Time, 
-	maxImageNum, maxImageSize, maxAttachNum, maxAttachSize, maxPerAttachSize int) bool {
-	return db.UpdateByQI(db.Users, bson.M{"_id": bson.ObjectIdHex(userId)}, info.UserAccount{
-			AccountType: accountType,
-			AccountStartTime: accountStartTime,
-			AccountEndTime: accountEndTime,
-			MaxImageNum: maxImageNum,
-			MaxImageSize: maxImageSize,
-			MaxAttachNum: maxAttachNum,
-			MaxAttachSize: maxAttachSize,
-			MaxPerAttachSize: maxPerAttachSize,
-		})
-}
 
 //---------------
 // 修改email
@@ -366,7 +362,11 @@ func (this *UserService) ListUsers(pageNumber, pageSize int, sortField string, i
 	skipNum, sortFieldR := parsePageAndSort(pageNumber, pageSize, sortField, isAsc)
 	query := bson.M{}
 	if email != "" {
-		query["Email"] = bson.M{"$regex": bson.RegEx{".*?" + email + ".*", "i"}}
+		orQ := []bson.M{
+			bson.M{"Email": bson.M{"$regex": bson.RegEx{".*?" + email + ".*", "i"}}},
+			bson.M{"Username": bson.M{"$regex": bson.RegEx{".*?" + email + ".*", "i"}}},
+		}
+		query["$or"] = orQ
 	}
 	q := db.Users.Find(query);
 	// 总记录数

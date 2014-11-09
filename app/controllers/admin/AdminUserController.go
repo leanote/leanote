@@ -3,7 +3,7 @@ package admin
 import (
 	"github.com/revel/revel"
 	. "github.com/leanote/leanote/app/lea"
-	"time"
+//	"time"
 	"github.com/leanote/leanote/app/info"
 )
 
@@ -50,16 +50,17 @@ func (c AdminUser) Register(email, pwd string) revel.Result {
 }
 
 // 修改帐户
-func (c AdminUser) UpdateAccount(userId string) revel.Result {
+func (c AdminUser) ResetPwd(userId string) revel.Result {
 	userInfo := userService.GetUserInfo(userId)
 	c.RenderArgs["userInfo"] = userInfo
-	return c.RenderTemplate("admin/user/update_account.html");
+	return c.RenderTemplate("admin/user/reset_pwd.html");
 }
 
-func (c AdminUser) DoUpdateAccount(userId, accountType string, accountStartTime, accountEndTime string, maxImageNum, maxImageSize, maxAttachNum, maxAttachSize, maxPerAttachSize int) revel.Result {
+func (c AdminUser) DoResetPwd(userId, pwd string) revel.Result {
 	re := info.NewRe();
-	s, _ := time.Parse("2006-01-02 15:04:02", accountStartTime)
-	e, _ := time.Parse("2006-01-02 15:04:02", accountEndTime)
-	re.Ok = userService.UpdateAccount(userId, accountType, s, e, maxImageNum, maxImageSize, maxAttachNum, maxAttachSize, maxPerAttachSize )
+	if re.Ok, re.Msg = Vd("password", pwd); !re.Ok {
+		return c.RenderRe(re);
+	}
+	re.Ok, re.Msg = userService.ResetPwd(c.GetUserId(), userId, pwd)
 	return c.RenderRe(re)
 }
