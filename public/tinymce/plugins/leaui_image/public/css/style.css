@@ -34,7 +34,7 @@
   right: 10px;
   width: 300px;
   max-height: 240px;
-  overflow: scroll;
+  overflow: auto;
   z-index: 3;
 }
 /**/

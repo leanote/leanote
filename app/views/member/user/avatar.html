@@ -32,6 +32,7 @@
 <script src="/js/require.js"></script>
 <script>
 var UrlPrefix = "{{.siteUrl}}"; // 为了发weibo
+var GlobalConfigs = {{.globalConfigs|jsonJs}}; // 2014/11/9 beta2
 require.config({
 	baseUrl: '/public',
     paths: {

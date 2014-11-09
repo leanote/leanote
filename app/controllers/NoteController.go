@@ -66,6 +66,8 @@ func (c Note) Index() revel.Result {
 	
 	c.RenderArgs["tagsJson"] = c.Json(tagService.GetTags(c.GetUserId()))
 	
+	c.RenderArgs["globalConfigs"] = configService.GetGlobalConfigForUser()
+	
 	if isDev, _ := revel.Config.Bool("mode.dev"); isDev {
 		return c.RenderTemplate("note/note-dev.html")
 	} else {

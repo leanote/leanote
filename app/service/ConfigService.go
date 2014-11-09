@@ -539,3 +539,27 @@ func (this *ConfigService) IsGoodSubDomain(domain string) bool {
 	}
 	return true
 }
+
+// 上传大小
+func (this *ConfigService) GetUploadSize(key string) float64 {
+	f, _ := strconv.ParseFloat(this.GetGlobalStringConfig(key), 64)
+	return f;
+}
+func (this *ConfigService) GetUploadSizeLimit() map[string]float64 {
+	return map[string]float64{
+		"uploadImageSize": this.GetUploadSize("uploadImageSize"),
+		"uploadBlogLogoSize":this.GetUploadSize("uploadBlogLogoSize"),
+		"uploadAttachSize":this.GetUploadSize("uploadAttachSize"),
+		"uploadAvatarSize":this.GetUploadSize("uploadAvatarSize"),
+	}
+}
+// 为用户得到全局的配置
+// NoteController调用
+func (this *ConfigService) GetGlobalConfigForUser() map[string]interface{} {
+	uploadSizeConfigs := this.GetUploadSizeLimit();
+	config := map[string]interface{}{}
+	for k, v := range uploadSizeConfigs {
+		config[k] = v
+	}
+	return config
+}

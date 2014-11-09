@@ -841,6 +841,7 @@ var notes = json({{.notes}});
 var noteContentJson = json({{.noteContentJson}});
 var tagsJson = json({{.tagsJson}});
 LEA.locale = "{{.locale}}";
+var GlobalConfigs = {{.globalConfigs|jsonJs}}; // 2014/11/9 beta2
 </script>
 
 <!-- 渲染view -->

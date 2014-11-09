@@ -82,6 +82,10 @@ func init() {
 		b, _ := json.Marshal(i) 
 		return string(b)
 	}
+	revel.TemplateFuncs["jsonJs"] = func(i interface{}) template.JS {
+		b, _ := json.Marshal(i) 
+		return template.JS(string(b))
+	}
 	revel.TemplateFuncs["datetime"] = func(t time.Time) template.HTML {
 		return template.HTML(t.Format("2006-01-02 15:04:05"))
 	}

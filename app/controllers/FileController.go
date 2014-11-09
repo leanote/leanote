@@ -9,6 +9,7 @@ import (
 	"github.com/leanote/leanote/app/info"
 	"io/ioutil"
 	"os"
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -21,7 +22,7 @@ type File struct {
 // 上传的是博客logo
 // TODO logo不要设置权限, 另外的目录
 func (c File) UploadBlogLogo() revel.Result {
-	re := c.uploadImage("logo", "");
+	re := c.uploadImage("blogLogo", "");
 	
 	c.RenderArgs["fileUrlPath"] = re.Id
 	c.RenderArgs["resultCode"] = re.Code
@@ -100,7 +101,7 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 	}
 	defer file.Close()
 	// 生成上传路径
-	if(from == "logo") {
+	if(from == "logo" || from == "blogLogo") {
 		fileUrlPath = "public/upload/" + c.GetUserId() + "/images/logo"
 	} else {
 		fileUrlPath = "files/" + c.GetUserId() + "/images"
@@ -131,10 +132,22 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 		return re
 	}
 	
+	var maxFileSize float64
+	if(from == "logo") {
+		maxFileSize = configService.GetUploadSize("uploadAvatarSize");
+	} else if from == "blogLogo" {
+		maxFileSize = configService.GetUploadSize("uploadBlogLogoSize");
+	} else {
+		maxFileSize = configService.GetUploadSize("uploadImageSize");
+	}
+	if maxFileSize <= 0 {
+		maxFileSize = 1000
+	}
+	
 	// > 2M?
-	if(len(data) > 5 * 1024 * 1024) {
+	if(float64(len(data)) > maxFileSize * float64(1024*1024)) {
 		resultCode = 0
-		resultMsg = "图片大于2M"
+		resultMsg = fmt.Sprintf("图片大于%vM", maxFileSize)
 		return re
 	}
 	
@@ -161,7 +174,7 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 	id := bson.NewObjectId();
 	fileInfo.FileId = id
 	fileId = id.Hex()
-	if(from == "logo") {
+	if(from == "logo" || from == "blogLogo") {
 		fileId = "public/upload/" + c.GetUserId() + "/images/logo/" + filename
 	}
 	
