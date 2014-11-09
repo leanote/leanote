@@ -7,6 +7,7 @@ import (
 	. "github.com/leanote/leanote/app/lea"
 	"github.com/leanote/leanote/app/info"
 	"os/exec"
+	"time"
 //	"github.com/leanote/leanote/app/types"
 //	"io/ioutil"
 //	"fmt"
@@ -52,8 +53,8 @@ func (c Note) Index() revel.Result {
 	}
 	// 当然, 还需要得到第一个notes的content
 	//...
-	
 	c.RenderArgs["isAdmin"] = leanoteUserId == userInfo.Username
+	
 	c.RenderArgs["userInfo"] = userInfo
 	c.RenderArgs["userInfoJson"] = c.Json(userInfo)
 	c.RenderArgs["notebooks"] = c.Json(notebooks)
@@ -123,7 +124,7 @@ func (c Note) UpdateNoteOrContent(noteOrContent NoteOrContent) revel.Result {
 	// 新添加note
 	if noteOrContent.IsNew {
 		userId := c.GetObjectUserId();
-		myUserId := userId
+//		myUserId := userId
 		// 为共享新建?
 		if noteOrContent.FromUserId != "" {
 			userId = bson.ObjectIdHex(noteOrContent.FromUserId)
@@ -145,7 +146,7 @@ func (c Note) UpdateNoteOrContent(noteOrContent NoteOrContent) revel.Result {
 			Content: noteOrContent.Content, 
 			Abstract: noteOrContent.Abstract};
 		
-		note = noteService.AddNoteAndContent(note, noteContent, myUserId)
+		note = noteService.AddNoteAndContentForController(note, noteContent, c.GetUserId())
 		return c.RenderJson(note)
 	}
 	
@@ -352,4 +353,23 @@ func (c Note) Html2Image(noteId string) revel.Result {
     }
 	*/
 	
+}
+
+// 设置/取消Blog; 置顶
+func (c Note) SetNote2Blog(noteId string, isBlog, isTop bool) revel.Result {
+	noteUpdate := bson.M{}
+	if isTop {
+		isBlog = true
+	}
+	if !isBlog {
+		isTop = false
+	}
+	noteUpdate["IsBlog"] = isBlog
+	noteUpdate["IsTop"] = isTop
+	if isBlog {
+		noteUpdate["PublicTime"] = time.Now()
+	}
+	re := noteService.UpdateNote(c.GetUserId(), c.GetUserId(),
+		noteId, noteUpdate)
+	return c.RenderJson(re)
 }
