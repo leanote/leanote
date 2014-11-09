@@ -18,8 +18,8 @@ func (c Admin) Index() revel.Result {
 	c.SetLocale()
 	
 	c.RenderArgs["countUser"] = userService.CountUser()
-	c.RenderArgs["countNote"] = noteService.CountNote()
-	c.RenderArgs["countBlog"] = noteService.CountBlog()
+	c.RenderArgs["countNote"] = noteService.CountNote("")
+	c.RenderArgs["countBlog"] = noteService.CountBlog("")
 	
 	return c.RenderTemplate("admin/index.html");
 }

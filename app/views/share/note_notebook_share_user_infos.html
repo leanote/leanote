@@ -25,8 +25,8 @@
 		        		<input id="friendsEmail" type="text" class="form-control" placeholder="{{msg . "friendEmail"}}">
 		        	</td>
 		        	<td>
-		        		<label for="readPerm1"><input type="radio" name="perm1" checked="checked" value="0" id="readPerm1"> {{msg . "readOnly"}}</label> 
-		        		<label for="writePerm1"><input type="radio" name="perm1" value="1" id="writePerm1"> {{msg . "writable"}}</label>
+		        		<label for="readPerm1"><input type="radio" name="perm1" checked="checked" value="0" id="readPerm1"> {{msg $ "readOnly"}}</label> 
+		        		<label for="writePerm1"><input type="radio" name="perm1" value="1" id="writePerm1"> {{msg $ "writable"}}</label>
 		        	</td>
 	        		<td>
 	        			<button class="btn btn-success" onclick="addShareNoteOrNotebook(1)">{{msg . "share"}}</button>
@@ -40,9 +40,9 @@
 		          	<td>{{$v.Email}}</td>
 		          	<td>
 		          		{{if eq $v.Perm 0}}
-		          			<a href="#" noteOrNotebookId="{{$noteOrNotebookId}}" perm="{{$v.Perm}}" toUserId="{{$toUserId}}" title="点击改变权限" class="btn btn-default change-perm">{{msg . "readOnly"}}</a>
+		          			<a href="#" noteOrNotebookId="{{$noteOrNotebookId}}" perm="{{$v.Perm}}" toUserId="{{$toUserId}}" title="点击改变权限" class="btn btn-default change-perm">{{msg $ "readOnly"}}</a>
 		          		{{else}}
-		          			<a href="#" noteOrNotebookId="{{$noteOrNotebookId}}" perm="{{$v.Perm}}" toUserId="{{$toUserId}}" title="点击改变权限" class="btn btn-default change-perm">{{msg . "writable"}}</a>
+		          			<a href="#" noteOrNotebookId="{{$noteOrNotebookId}}" perm="{{$v.Perm}}" toUserId="{{$toUserId}}" title="点击改变权限" class="btn btn-default change-perm">{{msg $ "writable"}}</a>
 		          		{{end}}
 		          	</td>
 		          	<td>

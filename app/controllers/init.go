@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/leanote/leanote/app/service"
 	"github.com/leanote/leanote/app/info"
+	"github.com/leanote/leanote/app/lea/blog"
 //	. "github.com/leanote/leanote/app/lea"
 	"github.com/revel/revel"
 	"strings"
@@ -27,6 +28,7 @@ var attachService *service.AttachService
 var configService *service.ConfigService
 var emailService *service.EmailService
 var sessionService *service.SessionService
+var themeService *service.ThemeService
 
 var pageSize = 1000
 var defaultSortField = "UpdatedTime"
@@ -126,6 +128,7 @@ func InitService() {
 	configService = service.ConfigS
 	emailService = service.EmailS
 	sessionService = service.SessionS
+	themeService = service.ThemeS
 }
 
 func init() {
@@ -137,10 +140,12 @@ func init() {
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &User{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &File{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &Attach{})
-	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &Blog{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &NoteContentHistory{})
 	
 	revel.OnAppStart(func() {
 		siteUrl, _ = revel.Config.String("site.url")
+		
+		// 博客初始化模板
+		blog.Init()
 	})
 }

@@ -44,8 +44,12 @@ func RouterFilter(c *revel.Controller, fc []revel.Filter) {
 	if route.ControllerName != "Static" {
 		// api设置
 		// leanote.com/api/user/get => ApiUser::Get
-		if strings.HasPrefix(path, "/api/") || strings.HasPrefix(path, "api/") {
+		//*       /api/login               ApiAuth.Login,  这里的设置, 其实已经转成了ApiAuth了
+		if strings.HasPrefix(path, "/api") && !strings.HasPrefix(route.ControllerName, "Api"){
 			route.ControllerName = "Api" + route.ControllerName
+		} else if strings.HasPrefix(path, "/member") && !strings.HasPrefix(route.ControllerName, "Member") {
+			// member设置
+			route.ControllerName = "Member" + route.ControllerName
 		}
 		// end
 	}

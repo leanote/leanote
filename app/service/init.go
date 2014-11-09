@@ -28,8 +28,10 @@ var emailService, EmailS *EmailService
 var AuthS *AuthService
 var UpgradeS *UpgradeService
 var SessionS, sessionService *SessionService
+var ThemeS, themeService *ThemeService
 
 var siteUrl string
+var adminUsername = "admin"
 
 // onAppStart调用
 func InitService() {
@@ -53,6 +55,7 @@ func InitService() {
 	EmailS = NewEmailService()
 	UpgradeS = &UpgradeService{}
 	SessionS = &SessionService{}
+	ThemeS = &ThemeService{}
 	
 	notebookService = NotebookS
 	noteService = NoteS
@@ -70,7 +73,7 @@ func InitService() {
 	configService = ConfigS
 	emailService = EmailS
 	sessionService = SessionS
+	themeService = ThemeS
 	
-	//
 	siteUrl, _ = revel.Config.String("site.url")
 }

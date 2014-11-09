@@ -108,6 +108,7 @@ new=新建
 newMarkdown=新建Markdown笔记
 clickAddTag=点击添加标签
 notebook=笔记本
+note=笔记
 myNotebook=我的笔记本
 addNotebook=添加笔记本
 search=搜索
@@ -150,6 +151,7 @@ logout=退出
 basicInfo=基本信息
 updateEmail=修改Email
 usernameSetting=用户名设置
+username=用户名
 oldPassword=旧密码
 newPassword=新密码
 admin=后台管理
@@ -248,17 +250,24 @@ inputPassword=请输入密码
 inputNewPassword=请输入新密码
 inputPassword2=请输入确认密码
 errorPassword=请输入长度不少于6位的密码, 尽量复杂
+oldPasswordError=旧密码错误
 confirmPassword=两次密码输入不正确
 updatePasswordSuccess=修改密码成功
 errorDomain=请输入正确的域名, 如www.myblog.com
 domainExisted=域名已存在
 errorSubDomain=请输入正确的博客子域名, 长度至少为4, 不能包含特殊字符
 subDomainExisted=博客子域名已存在
+domainNotPointToLeanote=该域名还未指向 d.leanote.com, 请稍后再试
+errorPerPageSize=每页记录数至少为1
+errorSortField=排序类型错误
 
 # lea++
 leaDesc=leanote博客平台
 recommend=推荐
 latest=最新
+
+# 用户中心
+memberCenter=用户中心
 
 # 必须要加这个, 奇怪
 [CN]

@@ -1,0 +1,221 @@
+{{template "member/top.html" .}}
+<div class="m-b-md clearfix">
+	<h3 class="m-b-none">
+		{{msg . "themeSet"}}
+		<small>(<a href="http://blog.leanote.com/post/545f1a5c380782565e000000" target="_blank">{{msg . "needHelp"}}</a>)</small>
+	</h3>
+</div>
+<div class="row">
+<div class="col-sm-12 theme-container">
+	<section class="panel panel-default">
+		<div class="panel-body">
+			<div>
+			<form id="uploadAvatar" method="post" action="/member/blog/importTheme" enctype="multipart/form-data">
+		    	<div id="dropAvatar" class="dropzone">
+			    	<a class="btn btn-default btn-new" href="/member/blog/newTheme"><span class="fa fa-plus"></span> 新建主题</a>
+                    <a class="btn btn-success btn-choose-file">
+						<span class="fa fa-upload"></span> 导入主题(.zip)
+                    </a>
+                    <input type="file" name="file" multiple/>
+	                <div id="avatarUploadMsg"></div>
+                </div>
+            </form>
+			</div>
+			<p>
+			当前主题:
+			</p>
+			<ul class="themes">
+				<li class="theme">	
+				    <a class="choose-theme" data-method="put" href="#" rel="nofollow">
+				      <div class="theme-thumb thumb active-theme">
+					      <img src="/{{.activeTheme.Path}}/images/screenshot.png" alt="preview">
+				      </div>
+				      <span class="theme-title">{{.activeTheme.Name}}</span>
+					</a>
+				    <span class="theme-author">
+				      By: <a href="{{.activeTheme.AuthorUrl}}" target="_blank">{{.activeTheme.Author}}</a>
+				    </span>
+				    <div class="theme-btns">
+				    	<div class="btn-group" data-id="{{.activeTheme.ThemeId.Hex}}">
+					    	<a class="btn btn-default btn-sm btn-export"><span class="fa fa-download"></span> 导出</a>
+					    	<a class="btn btn-default btn-sm" href="{{$.siteUrl}}/preview?themeId={{.activeTheme.ThemeId.Hex}}" target="_blank"><span class="fa fa-eye"></span> 预览</a>
+					    	<a class="btn btn-primary btn-sm" target="_blank" href="/member/blog/updateTheme?themeId={{if .activeTheme.ThemeId}}{{.activeTheme.ThemeId.Hex}}{{end}}"><span class="fa fa-pencil"></span> 编辑</a>
+				    	</div>
+				    </div>
+			    </li>
+			</ul>
+			
+			<hr />
+			<p>
+			我的其它主题:
+			</p>
+			<ul class="themes">
+				{{range $.otherThemes}}
+				{{if .ThemeId}}
+				<li class="theme">
+				    <a class="choose-theme" data-method="put" href="#" rel="nofollow">
+				      <div class="theme-thumb thumb">
+					      <img src="/{{.Path}}/images/screenshot.png" alt="preview">
+				      </div>
+				      <span class="theme-title">{{.Name}}</span>
+					</a>
+				    <span class="theme-author">
+				      By: <a href="{{.AuthorUrl}}" target="_blank">{{.Author}}</a>
+				    </span>
+				    <div class="theme-btns">
+				    	<div class="btn-group" data-id="{{.ThemeId.Hex}}">
+					    	<a class="btn btn-default btn-sm btn-delete" data-loading-text="..."><span class="fa fa-remove"></span> 删除</a>
+					    	<a class="btn btn-default btn-sm btn-export"><span class="fa fa-download"></span> 导出</a>
+					    	<a class="btn btn-default btn-sm" href="{{$.siteUrl}}/preview?themeId={{.ThemeId.Hex}}" target="_blank"><span class="fa fa-eye"></span> 预览</a>
+					    	<a class="btn btn-default btn-sm"  target="_blank" href="/member/blog/updateTheme?themeId={{.ThemeId.Hex}}"><span class="fa fa-pencil"></span> 编辑</a>
+					    	<a class="btn btn-primary btn-sm btn-active" data-loading-text="..."><span class="fa fa-check"></span> 使用</a>
+					    	{{if $.isAdmin}}
+						    	<a class="btn btn-default btn-sm btn-public" data-loading-text="...">
+						    	{{if .IsDefault}}
+							    	公开
+						    	{{else}}
+						    		私有
+						    	{{end}}
+						    	</a>
+					    	{{end}}
+				    	</div>
+				    </div>
+				</li>
+				{{end}}
+				{{else}}
+					无
+				{{end}}
+			</ul>
+		
+			<hr />
+			<p>
+			leanote主题市场:
+			</p>
+			<ul class="themes">
+				{{range $.optionThemes}}
+				<li class="theme">
+				    <a class="choose-theme" data-method="put" href="#" rel="nofollow">
+				      <div class="theme-thumb thumb">
+					      <img src="/{{.Path}}/images/screenshot.png" alt="preview">
+				      </div>
+				      <span class="theme-title">{{.Name}}</span>
+					</a>
+				    <span class="theme-author">
+				      By: <a href="{{.AuthorUrl}}" target="_blank">{{.Author}}</a>
+				    </span>
+				    <p class="theme-btns" data-id="{{.ThemeId.Hex}}">
+				    	<a class="btn btn-primary btn-sm btn-install"><span class="fa fa-gear"></span> 安装</a>
+				    </p>
+				</li>
+				{{end}}
+			</ul>
+		</div>
+	</section>
+</div>
+
+</div>
+{{template "member/footer.html" .}}
+<script src="/js/require.js"></script>
+<script>
+var urlPrefix = "{{.siteUrl}}";
+$(function() {
+// 使用主题
+$(".btn-active").click(function() {
+	var id = $(this).parent().data('id');
+	var t = $(this);
+	t.button("loading");
+	ajaxPost("/member/blog/activeTheme", {themeId: id}, function(re) {
+		t.button("reset");
+		if(reIsOk(re)) {
+			art.tips("Success");
+			location.reload();
+		} else {
+			art.alert("Error");
+		}
+	});
+});
+
+// 导出主题
+$(".btn-export").click(function() {
+	var id = $(this).parent().data('id');
+	var t = $(this);
+	window.open("/member/blog/exportTheme?themeId=" + id);
+});
+
+// 删除主题
+$(".btn-delete").click(function() {
+	var id = $(this).parent().data('id');
+	var t = $(this);
+	art.confirm("Are you sure ?", function() {
+		t.button("loading");
+		ajaxPost("/member/blog/deleteTheme", {themeId: id}, function(re) {
+			t.button("reset");
+			if(reIsOk(re)) {
+				art.tips("Success");
+				location.reload();
+			} else {
+				art.alert("Error");
+			}
+		});
+	});
+});
+
+// 安装主题
+$(".btn-install").click(function() {
+	var id = $(this).parent().data('id');
+	var t = $(this);
+	art.confirm("Are you sure ?", function() {
+		t.button("loading");
+		ajaxPost("/member/blog/installTheme", {themeId: id}, function(re) {
+			t.button("reset");
+			if(reIsOk(re)) {
+				art.tips("Success");
+				location.reload();
+			} else {
+				art.alert("Error");
+			}
+		});
+	});
+});
+
+{{if .isAdmin}}
+// 只有管理员才有公开主题
+$(".btn-public").click(function() {
+	var id = $(this).parent().data('id');
+	var t = $(this);
+	art.confirm("Are you sure ?", function() {
+		t.button("loading");
+		ajaxPost("/member/blog/publicTheme", {themeId: id}, function(re) {
+			t.button("reset");
+			if(reIsOk(re)) {
+				art.tips("Success");
+				location.reload();
+			} else {
+				art.alert("Error");
+			}
+		});
+	});
+});
+{{end}}
+
+});
+
+// 导入主题
+require.config({
+	baseUrl: '/public',
+    paths: {
+    	'import_theme': 'js/app/import_theme',
+    	'jquery.ui.widget': 'tinymce/plugins/leaui_image/public/js/jquery.ui.widget',
+    	'fileupload': '/tinymce/plugins/leaui_image/public/js/jquery.fileupload',
+    	'iframe-transport': '/tinymce/plugins/leaui_image/public/js/jquery.iframe-transport'
+    },
+    shim: {
+    	'fileupload': {deps: ['jquery.ui.widget', 'iframe-transport']}
+    }
+});
+$(function() {
+	require(['import_theme'], function(import_theme) {});
+});
+</script>
+
+{{template "member/end.html" .}}

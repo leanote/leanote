@@ -1,0 +1,70 @@
+{{template "member/top.html" .}}
+<div class="m-b-md"> <h3 class="m-b-none">页面</h3></div>
+
+<div class="row">
+<div class="col-sm-8">
+	<section class="panel panel-default">
+		<div class="panel-body">
+		<p>
+		您可以添加多个单页面
+	    <a href="/member/blog/addOrUpdateSingle" id="addBtn" class="btn btn-success">添加页面</a>
+	    </p>
+        <ul class="list-group gutter list-group-lg list-group-sp sortable">
+        	{{range .singles}}
+        	<li class="list-group-item" draggable="true" data-id="{{.SingleId}}">
+	            <span class="pull-right">
+	              <a href="/member/blog/addOrUpdateSingle?singleId={{.SingleId}}"><i class="fa fa-pencil icon-muted fa-fw m-r-xs page-edit" data-id="{{.SingleId}}"></i></a>
+	              <a href="#"><i class="fa fa-times icon-muted fa-fw page-delete" data-id="{{.SingleId}}"></i></a> 
+	            </span>
+	            <span class="pull-left media-xs"><i class="fa fa-sort text-muted fa m-r-sm"></i></span>
+	            <div class="clear">
+		          {{.Title}}	
+	            </div>
+	          </li>
+          {{end}}
+        </ul>
+      </div>
+      {{if .singles}}
+      <footer class="panel-footer text-right bg-light lter">
+		    <button type="submit" id="baseBtn" class="btn btn-success">保存排序</button>
+	</footer>
+	{{end}}
+	</section>
+</div>
+
+</div>
+{{template "member/footer.html" .}}
+<script type="text/javascript" src="{{.siteUrl}}/public/member/js/jquery.sortable.js"></script>
+<script>
+$(function() {
+	$("#baseBtn").click(function(){
+		var ids = [];
+		$(".list-group-item").each(function() {
+			ids.push($(this).data("id"));
+		});
+		ajaxPost("/member/blog/sortSingles", {singleIds: ids}, function(re){
+			if(reIsOk(re)) {
+				art.tips("Success");
+			} else {
+				art.alert(re.Msg || "error");
+			}
+		});
+	});
+	
+	$(".page-delete").click(function() {
+		var singleId = $(this).data('id');
+		art.confirm("Are you sure ?", function() {
+			ajaxPost("/member/blog/deleteSingle", {singleId: singleId}, function(re){
+				if(reIsOk(re)) {
+					art.tips("Success");
+					location.reload();
+				} else {
+					art.alert(re.Msg || "error");
+				}
+			});
+		});
+	});
+});
+</script>
+
+{{template "member/end.html" .}}

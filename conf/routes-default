@@ -25,32 +25,60 @@ POST	/findPasswordUpdate							Auth.FindPasswordUpdate
 
 # blog
 
-GET		/blog/getLikeAndComments			Blog.GetLikeAndComments
-GET		/blog/getLike						Blog.GetLike
-GET		/blog/listLikes						Blog.ListLikes
-GET		/blog/incReadNum					Blog.IncReadNum
-POST		/blog/likeBlog					Blog.LikeBlog
-POST		/blog/likeComment				Blog.LikeComment
-POST		/blog/deleteComment				Blog.DeleteComment
-GET		/blog/listComments					Blog.ListComments
-POST		/blog/comment					Blog.Comment
-GET /blog/ListComments Blog.ListComments
+GET		/blog/getLikesAndComments			Blog.GetLikesAndComments
+GET		/blog/getLikes						Blog.GetLikes
+*		/blog/incReadNum					Blog.IncReadNum
+*		/blog/likePost					Blog.LikePost
+*		/blog/likeComment				Blog.LikeComment
+*		/blog/deleteComment				Blog.DeleteComment
+GET		/blog/getComments					Blog.GetComments
+*		/blog/commentPost					Blog.CommentPost
+GET		/blog/getPostStat					Blog.GetPostStat
 
+
+GET		/blog/tags/:userIdOrEmail	Blog.Tags
+GET		/blog/tags	Blog.Tags
+
+GET		/blog/tag/:userIdOrEmail/:tag	Blog.Tag
+GET		/blog/tag/:tag	Blog.Tag
 
 GET		/blog/search/:userIdOrEmail	Blog.Search
 GET		/blog/search	Blog.Search
-GET		/blog/set						Blog.Set
-GET		/blog/aboutMe/:userIdOrEmail	Blog.AboutMe
-GET		/blog/aboutMe	Blog.AboutMe
-GET		/blog/view/:noteId			Blog.View
-POST	/blog/setUserBlogBase		Blog.SetUserBlogBase
-POST	/blog/setUserBlogComment	Blog.SetUserBlogComment
-POST	/blog/setUserBlogStyle		Blog.SetUserBlogStyle
+
+GET		/blog/archive/:userIdOrEmail	Blog.Archive
+GET		/blog/archive	Blog.Archive
+
+GET		/blog/post/:noteId			Blog.Post
+GET		/blog/view/:noteId			Blog.Post
+GET		/blog/single/:singleId			Blog.Single
+
 GET		/blog/cate/:notebookId		Blog.Cate
 GET		/blog/listCateLatest/:notebookId	Blog.ListCateLatest
-GET		/blog/isMe.js				Blog.IsMe
 GET		/blog/:userIdOrEmail		Blog.Index
 GET		/blog						Blog.Index
+GET		/blog/*						Blog.E()
+
+#---------------
+# preview
+GET		/preview/tags/:userIdOrEmail	Preview.Tags
+GET		/preview/tags	Preview.Tags
+
+GET		/preview/tag/:userIdOrEmail/:tag	Preview.Tag
+GET		/preview/tag/:tag	Preview.Tag
+
+GET		/preview/search/:userIdOrEmail	Preview.Search
+GET		/preview/search	Preview.Search
+
+GET		/preview/archive/:userIdOrEmail	Preview.Archive
+GET		/preview/archive	Preview.Archive
+
+GET		/preview/view/:noteId			Preview.Post
+GET		/preview/post/:noteId			Preview.Post
+GET		/preview/single/:singleId			Preview.Single
+
+GET		/preview/cate/:notebookId		Preview.Cate
+GET		/preview/:userIdOrEmail		Preview.Index
+GET		/preview						Preview.Index
 
 # Map static resources from the /app/public folder to the /public path
 GET     /favicon.ico                            Static.Serve("public/images/favicon.ico")
@@ -64,9 +92,12 @@ GET     /tinymce/*filepath                       Static.Serve("public/tinymce")
 #GET     /plugins/*filepath                       Static.Serve("public/tinymce/plugins")
 GET     /upload/*filepath                       Static.Serve("public/upload")
 
-# API
-# the prefix of api's controllername is "Api"
+# member
+# the prefix of member's controllername is "Member"
+*       /member               	MemberIndex.Index
+*       /member/index           MemberIndex.Index
 
 # common
 *       /:controller/:action                    :controller.:action
-*       /api/:controller/:action                :controller.:action # 需要
+*       /api/:controller/:action                :controller.:action
+*       /member/:controller/:action             :controller.:action

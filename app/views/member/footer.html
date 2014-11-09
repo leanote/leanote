@@ -1,0 +1,35 @@
+							</div>
+						</section>
+					</section>
+				</section>
+			</section>
+		</section>
+	</section>
+
+<script src="/js/jquery-1.9.0.min.js"></script>
+<script src="/js/bootstrap.js"></script>
+<script src="/js/i18n/msg.{{.locale}}.js"></script>
+<script src="/public/admin/js/artDialog/jquery.artDialog.js?skin=default"></script>
+<script src="/public/js/common.js"></script>
+<script src="/public/member/js/member.js"></script>
+<script>
+$(function() { 
+	var pathname = location.pathname; // admin/t
+	var search = location.search; // ?t=xxx, 如果有?page呢
+	var fullPath = pathname;
+	if(search.indexOf("?t=") >= 0) {
+		var fullPath = pathname + search; // /admin/t?t=xxx
+	}
+	
+	if(fullPath == "/member/index") {
+		fullPath = "/member";
+	}
+	$("#nav > li").removeClass("active");
+	// alert(fullPath);
+	// 自己
+	var $thisLi = $('#nav a[href="' + fullPath + '"]').parent();
+	$thisLi.addClass("active");
+	// 父也active
+	$thisLi.parent().parent().addClass('active');
+});
+</script>

@@ -87,6 +87,7 @@ new=New
 newMarkdown=New markdown note
 clickAddTag=Click to add Tag
 notebook=Notebook
+note=Note
 myNotebook=My notebook
 addNotebook=Add notebook
 search=Search
@@ -129,6 +130,7 @@ logout=Logout
 basicInfo=Basic
 updateEmail=Update email
 usernameSetting=Update username
+username=Username
 oldPassword=Old password
 newPassword=New password
 admin=Admin
@@ -222,17 +224,24 @@ inputPassword=Password is required
 inputNewPassword=The new password is required
 inputPassword2=Please input the new password again
 errorPassword=The passowd's length is at least 6 and be sure as complex as possible
+oldPasswordError=The old password not match
 confirmPassword=Password not matched
 updatePasswordSuccess=Update password success
 errorDomain=The custom domain is invalid, eg. www.myblog.com
 domainExisted=Custom domain is already existed
 errorSubDomain=Please input the valid sub domain, the length is at least 4 and no special chars
 subDomainExisted=Sub domain is already existed
+domainNotPointToLeanote=The custom domin hasn't pointed to d.leanote.com
+errorPerPageSize=Page size is error
+errorSortField=Sort Field is error
 
 # lea++
 leaDesc=leanote blog platform
 recommend=Recommend
 latest=Latest
+
+# 用户中心
+memberCenter=Member Center
 
 # error 
 notFound=This page cann't found.

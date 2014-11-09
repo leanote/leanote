@@ -1,0 +1,137 @@
+<nav class="nav-primary hidden-xs">
+	<ul class="nav" id="nav">
+	
+		<li class="active">
+			<a href="/member">
+				<i class="fa fa-dashboard icon">
+					<b class="bg-success">
+					</b>
+				</i>
+				<span>
+					{{msg . "memberCenter"}}
+				</span>
+			</a>
+		</li>
+		
+		<li>
+			<a href="#">
+				<i class="fa fa-user icon">
+					<b class="bg-danger">
+					</b>
+				</i>
+				<span class="pull-right">
+					<i class="fa fa-angle-down text">
+					</i>
+					<i class="fa fa-angle-up text-active">
+					</i>
+				</span>
+				<span>
+					帐户信息
+				</span>
+			</a>
+			<!-- 导航列表 -->
+			<ul class="nav lt">
+			{{if $.userInfo.Email}}
+				<li>
+					<a href="/member/user/username">
+						<span>
+							用户名
+						</span>
+					</a>
+				</li>
+				<li>
+					<a href="/member/user/avatar">
+						<span>
+							头像
+						</span>
+					</a>
+				</li>
+				<li>
+					<a href="/member/user/email">
+						<span>
+							邮箱
+						</span>
+					</a>
+				</li>
+				<li>
+					<a href="/member/user/password">
+						<span>
+							密码
+						</span>
+					</a>
+				</li>
+				{{else}}
+				<li>
+					<a href="/member/user/add_account">
+						<span>
+							添加leanote帐户
+						</span>
+					</a>
+				</li>
+				{{end}}
+			</ul>
+		</li>
+		
+		<li id="adminEmailNav">
+			<a href="#layout">
+				<i class="fa fa-bold icon">
+					<b class="bg-warning">
+					</b>
+				</i>
+				<span class="pull-right">
+					<i class="fa fa-angle-down text">
+					</i>
+					<i class="fa fa-angle-up text-active">
+					</i>
+				</span>
+				<span>
+					博客
+				</span>
+			</a>
+			<ul class="nav lt">
+				<li>
+					<a href="/member/blog/base">
+						<span>
+							基本信息
+						</span>
+					</a>
+				</li>
+				<li>
+					<a href="/member/blog/comment">
+						<span>
+							评论
+						</span>
+					</a>
+				</li>
+				<li>
+					<a href="/member/blog/cate">
+						<span>
+							分类
+						</span>
+					</a>
+				</li>
+				<li>
+					<a href="/member/blog/single">
+						<span>
+							单页面
+						</span>
+					</a>
+				</li>
+				<li>
+					<a href="/member/blog/paging">
+						<span>
+							分页与排序设置
+						</span>
+					</a>
+				</li>
+				<li>
+					<a href="/member/blog/theme">
+						<span>
+							主题
+						</span>
+					</a>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</nav>

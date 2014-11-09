@@ -7,6 +7,7 @@ import (
 	"github.com/leanote/leanote/app/db"
 	"github.com/leanote/leanote/app/controllers"
 	"github.com/leanote/leanote/app/controllers/admin"
+	"github.com/leanote/leanote/app/controllers/member"
 	_ "github.com/leanote/leanote/app/lea/binder"
 	"github.com/leanote/leanote/app/lea/session"
 	"github.com/leanote/leanote/app/lea/memcache"
@@ -56,6 +57,11 @@ func init() {
 		i = i - 1;
 		return i
 	}
+	// 增加或减少
+	revel.TemplateFuncs["incr"] = func(n, i int) int {
+		n = n + i;
+		return n
+	}
 	revel.TemplateFuncs["join"] = func(arr []string) template.HTML {
 		if arr == nil {
 			return template.HTML("")
@@ -78,6 +84,9 @@ func init() {
 	}
 	revel.TemplateFuncs["datetime"] = func(t time.Time) template.HTML {
 		return template.HTML(t.Format("2006-01-02 15:04:05"))
+	}
+	revel.TemplateFuncs["dateFormat"] = func(t time.Time, format string) template.HTML {
+		return template.HTML(t.Format(format))
 	}
 	revel.TemplateFuncs["unixDatetime"] = func(unixSec string) template.HTML {
 		sec, _ := strconv.Atoi(unixSec)
@@ -135,8 +144,6 @@ func init() {
 	}
 	*/
 	revel.TemplateFuncs["li"] = func(a string) string {
-		Log(a)
-		Log("life==")
 		return ""
 	}
 	// str连接
@@ -248,6 +255,7 @@ func init() {
 	// https://groups.google.com/forum/#!topic/golang-nuts/OEdSDgEC7js
 	// http://play.golang.org/p/snygrVpQva
 	// http://grokbase.com/t/gg/golang-nuts/142a6dhfh3/go-nuts-text-template-using-comparison-operators-eq-gt-etc-on-non-existent-variable-causes-the-template-to-stop-outputting-but-with-no-error-correct-behaviour
+	/*
 	revel.TemplateFuncs["gt"] = func(a1, a2 interface{}) bool {
 		switch a1.(type) {
 		case string:
@@ -273,6 +281,7 @@ func init() {
 		}
 		return false
 	}
+	*/
 	
 	/*
 	{{range $i := N 1 10}}
@@ -302,6 +311,7 @@ func init() {
 		service.InitService()
 		controllers.InitService()
 		admin.InitService()
+		member.InitService()
 		service.ConfigS.InitGlobalConfigs()
 	})
 }

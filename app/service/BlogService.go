@@ -4,11 +4,13 @@ import (
 	"github.com/leanote/leanote/app/info"
 	"github.com/leanote/leanote/app/db"
 	. "github.com/leanote/leanote/app/lea"
+//	"github.com/leanote/leanote/app/lea/netutil"
 	"gopkg.in/mgo.v2/bson"
 //	"time"
-//	"sort"
+	"sort"
 	"strings"
 	"time"
+	"strconv"
 )
 
 // blog
@@ -30,6 +32,13 @@ note, notebook都可设为blog
 type BlogService struct {
 }
 
+// 得到博客统计信息
+// ReadNum, LikeNum, CommentNum
+func (this *BlogService) GetBlogStat(noteId string) (stat info.BlogStat) {
+	note := noteService.GetBlogNote(noteId)
+	stat = info.BlogStat{note.NoteId, note.ReadNum, note.LikeNum, note.CommentNum}
+	return
+}
 // 得到某博客具体信息
 func (this *BlogService) GetBlog(noteId string) (blog info.BlogItem) {
 	note := noteService.GetBlogNote(noteId)
@@ -42,7 +51,7 @@ func (this *BlogService) GetBlog(noteId string) (blog info.BlogItem) {
 	noteContent := noteService.GetNoteContent(note.NoteId.Hex(), note.UserId.Hex())
 	
 	// 组装成blogItem
-	blog = info.BlogItem{note, noteContent.Content, false, info.User{}}	
+	blog = info.BlogItem{note, noteContent.Abstract, noteContent.Content, false, info.User{}}	
 	
 	return
 }
@@ -56,11 +65,11 @@ func (this *BlogService) ListBlogNotebooks(userId string) []info.Notebook {
 
 // 博客列表
 // userId 表示谁的blog
-func (this *BlogService) ListBlogs(userId, notebookId string, page, pageSize int, sortField string, isAsc bool) (int, []info.BlogItem) {
+func (this *BlogService) ListBlogs(userId, notebookId string, page, pageSize int, sortField string, isAsc bool) (info.Page, []info.BlogItem) {
 	count, notes := noteService.ListNotes(userId, notebookId, false, page, pageSize, sortField, isAsc, true);
 	
 	if(notes == nil || len(notes) == 0) {
-		return 0, nil
+		return info.Page{}, nil
 	}
 	
 	// 得到content, 并且每个都要substring
@@ -83,47 +92,253 @@ func (this *BlogService) ListBlogs(userId, notebookId string, page, pageSize int
 	for i, note := range notes {
 		hasMore := true
 		var content string
+		var abstract string
 		if noteContent, ok := noteContentsMap[note.NoteId]; ok {
-			content = noteContent.Abstract
+			abstract = noteContent.Abstract
+			content = noteContent.Content
 		}
-		blogs[i] = info.BlogItem{note, content, hasMore, info.User{}}
+		blogs[i] = info.BlogItem{note, abstract, content, hasMore, info.User{}}
 	}
-	return count, blogs
+	
+	pageInfo := info.NewPage(page, pageSize, count, nil)
+	
+	return pageInfo, blogs
 }
 
-func (this *BlogService) SearchBlog(key, userId string, page, pageSize int, sortField string, isAsc bool) (int, []info.BlogItem) {
+// 得到博客的标签, 那得先得到所有博客, 比较慢
+/*
+[
+	{Tag:xxx, Count: 32}
+]
+*/
+func (this *BlogService) ListBlogsTag(userId string) (info.TagsCounts) {
+	// 得到所有博客
+	notes := []info.Note{}
+	query := bson.M{"UserId": bson.ObjectIdHex(userId), "IsTrash": false, "IsBlog": true}
+	db.ListByQWithFields(db.Notes, query, []string{"Tags"}, &notes)
+	if(notes == nil || len(notes) == 0) {
+		return nil
+	}
+	// 统计所有的Tags和数目
+	tagsCount := map[string]int{}
+	for _, note := range notes {
+		tags := note.Tags
+		if tags != nil && len(tags) > 0 {
+			for _, tag := range tags {
+				count := tagsCount[tag]
+				count++
+				tagsCount[tag] = count
+			}
+		}
+	}
+	// 排序, 从大到小
+	var tagsCounts info.TagsCounts
+	tagsCounts = make(info.TagsCounts, len(tagsCount))
+	i := 0
+	for tag, count := range tagsCount {
+		tagsCounts[i] = info.TagCount{tag, count}
+		i++
+	}
+	sort.Sort(&tagsCounts)
+	return tagsCounts
+}
+// 归档博客
+/*
+数据: 按年汇总
+[
+archive1,
+archive2,
+]
+archive的数据类型是 
+{
+Year: 2014
+Posts: []
+}
+*/
+func (this *BlogService) ListBlogsArchive(userId, notebookId string, sortField string, isAsc bool) ([]info.Archive) {
+	_, notes := noteService.ListNotes(userId, notebookId, false, 1, 99999, sortField, isAsc, true);
+	
+	if(notes == nil || len(notes) == 0) {
+		return nil
+	}
+	
+	arcs := []info.Archive{}
+	// 按年汇总
+	arcsMap := map[int]*info.Archive{}
+	var t time.Time
+	var arc *info.Archive
+	everYear := 0
+	for _, note := range notes {
+		if sortField == "PublicTime" {
+			t = note.PublicTime
+		} else if sortField == "CreatedTime"{
+			t = note.CreatedTime
+		} else {
+			t = note.UpdatedTime
+		}
+		year := t.Year()
+		if everYear == 0 {
+			everYear = year
+		}
+		
+		if everYear != year {
+			arcs = append(arcs, *arcsMap[everYear])
+			everYear = year
+		}
+		
+		if arcT, ok := arcsMap[year]; ok {
+			arc = arcT
+		} else {
+			arc = &info.Archive{Year: year, Posts: []map[string]interface{}{}}
+		}
+		arc.Posts = append(arc.Posts, map[string]interface{}{
+			"NoteId": note.NoteId.Hex(),
+			"Title": note.Title,
+			"CreatedTime": note.CreatedTime,
+			"UpdatedTime": note.UpdatedTime,
+			"PublicTime": note.PublicTime,
+			"Desc": note.Desc,
+			"Tags": note.Tags,
+			"CommentNum": note.CommentNum,
+			"ReadNum": note.ReadNum,
+			"LikeNum": note.LikeNum,
+			"IsMarkdown": note.IsMarkdown,
+		});
+		arcsMap[year] = arc
+	}
+	// 最后一个
+	arcs = append(arcs, *arcsMap[everYear])
+	
+	return arcs
+}
+
+// 根据tag搜索博客
+func (this *BlogService) SearchBlogByTags(tags []string, userId string, pageNumber, pageSize int, sortField string, isAsc bool) (pageInfo info.Page, blogs []info.BlogItem) {
+	notes := []info.Note{}
+	skipNum, sortFieldR := parsePageAndSort(pageNumber, pageSize, sortField, isAsc)
+	
+	// 不是trash的
+	query := bson.M{"UserId": bson.ObjectIdHex(userId), 
+		"IsTrash": false, 
+		"IsBlog": true,
+		"Tags": bson.M{"$all": tags}}
+	
+	q := db.Notes.Find(query);
+	
+	// 总记录数
+	count, _ := q.Count()
+	if count == 0 {
+		return
+	}
+	
+	q.Sort(sortFieldR).
+		Skip(skipNum).
+		Limit(pageSize).
+		All(&notes)
+		
+	blogs = this.notes2BlogItems(notes)
+	pageInfo = info.NewPage(pageNumber, pageSize, count, nil)
+	
+	return
+}
+
+func (this *BlogService) notes2BlogItems(notes []info.Note) []info.BlogItem{
+	// 得到content, 并且每个都要substring
+	noteIds := make([]bson.ObjectId, len(notes))
+	for i, note := range notes {
+		noteIds[i] = note.NoteId
+	}
+	
+	// 直接得到noteContents表的abstract
+	// 这里可能是乱序的
+	noteContents := noteService.ListNoteContentByNoteIds(noteIds) // 返回[info.NoteContent]
+	noteContentsMap := make(map[bson.ObjectId]info.NoteContent, len(noteContents))
+	for _, noteContent := range noteContents {
+		noteContentsMap[noteContent.NoteId] = noteContent
+	}
+	
+	// 组装成blogItem
+	// 按照notes的顺序
+	blogs := make([]info.BlogItem, len(noteIds))
+	for i, note := range notes {
+		hasMore := true
+		var content, abstract string
+		if noteContent, ok := noteContentsMap[note.NoteId]; ok {
+			abstract = noteContent.Abstract
+			content = noteContent.Content
+		}
+		blogs[i] = info.BlogItem{note, abstract, content, hasMore, info.User{}}
+	}
+	return blogs
+}
+func (this *BlogService) SearchBlog(key, userId string, page, pageSize int, sortField string, isAsc bool) (info.Page, []info.BlogItem) {
 	count, notes := noteService.SearchNote(key, userId, page, pageSize, sortField, isAsc, true);
 	
 	if(notes == nil || len(notes) == 0) {
-		return 0, nil
+		return info.Page{}, nil
 	}
 	
-	// 得到content, 并且每个都要substring
-	noteIds := make([]bson.ObjectId, len(notes))
-	for i, note := range notes {
-		noteIds[i] = note.NoteId
+	blogs := this.notes2BlogItems(notes)
+	pageInfo := info.NewPage(page, pageSize, count, nil)
+	return pageInfo, blogs
+}
+
+// 上一篇文章, 下一篇文章
+// sorterField, baseTime是基准, sorterField=PublicTime, title
+// isAsc是用户自定义的排序方式
+func (this *BlogService) PreNextBlog(userId string, sorterField string, isAsc bool, baseTime interface{}) (info.Note, info.Note) {
+	userIdO := bson.ObjectIdHex(userId)
+	
+	var sortFieldT1, sortFieldT2 bson.M
+	var sortFieldR1, sortFieldR2 string
+	if !isAsc {
+		// 降序
+		/*
+------- pre
+----- now
+--- next
+--
+		*/
+		// 上一篇时间要比它大, 找最小的
+		sortFieldT1 = bson.M{"$gt": baseTime}
+		sortFieldR1 = sorterField
+		// 下一篇时间要比它小
+		sortFieldT2 = bson.M{"$lt": baseTime}
+		sortFieldR2 = "-" + sorterField
+	} else {
+		// 升序
+/*
+--- pre
+----- now
+------- next
+---------
+*/
+		// 上一篇要比它小, 找最大的
+		sortFieldT1 = bson.M{"$lt": baseTime}
+		sortFieldR1 = "-" + sorterField
+		// 下一篇, 找最小的
+		sortFieldT2 = bson.M{"$gt": baseTime}
+		sortFieldR2 = sorterField
 	}
 	
-	// 直接得到noteContents表的abstract
-	// 这里可能是乱序的
-	noteContents := noteService.ListNoteAbstractsByNoteIds(noteIds) // 返回[info.NoteContent]
-	noteContentsMap := make(map[bson.ObjectId]info.NoteContent, len(noteContents))
-	for _, noteContent := range noteContents {
-		noteContentsMap[noteContent.NoteId] = noteContent
+	// 上一篇, 比基时间要小, 但是是最后一篇, 所以是降序
+	note := info.Note{}
+	query := bson.M{"UserId": userIdO, "IsTrash": false, "IsBlog": true, 
+		sorterField: sortFieldT1,
 	}
+	q := db.Notes.Find(query);
+	q.Sort(sortFieldR1).Limit(1).One(&note)
+
+	// 下一篇, 比基时间要大, 但是是第一篇, 所以是升序
+	note2 := info.Note{}
+	query[sorterField] = sortFieldT2
+//	Log(isAsc)
+//	LogJ(query)
+//	Log(sortFieldR2)
+	q = db.Notes.Find(query);
+	q.Sort(sortFieldR2).Limit(1).One(&note2)
 	
-	// 组装成blogItem
-	// 按照notes的顺序
-	blogs := make([]info.BlogItem, len(noteIds))
-	for i, note := range notes {
-		hasMore := true
-		var content string
-		if noteContent, ok := noteContentsMap[note.NoteId]; ok {
-			content = noteContent.Abstract
-		}
-		blogs[i] = info.BlogItem{note, content, hasMore, info.User{}}
-	}
-	return count, blogs
+	return note, note2
 }
 
 //-------
@@ -200,28 +415,38 @@ func (this *BlogService) ListAllBlogs(tag string, keywords string, isRecommend b
 			content = noteContent.Abstract
 		}
 		*/
-		blogs[i] = info.BlogItem{note, content, hasMore, userMap[note.UserId]}
+		blogs[i] = info.BlogItem{note, "", content, hasMore, userMap[note.UserId]}
 	}
 	pageInfo = info.NewPage(page, pageSize, count, nil)
 	
 	return pageInfo, blogs
 }
 
+
 //------------------------
 // 博客设置
 func (this *BlogService) fixUserBlog(userBlog *info.UserBlog) {
-	/*
-	if userBlog.Title == "" {
-		userInfo := userService.GetUserInfo(userBlog)
-		userBlog.Title = userInfo.Username + " 's Blog"
-	}
-	*/
-	
 	// Logo路径问题, 有些有http: 有些没有
-	Log(userBlog.Logo)
 	if userBlog.Logo != "" && !strings.HasPrefix(userBlog.Logo, "http") {
 		userBlog.Logo = strings.Trim(userBlog.Logo, "/")
 		userBlog.Logo = siteUrl + "/" + userBlog.Logo
+	}
+	
+	if userBlog.SortField == "" {
+		userBlog.SortField = "PublicTime"
+	}
+	if userBlog.PerPageSize <= 0 {
+		userBlog.PerPageSize = 10
+	}
+	
+	// themePath
+	if userBlog.Style == "" {
+		userBlog.Style = defaultStyle
+	}
+	if userBlog.ThemeId == "" {
+		userBlog.ThemePath = themeService.GetDefaultThemePath(userBlog.Style)
+	} else {
+		userBlog.ThemePath = themeService.GetThemePath(userBlog.UserId.Hex(), userBlog.ThemeId.Hex())
 	}
 }
 func (this *BlogService) GetUserBlog(userId string) info.UserBlog {
@@ -246,7 +471,28 @@ func (this *BlogService) UpdateUserBlogComment(userId string, userBlog info.User
 func (this *BlogService) UpdateUserBlogStyle(userId string, userBlog info.UserBlogStyle) bool {
 	return db.UpdateByQMap(db.UserBlogs, bson.M{"_id": bson.ObjectIdHex(userId)}, userBlog)
 }
+// 分页与排序 
+func (this *BlogService) UpdateUserBlogPaging(userId string, perPageSize int, sortField string, isAsc bool) (ok bool, msg string) {
+	if ok, msg = Vds(map[string]string{"perPageSize": strconv.Itoa(perPageSize), "sortField": sortField}); !ok {
+		return
+	}
+	ok = db.UpdateByQMap(db.UserBlogs, bson.M{"_id": bson.ObjectIdHex(userId)}, 
+		bson.M{"PerPageSize": perPageSize, "SortField": sortField, "IsAsc": isAsc})
+	return
+}
 
+func (this *BlogService) GetUserBlogBySubDomain(subDomain string) info.UserBlog {
+	blogUser := info.UserBlog{}
+	db.GetByQ(db.UserBlogs, bson.M{"SubDomain": subDomain}, &blogUser)
+	this.fixUserBlog(&blogUser)
+	return blogUser
+}
+func (this *BlogService) GetUserBlogByDomain(domain string) info.UserBlog {
+	blogUser := info.UserBlog{}
+	db.GetByQ(db.UserBlogs, bson.M{"Domain": domain}, &blogUser)
+	this.fixUserBlog(&blogUser)
+	return blogUser
+}
 
 //---------------------
 // 后台管理
@@ -264,7 +510,7 @@ func (this *BlogService) SetRecommend(noteId string, isRecommend bool) bool {
 // 博客社交, 评论
 
 // 返回所有liked用户, bool是否还有
-func (this *BlogService) ListLikedUsers(noteId string, isAll bool) ([]info.User, bool) {
+func (this *BlogService) ListLikedUsers(noteId string, isAll bool) ([]info.UserAndBlog, bool) {
 	// 默认前5
 	pageSize := 5
 	skipNum, sortFieldR := parsePageAndSort(1, pageSize, "CreatedTime", false)
@@ -291,11 +537,11 @@ func (this *BlogService) ListLikedUsers(noteId string, isAll bool) ([]info.User,
 		userIds[i] = like.UserId
 	}
 	// 得到用户信息
-	userMap := userService.MapUserInfoAndBlogInfosByUserIds(userIds)
+	userMap := userService.MapUserAndBlogByUserIds(userIds)
 	
-	users := make([]info.User, len(likes));
+	users := make([]info.UserAndBlog, len(likes));
 	for i, like := range likes {
-		users[i] = userMap[like.UserId]
+		users[i] = userMap[like.UserId.Hex()]
 	}
 	
 	return users, count > pageSize
@@ -495,7 +741,7 @@ func (this *BlogService) LikeComment(commentId, userId string) (ok bool, isILike
 // 评论列表
 // userId主要是显示userId是否点过某评论的赞
 // 还要获取用户信息
-func (this *BlogService) ListComments(userId, noteId string, page, pageSize int) (info.Page, []info.BlogCommentPublic, map[string]info.User) {
+func (this *BlogService) ListComments(userId, noteId string, page, pageSize int) (info.Page, []info.BlogCommentPublic, map[string]info.UserAndBlog) {
 	pageInfo := info.Page{CurPage: page}
 	
 	comments2 := []info.BlogComment{}
@@ -540,15 +786,10 @@ func (this *BlogService) ListComments(userId, noteId string, page, pageSize int)
 	}
 	
 	// 得到用户信息
-	userMap := userService.MapUserInfoByUserIds(userIds)
-	userMap2 := make(map[string]info.User, len(userMap))
-	for userId, v := range userMap {
-		userMap2[userId.Hex()] = v
-	}
-	
+	userMap := userService.MapUserAndBlogByUserIds(userIds)
 	pageInfo = info.NewPage(page, pageSize, count, nil)
 	
-	return pageInfo, comments, userMap2
+	return pageInfo, comments, userMap
 }
 
 // 举报
@@ -568,4 +809,127 @@ func (this *BlogService) Report(noteId, commentId, reason, userId string) (bool)
 		report.CommentId = bson.ObjectIdHex(commentId)
 	}
 	return db.Insert(db.Reports, report)
+}
+
+//---------------
+// 分类排序
+
+// CateIds
+func (this *BlogService) UpateCateIds(userId string, cateIds[] string) bool {
+	return db.UpdateByQField(db.UserBlogs, bson.M{"_id": bson.ObjectIdHex(userId)}, "CateIds", cateIds)
+}
+
+// 单页
+func (this *BlogService) GetSingles(userId string) []map[string]string {
+	userBlog := this.GetUserBlog(userId)
+	singles := userBlog.Singles
+	return singles
+}
+func (this *BlogService) GetSingle(singleId string) info.BlogSingle {
+	page := info.BlogSingle{}
+	db.Get(db.BlogSingles, singleId, &page)
+	return page
+}
+
+func (this *BlogService) updateBlogSingles(userId string, isDelete bool, isAdd bool, singleId, title string) (ok bool) {
+	userBlog := this.GetUserBlog(userId)
+	singles := userBlog.Singles
+	if singles == nil {
+		singles = []map[string]string{}
+	}
+	if isDelete || !isAdd { // 删除或更新, 需要找到相应的
+		i := 0
+		for _, p := range singles {
+			if p["SingleId"] == singleId {
+				break;
+			}
+			i++
+		}
+		// 得到i
+		// 找不到
+		if i == len(singles) {
+		} else {
+			// 找到了, 如果是删除, 则删除
+			if isDelete {
+				singles = append(singles[:i], singles[i+1:]...) 
+			} else {
+				singles[i]["Title"] = title
+			}
+		}
+	} else {
+		// 是添加, 直接添加到最后
+		singles = append(singles, map[string]string{"SingleId": singleId, "Title": title})
+	}
+	return db.UpdateByQField(db.UserBlogs, bson.M{"_id": bson.ObjectIdHex(userId)}, "Singles", singles)
+}
+
+// 删除页面
+func (this *BlogService) DeleteSingle(userId, singleId string) (ok bool) {
+	ok = db.DeleteByIdAndUserId(db.BlogSingles, singleId, userId)
+	if ok {
+		// 还要修改UserBlog中的Singles
+		this.updateBlogSingles(userId, true, false, singleId, "")
+	}
+	return
+}
+// 更新或添加
+func (this *BlogService) AddOrUpdateSingle(userId, singleId, title, content string) (ok bool) {
+	ok = false
+	if singleId != "" {
+		ok = db.UpdateByIdAndUserIdMap(db.BlogSingles, singleId, userId, bson.M{
+			"Title": title,
+			"Content": content,
+			"UpdatedTime": time.Now(),
+		})
+		if ok {
+			// 还要修改UserBlog中的Singles
+			this.updateBlogSingles(userId, false, false, singleId, title)
+		}
+		return 
+	}
+	// 添加
+	page := info.BlogSingle{SingleId: bson.NewObjectId(), UserId: bson.ObjectIdHex(userId), Title: title, Content: content,
+		CreatedTime: time.Now(),
+	}
+	page.UpdatedTime = page.CreatedTime
+	ok = db.Insert(db.BlogSingles, page)
+	
+	// 还要修改UserBlog中的Singles
+	this.updateBlogSingles(userId, false, true, page.SingleId.Hex(), title)
+	
+	return 
+}
+
+// 重新排序
+func (this *BlogService) SortSingles(userId string, singleIds []string) (ok bool) {
+	if singleIds == nil || len(singleIds) == 0 {
+		return
+	}
+	userBlog := this.GetUserBlog(userId)
+	singles := userBlog.Singles
+	if singles == nil || len(singles) == 0 {
+		return
+	}
+	
+	singlesMap := map[string]map[string]string{}
+	for _, page := range singles {
+		singlesMap[page["SingleId"]] = page
+	}
+	
+	singles2 := make([]map[string]string, len(singles))
+	for i, singleId := range singleIds {
+		singles2[i] = singlesMap[singleId]
+	}
+	
+	return db.UpdateByQField(db.UserBlogs, bson.M{"_id": bson.ObjectIdHex(userId)}, "Singles", singles2)
+}
+
+// 得到用户的博客url
+func (this *BlogService) GetUserBlogUrl(userBlog *info.UserBlog) (string) {
+	if userBlog.Domain != "" && configService.AllowCustomDomain() {
+		return configService.GetUserUrl(userBlog.Domain)
+	} else if userBlog.SubDomain != "" {
+		return configService.GetUserSubUrl(userBlog.SubDomain)
+	}
+	return configService.GetBlogUrl() + "/" + userBlog.UserId.Hex()
 }

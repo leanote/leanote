@@ -1,0 +1,115 @@
+{{template "member/top.html" .}}
+<div class="m-b-md"> <h3 class="m-b-none">{{msg . "baseInfoSet"}}</h3></div>
+
+<div class="row">
+<div class="col-sm-10">
+	<div id="formData">
+		<section class="panel panel-default">
+			<div class="panel-body">
+  				<div class="alert alert-danger" id="baseMsg" style="display: none"></div>
+				<div class="form-horizontal" role="form" id="userBlogForm">
+					
+					<div class="form-group">
+						<label for="title" class="col-sm-2 control-label">{{msg . "blogName"}}</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="Title" name="Title"
+								placeholder="eg: leanote's blog"
+								value="{{if .userBlog.Title}}{{.userBlog.Title}}{{else}}{{.userInfo.Email}} 's blog{{end}}">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="logo" class="col-sm-2 control-label">{{msg . "blogLogo"}}</label>
+						<div class="col-sm-10">
+							<input type="hidden" name="Logo" id="Logo"
+								value="{{.userBlog.Logo}}" />
+							<form id="formLogo" action="{{$.siteUrl}}/file/uploadBlogLogo" method="post"
+								enctype="multipart/form-data" target="logoTarget">
+								<input type="file" class="form-control" id="logo2" name="file"
+									onChange='$("#formLogo").submit();' /> 
+								<div id="logoImg"
+									{{if .userBlog.Logo }}	
+									{{else}}
+									style="display: none"{{end}}
+									>
+									<img src="{{.userBlog.Logo}}" style="height: 40px" /> <a
+										href="#" id="deleteLogo">{{msg . "delete"}}</a>
+								</div>
+							</form>
+							<iframe id="logoTarget" name="logoTarget" src="#" style="display: none"></iframe>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="subTitle" class="col-sm-2 control-label">{{msg . "blogDesc"}}</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="SubTitle"
+								name="SubTitle" value="{{.userBlog.SubTitle}}"
+								placeholder="eg: leanote, Not Just A Notebook">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="aboutMe" class="col-sm-2 control-label"></label>
+						<div class="col-sm-10">
+							<div id="popularToolbar"></div>
+						</div>
+					</div>
+
+					<!--
+					<div class="form-group">
+						<label for="aboutMe" class="col-sm-2 control-label">{{msg . "aboutMe"}}</label>
+						<div class="col-sm-10">
+							<textarea id="AboutMe" name="AboutMe">{{.userBlog.AboutMe}}</textarea>
+						</div>
+					</div>
+					-->
+				</div>
+			</div>
+			<footer class="panel-footer text-right bg-light lter">
+			    <button type="submit" id="baseBtn" class="btn btn-success">{{msg . "submit"}}</button>
+			</footer>
+		</section>
+	</div>
+</div>
+
+</div>
+{{template "member/footer.html" .}}
+<script type="text/javascript" src="/tinymce/tinymce.min.js"></script>
+<script>
+var urlPrefix = "{{.siteUrl}}";
+$(function() {
+	$("#deleteLogo").click(function() {
+		$("#Logo").val("");
+		$("#logoImg").hide();
+	});
+	// 基本设置
+	$("#baseBtn").click(function() {
+		var data = {
+			Title : $("#Title").val(),
+			SubTitle : $("#SubTitle").val(),
+			Logo : $("#Logo").val()
+		}
+		post("/member/blog/setUserBlogBase", data, function(ret) {
+			showAlert("#baseMsg", "{{msg . "saveSuccess"}}", "success");
+		}, this);
+	});
+});
+
+// filename, result, resultCode
+function uploadFinish(ret) {
+	if (ret) {
+		if (ret.resultCode == '1') {
+			$("#logoImg img").attr("src", urlPrefix + "/" + ret.filename).parent().show();
+			$("#Logo").val(ret.filename);
+			return;
+		}
+		alert(ret.result);
+		return;
+	}
+	// 上传出错
+	alert("error");
+}
+</script>
+
+{{template "member/end.html" .}}
