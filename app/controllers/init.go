@@ -33,6 +33,7 @@ var themeService *service.ThemeService
 var pageSize = 1000
 var defaultSortField = "UpdatedTime"
 var leanoteUserId = "admin" // 不能更改
+var adminUsername = "admin"
 var siteUrl = "http://leanote.com"
 
 // 拦截器

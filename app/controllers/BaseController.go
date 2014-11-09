@@ -196,6 +196,9 @@ func (c BaseController) SetLocale() string {
 func (c BaseController) SetUserInfo() {
 	userInfo := c.GetUserInfo()
 	c.RenderArgs["userInfo"] = userInfo
+	if(userInfo.Username == adminUsername) {
+		c.RenderArgs["isAdmin"] = true
+	}
 }
 
 // life
