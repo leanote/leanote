@@ -7,7 +7,7 @@ import (
 	. "github.com/leanote/leanote/app/lea"
 	"github.com/leanote/leanote/app/info"
 	"os/exec"
-	"time"
+//	"time"
 //	"github.com/leanote/leanote/app/types"
 //	"io/ioutil"
 //	"fmt"
@@ -358,19 +358,6 @@ func (c Note) Html2Image(noteId string) revel.Result {
 
 // 设置/取消Blog; 置顶
 func (c Note) SetNote2Blog(noteId string, isBlog, isTop bool) revel.Result {
-	noteUpdate := bson.M{}
-	if isTop {
-		isBlog = true
-	}
-	if !isBlog {
-		isTop = false
-	}
-	noteUpdate["IsBlog"] = isBlog
-	noteUpdate["IsTop"] = isTop
-	if isBlog {
-		noteUpdate["PublicTime"] = time.Now()
-	}
-	re := noteService.UpdateNote(c.GetUserId(), c.GetUserId(),
-		noteId, noteUpdate)
+	re := noteService.ToBlog(c.GetUserId(), noteId, isBlog, isTop)
 	return c.RenderJson(re)
 }

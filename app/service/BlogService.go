@@ -7,7 +7,7 @@ import (
 //	"github.com/leanote/leanote/app/lea/netutil"
 	"gopkg.in/mgo.v2/bson"
 //	"time"
-	"sort"
+//	"sort"
 	"strings"
 	"time"
 	"strconv"
@@ -111,13 +111,25 @@ func (this *BlogService) ListBlogs(userId, notebookId string, page, pageSize int
 	{Tag:xxx, Count: 32}
 ]
 */
-func (this *BlogService) ListBlogsTag(userId string) (info.TagsCounts) {
+func (this *BlogService) GetBlogTags(userId string) ([]info.TagCount) {
+	// 得到所有博客
+	tagCounts := []info.TagCount{}
+	query := bson.M{"UserId": bson.ObjectIdHex(userId), "IsBlog": true}
+	db.TagCounts.Find(query).Sort("-Count").All(&tagCounts)
+	return tagCounts
+}
+// 重新计算博客的标签
+// 在设置设置/取消为博客时调用 
+func (this *BlogService) ReCountBlogTags(userId string) (bool) {
 	// 得到所有博客
 	notes := []info.Note{}
-	query := bson.M{"UserId": bson.ObjectIdHex(userId), "IsTrash": false, "IsBlog": true}
+	userIdO := bson.ObjectIdHex(userId)
+	query := bson.M{"UserId": userIdO, "IsTrash": false, "IsBlog": true}
 	db.ListByQWithFields(db.Notes, query, []string{"Tags"}, &notes)
+	
+	db.DeleteAll(db.TagCounts, bson.M{"UserId": userIdO, "IsBlog": true});
 	if(notes == nil || len(notes) == 0) {
-		return nil
+		return true	
 	}
 	// 统计所有的Tags和数目
 	tagsCount := map[string]int{}
@@ -131,16 +143,12 @@ func (this *BlogService) ListBlogsTag(userId string) (info.TagsCounts) {
 			}
 		}
 	}
-	// 排序, 从大到小
-	var tagsCounts info.TagsCounts
-	tagsCounts = make(info.TagsCounts, len(tagsCount))
-	i := 0
+	// 一个个插入
 	for tag, count := range tagsCount {
-		tagsCounts[i] = info.TagCount{tag, count}
-		i++
+		db.Insert(db.TagCounts, 
+			info.TagCount{UserId: userIdO, IsBlog: true, Tag: tag, Count: count})
 	}
-	sort.Sort(&tagsCounts)
-	return tagsCounts
+	return true
 }
 // 归档博客
 /*
@@ -155,8 +163,42 @@ Year: 2014
 Posts: []
 }
 */
-func (this *BlogService) ListBlogsArchive(userId, notebookId string, sortField string, isAsc bool) ([]info.Archive) {
-	_, notes := noteService.ListNotes(userId, notebookId, false, 1, 99999, sortField, isAsc, true);
+func (this *BlogService) ListBlogsArchive(userId, notebookId string, year, month int, sortField string, isAsc bool) ([]info.Archive) {
+//	_, notes := noteService.ListNotes(userId, notebookId, false, 1, 99999, sortField, isAsc, true);
+	q := bson.M{"UserId": bson.ObjectIdHex(userId), "IsBlog": true, "IsTrash": false}
+	if notebookId != "" {
+		q["NotebookId"] = bson.ObjectIdHex(notebookId)
+	}
+	if year > 0 {
+		now := time.Now()
+		nextYear := year
+		nextMonth := month
+		if month == 0 {
+			month = 1
+			nextYear = year + 1
+			nextMonth = month
+		} else if month >= 12 {
+			month = 12
+			nextYear = year + 1
+			nextMonth = 1
+		} else { // month 在1-12之间
+			nextMonth = month + 1
+		}
+		leftT := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, now.Location())
+		rightT := time.Date(nextYear, time.Month(nextMonth), 1, 0, 0, 0, 0, now.Location())
+		if sortField == "CreatedTime" || sortField == "UpdatedTime" {
+			q[sortField] = bson.M{"$gte": leftT, "$lt": rightT}
+		} else {
+			q["PublicTime"] = bson.M{"$gte": leftT, "$lt": rightT}
+		}
+	}
+	
+	sorter := sortField
+	if !isAsc {
+		sorter = "-" + sortField
+	}
+	notes := []info.Note{}
+	db.Notes.Find(q).Sort(sorter).All(&notes)
 	
 	if(notes == nil || len(notes) == 0) {
 		return nil
@@ -164,50 +206,71 @@ func (this *BlogService) ListBlogsArchive(userId, notebookId string, sortField s
 	
 	arcs := []info.Archive{}
 	// 按年汇总
-	arcsMap := map[int]*info.Archive{}
+	arcsMap := map[int]info.Archive{}
+	// 按月汇总
+	arcsMonth := []info.ArchiveMonth{}
 	var t time.Time
-	var arc *info.Archive
+	var arc info.Archive
 	everYear := 0
 	for _, note := range notes {
 		if sortField == "PublicTime" {
 			t = note.PublicTime
-		} else if sortField == "CreatedTime"{
+		} else if sortField == "CreatedTime" {
 			t = note.CreatedTime
 		} else {
 			t = note.UpdatedTime
 		}
 		year := t.Year()
+		month := int(t.Month())
 		if everYear == 0 {
 			everYear = year
 		}
 		
 		if everYear != year {
-			arcs = append(arcs, *arcsMap[everYear])
+			yearArc := arcsMap[everYear]
+			yearArc.MonthAchives = arcsMonth
+			arcs = append(arcs, yearArc)
 			everYear = year
+			
+			// 新的一年
+			arcsMonth = []info.ArchiveMonth{}
 		}
 		
 		if arcT, ok := arcsMap[year]; ok {
 			arc = arcT
 		} else {
-			arc = &info.Archive{Year: year, Posts: []map[string]interface{}{}}
+			arc = info.Archive{Year: year, Posts: []*info.Post{}}
 		}
-		arc.Posts = append(arc.Posts, map[string]interface{}{
-			"NoteId": note.NoteId.Hex(),
-			"Title": note.Title,
-			"CreatedTime": note.CreatedTime,
-			"UpdatedTime": note.UpdatedTime,
-			"PublicTime": note.PublicTime,
-			"Desc": note.Desc,
-			"Tags": note.Tags,
-			"CommentNum": note.CommentNum,
-			"ReadNum": note.ReadNum,
-			"LikeNum": note.LikeNum,
-			"IsMarkdown": note.IsMarkdown,
-		});
+		p := &info.Post{
+			NoteId: note.NoteId.Hex(),
+			Title: note.Title,
+			CreatedTime: note.CreatedTime,
+			UpdatedTime: note.UpdatedTime,
+			PublicTime: note.PublicTime,
+			Desc: note.Desc,
+			Tags: note.Tags,
+			CommentNum: note.CommentNum,
+			ReadNum: note.ReadNum,
+			LikeNum: note.LikeNum,
+			IsMarkdown: note.IsMarkdown,
+		}
+		arc.Posts = append(arc.Posts, p);
 		arcsMap[year] = arc
+		
+		// month
+		lm := len(arcsMonth)
+		if(lm == 0 || arcsMonth[lm-1].Month != month) {
+			arcsMonth = append(arcsMonth, info.ArchiveMonth{month, []*info.Post{p}})
+		} else {
+			arcsMonth[lm-1].Posts = append(arcsMonth[lm-1].Posts, p)
+		}
 	}
 	// 最后一个
-	arcs = append(arcs, *arcsMap[everYear])
+	if everYear > 0 {
+		yearArc := arcsMap[everYear]
+		yearArc.MonthAchives = arcsMonth
+		arcs = append(arcs, yearArc)
+	}
 	
 	return arcs
 }

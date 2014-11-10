@@ -8,18 +8,20 @@ import (
 	. "github.com/leanote/leanote/app/lea"
 	"github.com/leanote/leanote/app/lea/blog"
 	"gopkg.in/mgo.v2/bson"
+	"fmt"
 	//	"github.com/leanote/leanote/app/types"
 	//	"io/ioutil"
 	//	"math"
 	//	"os"
 	//	"path"
-//	"fmt"
 )
 
 type Blog struct {
 	BaseController
 }
 
+//-----------------------------
+// 前台
 /*
 公共
 // 分类 [ok]
@@ -114,7 +116,7 @@ func (c Blog) setPreviewUrl() {
 	postUrl = blogUrl + "/post"                        // /xxxxx
 	searchUrl = blogUrl + "/search/" + userIdOrEmail   // blog.leanote.com/search/userId
 	singleUrl = blogUrl + "/single"                    // blog.leanote.com/single/singleId
-	archiveUrl = blogUrl + "/archive/" + userIdOrEmail // blog.leanote.com/archive/userId
+	archiveUrl = blogUrl + "/archives/" + userIdOrEmail // blog.leanote.com/archive/userId
 	tagsUrl = blogUrl + "/tags/" + userIdOrEmail   // blog.leanote.com/archive/userId
 	
 	c.RenderArgs["indexUrl"] = indexUrl
@@ -123,8 +125,10 @@ func (c Blog) setPreviewUrl() {
 	c.RenderArgs["searchUrl"] = searchUrl
 	c.RenderArgs["singleUrl"] = singleUrl // 单页
 	c.RenderArgs["archiveUrl"] = archiveUrl
+	c.RenderArgs["archivesUrl"] = archiveUrl // 别名
 	c.RenderArgs["tagsUrl"] = tagsUrl
 	c.RenderArgs["tagPostsUrl"] =  blogUrl + "/tag/" + userIdOrEmail
+	c.RenderArgs["tagUrl"] = c.RenderArgs["tagPostsUrl"]
 
 	// themeBaseUrl 本theme的路径url, 可以加载js, css, images之类的
 	c.RenderArgs["themeBaseUrl"] = "/" + theme.Path
@@ -146,7 +150,7 @@ func (c Blog) setUrl(userBlog info.UserBlog, userInfo info.User) {
 		postUrl = indexUrl + "/post"     // /xxxxx
 		searchUrl = indexUrl + "/search" // /xxxxx
 		singleUrl = indexUrl + "/single"
-		archiveUrl = indexUrl + "/archive"
+		archiveUrl = indexUrl + "/archives"
 		tagsUrl = indexUrl + "/tags"
 		tagPostsUrl = indexUrl + "/tag"
 	} else if userBlog.SubDomain != "" {
@@ -155,7 +159,7 @@ func (c Blog) setUrl(userBlog info.UserBlog, userInfo info.User) {
 		postUrl = indexUrl + "/post"     // /xxxxx
 		searchUrl = indexUrl + "/search" // /xxxxx
 		singleUrl = indexUrl + "/single"
-		archiveUrl = indexUrl + "/archive"
+		archiveUrl = indexUrl + "/archives"
 		tagsUrl = indexUrl + "/tags"
 		tagPostsUrl = indexUrl + "/tag"
 	} else {
@@ -174,7 +178,7 @@ func (c Blog) setUrl(userBlog info.UserBlog, userInfo info.User) {
 		postUrl = blogUrl + "/post"                        // /xxxxx
 		searchUrl = blogUrl + "/search/" + userIdOrEmail   // blog.leanote.com/search/userId
 		singleUrl = blogUrl + "/single"                    // blog.leanote.com/single/singleId
-		archiveUrl = blogUrl + "/archive/" + userIdOrEmail // blog.leanote.com/archive/userId
+		archiveUrl = blogUrl + "/archives/" + userIdOrEmail // blog.leanote.com/archive/userId
 		tagsUrl = blogUrl + "/tags/" + userIdOrEmail
 		tagPostsUrl = blogUrl + "/tag/" + userIdOrEmail   // blog.leanote.com/archive/userId
 	}
@@ -189,8 +193,10 @@ func (c Blog) setUrl(userBlog info.UserBlog, userInfo info.User) {
 	c.RenderArgs["searchUrl"] = searchUrl
 	c.RenderArgs["singleUrl"] = singleUrl // 单页
 	c.RenderArgs["archiveUrl"] = archiveUrl
+	c.RenderArgs["archivesUrl"] = archiveUrl // 别名
 	c.RenderArgs["tagsUrl"] = tagsUrl
 	c.RenderArgs["tagPostsUrl"] = tagPostsUrl
+	c.RenderArgs["tagUrl"] = c.RenderArgs["tagPostsUrl"] // 别名
 
 	// themeBaseUrl 本theme的路径url, 可以加载js, css, images之类的
 	c.RenderArgs["themeBaseUrl"] = "/" + userBlog.ThemePath
@@ -323,6 +329,7 @@ func (c Blog) blogCommon(userId string, userBlog info.UserBlog, userInfo info.Us
 	_, recentBlogs := blogService.ListBlogs(userId, "", 1, 5, userBlog.SortField, userBlog.IsAsc)
  	c.RenderArgs["recentPosts"] = c.fixBlogs(recentBlogs)
  	c.RenderArgs["latestPosts"] = c.RenderArgs["recentPosts"]
+ 	c.RenderArgs["tags"] = blogService.GetBlogTags(userId)
 
 	// 语言, url地址
 	c.SetLocale()
@@ -355,26 +362,26 @@ func (c Blog) blogCommon(userId string, userBlog info.UserBlog, userInfo info.Us
 }
 
 // 修复博客, index, cate用到
-func (c Blog) fixBlog(blog info.BlogItem) map[string]interface{} {
-	blog2 := map[string]interface{}{
-		"NoteId":      blog.NoteId.Hex(),
-		"Title":       blog.Title,
-		"CreatedTime": blog.CreatedTime,
-		"UpdatedTime": blog.UpdatedTime,
-		"PublicTime":  blog.PublicTime,
-		"Desc":        blog.Desc,
-		"Abstract":    blog.Abstract,
-		"Content":     blog.Content,
-		"Tags":        blog.Tags,
-		"CommentNum":  blog.CommentNum,
-		"ReadNum":     blog.ReadNum,
-		"LikeNum":     blog.LikeNum,
-		"IsMarkdown":  blog.IsMarkdown,
+func (c Blog) fixBlog(blog info.BlogItem) info.Post {
+	blog2 := info.Post{
+		NoteId:      blog.NoteId.Hex(),
+		Title:       blog.Title,
+		CreatedTime: blog.CreatedTime,
+		UpdatedTime: blog.UpdatedTime,
+		PublicTime:  blog.PublicTime,
+		Desc:        blog.Desc,
+		Abstract:    blog.Abstract,
+		Content:     blog.Content,
+		Tags:        blog.Tags,
+		CommentNum:  blog.CommentNum,
+		ReadNum:     blog.ReadNum,
+		LikeNum:     blog.LikeNum,
+		IsMarkdown:  blog.IsMarkdown,
 	}
 	return blog2
 }
-func (c Blog) fixBlogs(blogs []info.BlogItem) []map[string]interface{} {
-	blogs2 := make([]map[string]interface{}, len(blogs))
+func (c Blog) fixBlogs(blogs []info.BlogItem) []info.Post {
+	blogs2 := make([]info.Post, len(blogs))
 	for i, blog := range blogs {
 		blogs2[i] = c.fixBlog(blog)
 	}
@@ -430,7 +437,7 @@ func (c Blog) Tags(userIdOrEmail string) (re revel.Result) {
 	}
 
 	c.RenderArgs["curIsTags"] = true
-	tags := blogService.ListBlogsTag(userId)
+	tags := blogService.GetBlogTags(userId)
 	c.RenderArgs["tags"] = tags
 	return c.render("tags.html", userBlog.ThemePath)
 }
@@ -482,12 +489,13 @@ func (c Blog) Tag(userIdOrEmail, tag string) (re revel.Result) {
 }
 
 // 归档
-func (c Blog) Archive(userIdOrEmail string, cateId string) (re revel.Result) {
+func (c Blog) Archives(userIdOrEmail string, cateId string, year, month int) (re revel.Result) {
 	notebookId := cateId
 	// 自定义域名
 	hasDomain, userBlog := c.domain()
 	defer func() {
 		if err := recover(); err != nil {
+			fmt.Println(err)
 			re = c.e404(userBlog.ThemePath);
 		}
 	}()
@@ -513,7 +521,7 @@ func (c Blog) Archive(userIdOrEmail string, cateId string) (re revel.Result) {
 		return c.e404(userBlog.ThemePath) // 404 TODO 使用用户的404
 	}
 
-	arcs := blogService.ListBlogsArchive(userId, notebookId, "PublicTime", false)
+	arcs := blogService.ListBlogsArchive(userId, notebookId, year, month, "PublicTime", false)
 	c.RenderArgs["archives"] = arcs
 
 	c.RenderArgs["curIsArchive"] = true
@@ -522,6 +530,9 @@ func (c Blog) Archive(userIdOrEmail string, cateId string) (re revel.Result) {
 		c.RenderArgs["curCateTitle"] = notebook.Title
 		c.RenderArgs["curCateId"] = notebookId
 	}
+	c.RenderArgs["curYear"] = year
+	c.RenderArgs["curMonth"] = month
+	
 
 	return c.render("archive.html", userBlog.ThemePath)
 }
@@ -621,8 +632,7 @@ func (c Blog) Index(userIdOrEmail string) (re revel.Result) {
 	c.RenderArgs["pagingBaseUrl"] = c.RenderArgs["indexUrl"]
 
 	c.RenderArgs["curIsIndex"] = true
-	
-	Log("----")
+
 	return c.render("index.html", userBlog.ThemePath)
 }
 

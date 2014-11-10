@@ -170,34 +170,37 @@ func (this *NotebookService) UpdateNotebookTitle(notebookId, userId, title strin
 // 更新notebook
 func (this *NotebookService) UpdateNotebook(userId, notebookId string, needUpdate bson.M) bool {
 	needUpdate["UpdatedTime"] = time.Now();
-	
-	// 如果有IsBlog之类的, 需要特殊处理
-	if isBlog, ok := needUpdate["IsBlog"]; ok {
-		// 设为blog/取消, 把它下面所有的note都设为isBlog
-		if is, ok2 := isBlog.(bool); ok2 {
-			q := bson.M{"UserId": bson.ObjectIdHex(userId), 
+	return db.UpdateByIdAndUserIdMap(db.Notebooks, notebookId, userId, needUpdate)
+}
+
+// ToBlog or Not
+func (this *NotebookService) ToBlog(userId, notebookId string, isBlog bool) (bool) {
+	q := bson.M{"UserId": bson.ObjectIdHex(userId), 
 				"NotebookId": bson.ObjectIdHex(notebookId)}
-			data := bson.M{"IsBlog": is}
-			if is {
-				data["PublicTime"] = time.Now()
-			}
-			db.UpdateByQMap(db.Notes, q, data)
-				
-			// noteContents也更新, 这个就麻烦了, noteContents表没有NotebookId
-			// 先查该notebook下所有notes, 得到id
-			notes := []info.Note{}
-			db.ListByQWithFields(db.Notes, q, []string{"_id"}, &notes)
-			if len(notes) > 0 {
-				noteIds := make([]bson.ObjectId, len(notes))
-				for i, each := range notes {
-					noteIds[i] = each.NoteId
-				}
-				db.UpdateByQMap(db.NoteContents, bson.M{"_id": bson.M{"$in": noteIds}}, bson.M{"IsBlog": isBlog})
-			}
+	data := bson.M{"IsBlog": isBlog}
+	if isBlog {
+		data["PublicTime"] = time.Now()
+	}
+	db.UpdateByQMap(db.Notes, q, data)
+		
+	// noteContents也更新, 这个就麻烦了, noteContents表没有NotebookId
+	// 先查该notebook下所有notes, 得到id
+	notes := []info.Note{}
+	db.ListByQWithFields(db.Notes, q, []string{"_id"}, &notes)
+	if len(notes) > 0 {
+		noteIds := make([]bson.ObjectId, len(notes))
+		for i, each := range notes {
+			noteIds[i] = each.NoteId
 		}
+		db.UpdateByQMap(db.NoteContents, bson.M{"_id": bson.M{"$in": noteIds}}, bson.M{"IsBlog": isBlog})
 	}
 	
-	return db.UpdateByIdAndUserIdMap(db.Notebooks, notebookId, userId, needUpdate)
+	// 重新计算tags
+	go (func() {
+		blogService.ReCountBlogTags(userId)
+	})()
+	
+	return true
 }
 
 // 查看是否有子notebook

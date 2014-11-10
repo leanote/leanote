@@ -64,11 +64,11 @@ func (c Preview) Tags(userIdOrEmail string) revel.Result {
 //	}
 //	return blog.RenderTemplate("tag_posts.html", c.RenderArgs, c.getPreviewThemeAbsolutePath(""))
 }
-func (c Preview) Archive(userIdOrEmail string, notebookId string) revel.Result {
+func (c Preview) Archives(userIdOrEmail string, notebookId string, year, month int) revel.Result {
 	if !c.getPreviewThemeAbsolutePath("") {
 		return c.E404()
 	}
-	return c.Blog.Archive(c.GetUserId(), notebookId)
+	return c.Blog.Archives(c.GetUserId(), notebookId, year, month)
 //	return blog.RenderTemplate("archive.html", c.RenderArgs, c.getPreviewThemeAbsolutePath(""))
 }
 func (c Preview) Cate(notebookId string) revel.Result {

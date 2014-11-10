@@ -27,7 +27,8 @@ var Groups *mgo.Collection
 var GroupUsers *mgo.Collection
 
 var Tags *mgo.Collection
-var TagNotes *mgo.Collection
+//var TagNotes *mgo.Collection
+var TagCounts *mgo.Collection
 
 var UserBlogs *mgo.Collection
 
@@ -110,7 +111,8 @@ func Init() {
 
 	// tag
 	Tags = Session.DB(dbname).C("tags")
-	TagNotes = Session.DB(dbname).C("tag_notes")
+//	TagNotes = Session.DB(dbname).C("tag_notes")
+	TagCounts = Session.DB(dbname).C("tag_count")
 
 	// blog
 	UserBlogs = Session.DB(dbname).C("user_blogs")

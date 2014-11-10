@@ -294,6 +294,27 @@ func (this *NoteService) UpdateTags(noteId string, userId string, tags []string)
 	return db.UpdateByIdAndUserIdField(db.Notes, noteId, userId, "Tags", tags)
 }
 
+func (this *NoteService) ToBlog(userId, noteId string, isBlog, isTop bool) bool {
+	noteUpdate := bson.M{}
+	if isTop {
+		isBlog = true
+	}
+	if !isBlog {
+		isTop = false
+	}
+	noteUpdate["IsBlog"] = isBlog
+	noteUpdate["IsTop"] = isTop
+	if isBlog {
+		noteUpdate["PublicTime"] = time.Now()
+	}
+	ok := db.UpdateByIdAndUserIdMap(db.Notes, noteId, userId, noteUpdate)
+	// 重新计算tags
+	go (func() {
+		blogService.ReCountBlogTags(userId)
+	})()
+	return ok
+}
+
 // 移动note
 // trash, 正常的都可以用
 // 1. 要检查下notebookId是否是自己的

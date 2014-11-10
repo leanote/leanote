@@ -72,8 +72,6 @@ func (c Notebook) DragNotebooks(data string) revel.Result {
 
 // 设置notebook <-> blog
 func (c Notebook) SetNotebook2Blog(notebookId string, isBlog bool) revel.Result {
-	noteUpdate := bson.M{"IsBlog": isBlog}
-	re := notebookService.UpdateNotebook(c.GetUserId(),
-		notebookId, noteUpdate)
+	re := notebookService.ToBlog(c.GetUserId(), notebookId, isBlog)
 	return c.RenderJson(re)
 }

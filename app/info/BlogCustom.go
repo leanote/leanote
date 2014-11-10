@@ -1,7 +1,7 @@
 package info
 
 import (
-//	"time"
+	"time"
 )
 
 // 仅仅为了博客的主题
@@ -22,24 +22,26 @@ type BlogInfoCustom struct {
 
 type Post struct {
 	NoteId string
+	Title string
+	CreatedTime time.Time
+	UpdatedTime time.Time
+	PublicTime time.Time
+	Desc string
+	Abstract string
+	Content string
+	Tags []string
+	CommentNum int
+	ReadNum int
+	LikeNum int
+	IsMarkdown bool
 }
 // 归档
+type ArchiveMonth struct {
+	Month int
+	Posts []*Post
+}
 type Archive struct {
 	Year int	
-	Posts []map[string]interface{}
-}
-
-type TagsCounts []TagCount
-type TagCount struct {
-	Tag string
-	Count int
-}
-func (this TagsCounts) Len() int {
-	return len(this)
-}
-func (this TagsCounts) Less(i, j int) bool {
-	return this[i].Count > this[j].Count
-}
-func (this TagsCounts) Swap(i, j int) {
-	this[i], this[j] = this[j], this[i]
+	MonthAchives []ArchiveMonth
+	Posts []*Post
 }

@@ -472,7 +472,6 @@ func init() {
 	})
 }
 
-
 func (this *ConfigService) GetSchema() string {
 	return schema;
 }
