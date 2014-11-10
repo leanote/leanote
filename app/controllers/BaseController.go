@@ -183,7 +183,7 @@ func (c BaseController) SetLocale() string {
 		lang = "en";
 	}
 	c.RenderArgs["locale"] = lang;
-	c.RenderArgs["siteUrl"] = siteUrl;
+	c.RenderArgs["siteUrl"] = configService.GetSiteUrl();
 	
 	c.RenderArgs["blogUrl"] = configService.GetBlogUrl()
 	c.RenderArgs["leaUrl"] = configService.GetLeaUrl()
@@ -196,7 +196,7 @@ func (c BaseController) SetLocale() string {
 func (c BaseController) SetUserInfo() {
 	userInfo := c.GetUserInfo()
 	c.RenderArgs["userInfo"] = userInfo
-	if(userInfo.Username == adminUsername) {
+	if(userInfo.Username == configService.GetAdminUsername()) {
 		c.RenderArgs["isAdmin"] = true
 	}
 }

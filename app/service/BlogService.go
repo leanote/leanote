@@ -429,7 +429,7 @@ func (this *BlogService) fixUserBlog(userBlog *info.UserBlog) {
 	// Logo路径问题, 有些有http: 有些没有
 	if userBlog.Logo != "" && !strings.HasPrefix(userBlog.Logo, "http") {
 		userBlog.Logo = strings.Trim(userBlog.Logo, "/")
-		userBlog.Logo = siteUrl + "/" + userBlog.Logo
+		userBlog.Logo = configService.GetSiteUrl() + "/" + userBlog.Logo
 	}
 	
 	if userBlog.SortField == "" {
@@ -691,7 +691,7 @@ func (this *BlogService) DeleteComment(noteId, commentId, userId string) bool {
 		return false
 	}
 	
-	if userId == adminUserId || note.UserId.Hex() == userId || comment.UserId.Hex() == userId {
+	if userId == configService.GetAdminUserId() || note.UserId.Hex() == userId || comment.UserId.Hex() == userId {
 		 if db.Delete(db.BlogComments, bson.M{"_id": bson.ObjectIdHex(commentId)}) {
 			// 评论-1
 			db.Update(db.Notes, bson.M{"_id": bson.ObjectIdHex(noteId)}, bson.M{"$inc": bson.M{"CommentNum": -1}})

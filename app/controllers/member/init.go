@@ -29,7 +29,6 @@ var emailService *service.EmailService
 var upgradeService *service.UpgradeService
 var themeService *service.ThemeService
 
-var adminUsername = "admin"
 // 拦截器
 // 不需要拦截的url
 // Index 除了Note之外都不需要
@@ -128,6 +127,5 @@ func init() {
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &MemberUser{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &MemberBlog{})
 	revel.OnAppStart(func() {
-		adminUsername, _ = revel.Config.String("adminUsername")
 	})
 }

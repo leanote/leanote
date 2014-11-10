@@ -362,7 +362,7 @@ func (this *ThemeService) DeleteTheme(userId, themeId string) (ok bool) {
 func (this *ThemeService) PublicTheme(userId, themeId string) (ok bool) {
 	// 是否是管理员?
 	userInfo := userService.GetUserInfo(userId)
-	if userInfo.Username == adminUsername {
+	if userInfo.Username == configService.GetAdminUsername() {
 		theme := this.GetThemeById(themeId)
 		return db.UpdateByQField(db.Themes, bson.M{"UserId": bson.ObjectIdHex(userId), "_id": bson.ObjectIdHex(themeId)}, "IsDefault", !theme.IsDefault)
 	}

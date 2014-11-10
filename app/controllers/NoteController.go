@@ -53,7 +53,8 @@ func (c Note) Index() revel.Result {
 	}
 	// 当然, 还需要得到第一个notes的content
 	//...
-	c.RenderArgs["isAdmin"] = leanoteUserId == userInfo.Username
+	Log(configService.GetAdminUsername())
+	c.RenderArgs["isAdmin"] = configService.GetAdminUsername() == userInfo.Username
 	
 	c.RenderArgs["userInfo"] = userInfo
 	c.RenderArgs["userInfoJson"] = c.Json(userInfo)
@@ -299,7 +300,7 @@ func (c Note) Html2Image(noteId string) revel.Result {
 	appKey, _ := revel.Config.String("app.secret")
 	cookieDomain, _ := revel.Config.String("cookie.domain")
 	// 生成之
-	url := siteUrl + "/note/toImage?noteId=" + noteId + "&appKey=" + appKey;
+	url := configService.GetSiteUrl() + "/note/toImage?noteId=" + noteId + "&appKey=" + appKey;
 	// /Users/life/Documents/bin/phantomjs/bin/phantomjs /Users/life/Desktop/test/b.js
 	binPath := configService.GetGlobalStringConfig("toImageBinPath")
 	if binPath == "" {

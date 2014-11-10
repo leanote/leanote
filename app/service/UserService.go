@@ -75,7 +75,7 @@ func (this *UserService) setUserLogo(user *info.User) {
 	}
 	if user.Logo != "" && !strings.HasPrefix(user.Logo, "http") {
 		user.Logo = strings.Trim(user.Logo, "/")
-		user.Logo = siteUrl + "/" + user.Logo
+		user.Logo = configService.GetSiteUrl() + "/" + user.Logo
 	}	
 }
 
@@ -256,8 +256,7 @@ func (this *UserService) UpdatePwd(userId, oldPwd, pwd string) (bool, string) {
 
 // 管理员重置密码
 func (this *UserService) ResetPwd(adminUserId, userId, pwd string) (ok bool, msg string) {
-	adminInfo := this.GetUserInfoByAny(adminUsername)
-	if adminInfo.UserId.Hex() != adminUserId {
+	if configService.GetAdminUserId() != adminUserId {
 		return
 	}
 	ok = db.UpdateByQField(db.Users, bson.M{"_id": bson.ObjectIdHex(userId)}, "Pwd", Md5(pwd))

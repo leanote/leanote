@@ -242,6 +242,8 @@ latest=Latest
 
 # 用户中心
 memberCenter=Member Center
+userNotExists=该成员沿未注册
+hasUsers=已存在该成员
 
 # error 
 notFound=This page cann't found.

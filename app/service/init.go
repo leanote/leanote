@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/revel/revel"
 )
 
 // init service, for share service bettween services
@@ -29,9 +28,6 @@ var AuthS *AuthService
 var UpgradeS *UpgradeService
 var SessionS, sessionService *SessionService
 var ThemeS, themeService *ThemeService
-
-var siteUrl string
-var adminUsername = "admin"
 
 // onAppStart调用
 func InitService() {
@@ -74,6 +70,4 @@ func InitService() {
 	emailService = EmailS
 	sessionService = SessionS
 	themeService = ThemeS
-	
-	siteUrl, _ = revel.Config.String("site.url")
 }

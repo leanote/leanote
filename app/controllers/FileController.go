@@ -316,7 +316,7 @@ func (c File) UploadImage(renderHtml string) revel.Result {
 	
 	re := c.uploadImage("", "");
 	
-	c.RenderArgs["fileUrlPath"] = siteUrl + re.Id
+	c.RenderArgs["fileUrlPath"] = configService.GetSiteUrl() + re.Id
 	c.RenderArgs["resultCode"] = re.Code
 	c.RenderArgs["resultMsg"] = re.Msg
 

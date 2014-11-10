@@ -104,6 +104,7 @@ func (c Blog) setPreviewUrl() {
 	themeId := c.Session["themeId"]
 	theme := themeService.GetTheme(userId, themeId)
 	
+	siteUrl := configService.GetSiteUrl()
 	blogUrl := siteUrl + "/preview" // blog.leanote.com
 	userIdOrEmail := userId
 
@@ -137,6 +138,7 @@ func (c Blog) setUrl(userBlog info.UserBlog, userInfo info.User) {
 	staticUrl = configService.GetUserUrl(strings.Split(host, ":")[0])
 	// staticUrl == host, 为保证同源!!! 只有host, http://leanote.com, http://blog/leanote.com
 	// life.leanote.com, lealife.com
+	siteUrl := configService.GetSiteUrl()
 	if userBlog.Domain != "" && configService.AllowCustomDomain() {
 		// ok
 		indexUrl = configService.GetUserUrl(userBlog.Domain)
@@ -496,7 +498,7 @@ func (c Blog) Archive(userIdOrEmail string, cateId string) (re revel.Result) {
 
 	// 用户id为空, 转至博客平台
 	if userIdOrEmail == "" {
-		userIdOrEmail = leanoteUserId
+		userIdOrEmail = configService.GetAdminUsername()
 	}
 	var userInfo info.User
 	if userId != "" {
@@ -594,7 +596,7 @@ func (c Blog) Index(userIdOrEmail string) (re revel.Result) {
 
 	// 用户id为空, 转至博客平台
 	if userIdOrEmail == "" {
-		userIdOrEmail = leanoteUserId
+		userIdOrEmail = configService.GetAdminUsername()
 	}
 	var userInfo info.User
 	if userId != "" {
