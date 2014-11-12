@@ -1,0 +1,220 @@
+{{template "member/top.html" .}}
+<style>
+.group-title {
+	color: #fff;
+	background: none;
+	border: none;
+	outline: none;
+	width: 200px;
+}
+</style>
+<div class="m-b-md"> <h3 class="m-b-none">项目/成员</h3></div>
+
+<p>
+	<a class="btn btn-default btn-add-group"><span class="fa fa-plus"></span> 新建分组</a>
+</p>
+
+
+<script type="text/x-jsrender" id="tUser">
+	<li class="list-group-item" data-id="[[:UserId]]">
+		[[:Username]] [[if Email != Username]]([[:Email]])[[/if]]
+		<span class="fa fa-remove pull-right text-xs m-t-sm"></span>
+	</li>
+</script>
+
+<script type="text/x-jsrender" id="tGroup">
+	<div class="col-sm-4 each-group" data-id="[[:GroupId]]">
+		<section class="panel panel-default">
+		<header class="panel-heading bg-success lt no-border">
+			<div class="clearfix">
+				<div class="clear">
+					<div class="h3 m-t-xs m-b-xs text-white">
+						 <input type="text" data-ever="[[:Title]]" value="[[:Title]]" class="group-title" />
+						 <a title="删除分组" class="delete-group">
+							 <i class="fa fa-remove text-white pull-right text-xs m-t-sm"></i>
+						 </a>
+					</div>
+				</div>
+			</div>
+		</header>
+		<ul class="list-group no-radius">
+			<li class="list-group-item">
+				<input type="text" class="add-user-input form-control" placeholder="输入用户名或邮箱添加成员" />
+			</li>
+		</ul>
+		</section>
+	</div>
+
+</script>
+
+
+<div class="row" id="groups">
+	{{range .groups}}
+	<div class="col-sm-4 each-group" data-id="{{.GroupId.Hex}}">
+		<section class="panel panel-default">
+		<header class="panel-heading bg-success lt no-border">
+			<div class="clearfix">
+				<div class="clear">
+					<div class="h3 m-t-xs m-b-xs text-white">
+						 <input type="text" data-ever="{{.Title}}" value="{{.Title}}" class="group-title" />
+						 <a title="删除分组" class="delete-group">
+							 <i class="fa fa-remove text-white pull-right text-xs m-t-sm"></i>
+						 </a>
+					</div>
+				</div>
+			</div>
+		</header>
+		
+		<ul class="list-group no-radius group-users">
+			{{range .Users}}
+			<li class="list-group-item" data-id="{{.UserId.Hex}}">
+				{{.Username}} {{if not (eq .Email .Username)}}({{.Email}}){{end}}
+				<a title="删除成员" class="delete-user">
+					<span class="fa fa-remove pull-right text-xs m-t-sm"></span>
+				</a>
+			</li>
+			{{end}}
+			<li class="list-group-item">
+				<input type="text" class="add-user-input form-control" placeholder="输入用户名或邮箱添加成员" />
+			</li>
+		</ul>
+		</section>
+	</div>
+	{{end}}
+	
+</div>
+	
+{{template "member/footer.html" .}}
+<script src="http://leanote.com/public/blog/js/jsrender.js"></script>
+<script>
+var group = {
+	tGroupO: $("#tGroup"),
+	groupsO: $("#groups"),
+	tUserO: $("#tUser"),
+	init: function() {
+		var self = this;
+		self.addGroupEvent();
+		self.updateGroupEvent();
+		self.deleteGroupEvent();
+		self.addUserEvent();
+		self.deleteUserEvent();
+		
+		var classes = ["bg-warning", "bg-danger", "bg-success", "bg-dark", "bg-primary"];
+		var i = 0;
+		var len = classes.length;
+		$(".panel-heading").each(function() {
+			$(this).removeClass("bg-success").addClass(classes[i%len]);
+			i++;
+		});
+	},
+	// 添加用户分组
+	addGroupEvent: function() {
+		var self = this;
+		$('.btn-add-group').click(function() {
+			ajaxPost("/member/group/addGroup", {title: "分组名"}, function(re) {
+				if(reIsOk(re)) {
+					var group = re.Item;
+					self.groupsO.prepend(self.tGroupO.render(group))
+					self.groupsO.find(".group-title").eq(0).focus().select();
+				}
+			});
+		});
+	},
+	// 修改
+	updateGroupEvent: function() {
+		var self = this;
+		self.groupsO.on("blur", ".group-title", function() {
+			var t = $(this);
+			var ever = t.data('ever');
+			var val = t.val();
+			if(ever == val) {
+				return;
+			}
+			console.log($(this).closest(".each-group"));
+			var groupId = $(this).closest(".each-group").data("id");
+			ajaxPost("/member/group/updateGroupTitle", {groupId: groupId, title: val}, function(re) {
+				if(reIsOk(re)) {
+					art.tips("Success")
+					t.data('ever', val)
+				}
+			})
+		});
+	},
+	// 删除分组
+	deleteGroupEvent: function() {
+		var self = this;
+		self.groupsO.on("click", ".delete-group", function() {
+			var t = $(this);
+			art.confirm("Are you sure ?", function() {
+				var groupId = t.closest(".each-group").data("id");
+				ajaxPost("/member/group/deleteGroup", {groupId: groupId}, function(re) {
+					if(reIsOk(re)) {
+						art.tips("Success");
+						t.closest(".each-group").remove();
+					} else {
+						art.alert(re.Msg);
+					}
+				});
+			});
+		});
+	},
+	// 添加好友分组
+	addUserEvent: function() {
+		var self = this;
+		self.groupsO.on("keydown", ".add-user-input", function(e) {
+			// enter
+			if (e.keyCode == 13) {
+				var t = $(this);
+				var email = t.val();
+				if(!email) {
+					t.focus();
+					return;
+				}
+				
+				// 检查是否是合法的email
+				if(!isEmail(email)) {
+					// art.tips("非法的email");
+					// return;
+				}
+				var groupId = t.closest(".each-group").data("id");
+				var p = t.closest("li");
+				ajaxPost("/member/group/addUser", {groupId: groupId, email: email}, function(re) {
+					if(reIsOk(re)) {
+						art.tips("Success");
+						var html = self.tUserO.render(re.Item)
+						p.before(html);
+						t.val("");
+					} else {
+						art.alert(re.Msg);
+					}
+				})
+			}
+		});
+	},
+	// 删除用户
+	deleteUserEvent: function() {
+		var self = this;
+		self.groupsO.on("click", ".delete-user", function() {
+			var t = $(this);
+			art.confirm("Are you sure ?", function() {
+				var groupId = t.closest(".each-group").data("id");
+				var userId = t.closest("li").data("id");
+				ajaxPost("/member/group/deleteUser", {groupId: groupId, userId: userId}, function(re) {
+					if(reIsOk(re)) {
+						art.tips("Success");
+						t.closest("li").remove();
+					} else {
+						art.alert(re.Msg);
+					}
+				});
+			});
+		});
+	},
+}
+$(function() {
+	group.init();
+	
+});
+
+</script>
+{{template "member/end.html" .}}

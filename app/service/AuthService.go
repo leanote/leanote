@@ -35,7 +35,7 @@ func (this *AuthService) Login(emailOrUsername, pwd string) info.User {
 func (this *AuthService) Register(email, pwd string) (bool, string) {
 	// 用户是否已存在
 	if userService.IsExistsUser(email) {
-		return false, email + " 已被注册"
+		return false, "userHasBeenRegistered-" + email
 	}
 	user := info.User{UserId: bson.NewObjectId(), Email: email, Username: email, Pwd: Md5(pwd)}
 	return this.register(user)
@@ -90,7 +90,10 @@ func (this *AuthService) register(user info.User) (bool, string) {
 			Title: user.Username + " 's Blog", 
 			SubTitle: "love leanote!",
 			AboutMe: "Hello, I am (^_^)",
+			CanComment: true,
 			})
+		// 添加一个单页面
+		blogService.AddOrUpdateSingle(user.UserId.Hex(), "", "About Me", "Hello, I am (^_^)")
 	}
 	
 	return true, ""

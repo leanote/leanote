@@ -9,8 +9,7 @@
   				<div class="alert alert-danger" id="baseMsg" style="display: none"></div>
   				<form class="form-horizontal" role="form">
 					<div class="form-group">
-						<label for="subTitle" class="col-sm-3 control-label">{{msg . "chooseComment"}}</label>
-						<div class="col-sm-9">
+						<div class="col-sm-12">
 							<label>
 								<input type="checkbox" id="CanComment" name="CanComment"
 									{{if .userBlog.CanComment}}checked="checked"{{end}} > {{msg . "openComment"}}

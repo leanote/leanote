@@ -120,6 +120,7 @@ func (this *NoteService) ListNoteContentByNoteIds(noteIds []bson.ObjectId) (note
 // 添加笔记
 // 首先要判断Notebook是否是Blog, 是的话设为blog
 // [ok]
+
 func (this *NoteService) AddNote(note info.Note) info.Note {
 	if(note.NoteId.Hex() == "") {
 		noteId := bson.NewObjectId();
@@ -129,6 +130,7 @@ func (this *NoteService) AddNote(note info.Note) info.Note {
 	note.UpdatedTime = note.CreatedTime
 	note.IsTrash = false
 	note.UpdatedUserId = note.UserId
+	note.UrlTitle = GetUrTitle(note.UserId.Hex(), note.Title, "note")
 	
 	// 设为blog
 	notebookId := note.NotebookId.Hex()
@@ -169,7 +171,7 @@ func (this *NoteService) AddNoteContent(noteContent info.NoteContent) info.NoteC
 	db.Insert(db.NoteContents, noteContent)
 	
 	// 更新笔记图片
-	noteImageService.UpdateNoteImages(noteContent.UserId.Hex(), noteContent.NoteId.Hex(), noteContent.Content)
+	noteImageService.UpdateNoteImages(noteContent.UserId.Hex(), noteContent.NoteId.Hex(), "", noteContent.Content)
 	
 	return noteContent;
 }
@@ -205,7 +207,6 @@ func (this *NoteService) AddNoteAndContent(note info.Note, noteContent info.Note
 }
 
 // 修改笔记
-// [ok] TODO perm还没测
 func (this *NoteService) UpdateNote(userId, updatedUserId, noteId string, needUpdate bson.M) bool {
 	// updatedUserId 要修改userId的note, 此时需要判断是否有修改权限
 	if userId != updatedUserId {
@@ -215,6 +216,13 @@ func (this *NoteService) UpdateNote(userId, updatedUserId, noteId string, needUp
 		} else {
 			Log("HAS AUTH -----------")
 		}
+	}
+	
+	// 是否已自定义
+	note := this.GetNoteById(noteId)
+	if note.IsBlog && note.HasSelfDefined {
+		delete(needUpdate, "ImgSrc")
+		delete(needUpdate, "Desc")
 	}
 	
 	needUpdate["UpdatedUserId"] = bson.ObjectIdHex(updatedUserId);
@@ -260,12 +268,18 @@ func (this *NoteService) UpdateNoteContent(userId, updatedUserId, noteId, conten
 		}
 	}
 	
-	if db.UpdateByIdAndUserIdMap(db.NoteContents, noteId, userId, 
-		bson.M{"UpdatedUserId": bson.ObjectIdHex(updatedUserId), 
+	data := bson.M{"UpdatedUserId": bson.ObjectIdHex(updatedUserId), 
 		"Content": content, 
 		"Abstract": abstract, 
-		"UpdatedTime": time.Now()}) {
-		
+		"UpdatedTime": time.Now()}
+	
+	// 是否已自定义
+	note := this.GetNoteById(noteId)
+	if note.IsBlog && note.HasSelfDefined {
+		delete(data, "Abstract")
+	}
+	
+	if db.UpdateByIdAndUserIdMap(db.NoteContents, noteId, userId, data) {
 		// 这里, 添加历史记录
 		noteContentHistoryService.AddHistory(noteId, userId, info.EachHistory{UpdatedUserId: bson.ObjectIdHex(updatedUserId), 
 			Content: content,
@@ -273,7 +287,7 @@ func (this *NoteService) UpdateNoteContent(userId, updatedUserId, noteId, conten
 		})
 		
 		// 更新笔记图片
-		noteImageService.UpdateNoteImages(userId, noteId, content)
+		noteImageService.UpdateNoteImages(userId, noteId, note.ImgSrc, content)
 		
 		return true
 	}
@@ -306,6 +320,8 @@ func (this *NoteService) ToBlog(userId, noteId string, isBlog, isTop bool) bool 
 	noteUpdate["IsTop"] = isTop
 	if isBlog {
 		noteUpdate["PublicTime"] = time.Now()
+	} else {
+		noteUpdate["HasSelfDefined"] = false
 	}
 	ok := db.UpdateByIdAndUserIdMap(db.Notes, noteId, userId, noteUpdate)
 	// 重新计算tags

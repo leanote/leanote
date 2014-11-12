@@ -23,6 +23,8 @@ type BlogInfoCustom struct {
 type Post struct {
 	NoteId string
 	Title string
+	UrlTitle string
+	ImgSrc string
 	CreatedTime time.Time
 	UpdatedTime time.Time
 	PublicTime time.Time

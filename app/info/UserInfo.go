@@ -74,5 +74,7 @@ type UserAndBlog struct {
 	Logo      string        `Logo`
 	BlogTitle string        `BlogTitle` // 博客标题
 	BlogLogo  string        `BlogLogo`  // 博客Logo
-	BlogUrl   string        `BlogUrl`   // 博客链接
+	BlogUrl   string        `BlogUrl`   // 博客链接, 主页
+	
+	BlogUrls // 各个页面
 }

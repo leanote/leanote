@@ -41,6 +41,13 @@ func (this *UserService) GetUserId(email string) string {
 	return user.UserId.Hex()
 }
 
+// 得到用户名
+func (this *UserService) GetUsername(userId string) string {
+	user := info.User{}
+	db.GetByQWithFields(db.Users, bson.M{"_id": bson.ObjectIdHex(userId)}, []string{"Username"}, &user)
+	return user.Username
+}
+
 // 是否存在该用户 email
 func (this *UserService) IsExistsUser(email string) bool {
 	if this.GetUserId(email) == "" {
@@ -163,7 +170,7 @@ func (this *UserService) MapUserAndBlogByUserIds(userIds []bson.ObjectId) map[st
 			Logo: user.Logo,
 			BlogTitle: userBlog.Title,
 			BlogLogo: userBlog.Logo,
-			BlogUrl: blogService.GetUserBlogUrl(&userBlog),
+			BlogUrl: blogService.GetUserBlogUrl(&userBlog, user.Username),
 		}
 	}
 	return userAndBlogMap
@@ -180,7 +187,8 @@ func (this *UserService) GetUserAndBlog(userId string) info.UserAndBlog {
 		Logo: user.Logo,
 		BlogTitle: userBlog.Title,
 		BlogLogo: userBlog.Logo,
-		BlogUrl: blogService.GetUserBlogUrl(&userBlog),
+		BlogUrl: blogService.GetUserBlogUrl(&userBlog, user.Username),
+		BlogUrls: blogService.GetBlogUrls(&userBlog, &user),
 	}
 }
 
@@ -269,6 +277,20 @@ func (this *UserService) UpdateTheme(userId, theme string) (bool) {
 	return ok
 }
 
+// 帐户类型设置
+func (this *UserService) UpdateAccount(userId, accountType string, accountStartTime, accountEndTime time.Time, 
+	maxImageNum, maxImageSize, maxAttachNum, maxAttachSize, maxPerAttachSize int) bool {
+	return db.UpdateByQI(db.Users, bson.M{"_id": bson.ObjectIdHex(userId)}, info.UserAccount{
+			AccountType: accountType,
+			AccountStartTime: accountStartTime,
+			AccountEndTime: accountEndTime,
+			MaxImageNum: maxImageNum,
+			MaxImageSize: maxImageSize,
+			MaxAttachNum: maxAttachNum,
+			MaxAttachSize: maxAttachSize,
+			MaxPerAttachSize: maxPerAttachSize,
+		})
+}
 
 //---------------
 // 修改email

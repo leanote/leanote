@@ -13,6 +13,7 @@ type Notebook struct {
 	ParentNotebookId bson.ObjectId `bson:"ParentNotebookId,omitempty"` // 上级
 	Seq              int           `Seq`                               // 排序
 	Title            string        `Title`                             // 标题
+	UrlTitle         string        `UrlTitle`                          // Url标题 2014/11.11加
 	NumberNotes      int           `NumberNotes`                       // 笔记数
 	IsTrash          bool          `IsTrash,omitempty`                 // 是否是trash, 默认是false
 	IsBlog           bool          `IsBlog,omitempty`                  // 是否是Blog 2013/12/29 新加

@@ -59,6 +59,7 @@ hasAcount = Do not have an account?
 
 # 注册
 registerSuccessAndRdirectToNote=Register success, redirecting...
+userHasBeenRegistered=%s has been registered
 
 # 找回密码
 passwordTips=The length is at least 6

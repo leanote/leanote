@@ -11,9 +11,17 @@
 		        {{range $.archives}}
 		        <li><span class="archive-year">{{.Year}}</span>
         		    <ul>
-        		        {{range .Posts}}
+    		            {{range .MonthAchives}}
         		        <li>
-        		            {{dateFormat .PublicTime "2006-01-02"}} <a href="{{$.postUrl}}/{{.NoteId}}">{{.Title}}</a>
+        		            <span class="archive-month">{{.Month}}</span>
+        		            <ul>
+        		                {{range .Posts}}
+        		                <li>
+        		                    {{dateFormat .PublicTime "2006-01-02"}} <a href="{{$.postUrl}}/{{.UrlTitle}}">{{.Title}}</a>
+        		                </li>
+        		                {{end}}
+        		            </ul>
+        		            
         		        </li>
         		        {{end}}
         		    </ul>

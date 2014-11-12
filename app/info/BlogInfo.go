@@ -74,9 +74,10 @@ type BlogStat struct {
 
 // 单页
 type BlogSingle struct {
-	SingleId      bson.ObjectId `bson:"_id"`
+	SingleId      bson.ObjectId `bson:"_id,omitempty"`
 	UserId      bson.ObjectId `UserId`
 	Title       string        `Title`
+	UrlTitle    string        `UrlTitle` // 2014/11/11
 	Content     string        `Content`
 	UpdatedTime time.Time     `UpdatedTime`
 	CreatedTime time.Time     `CreatedTime`
@@ -87,7 +88,7 @@ type BlogSingle struct {
 
 // 点赞记录
 type BlogLike struct {
-	LikeId      bson.ObjectId `bson:"_id"`
+	LikeId      bson.ObjectId `bson:"_id,omitempty"`
 	NoteId      bson.ObjectId `NoteId`
 	UserId      bson.ObjectId `UserId`
 	CreatedTime time.Time     `CreatedTime`
@@ -95,7 +96,7 @@ type BlogLike struct {
 
 // 评论
 type BlogComment struct {
-	CommentId bson.ObjectId `bson:"_id"`
+	CommentId bson.ObjectId `bson:"_id,omitempty"`
 	NoteId    bson.ObjectId `NoteId`
 
 	UserId  bson.ObjectId `UserId`  // UserId回复ToUserId
@@ -113,4 +114,15 @@ type BlogComment struct {
 type BlogCommentPublic struct {
 	BlogComment
 	IsILikeIt bool
+}
+
+type BlogUrls struct {
+	IndexUrl string
+	CateUrl string
+	SearchUrl string
+	SingleUrl string
+	PostUrl string
+	ArchiveUrl string
+	TagsUrl string
+	TagPostsUrl string
 }

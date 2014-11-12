@@ -13,7 +13,10 @@ import (
 type ShareService struct {
 }
 
-//-----------------
+//-----------------------------------
+// 返回shareNotebooks, sharedUserInfos
+// info.ShareNotebooksByUser, []info.User
+
 // 总体来说, 这个方法比较麻烦, 速度未知. 以后按以下方案来缓存用户基础数据
 
 // 以后建个用户的基本数据表, 放所有notebook, sharedNotebook的缓存!!
@@ -27,23 +30,48 @@ type ShareService struct {
 // 3 每个层按seq进行排序
 // 4 按用户分组
 // [ok]
-func (this *ShareService) GetShareNotebooks(userId string) (info.ShareNotebooksByUser, []info.User) {
-	//-------------
-	// 查询HasShareNote表得到所有其它用户信息
-	hasShareNotes := []info.HasShareNote{}
-	db.ListByQ(db.HasShareNotes, bson.M{"ToUserId": bson.ObjectIdHex(userId)}, &hasShareNotes);
-	
-	userIds := make([]bson.ObjectId, len(hasShareNotes))
-	for i, each := range hasShareNotes {
-		userIds[i] = each.UserId
+
+// 谁共享给了我的Query
+func (this *ShareService) getOrQ(userId string) bson.M {
+	// 得到我参与的组织
+	groupIds := groupService.GetBelongToGroupIds(userId)
+	q := bson.M{}
+	if len(groupIds) > 0 {
+		orQ := []bson.M{
+			bson.M{"ToUserId": bson.ObjectIdHex(userId)},
+			bson.M{"ToGroupId": bson.M{"$in": groupIds}},
+		}
+		// 不是trash的
+		q["$or"] = orQ
+	} else {
+		q["ToUserId"] = bson.ObjectIdHex(userId);
 	}
+	return q
+}
+
+func (this *ShareService) GetShareNotebooks(userId string) (info.ShareNotebooksByUser, []info.User) {
+	// 得到共享给我的用户s信息
+	// 得到我参与的组织
+	q := this.getOrQ(userId)
+	
+	// 不查hasShareNotes
+	// 直接查shareNotes, shareNotebooks表得到userId
+	userIds1 := []bson.ObjectId{}
+	db.Distinct(db.ShareNotes, q, "UserId", &userIds1)
+	
+	userIds2 := []bson.ObjectId{}
+	db.Distinct(db.ShareNotebooks, q, "UserId", &userIds1)
+	
+	userIds := append(userIds1, userIds2...)
 	userInfos := userService.GetUserInfosOrderBySeq(userIds);
 	
 	//--------------------
 	// 得到他们共享给我的notebooks
 	
+	// 这里可能会得到重复的记录
+	// 权限: 笔记本分享给个人 > 笔记本分享给组织
 	shareNotebooks := []info.ShareNotebook{}
-	db.ShareNotebooks.Find(bson.M{"ToUserId": bson.ObjectIdHex(userId)}).All(&shareNotebooks)
+	db.ShareNotebooks.Find(q).Sort("-ToUserId").All(&shareNotebooks) // 按ToUserId降序排序, 那么有ToUserId的在前面
 	
 	if len(shareNotebooks) == 0 {
 		return nil, userInfos
@@ -52,12 +80,15 @@ func (this *ShareService) GetShareNotebooks(userId string) (info.ShareNotebooksB
 	shareNotebooksLen := len(shareNotebooks)
 	
 	// 找到了所有的notbookId, 那么找notebook表得到其详细信息
-	notebookIds := make([]bson.ObjectId, shareNotebooksLen)
+	notebookIds := []bson.ObjectId{}
 	shareNotebooksMap := make(map[bson.ObjectId]info.ShareNotebook, shareNotebooksLen)
-	for i, each := range shareNotebooks {
-		// 默认的是没有notebookId的
-		notebookIds[i] = each.NotebookId
-		shareNotebooksMap[each.NotebookId] = each
+	for _, each := range shareNotebooks {
+		// 之后的就不要了, 只留权限高的
+		if _, ok := shareNotebooksMap[each.NotebookId]; !ok {
+			// 默认的是没有notebookId的
+			notebookIds = append(notebookIds, each.NotebookId)
+			shareNotebooksMap[each.NotebookId] = each
+		}
 	}
 	
 	// 1, 2
@@ -127,9 +158,13 @@ func (this *ShareService) parseToSubShareNotebooks(subNotebooks *info.SubNoteboo
 func (this *ShareService) ListShareNotesByNotebookId(notebookId, myUserId, sharedUserId string, 
 		page, pageSize int, sortField string, isAsc bool) ([]info.ShareNoteWithPerm) {
 	// 1 首先判断是否真的sharedUserId 共享了 notebookId 给 myUserId
+	q := this.getOrQ(myUserId)
+	q["NotebookId"] = bson.ObjectIdHex(notebookId);
+	q["UserId"] =  bson.ObjectIdHex(sharedUserId);
 	shareNotebook := info.ShareNotebook{}
-	db.GetByQ(db.ShareNotebooks, bson.M{"NotebookId": bson.ObjectIdHex(notebookId), 
-		"UserId": bson.ObjectIdHex(sharedUserId), "ToUserId": bson.ObjectIdHex(myUserId)}, &shareNotebook)
+	db.GetByQ(db.ShareNotebooks, 
+		q,
+		&shareNotebook)
 		
 	if shareNotebook.NotebookId == "" {
 		return nil
@@ -146,7 +181,19 @@ func (this *ShareService) ListShareNotesByNotebookId(notebookId, myUserId, share
 	for i, note := range notes {
 		noteIds[i] = note.NoteId
 	}
-	notePerms := this.getNotesPerm(noteIds, myUserId, sharedUserId);
+	// 笔记的权限
+	shareNotes := []info.ShareNote{}
+	delete(q, "NotebookId")
+	q["NoteId"] = bson.M{"$in": noteIds} 
+	db.ShareNotes.Find(q).Sort("-ToUserId").All(&shareNotes) // 给个的权限>给组织的权限
+	notePerms := map[bson.ObjectId]int{}
+	for _, each := range shareNotes {
+		if _, ok := notePerms[each.NoteId]; !ok {
+			notePerms[each.NoteId] = each.Perm
+		}
+	}
+	Log("笔记权限")
+	LogJ(notePerms);
 	
 	// 3.2 组合
 	notesWithPerm := make([]info.ShareNoteWithPerm, len(notes))
@@ -162,17 +209,21 @@ func (this *ShareService) ListShareNotesByNotebookId(notebookId, myUserId, share
 }
 
 // 得到note的perm信息
-func (this *ShareService) getNotesPerm(noteIds []bson.ObjectId, myUserId, sharedUserId string) map[bson.ObjectId]int {
-	shareNotes := []info.ShareNote{}
-	db.ListByQ(db.ShareNotes, bson.M{"NoteId": bson.M{"$in": noteIds}, "UserId": bson.ObjectIdHex(sharedUserId), "ToUserId": bson.ObjectIdHex(myUserId)}, &shareNotes)
-	
-	notesPerm := make(map[bson.ObjectId]int, len(shareNotes))
-	for _, each := range shareNotes {
-		notesPerm[each.NoteId] = each.Perm
-	}
-	
-	return notesPerm
-}
+//func (this *ShareService) getNotesPerm(noteIds []bson.ObjectId, myUserId, sharedUserId string) map[bson.ObjectId]int {
+//	shareNotes := []info.ShareNote{}
+//	db.ListByQ(db.ShareNotes, 
+//		bson.M{
+//			"NoteId": bson.M{"$in": noteIds}, 
+//			"UserId": bson.ObjectIdHex(sharedUserId), 
+//			"ToUserId": bson.ObjectIdHex(myUserId)}, &shareNotes)
+//	
+//	notesPerm := make(map[bson.ObjectId]int, len(shareNotes))
+//	for _, each := range shareNotes {
+//		notesPerm[each.NoteId] = each.Perm
+//	}
+//	
+//	return notesPerm
+//}
 
 // 得到默认的单个的notes 共享集
 // 如果真要支持排序, 这里得到所有共享的notes, 到noteService方再sort和limit
@@ -184,9 +235,12 @@ func (this *ShareService) ListShareNotes(myUserId, sharedUserId string,
 	skipNum, _ := parsePageAndSort(pageNumber, pageSize, sortField, isAsc)
 	shareNotes := []info.ShareNote{}
 	
+	q := this.getOrQ(myUserId)
+	q["UserId"] =  bson.ObjectIdHex(sharedUserId);
+	
 	db.ShareNotes.
-		Find(bson.M{"UserId": bson.ObjectIdHex(sharedUserId), "ToUserId": bson.ObjectIdHex(myUserId)}).
-//		Sort(sortFieldR).
+		Find(q).
+		Sort("-ToUserId"). // 给个人的权限 > 给组织的权限
 		Skip(skipNum).
 		Limit(pageSize).
 		All(&shareNotes)
@@ -200,15 +254,20 @@ func (this *ShareService) ListShareNotes(myUserId, sharedUserId string,
 		noteIds[i] = each.NoteId
 	}
 	notes := noteService.ListNotesByNoteIds(noteIds)
-	notesMap := make(map[bson.ObjectId]info.Note, len(notes))
+	notesMap := map[bson.ObjectId]info.Note{}
 	for _, each := range notes {
 		notesMap[each.NoteId] = each
 	}
 	
 	// 将shareNotes与notes结合起来
-	notesWithPerm := make([]info.ShareNoteWithPerm, len(shareNotes))
-	for i, each := range shareNotes {
-		notesWithPerm[i] = info.ShareNoteWithPerm{notesMap[each.NoteId], each.Perm}
+	notesWithPerm := []info.ShareNoteWithPerm{}
+	hasAdded := map[bson.ObjectId]bool{} // 防止重复, 只要前面权限高的
+	for _, each := range shareNotes {
+		if !hasAdded[each.NoteId] {
+			// 待优化
+			notesWithPerm = append(notesWithPerm, info.ShareNoteWithPerm{notesMap[each.NoteId], each.Perm})
+			hasAdded[each.NoteId] = true
+		}
 	}
 	return notesWithPerm
 }
@@ -286,19 +345,25 @@ func (this *ShareService) AddShareNote(noteId string, perm int, userId, email st
 	return db.Insert(db.ShareNotes, shareNote), "", toUserId
 }
 
+
 // updatedUserId是否有查看userId noteId的权限?
+// userId是所有者
 func (this *ShareService) HasReadPerm(userId, updatedUserId, noteId string) bool {
-	if !db.Has(db.ShareNotes, 
-		bson.M{"UserId": bson.ObjectIdHex(userId), "ToUserId": bson.ObjectIdHex(updatedUserId), "NoteId": bson.ObjectIdHex(noteId)}) {
+	q := this.getOrQ(updatedUserId) // (toUserId == "xxx" || ToGroupId in (1, 2,3))
+	q["UserId"] = bson.ObjectIdHex(userId)
+	q["NoteId"] = bson.ObjectIdHex(noteId)
+	if !db.Has(db.ShareNotes, q) {
 		// noteId的notebookId是否被共享了?
 		notebookId := noteService.GetNotebookId(noteId)
 		if notebookId.Hex() == "" {
 			return false
 		}
 		
+		delete(q, "NoteId")
+		q["NotebookId"] = notebookId
+		
 		// 判断notebook是否被共享
-		if !db.Has(db.ShareNotebooks, 
-			bson.M{"UserId": bson.ObjectIdHex(userId), "ToUserId": bson.ObjectIdHex(updatedUserId), "NotebookId": notebookId}) {
+		if !db.Has(db.ShareNotebooks, q) {
 			return false
 	 	} else {
 	 		return true
@@ -310,43 +375,44 @@ func (this *ShareService) HasReadPerm(userId, updatedUserId, noteId string) bool
 
 // updatedUserId是否有修改userId noteId的权限?
 func (this *ShareService) HasUpdatePerm(userId, updatedUserId, noteId string) bool {
-	// 1. noteId是否被共享了?
-	// 得到该note share的信息
-	/*
-	UserId                 bson.ObjectId `bson:"UserId"`
-	ToUserId               bson.ObjectId `bson:"ToUserId"`
-	NoteId                 bson.ObjectId `bson:"NoteId"`
-	Perm                   int           `bson:"Perm"` // 权限, 0只读, 1可修改
-	*/
-	if !db.Has(db.ShareNotes, 
-		bson.M{"UserId": bson.ObjectIdHex(userId), "ToUserId": bson.ObjectIdHex(updatedUserId), "NoteId": bson.ObjectIdHex(noteId), "Perm": 1}) {
-		// noteId的notebookId是否被共享了?
-		notebookId := noteService.GetNotebookId(noteId)
-		if notebookId.Hex() == "" {
-			return false
-		}
-		
-		// 判断notebook是否被共享
-		if !db.Has(db.ShareNotebooks, 
-			bson.M{"UserId": bson.ObjectIdHex(userId), "ToUserId": bson.ObjectIdHex(updatedUserId), "NotebookId": notebookId, "Perm": 1}) {
-			return false
-	 	} else {
-	 		return true
-	 	}
-	} else {
-		return true
+	q := this.getOrQ(updatedUserId) // (toUserId == "xxx" || ToGroupId in (1, 2,3))
+	q["UserId"] = bson.ObjectIdHex(userId)
+	q["NoteId"] = bson.ObjectIdHex(noteId)
+	
+	// note的权限
+	shares := []info.ShareNote{}
+	db.ShareNotes.Find(q).Sort("-ToUserId").All(&shares) // 个人 > 组织
+	for _, share := range shares {
+		return share.Perm == 1 // 第1个权限最大
 	}
+	
+	// notebook的权限
+	notebookId := noteService.GetNotebookId(noteId)
+	if notebookId.Hex() == "" {
+		return false
+	}
+	
+	delete(q, "NoteId")
+	q["NotebookId"] = notebookId
+	shares2 := []info.ShareNotebook{}
+	db.ShareNotebooks.Find(q).Sort("-ToUserId").All(&shares2) // 个人 > 组织
+	for _, share := range shares2 {
+		return share.Perm == 1 // 第1个权限最大
+	}
+	return false
 }
 
 // updatedUserId是否有修改userId notebookId的权限?
 func (this *ShareService) HasUpdateNotebookPerm(userId, updatedUserId, notebookId string) bool {
-	// 判断notebook是否被共享
-	if !db.Has(db.ShareNotebooks, 
-		bson.M{"UserId": bson.ObjectIdHex(userId), "ToUserId": bson.ObjectIdHex(updatedUserId), "NotebookId": bson.ObjectIdHex(notebookId), "Perm": 1}) {
-		return false
- 	} else {
- 		return true
- 	}
+	q := this.getOrQ(updatedUserId) // (toUserId == "xxx" || ToGroupId in (1, 2,3))
+	q["UserId"] = bson.ObjectIdHex(userId)
+	q["NotebookId"] = bson.ObjectIdHex(notebookId)
+	shares2 := []info.ShareNotebook{}
+	db.ShareNotebooks.Find(q).Sort("-ToUserId").All(&shares2) // 个人 > 组织
+	for _, share := range shares2 {
+		return share.Perm == 1 // 第1个权限最大
+	}
+	return false
 }
 
 // 共享note, notebook时使用
@@ -372,12 +438,16 @@ func (this *ShareService) HasSharedNotebook(noteId, myUserId, sharedUserId strin
 }
 
 // 得到共享的笔记内容
-// 首先要判断这个note是否我被共享了
+// 并返回笔记的权限!!!
 func (this *ShareService) GetShareNoteContent(noteId, myUserId, sharedUserId string) (noteContent info.NoteContent) {
 	noteContent = info.NoteContent{}
 	// 是否单独共享了该notebook
 	// 或者, 其notebook共享了我
-	if this.HasSharedNote(noteId, myUserId) || this.HasSharedNotebook(noteId, myUserId, sharedUserId) {
+//	Log(this.HasSharedNote(noteId, myUserId))
+//	Log(this.HasSharedNotebook(noteId, myUserId, sharedUserId))
+	Log(this.HasReadPerm(sharedUserId, myUserId, noteId))
+	if this.HasReadPerm(sharedUserId, myUserId, noteId) {
+//	if this.HasSharedNote(noteId, myUserId) || this.HasSharedNotebook(noteId, myUserId, sharedUserId) {
 		db.Get(db.NoteContents, noteId, &noteContent)
 	} else {
 	}
@@ -391,7 +461,15 @@ func (this *ShareService) GetShareNoteContent(noteId, myUserId, sharedUserId str
 func (this *ShareService) ListNoteShareUserInfo(noteId, userId string) []info.ShareUserInfo {
 	// 得到shareNote信息, 得到所有的ToUserId
 	shareNotes := []info.ShareNote{}
-	db.ListByQLimit(db.ShareNotes, bson.M{"NoteId": bson.ObjectIdHex(noteId), "UserId": bson.ObjectIdHex(userId)}, &shareNotes, 100)
+	db.ListByQLimit(db.ShareNotes, 
+		bson.M{
+			"NoteId": bson.ObjectIdHex(noteId), 
+			"UserId": bson.ObjectIdHex(userId),
+			"ToGroupId": bson.M{"$exists": false},
+		}, &shareNotes, 100)
+	
+//	Log("<<>>>>")
+//	Log(len(shareNotes))
 	
 	if len(shareNotes) == 0 {
 		return nil
@@ -450,7 +528,11 @@ func (this *ShareService) ListNotebookShareUserInfo(notebookId, userId string) [
 	shareNotebooks := []info.ShareNotebook{}
 	
 	db.ListByQLimit(db.ShareNotebooks, 
-		bson.M{"NotebookId": bson.ObjectIdHex(notebookId), "UserId": bson.ObjectIdHex(userId)}, 
+		bson.M{
+			"NotebookId": bson.ObjectIdHex(notebookId), 
+			"UserId": bson.ObjectIdHex(userId),
+			"ToGroupId": bson.M{"$exists": false},
+		}, 
 		&shareNotebooks, 100)
 		
 	if len(shareNotebooks) == 0 {
@@ -555,7 +637,7 @@ func (this *ShareService) HasUpdateNotePerm(noteId, userId string) bool {
 	}
 }
 
-// 用户userId是否有修改noteId的权限 
+// 用户userId是否有查看noteId的权限 
 func (this *ShareService) HasReadNotePerm(noteId, userId string) bool {
 	if noteId == "" || userId == "" {
 		return false;
@@ -576,4 +658,121 @@ func (this *ShareService) HasReadNotePerm(noteId, userId string) bool {
 	} else {
 		return false;
 	}
+}
+
+//----------------
+// 用户分组
+
+// 得到笔记分享给的groups
+func (this *ShareService) GetNoteShareGroups(noteId, userId string) []info.ShareNote {
+	// 得到分组s
+	groups := groupService.GetGroups(userId)
+	
+	// 得到有分享的分组
+	shares := []info.ShareNote{}
+	db.ListByQ(db.ShareNotes, 
+		bson.M{"NoteId": bson.ObjectIdHex(noteId), "UserId": bson.ObjectIdHex(userId), "ToGroupId": bson.M{"$exists":true}}, &shares)
+	mapShares := map[bson.ObjectId]info.ShareNote{}
+	for _, share := range shares {
+		mapShares[share.ToGroupId] = share		
+	}
+	
+	// 所有的groups都有share, 但没有share的group没有shareId
+	shares2 := make([]info.ShareNote, len(groups))
+	for i, group := range groups {
+		share, ok := mapShares[group.GroupId]
+		if !ok {
+			share = info.ShareNote{}
+		}
+		share.ToGroup = group;
+		shares2[i] = share
+	}
+	
+	return shares2
+}
+
+// 共享笔记给分组
+func (this *ShareService) AddShareNoteGroup(userId, noteId, groupId string, perm int) (bool) {
+	// 得到group, 是否是我的group
+	group := groupService.GetGroup(userId, groupId)
+	if group.GroupId == "" {
+		return false
+	}
+	
+	// 先删除之
+	this.DeleteShareNoteGroup(userId, noteId, groupId)
+	
+	shareNote := info.ShareNote{NoteId: bson.ObjectIdHex(noteId), 
+		UserId: bson.ObjectIdHex(userId), // 冗余字段
+		ToGroupId: bson.ObjectIdHex(groupId),
+		Perm: perm,
+		CreatedTime: time.Now(),
+	}
+	return db.Insert(db.ShareNotes, shareNote)
+}
+
+// 删除
+func (this *ShareService) DeleteShareNoteGroup(userId, noteId, groupId string) bool {
+	return db.Delete(db.ShareNotes, bson.M{"NoteId": bson.ObjectIdHex(noteId),
+		"UserId": bson.ObjectIdHex(userId), 
+		"ToGroupId": bson.ObjectIdHex(groupId),
+	});
+}
+
+//-------
+	
+// 得到笔记本分享给的groups
+func (this *ShareService) GetNotebookShareGroups(notebookId, userId string) []info.ShareNotebook {
+	// 得到分组s
+	groups := groupService.GetGroups(userId)
+	
+	// 得到有分享的分组
+	shares := []info.ShareNotebook{}
+	db.ListByQ(db.ShareNotebooks, 
+		bson.M{"NotebookId": bson.ObjectIdHex(notebookId), "UserId": bson.ObjectIdHex(userId), "ToGroupId": bson.M{"$exists":true}}, &shares)
+	mapShares := map[bson.ObjectId]info.ShareNotebook{}
+	for _, share := range shares {
+		mapShares[share.ToGroupId] = share		
+	}
+	LogJ(shares)
+	
+	// 所有的groups都有share, 但没有share的group没有shareId
+	shares2 := make([]info.ShareNotebook, len(groups))
+	for i, group := range groups {
+		share, ok := mapShares[group.GroupId]
+		if !ok {
+			share = info.ShareNotebook{}
+		}
+		share.ToGroup = group;
+		shares2[i] = share
+	}
+	
+	return shares2
+}
+// 共享笔记给分组
+func (this *ShareService) AddShareNotebookGroup(userId, notebookId, groupId string, perm int) (bool) {
+	// 得到group, 是否是我的group
+	group := groupService.GetGroup(userId, groupId)
+	if group.GroupId == "" {
+		return false
+	}
+	
+	// 先删除之
+	this.DeleteShareNotebookGroup(userId, notebookId, groupId)
+	
+	shareNotebook := info.ShareNotebook{NotebookId: bson.ObjectIdHex(notebookId), 
+		UserId: bson.ObjectIdHex(userId), // 冗余字段
+		ToGroupId: bson.ObjectIdHex(groupId),
+		Perm: perm,
+		CreatedTime: time.Now(),
+	}
+	return db.Insert(db.ShareNotebooks, shareNotebook)
+}
+
+// 删除
+func (this *ShareService) DeleteShareNotebookGroup(userId, notebookId, groupId string) bool {
+	return db.Delete(db.ShareNotebooks, bson.M{"NotebookId": bson.ObjectIdHex(notebookId),
+		"UserId": bson.ObjectIdHex(userId), 
+		"ToGroupId": bson.ObjectIdHex(groupId),
+	});
 }

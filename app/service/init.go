@@ -1,6 +1,13 @@
 package service
 
 import (
+	"regexp"
+	"strings"
+	"net/url"
+	"strconv"
+	"gopkg.in/mgo.v2"
+	"github.com/leanote/leanote/app/db"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // init service, for share service bettween services
@@ -13,6 +20,7 @@ var noteContentHistoryService, NoteContentHistoryS *NoteContentHistoryService
 var trashService, TrashS *TrashService
 var shareService, ShareS *ShareService
 var userService, UserS *UserService
+var groupService, GroupS *GroupService
 var tagService, TagS *TagService
 var blogService, BlogS *BlogService
 var tokenService, TokenS *TokenService
@@ -37,6 +45,7 @@ func InitService() {
 	TrashS = &TrashService{}
 	ShareS = &ShareService{}
 	UserS = &UserService{}
+	GroupS = &GroupService{}
 	TagS = &TagService{}
 	BlogS = &BlogService{}
 	TokenS = &TokenService{}
@@ -59,6 +68,7 @@ func InitService() {
 	trashService = TrashS
 	shareService = ShareS
 	userService = UserS
+	groupService = GroupS
 	tagService = TagS
 	blogService = BlogS
 	tokenService = TokenS
@@ -70,4 +80,71 @@ func InitService() {
 	emailService = EmailS
 	sessionService = SessionS
 	themeService = ThemeS
+}
+
+//----------------
+// service 公用方法
+
+// 将name=val的val进行encoding
+func decodeValue(val string) string {
+	v, _ := url.ParseQuery("a=" + val)
+	return v.Get("a")
+}
+		
+func encodeValue(val string) string {
+	if val == "" {
+		return val
+	}
+	v := url.Values{}
+	v.Set("", val)
+	return v.Encode()[1:]
+}
+// 添加笔记时通过title得到urlTitle
+func fixUrlTitle(urlTitle string) string {
+	if urlTitle != "" {
+		// 把特殊字段给替换掉
+//		str := `life "%&()+,/:;<>=?@\|`
+		reg, _ := regexp.Compile("/|#|\\$|!|\\^|\\*|'| |\"|%|&|\\(|\\)|\\+|\\,|/|:|;|<|>|=|\\?|@|\\||\\\\")
+		urlTitle = reg.ReplaceAllString(urlTitle, "-")
+		urlTitle = strings.Trim(urlTitle, "-") // 左右单独的-去掉
+		// 把空格替换成-
+//		urlTitle = strings.Replace(urlTitle, " ", "-", -1)
+		for strings.Index(urlTitle, "--") >= 0 { // 防止出现连续的--
+			urlTitle = strings.Replace(urlTitle, "--", "-", -1)
+		}
+		return encodeValue(urlTitle)
+	}
+	return urlTitle
+}
+
+func getUniqueUrlTitle(userId string, urlTitle string, types string, padding int) string {
+	urlTitle2 := urlTitle
+	if padding > 1 {
+		urlTitle2 = urlTitle + "-" + strconv.Itoa(padding)
+	}
+	userIdO := bson.ObjectIdHex(userId)
+	
+	var collection *mgo.Collection
+	if types == "note" {
+		collection = db.Notes
+	} else if types == "notebook" {
+		collection = db.Notebooks
+	} else if types == "single" {
+		collection = db.BlogSingles
+	}
+	for db.Has(collection, bson.M{"UserId": userIdO, "UrlTitle": urlTitle2}) { // 用户下唯一
+		padding++
+		urlTitle2 = urlTitle + "-" + strconv.Itoa(padding)
+	}
+	
+	return urlTitle2
+}
+// types == note,notebook,single
+func GetUrTitle(userId string, title string, types string) string {
+	urlTitle := strings.Trim(title, " ")
+	if urlTitle == "" {
+		urlTitle = "Untitled-" + userId
+	}
+	urlTitle = fixUrlTitle(urlTitle)
+	return getUniqueUrlTitle(userId, urlTitle, types, 1)
 }

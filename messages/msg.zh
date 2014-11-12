@@ -79,6 +79,7 @@ hasAcount = 还无帐户?
 
 # 注册
 registerSuccessAndRdirectToNote=注册成功, 正在跳转...
+userHasBeenRegistered=%s已被注册
 
 # 找回密码
 passwordTips=密码至少6位

@@ -9,6 +9,7 @@ import (
 )
 
 var userService *service.UserService
+var groupService *service.GroupService
 var noteService *service.NoteService
 var trashService *service.TrashService
 var notebookService *service.NotebookService
@@ -106,6 +107,7 @@ func InitService() {
 	trashService = service.TrashS
 	shareService = service.ShareS
 	userService = service.UserS
+	groupService = service.GroupS
 	tagService = service.TagS
 	blogService = service.BlogS
 	tokenService = service.TokenS

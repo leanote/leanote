@@ -7,6 +7,13 @@
       {{$noteOrNotebookId := .noteOrNotebookId}}
       
       <div class="modal-body">
+      	<ul id="myTab" class="nav nav-tabs">
+			<li class="active"><a href="#baseInfo" data-toggle="tab">分享给好友</a></li>
+			<li class=""><a href="#groupInfo" data-toggle="tab">分享给项目组</a></li>
+		</ul>
+	
+<div class="tab-content">
+	<div class="tab-pane active" id="baseInfo">
 		<button class="btn btn-default" id="addShareNotebookBtn">{{msg . "addShare"}}</button>
 			<div id="shareMsg" class="alert alert-danger" style="display: none; margin: 5px 0 0 0;"></div>
 	      	<table class="table table-hover" id="shareNotebookTable">
@@ -25,11 +32,11 @@
 		        		<input id="friendsEmail" type="text" class="form-control" placeholder="{{msg . "friendEmail"}}">
 		        	</td>
 		        	<td>
-		        		<label for="readPerm1"><input type="radio" name="perm1" checked="checked" value="0" id="readPerm1"> {{msg $ "readOnly"}}</label> 
-		        		<label for="writePerm1"><input type="radio" name="perm1" value="1" id="writePerm1"> {{msg $ "writable"}}</label>
+		        		<label for="readPerm1"><input type="radio" name="perm1" checked="checked" value="0" id="readPerm1"> {{msg . "readOnly"}}</label> 
+		        		<label for="writePerm1"><input type="radio" name="perm1" value="1" id="writePerm1"> {{msg . "writable"}}</label>
 		        	</td>
 	        		<td>
-	        			<button class="btn btn-success" onclick="addShareNoteOrNotebook(1)">{{msg . "share"}}</button>
+	        			<button class="btn btn-success" data-loading-text="..." onclick="addShareNoteOrNotebook(1)">{{msg . "share"}}</button>
 	        			<button class="btn btn-warning" onclick="deleteShareNoteOrNotebook(1)">{{msg . "delete"}}</button>
 	        		</td>
 		        </tr>
@@ -46,12 +53,50 @@
 		          		{{end}}
 		          	</td>
 		          	<td>
-	          			<a href="#" noteOrNotebookId="{{$noteOrNotebookId}}" toUserId="{{$toUserId}}"  class="btn btn-warning delete-share">{{msg . "delete"}}</a>
+	          			<a href="#" noteOrNotebookId="{{$noteOrNotebookId}}" toUserId="{{$toUserId}}"  class="btn btn-warning delete-share">{{msg $ "delete"}}</a>
 		          	</td>
 		          </tr>
       		{{end}}
       			</tbody>
 	        </table> 
+	</div>
+	<div class="tab-pane" id="groupInfo">
+		<p>
+		将笔记/笔记本分享给项目组后, 该组下的用户便拥有了该笔记/笔记本. <a href="/member/group/index" target="_blank">项目组/成员管理</a>
+		</p>
+		
+		<table class="table table-hover">
+	        <thead>
+	          <tr>
+	            <th>分组名</th>
+	            <th>{{msg . "permission"}}</th>
+	            <th width="150px">操作</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+        	{{range $i, $share := .noteOrNotebookShareGroupInfos}}
+        	{{$groupId := $share.ToGroup.GroupId.Hex}}
+	        <tr data-id="{{$groupId}}" data-uid="{{$share.UserId.Hex}}">
+	        	<td>
+	        		{{$share.ToGroup.Title}}
+	        	</td>
+	        	<td>
+	        		<label><input type="radio" name="perm_{{$groupId}}" {{if not $share.Perm}}checked="checked"{{end}} value="0" class="group-perm"> {{msg $ "readOnly"}}</label> 
+		        	<label><input type="radio" name="perm_{{$groupId}}" {{if $share.Perm}}checked="checked"{{end}} value="1" class="group-perm"> {{msg $ "writable"}}</label>
+	        	</td>
+        		<td> <!-- 有userId 证明已分享 -->
+        			{{if $share.UserId}}
+        				<button class="btn btn-success btn-share-or-not">已分享</button>
+        			{{else}}
+        				<button class="btn btn-default btn-share-or-not">未分享</button>
+        			{{end}}
+        		</td>
+	        </tr>
+	        {{end}}
+	    </table>
+	</div>
+</div>
+
       </div>
       
       <div class="modal-footer">
@@ -64,8 +109,75 @@
 Share.dialogIsNote = {{.isNote}};
 Share.dialogNoteOrNotebookId = '{{.noteOrNotebookId}}';
 $(function() {
-	setTimeout(function() {
-		$("#tr1 #friendsEmail").focus();
-	}, 500);
+setTimeout(function() {
+	$("#tr1 #friendsEmail").focus();
+}, 500);
+	
+// 分享/删除给分组
+$("#groupInfo").on("click", ".btn-share-or-not", function() {
+	var $t = $(this);
+	var $ptd = $t.closest("td");
+	var $ptr = $t.closest("tr");
+	var hasShared = $ptr.data('uid');
+	var groupId = $ptr.data('id');
+	var data = {groupId: groupId};
+	var url = "";
+	if(!hasShared) {
+		var perm = $ptr.find("input:checked").val();
+		data.perm = perm;
+		if(Share.dialogIsNote) {
+			data.noteId = Share.dialogNoteOrNotebookId;
+			url = "/share/addShareNoteGroup";
+		} else {
+			data.notebookId = Share.dialogNoteOrNotebookId;
+			url = "/share/addShareNotebookGroup";
+		}
+	} else {
+		if(Share.dialogIsNote) {
+			data.noteId = Share.dialogNoteOrNotebookId;
+			url = "/share/deleteShareNoteGroup";
+		} else {
+			data.notebookId = Share.dialogNoteOrNotebookId;
+			url = "/share/deleteShareNotebookGroup";
+		}
+	}
+	ajaxPost(url, data, function(re) {
+		if(reIsOk(re)) {
+			if(!hasShared) {
+				var text = '<button class="btn btn-success btn-share-or-not">已分享</button>';
+				$ptr.data('uid', 'xxxxxx');
+			} else {
+				var text = '<button class="btn btn-default btn-share-or-not">未分享</button>';
+				$ptr.data('uid', '');
+			}
+			$ptd.html(text);
+		}
+	});
+});
+
+$(".group-perm").click(function() {
+	var $t = $(this);
+	var $ptr = $t.closest("tr");
+	var hasShared = $ptr.data('uid');
+	if(!hasShared) {
+		return;
+	}
+	var groupId = $ptr.data('id');
+	var data = {groupId: groupId, perm: $t.val()};
+	var url = ""
+	if(Share.dialogIsNote) {
+		data.noteId = Share.dialogNoteOrNotebookId;
+		url = "/share/updateShareNoteGroupPerm";
+	} else {
+		data.notebookId = Share.dialogNoteOrNotebookId;
+		url = "/share/updateShareNotebookGroupPerm";
+	}
+	ajaxPost(url, data, function(re) {
+		if(!reIsOk(re)) {
+			alert(re.Msg);
+		}
+	});
+});
+
 });
 </script>

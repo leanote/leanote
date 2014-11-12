@@ -30,6 +30,7 @@ func (c Admin) T(t string) revel.Result {
 	c.RenderArgs["arr"] = configService.GlobalArrayConfigs
 	c.RenderArgs["map"] = configService.GlobalMapConfigs
 	c.RenderArgs["arrMap"] = configService.GlobalArrMapConfigs
+	c.RenderArgs["version"] = configService.GetVersion()
 	return c.RenderTemplate("admin/" + t + ".html")
 }
 

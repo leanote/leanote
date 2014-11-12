@@ -12,6 +12,9 @@
         	{{range .notebooks}}
           <li class="list-group-item" draggable="true" data-id="{{.NotebookId.Hex}}">
           	<span class="pull-left media-xs"><i class="fa fa-sort text-muted fa m-r-sm"></i></span>
+          	<div class="pull-right" style="margin-right: 10px">
+            	固定链接: /cate/<input data-id="{{.NotebookId.Hex}}" class="url-title" type="text" value="{{if .UrlTitle}}{{.UrlTitle|decodeUrlValue}}{{else}}{{.NotebookId.Hex}}{{end}}"/>
+            </div>
             {{.Title}}
           </li>
           {{end}}
@@ -33,9 +36,22 @@ $(function() {
 		$(".list-group-item").each(function() {
 			ids.push($(this).data("id"));
 		});
-		ajaxPost("/member/blog/upateCateIds", {cateIds: ids}, function(re){
+		ajaxPost("/member/blog/", {cateIds: ids}, function(re){
 			if(reIsOk(re)) {
 				art.tips("Success");
+			} else {
+				art.alert(re.Msg || "error");
+			}
+		});
+	});
+	
+	$(".url-title").change(function(){
+		var $t = $(this);
+		var url = $t.val();
+		var cateId = $t.data('id');
+		ajaxPost("/member/blog/updateCateUrlTitle", {cateId: cateId, urlTitle: url}, function(re){
+			if(reIsOk(re)) {
+				$t.val(re.Item);
 			} else {
 				art.alert(re.Msg || "error");
 			}

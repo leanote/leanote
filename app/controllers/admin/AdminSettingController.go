@@ -111,6 +111,15 @@ func (c AdminSetting) OpenRegister(openRegister string) revel.Result {
 	return c.RenderJson(re)
 }
 
+func (c AdminSetting) HomePage(homePage string) revel.Result {
+	re := info.NewRe()
+	if homePage == "0" {
+		homePage = ""
+	}
+	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "homePage", homePage)
+	return c.RenderJson(re)
+}
+
 func (c AdminSetting) Mongodb(mongodumpPath, mongorestorePath string) revel.Result {
 	re := info.NewRe()
 	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "mongodumpPath", mongodumpPath)

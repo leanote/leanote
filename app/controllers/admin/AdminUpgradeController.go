@@ -17,8 +17,8 @@ func (c AdminUpgrade) UpgradeBlog() revel.Result {
 	return nil;
 }
 
-func (c AdminUpgrade) UpgradeBetaToSelfBlog() revel.Result {
+func (c AdminUpgrade) UpgradeBetaToBeta2() revel.Result {
 	re := info.NewRe()
-	re.Ok, re.Msg = upgradeService.UpgradeBetaToSelfBlog(c.GetUserId())
+	re.Ok, re.Msg = upgradeService.UpgradeBetaToBeta2(c.GetUserId())
 	return c.RenderJson(re)
 }

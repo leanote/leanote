@@ -8,10 +8,11 @@ import (
 	"io/ioutil"
 	"time"
 	"fmt"
+	"strings"
 //	"github.com/leanote/leanote/app/lea/blog"
 )
 
-// admin 首页
+// 博客管理
 
 type MemberBlog struct {
 	MemberBaseController
@@ -31,6 +32,82 @@ func (c MemberBlog) common() info.UserBlog {
 	c.SetUserInfo()
 	c.SetLocale()
 	return userBlog
+}
+
+
+// 得到sorterField 和 isAsc
+// okSorter = ['email', 'username']
+func (c MemberBlog) getSorter(sorterField string, isAsc bool, okSorter []string) (string, bool){
+	sorter := ""
+	c.Params.Bind(&sorter, "sorter")
+	if sorter == "" {
+		return sorterField, isAsc;
+	}
+	
+	// sorter形式 email-up, email-down
+	s2 := strings.Split(sorter, "-")
+	if len(s2) != 2 {
+		return sorterField, isAsc;
+	}
+	
+	// 必须是可用的sorter
+	if okSorter != nil && len(okSorter) > 0 {
+		if !InArray(okSorter, s2[0]) {
+			return sorterField, isAsc;
+		}
+	}
+	
+	sorterField = strings.Title(s2[0])
+	if s2[1] == "up" {
+		isAsc = true
+	} else {
+		isAsc = false
+	}
+	c.RenderArgs["sorter"] = sorter
+	return sorterField, isAsc;
+}
+
+// 博客列表
+var userPageSize = 15
+func (c MemberBlog) Index(sorter, keywords string) revel.Result {
+	c.RenderArgs["title"] = "Posts"
+	pageNumber := c.GetPage()
+	sorterField, isAsc := c.getSorter("CreatedTime", false, []string{"title", "urlTitle", "updatedTime", "publicTime", "createdTime"});
+	pageInfo, blogs := blogService.ListAllBlogs(c.GetUserId(), "", keywords, false, pageNumber, userPageSize, sorterField, isAsc);
+	c.RenderArgs["pageInfo"] = pageInfo
+	c.RenderArgs["blogs"] = blogs
+	c.RenderArgs["keywords"] = keywords
+	
+	userAndBlog := userService.GetUserAndBlog(c.GetUserId())
+	c.RenderArgs["userAndBlog"] = userAndBlog
+	
+	return c.RenderTemplate("member/blog/list.html");
+}
+
+// 修改笔记的urlTitle
+func (c MemberBlog) UpdateBlogUrlTitle(noteId, urlTitle string) revel.Result {
+	re := info.NewRe()
+	re.Ok, re.Item = blogService.UpateBlogUrlTitle(c.GetUserId(), noteId, urlTitle)
+	return c.RenderJson(re)
+}
+
+
+// 修改笔记的urlTitle
+func (c MemberBlog) UpdateBlogAbstract(noteId string) revel.Result {
+	c.RenderArgs["title"] = "Update Post Abstract"
+	note := noteService.GetNoteAndContent(noteId, c.GetUserId());
+	if !note.Note.IsBlog {
+		return c.E404();
+	}
+	c.RenderArgs["note"] = note
+	c.RenderArgs["noteId"] = noteId
+	return c.RenderTemplate("member/blog/update_abstract.html");
+}
+func (c MemberBlog) DoUpdateBlogAbstract(noteId, imgSrc, desc, abstract string) revel.Result {
+
+	re := info.NewRe()
+	re.Ok = blogService.UpateBlogAbstract(c.GetUserId(), noteId, imgSrc, desc, abstract)
+	return c.RenderJson(re)
 }
 
 // 基本信息设置
@@ -101,6 +178,12 @@ func (c MemberBlog) UpateCateIds(cateIds []string) revel.Result {
 	return c.RenderJson(re)
 }
 
+func (c MemberBlog) UpdateCateUrlTitle(cateId, urlTitle string) revel.Result {
+	re := info.NewRe()
+	re.Ok, re.Item = blogService.UpateCateUrlTitle(c.GetUserId(), cateId, urlTitle)
+	return c.RenderJson(re)
+}
+
 // 保存之, 包含增加与保存
 func (c MemberBlog) DoAddOrUpdateSingle(singleId, title, content string) revel.Result {
 	re := info.NewRe()
@@ -127,6 +210,14 @@ func (c MemberBlog) DeleteSingle(singleId string) revel.Result {
 	re.Ok = blogService.DeleteSingle(c.GetUserId(), singleId)
 	return c.RenderJson(re)
 }
+
+// 修改页面标题
+func (c MemberBlog) UpdateSingleUrlTitle(singleId, urlTitle string) revel.Result {
+	re := info.NewRe()
+	re.Ok, re.Item = blogService.UpdateSingleUrlTitle(c.GetUserId(), singleId, urlTitle)
+	return c.RenderJson(re)
+}
+
 func (c MemberBlog) Single() revel.Result {
 	c.common()
 	c.RenderArgs["title"] = "Cate"

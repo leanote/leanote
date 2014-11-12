@@ -13,16 +13,18 @@
     {{$.blogInfo.Title}}
 {{else if $.curIsCate}}
     分类-{{$.curCateTitle}}
-{{else if $.curIsView}}
-    {{$.post.Title}}
 {{else if $.curIsSearch}}
     搜索-{{$.keywords}}
 {{else if $.curIsTags}}
     我的标签
 {{else if $.curIsTagPosts}}
     标签-{{$.curTag}}
-{{else}}
-    我的博客
+{{else if $.curIsPost}}
+	{{$.post.Title}}
+{{else if $.curIsSingle}}
+	{{$.single.Title}}
+{{else if $.curIsArchive}}
+	归档
 {{end}}
     
 </title>

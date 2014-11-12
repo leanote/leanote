@@ -12,11 +12,14 @@
         <ul class="list-group gutter list-group-lg list-group-sp sortable">
         	{{range .singles}}
         	<li class="list-group-item" draggable="true" data-id="{{.SingleId}}">
+	            <span class="pull-left media-xs"><i class="fa fa-sort text-muted fa m-r-sm"></i></span>
 	            <span class="pull-right">
 	              <a href="/member/blog/addOrUpdateSingle?singleId={{.SingleId}}"><i class="fa fa-pencil icon-muted fa-fw m-r-xs page-edit" data-id="{{.SingleId}}"></i></a>
 	              <a href="#"><i class="fa fa-times icon-muted fa-fw page-delete" data-id="{{.SingleId}}"></i></a> 
 	            </span>
-	            <span class="pull-left media-xs"><i class="fa fa-sort text-muted fa m-r-sm"></i></span>
+	            <div class="pull-right" style="margin-right: 10px">
+	            	固定链接: /single/<input data-id="{{.SingleId}}" class="url-title" type="text" value="{{if .UrlTitle}}{{.UrlTitle|decodeUrlValue}}{{else}}{{.SingleId}}{{end}}"/>
+	            </div>
 	            <div class="clear">
 		          {{.Title}}	
 	            </div>
@@ -62,6 +65,19 @@ $(function() {
 					art.alert(re.Msg || "error");
 				}
 			});
+		});
+	});
+	
+	$(".url-title").change(function(){
+		var $t = $(this);
+		var url = $t.val();
+		var singleId = $t.data('id');
+		ajaxPost("/member/blog/updateSingleUrlTitle", {singleId: singleId, urlTitle: url}, function(re){
+			if(reIsOk(re)) {
+				$t.val(re.Item);
+			} else {
+				art.alert(re.Msg || "error");
+			}
 		});
 	});
 });

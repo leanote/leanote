@@ -433,6 +433,36 @@ func (this *ThemeService) ImportTheme(userId, path string) (ok bool, msg string)
 	return 
 }
 
+// 升级用
+// public/
+
+func (this *ThemeService) UpgradeThemeBeta2() (ok bool) {
+	adminUserId := configService.GetAdminUserId()
+	this.upgradeThemeBeta2(adminUserId, this.GetDefaultThemePath(defaultStyle), true)
+	this.upgradeThemeBeta2(adminUserId, this.GetDefaultThemePath(elegantStyle), false)
+	this.upgradeThemeBeta2(adminUserId, this.GetDefaultThemePath(fixedStyle), false)
+	return true
+}
+func (this *ThemeService) upgradeThemeBeta2(userId, targetPath string, isActive bool) (ok bool) {
+	// 解压成功, 那么新建之
+	// 保存到数据库中
+	theme, _ := this.getThemeConfig(revel.BasePath + "/" + targetPath)
+	if theme.Name == "" {
+		ok = false
+		return
+	}
+	themeIdO := bson.NewObjectId()
+	theme.ThemeId = themeIdO
+	theme.Path = targetPath // public
+	theme.CreatedTime = time.Now()
+	theme.UpdatedTime = theme.CreatedTime
+	theme.UserId = bson.ObjectIdHex(userId)
+	theme.IsActive = isActive
+	theme.IsDefault = true
+	ok = db.Insert(db.Themes, theme)
+	return ok
+}
+
 // 安装主题
 // 得到该主题路径
 func (this *ThemeService) InstallTheme(userId, themeId string) (ok bool) {

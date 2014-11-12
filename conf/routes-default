@@ -23,6 +23,7 @@ GET 	/findPassword								Auth.FindPassword
 POST 	/doFindPassword								Auth.DoFindPassword
 POST	/findPasswordUpdate							Auth.FindPasswordUpdate
 
+
 # blog
 
 GET		/blog/getLikesAndComments			Blog.GetLikesAndComments
@@ -45,18 +46,24 @@ GET		/blog/tag/:tag	Blog.Tag
 GET		/blog/search/:userIdOrEmail	Blog.Search
 GET		/blog/search	Blog.Search
 
-GET		/blog/archive/:userIdOrEmail	Blog.Archive
-GET		/blog/archive	Blog.Archive
+GET		/blog/archives/:userIdOrEmail	Blog.Archives
+GET		/blog/archives	Blog.Archives
 
 GET		/blog/post/:noteId			Blog.Post
+GET		/blog/post/:userIdOrEmail/:noteId			Blog.Post
 GET		/blog/view/:noteId			Blog.Post
+
+GET		/blog/single/:userIdOrEmail/:singleId			Blog.Single
 GET		/blog/single/:singleId			Blog.Single
 
 GET		/blog/cate/:notebookId		Blog.Cate
+GET		/blog/cate/:userIdOrEmail/:notebookId		Blog.Cate
+
 GET		/blog/listCateLatest/:notebookId	Blog.ListCateLatest
 GET		/blog/:userIdOrEmail		Blog.Index
 GET		/blog						Blog.Index
 GET		/blog/*						Blog.E()
+
 
 #---------------
 # preview
@@ -69,14 +76,20 @@ GET		/preview/tag/:tag	Preview.Tag
 GET		/preview/search/:userIdOrEmail	Preview.Search
 GET		/preview/search	Preview.Search
 
-GET		/preview/archive/:userIdOrEmail	Preview.Archive
-GET		/preview/archive	Preview.Archive
+GET		/preview/archives/:userIdOrEmail	Preview.Archives
+GET		/preview/archives	Preview.Archives
 
 GET		/preview/view/:noteId			Preview.Post
+
 GET		/preview/post/:noteId			Preview.Post
+GET		/preview/post/userIdOrEmail/:noteId			Preview.Post
+
+GET		/preview/single/userIdOrEmail/:singleId			Preview.Single
 GET		/preview/single/:singleId			Preview.Single
 
 GET		/preview/cate/:notebookId		Preview.Cate
+GET		/preview/cate/userIdOrEmail/:notebookId		Preview.Cate
+
 GET		/preview/:userIdOrEmail		Preview.Index
 GET		/preview						Preview.Index
 

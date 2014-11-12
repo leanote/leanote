@@ -4,7 +4,7 @@ import (
 	"github.com/revel/revel"
 //	"encoding/json"
 //	"gopkg.in/mgo.v2/bson"
-//	. "github.com/leanote/leanote/app/lea"
+	. "github.com/leanote/leanote/app/lea"
 	"github.com/leanote/leanote/app/info"
 //	"github.com/leanote/leanote/app/types"
 //	"io/ioutil"
@@ -87,6 +87,8 @@ func (c Share) ListNoteShareUserInfo(noteId string) revel.Result {
 	noteShareUserInfos := shareService.ListNoteShareUserInfo(noteId, c.GetUserId())
 	c.RenderArgs["noteOrNotebookShareUserInfos"] = noteShareUserInfos 
 	
+	c.RenderArgs["noteOrNotebookShareGroupInfos"] = shareService.GetNoteShareGroups(noteId, c.GetUserId())
+	
 	c.RenderArgs["isNote"] = true
 	c.RenderArgs["noteOrNotebookId"] = note.NoteId.Hex();
 	c.RenderArgs["title"] = note.Title
@@ -98,6 +100,9 @@ func (c Share) ListNotebookShareUserInfo(notebookId string) revel.Result {
 	
 	notebookShareUserInfos := shareService.ListNotebookShareUserInfo(notebookId, c.GetUserId())
 	c.RenderArgs["noteOrNotebookShareUserInfos"] = notebookShareUserInfos 
+	
+	c.RenderArgs["noteOrNotebookShareGroupInfos"] = shareService.GetNotebookShareGroups(notebookId, c.GetUserId())
+	LogJ(c.RenderArgs["noteOrNotebookShareGroupInfos"])
 	
 	c.RenderArgs["isNote"] = false
 	c.RenderArgs["noteOrNotebookId"] = notebook.NotebookId.Hex();
@@ -139,4 +144,45 @@ func (c Share) DeleteShareNotebookBySharedUser(notebookId string, fromUserId str
 // 删除fromUserId分享给我的所有note, notebook
 func (c Share) DeleteUserShareNoteAndNotebook(fromUserId string) revel.Result {
 	return c.RenderJson(shareService.DeleteUserShareNoteAndNotebook(fromUserId, c.GetUserId()));
+}
+
+//-------------
+// 用户组
+
+
+// 将笔记分享给分组
+func (c Share) AddShareNoteGroup(noteId, groupId string, perm int) revel.Result {
+	re := info.NewRe()
+	re.Ok = shareService.AddShareNoteGroup(c.GetUserId(), noteId, groupId, perm);
+	return c.RenderJson(re);
+}
+// 删除
+func (c Share) DeleteShareNoteGroup(noteId, groupId string) revel.Result {
+	re := info.NewRe()
+	re.Ok = shareService.DeleteShareNoteGroup(c.GetUserId(), noteId, groupId);
+	return c.RenderJson(re);
+}
+// 更新, 也是一样, 先删后加
+func (c Share) UpdateShareNoteGroupPerm(noteId, groupId string, perm int) revel.Result {
+	return c.AddShareNoteGroup(noteId, groupId, perm)
+}
+
+
+//------
+
+// 将笔记分享给分组
+func (c Share) AddShareNotebookGroup(notebookId, groupId string, perm int) revel.Result {
+	re := info.NewRe()
+	re.Ok = shareService.AddShareNotebookGroup(c.GetUserId(), notebookId, groupId, perm);
+	return c.RenderJson(re);
+}
+// 删除
+func (c Share) DeleteShareNotebookGroup(notebookId, groupId string) revel.Result {
+	re := info.NewRe()
+	re.Ok = shareService.DeleteShareNotebookGroup(c.GetUserId(), notebookId, groupId);
+	return c.RenderJson(re);
+}
+// 更新, 也是一样, 先删后加
+func (c Share) UpdateShareNotebookGroupPerm(notebookId, groupId string, perm int) revel.Result {
+	return c.AddShareNotebookGroup(notebookId, groupId, perm)
 }

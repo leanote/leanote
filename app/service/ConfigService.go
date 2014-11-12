@@ -573,3 +573,12 @@ func (this *ConfigService) GetGlobalConfigForUser() map[string]interface{} {
 	}
 	return config
 }
+
+// 主页是否是管理员的博客页
+func (this *ConfigService) HomePageIsAdminsBlog() bool {
+	return this.GetGlobalStringConfig("homePage") == ""
+}
+
+func (this *ConfigService) GetVersion() string {
+	return "1.0-beta2"
+}

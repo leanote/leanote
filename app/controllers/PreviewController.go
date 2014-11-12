@@ -71,25 +71,25 @@ func (c Preview) Archives(userIdOrEmail string, notebookId string, year, month i
 	return c.Blog.Archives(c.GetUserId(), notebookId, year, month)
 //	return blog.RenderTemplate("archive.html", c.RenderArgs, c.getPreviewThemeAbsolutePath(""))
 }
-func (c Preview) Cate(notebookId string) revel.Result {
+func (c Preview) Cate(userIdOrEmail, notebookId string) revel.Result {
 	if !c.getPreviewThemeAbsolutePath("") {
 		return c.E404()
 	}
-	return c.Blog.Cate(notebookId)
+	return c.Blog.Cate(userIdOrEmail, notebookId)
 //	return blog.RenderTemplate("cate.html", c.RenderArgs, c.getPreviewThemeAbsolutePath(""))
 }
-func (c Preview) Post(noteId string) revel.Result {
+func (c Preview) Post(userIdOrEmail, noteId string) revel.Result {
 	if !c.getPreviewThemeAbsolutePath("") {
 		return c.E404()
 	}
-	return c.Blog.Post(noteId)
+	return c.Blog.Post(userIdOrEmail, noteId)
 //	return blog.RenderTemplate("view.html", c.RenderArgs, c.getPreviewThemeAbsolutePath(""))
 }
-func (c Preview) Single(singleId string) revel.Result {
+func (c Preview) Single(userIdOrEmail, singleId string) revel.Result {
 	if !c.getPreviewThemeAbsolutePath("") {
 		return c.E404()
 	}
-	return c.Blog.Single(singleId)
+	return c.Blog.Single(userIdOrEmail, singleId)
 //	return blog.RenderTemplate("single.html", c.RenderArgs, c.getPreviewThemeAbsolutePath(""))
 }
 func (c Preview) Search(userIdOrEmail, keywords string) revel.Result {

@@ -20,6 +20,7 @@ import (
 	"strconv"
 	"time"
 	"encoding/json"
+	"net/url"
 )
 
 func init() {
@@ -77,6 +78,10 @@ func init() {
 			str += s
 		}
 		return str
+	}
+	revel.TemplateFuncs["decodeUrlValue"] = func(i string) string {
+		v, _ := url.ParseQuery("a=" + i)
+		return v.Get("a")
 	}
 	revel.TemplateFuncs["json"] = func(i interface{}) string {
 		b, _ := json.Marshal(i) 

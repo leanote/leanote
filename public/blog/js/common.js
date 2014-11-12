@@ -133,7 +133,7 @@ function getDateDiff(dateTimeStamp) {
     var weekC = diffValue / (7 * diff.day);
     var dayC = diffValue / diff.day;
     var hourC = diffValue / diff.hour;
-    var minC = diffValue / diff.minute;
+    var minC = parseInt(diffValue / diff.minute);
     if (monthC >= 1) {
         result = parseInt(monthC) + "个月前";
     } else if (weekC >= 1) {
@@ -142,8 +142,8 @@ function getDateDiff(dateTimeStamp) {
         result = parseInt(dayC) + "天前";
     } else if (hourC >= 1) {
         result = parseInt(hourC) + "小时前";
-    } else if (minC >= 1) {
-        result = parseInt(minC) + "分钟前";
+    } else if (minC > 1) {
+        result = minC + "分钟前";
     } else {
         result = "刚刚";
     }

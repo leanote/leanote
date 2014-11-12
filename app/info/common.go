@@ -9,6 +9,7 @@ import (
 type Page struct {
 	CurPage int // 当前页码
 	TotalPage int // 总页
+	PerPageSize int
 	Count int // 总记录数
 	List interface{}
 }
@@ -18,5 +19,5 @@ func NewPage(page, perPageSize, count int, list interface{}) Page {
 	if count > 0 {
 		totalPage = int(math.Ceil(float64(count) / float64(perPageSize)))
 	}
-	return Page{page, totalPage, count, list}
+	return Page{page, totalPage, perPageSize, count, list}
 }

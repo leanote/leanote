@@ -101,6 +101,15 @@ func (this *NotebookService) GetNotebookById(notebookId string) info.Notebook {
 	db.Get(db.Notebooks, notebookId, &notebook)
 	return notebook
 }
+func (this *NotebookService) GetNotebookByUserIdAndUrlTitle(userId, notebookIdOrUrlTitle string) info.Notebook {
+	notebook := info.Notebook{}
+	if IsObjectId(notebookIdOrUrlTitle) {
+		db.Get(db.Notebooks, notebookIdOrUrlTitle, &notebook)
+	} else {
+		db.GetByQ(db.Notebooks, bson.M{"UserId": bson.ObjectIdHex(userId), "UrlTitle": encodeValue(notebookIdOrUrlTitle)}, &notebook)
+	}
+	return notebook
+}
 
 // 得到用户下所有的notebook
 // 排序好之后返回
@@ -133,6 +142,7 @@ func (this *NotebookService) GetNotebooksByNotebookIds(notebookIds []bson.Object
 // 添加
 // [ok]
 func (this *NotebookService) AddNotebook(notebook info.Notebook) bool {
+	notebook.UrlTitle = GetUrTitle(notebook.UserId.Hex(), notebook.Title, "notebook")
 	err := db.Notebooks.Insert(notebook)
 	if err != nil {
 		panic(err)
@@ -180,6 +190,8 @@ func (this *NotebookService) ToBlog(userId, notebookId string, isBlog bool) (boo
 	data := bson.M{"IsBlog": isBlog}
 	if isBlog {
 		data["PublicTime"] = time.Now()
+	} else {
+		data["HasSelfDefined"] = false
 	}
 	db.UpdateByQMap(db.Notes, q, data)
 		

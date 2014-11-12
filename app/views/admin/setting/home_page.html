@@ -1,0 +1,49 @@
+{{template "admin/top.html" .}}
+<div class="m-b-md"> <h3 class="m-b-none">Home Page</h3></div>
+
+<div class="row">
+
+<div class="col-sm-6">
+	<form id="form_data">
+		<section class="panel panel-default">
+			<div class="panel-body">
+				<div class="form-group">
+					<label><a href="/blog" target="_blank">Admin's Blog Page</a></label>
+					<input type="radio" class="form-control" name="homePage" {{if not .str.homePage}}checked="checked"{{end}} value="0">
+				</div>
+				
+				<div class="form-group">
+					<label><a href="/index" target="_blank">Index Page</a></label>
+					<input type="radio" class="form-control" name="homePage" {{if .str.homePage}}checked="checked"{{end}} value="1">
+				</div>
+			</div>
+			
+			<footer class="panel-footer text-right bg-light lter">
+				<button type="submit" id="submit" class="btn btn-success btn-s-xs">Submit</button>
+			</footer>
+		</section>
+	</form>
+</div>
+
+</div>
+
+{{template "admin/footer.html" .}}
+<script>
+$(function() {
+	$("#submit").click(function(e){
+		e.preventDefault();
+		var t = this;
+		$(t).button('loading');
+		ajaxPost("/adminSetting/homePage", getFormJsonData("form_data"), function(ret){
+			$(t).button('reset');
+			if(!ret.Ok) {
+				art.alert(ret.Msg);
+			} else {
+				art.tips("Success");
+			}
+		});
+	});
+});
+</script>
+
+{{template "admin/end.html" .}}
