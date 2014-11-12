@@ -70,6 +70,10 @@ func (c MemberBlog) getSorter(sorterField string, isAsc bool, okSorter []string)
 // 博客列表
 var userPageSize = 15
 func (c MemberBlog) Index(sorter, keywords string) revel.Result {
+	userId := c.GetUserId()
+	userInfo := userService.GetUserInfo(userId)
+	c.RenderArgs["userInfo"] = userInfo
+	
 	c.RenderArgs["title"] = "Posts"
 	pageNumber := c.GetPage()
 	sorterField, isAsc := c.getSorter("CreatedTime", false, []string{"title", "urlTitle", "updatedTime", "publicTime", "createdTime"});
