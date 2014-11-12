@@ -5,7 +5,7 @@
 module:testrunner
 
 # Home is My Blog
-Get 	/											Index.Index
+Get 	/											Index.Default
 GET     /note   	                                Note.Index
 # leanote home
 GET     /index   	                                Index.Index

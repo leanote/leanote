@@ -12,12 +12,16 @@ type Index struct {
 	BaseController
 }
 
-// leanote展示页, 没有登录的, 或已登录明确要进该页的
-func (c Index) Index() revel.Result {
+func (c Index) Default() revel.Result {
 	if configService.HomePageIsAdminsBlog(){ 
 		blog := Blog{c.BaseController}
 		return blog.Index(configService.GetAdminUsername());
 	}
+	return c.Index()
+}
+// leanote展示页, 没有登录的, 或已登录明确要进该页的
+func (c Index) Index() revel.Result {
+
 	c.SetUserInfo()
 	c.RenderArgs["title"] = "leanote"
 	c.RenderArgs["openRegister"] = configService.GlobalStringConfigs["openRegister"]
