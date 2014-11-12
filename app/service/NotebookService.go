@@ -185,6 +185,10 @@ func (this *NotebookService) UpdateNotebook(userId, notebookId string, needUpdat
 
 // ToBlog or Not
 func (this *NotebookService) ToBlog(userId, notebookId string, isBlog bool) (bool) {
+	// 笔记本
+	db.UpdateByIdAndUserIdMap(db.Notebooks, notebookId, userId, bson.M{"IsBlog": isBlog})
+	
+	// 更新笔记
 	q := bson.M{"UserId": bson.ObjectIdHex(userId), 
 				"NotebookId": bson.ObjectIdHex(notebookId)}
 	data := bson.M{"IsBlog": isBlog}
@@ -194,7 +198,7 @@ func (this *NotebookService) ToBlog(userId, notebookId string, isBlog bool) (boo
 		data["HasSelfDefined"] = false
 	}
 	db.UpdateByQMap(db.Notes, q, data)
-		
+	
 	// noteContents也更新, 这个就麻烦了, noteContents表没有NotebookId
 	// 先查该notebook下所有notes, 得到id
 	notes := []info.Note{}

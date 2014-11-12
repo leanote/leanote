@@ -39,7 +39,7 @@
 }
 </style>
 <div class="row">
-<div class="col-sm-3">
+<div class="col-sm-4">
 	<section class="panel panel-default">
 		<header class="panel-heading">
 			模板, 样式, 脚本:
@@ -62,7 +62,7 @@
 	</footer>
 	</section>
 </div>
-<div class="col-sm-9">
+<div class="col-sm-8">
 	<section class="panel panel-default">
 		<header class="panel-heading">
 			当前文件: <span id="curTpl">header.html</span>
@@ -118,7 +118,7 @@ var theme = {
 	saveBtnO: $("#saveBtn"),
 	newFileO: $("#newFile"),
 	curTpl: "",
-	tplInfos: {"header.html": "头部", "footer.html": "底部", "index.html": "首页", "cate.html": "分类页", "search.html": "搜索页", "single.html": "单页", "archive.html": "归档页", "view.html": "详情页", "tags.html": "标签页", "tag_posts.html": "标签博客", "comment.html": "分享评论", "404.html":"404", "theme.json": "主题配置"},
+	tplInfos: {"header.html": "头部", "footer.html": "底部", "index.html": "首页", "cate.html": "分类页", "search.html": "搜索页", "single.html": "单页", "archive.html": "归档页", "post.html": "文章页", "tags.html": "标签页", "tag_posts.html": "标签文章页", "share_comment.html": "分享评论", "404.html":"404", "theme.json": "主题配置", "paging.html": "分页", "highlight.html": "高亮"},
 	init: function() {
 		var self = this;
 		self.showTplInfo();
@@ -150,15 +150,15 @@ var theme = {
 			var file = $a.data('file');
 			art.confirm("Are you sure to delete " + file + " ?", function() {
 				ajaxPost("/member/blog/deleteTpl", {themeId: themeId, filename: file}, function(re) {
-					if(reIsOk(re)) {
+					// if(reIsOk(re)) {
 						art.tips("Success");
 						$a.remove();
 						if(self.curTpl == file) {
 							$(".file-list a").eq(0).trigger("click");
 						}
-					} else {
-						art.alert(re.Msg);
-					}
+					//} else {
+					//	art.alert(re.Msg);
+					//}
 				})
 			});
 		});

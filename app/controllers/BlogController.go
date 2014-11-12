@@ -481,7 +481,7 @@ func (c Blog) Cate(userIdOrEmail string, notebookId string) (re revel.Result) {
 		return c.e404(userBlog.ThemePath) // 404 TODO 使用用户的404
 	}
 	if !notebook.IsBlog {
-		return c.e404("")
+		panic("")
 	}
 
 	// 分页的话, 需要分页信息, totalPage, curPage
