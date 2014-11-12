@@ -594,8 +594,12 @@ func (c Blog) Post(userIdOrEmail, noteId string) (re revel.Result) {
 	}
 
 	prePost, nextPost := blogService.PreNextBlog(userId, userBlog.SortField, userBlog.IsAsc, baseTime)
-	c.RenderArgs["prePost"] = prePost
-	c.RenderArgs["nextPost"] = nextPost
+	if prePost.NoteId != "" {
+		c.RenderArgs["prePost"] = prePost
+	}
+	if nextPost.NoteId != "" {
+		c.RenderArgs["nextPost"] = nextPost
+	}
 	return c.render("post.html", userBlog.ThemePath)
 }
 

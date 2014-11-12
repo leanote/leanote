@@ -404,7 +404,7 @@ func (this *BlogService) PreNextBlog(userId string, sorterField string, isAsc bo
 	//	Log(sortFieldR2)
 	q = db.Notes.Find(query)
 	q.Sort(sortFieldR2).Limit(1).One(&note2)
-
+	
 	return this.FixNote(note), this.FixNote(note2)
 }
 

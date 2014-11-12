@@ -1658,7 +1658,7 @@ $(function() {
 		e.stopPropagation();
 		// 得到ID
 		var noteId = $(this).parent().attr('noteId');
-		window.open("/blog/view/" + noteId);
+		window.open("/blog/post/" + noteId);
 	});
 	
 	// note setting

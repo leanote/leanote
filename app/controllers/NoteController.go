@@ -57,16 +57,15 @@ func (c Note) Index() revel.Result {
 	c.RenderArgs["isAdmin"] = configService.GetAdminUsername() == userInfo.Username
 	
 	c.RenderArgs["userInfo"] = userInfo
-	c.RenderArgs["userInfoJson"] = c.Json(userInfo)
-	c.RenderArgs["notebooks"] = c.Json(notebooks)
-	c.RenderArgs["shareNotebooks"] = c.Json(shareNotebooks)
-	c.RenderArgs["sharedUserInfos"] = c.Json(sharedUserInfos)
+	c.RenderArgs["notebooks"] = notebooks
+	c.RenderArgs["shareNotebooks"] = shareNotebooks
+	c.RenderArgs["sharedUserInfos"] = sharedUserInfos
 	
-	c.RenderArgs["notes"] = c.Json(notes)
-	c.RenderArgs["noteContentJson"] = c.Json(noteContent)
+	c.RenderArgs["notes"] = notes
+	c.RenderArgs["noteContentJson"] = noteContent
 	c.RenderArgs["noteContent"] = noteContent.Content
 	
-	c.RenderArgs["tagsJson"] = c.Json(tagService.GetTags(c.GetUserId()))
+	c.RenderArgs["tags"] = tagService.GetTags(c.GetUserId())
 	
 	c.RenderArgs["globalConfigs"] = configService.GetGlobalConfigForUser()
 	

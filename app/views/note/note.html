@@ -127,11 +127,7 @@ function log(o) {
 						<a class="dropdown-toggle" title="{{.userInfo.Username}}" data-toggle="dropdown" style="line-height: 60px;"> 
 							<img alt="{{.userInfo.Username}}" title="{{.userInfo.Username}}" src="{{if .userInfo.Logo}}{{.userInfo.Logo}}{{else}}/images/blog/default_avatar.png{{end}}" id="myAvatar"/> 
 							<span class="username">
-								{{if .userInfo.UsernameRaw}}
-									{{.userInfo.UsernameRaw}}
-								{{else}}
-									{{.userInfo.Username}}
-								{{end}}
+								{{.userInfo.Username}}
 							</span>
 							<i class="fa fa-angle-down"></i>
 						</a>
@@ -152,7 +148,7 @@ function log(o) {
 							
 							<li role="presentation" class="divider"></li>
 							<li role="presentation">
-								<a href="/member/blog/base" target="_blank">
+								<a href="/member/blog/index" target="_blank">
 								<i class="fa fa-bold"></i> 
 								{{msg . "blogSet"}}
 								</a>
@@ -729,100 +725,8 @@ function log(o) {
 			  </div><!-- /.modal-dialog -->
 			</div><!-- /.modal -->
 			
-			<!-- avatar -->
-			<div class="modal fade bs-modal-sm" id="avatarDialog" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-			  <div class="modal-dialog modal-sm">
-			    <div class="modal-content">
-				  <div class="modal-header">
-			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			        <h4 class="modal-title" class="modalTitle">{{msg . "setAvatar"}}</h4>
-			      </div>
-					<div class="modal-body">
-						<form id="uploadAvatar" method="post" action="/file/uploadAvatar" enctype="multipart/form-data">
-			                <div id="dropAvatar" class="dropzone">
-			                	<div>
-									<img src="{{if .userInfo.Logo}}{{.userInfo.Logo}}{{else}}/images/blog/default_avatar.png{{end}}" id="avatar"/>
-								</div>
-			                    <a class="btn btn-success btn-choose-file">
-									<span class="fa fa-upload"></span> Choose Image
-			                    </a>
-			                    <input type="file" name="file" multiple/>
-			                </div>
-			                <div id="avatarUploadMsg">
-			                </div>
-				  		</form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">{{msg . "close"}}</button>
-					</div>
-			    </div><!-- /.modal-content -->
-			  </div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
-			
-			<!-- 您的建议 
-			<div class="modal fade bs-modal-sm"  id="suggestionsDialog" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-			  <div class="modal-dialog modal-sm">
-			    <div class="modal-content">
-				  <div class="modal-header">
-			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			        <h4 class="modal-title" class="modalTitle">{{msg . "yourSuggestions"}}</h4>
-			      </div>
-					<div class="modal-body">
-						<div style="margin-bottom:20px;">
-							{{msg . "suggestionsInfo"}}<br />
-						</div>
-		
-						<div class="alert alert-warning" id="suggestionMsg" style="display: none"> </div>
-						<textarea style="width: 100%; height: 100px" id="suggestionTextarea" placeholder="{{msg . "suggestions"}}"></textarea>
-					</div>
-					<div class="modal-footer">
-						<button id="suggestionBtn" class="btn btn-success" >{{msg . "submit"}}</button>
-						<button type="button" class="btn btn-default" data-dismiss="modal">{{msg . "close"}}</button>
-					</div>
-			    </div>
-			  </div>
-			</div>
-			-->
-			
 			<!-- modal 静态区域 -->
 			<div class="display: hidden">
-			
-				<!-- 长微博 -->
-				<div id="html2ImageDialog">
-				    <div class="modal-body">
-				    	<div style="max-height: 300px; padding: 5px 0; text-align: center; overflow: scroll;" class="weibo">
-							<span class="text">
-								leanote正在努力为你生成长微博...
-							</span>
-							<br />
-							<img src="/images/loading-24.gif"/>
-				    	</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">{{msg . "cancel"}}</button>
-						
-						<button type="button" class="btn btn-share btn-default sendRRBtn disabled"><i class="fa fa-renren"></i> 人人</button>
-						<button type="button" class="btn btn-share btn-default sendQQBtn disabled"><i class="fa fa-qq"></i> QQ空间</button>
-						<button type="button" class="btn btn-share btn-primary sendTxWeiboBtn disabled"><i class="fa fa-tencent-weibo"></i> 腾讯微博</button>
-						<button type="button" class="btn btn-share btn-success sendWeiboBtn disabled"><i class="fa fa-weibo"></i> 新浪微博</button>
-					</div>
-			    </div>
-			    
-			    <!-- 激活邮件 -->
-				<div id="reSendActiveEmailDialog">
-				    <div class="modal-body">
-				    	<div style="max-height: 300px; padding: 5px 0; text-align: center; overflow-y: auto; overflow-x: hidden" class="weibo">
-							<span class="text">
-								<img src="/images/loading-24.gif"/>
-								{{msg . "emailInSending"}} {{.userInfo.Email}}...
-							</span>
-				    	</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">{{msg . "close"}}</button>
-						<button type="button" class="btn btn-success viewEmailBtn disabled">{{msg . "checkEmail"}}</button>
-					</div>
-			    </div>
 			<div class="hide" id="copyDiv"></div>
 		</div>
 	</div>
@@ -833,14 +737,15 @@ function log(o) {
 <script src="js/common-min.js"></script>
 <script>
 var UrlPrefix = "{{.siteUrl}}"; // 为了发weibo
-var UserInfo = json({{.userInfoJson}});
-var notebooks = json({{.notebooks}});
-var shareNotebooks = json({{.shareNotebooks}});
-var sharedUserInfos = json({{.sharedUserInfos}});
-var notes = json({{.notes}});
-var noteContentJson = json({{.noteContentJson}});
-var tagsJson = json({{.tagsJson}});
+var UserInfo = {{.userInfo|jsonJs}};
+var notebooks = {{.notebooks|jsonJs}};
+var shareNotebooks = {{.shareNotebooks|jsonJs}};
+var sharedUserInfos = {{.sharedUserInfos|jsonJs}};
+var notes = {{.notes|jsonJs}}
+var noteContentJson = {{.noteContentJson|jsonJs}};
+var tagsJson = {{.tags|jsonJs}};
 LEA.locale = "{{.locale}}";
+var GlobalConfigs = {{.globalConfigs|jsonJs}}; // 2014/11/9 beta2
 </script>
 
 <!-- 渲染view -->
