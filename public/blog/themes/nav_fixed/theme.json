@@ -21,7 +21,7 @@
     "Version": "1.0",
     "Author": "leanote.com",
     "AuthorUrl": "http://leanote.com",
-    "FriendLinks": [ 
+    "FriendLinks": [
         {"Title": "我的笔记", "Url": "http://leanote.com/note"},
         {"Title": "leanote home", "Url": "http://leanote.com"},
         {"Title": "leanote 社区", "Url": "http://bbs.leanote.com"},
