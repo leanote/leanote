@@ -32,7 +32,12 @@ func (this *NoteImageService) GetNoteIds(imageId string) ([]bson.ObjectId) {
 // 解析内容中的图片, 建立图片与note的关系
 // <img src="/file/outputImage?fileId=12323232" />
 // 图片必须是我的, 不然不添加
-func (this *NoteImageService) UpdateNoteImages(userId, noteId, content string) bool {
+// imgSrc 防止博客修改了, 但内容删除了
+func (this *NoteImageService) UpdateNoteImages(userId, noteId, imgSrc, content string) bool {
+	// 让主图成为内容的一员
+	if imgSrc != "" {
+		content = "<img src=\"" + imgSrc + "\" >" + content
+	}
 	reg, _ := regexp.Compile("outputImage\\?fileId=([a-z0-9A-Z]{24})")
 	find := reg.FindAllStringSubmatch(content, -1) // 查找所有的
 	

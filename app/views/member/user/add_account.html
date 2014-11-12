@@ -1,0 +1,80 @@
+{{template "member/top.html" .}}
+<div class="m-b-md"> <h3 class="m-b-none">用户名设置</h3></div>
+
+<div class="row">
+
+<div class="col-sm-6">
+	<form id="formData">
+		<section class="panel panel-default">
+			<div class="panel-body">
+  				<div class="alert alert-danger" id="thirdAccountMsg" style="display: none"></div>
+				{{msg . "thirdCreateAcountTips"}}
+				<div class="form-group">
+					<label class="control-label" for="thirdEmail">{{msg . "email"}}</label>
+					<input type="text" class="form-control" id="thirdEmail" name="email"
+						data-rules='[
+					    	{rule: "required", msg: "inputEmail"},
+					    	{rule: "email", msg: "errorEmail"}
+				    	]'
+				    	data-msg_target="#thirdAccountMsg"
+					> 
+				</div>
+				<div class="form-group"> 
+					<label class="control-label" for="thirdPwd">{{msg . "password"}}</label>
+					<input type="password" class="form-control" id="thirdPwd" name="pwd"
+					  data-rules='[
+					    	{rule: "required", msg: "inputPassword"},
+					    	{rule: "password", msg: "errorPassword"}
+				    	]'
+				    	data-msg_target="#thirdAccountMsg"
+					/>
+					{{msg . "passwordTips"}} 
+				</div>
+				<div class="form-group"> 
+					<label class="control-label" for="thirdPwd2">{{msg . "password2"}}</label>
+					<input type="password" class="form-control" id="thirdPwd2" name="pwd2" 
+					 	data-rules='[
+					    	{rule: "required", msg: "inputPassword2"},
+					    	{rule: "equalTo", data:"#thirdPwd", msg: "confirmPassword"}
+				    	]'
+				    	data-msg_target="#thirdAccountMsg"
+					>
+				</div>
+			</div>
+			<footer class="panel-footer text-right bg-light lter">
+			    <button type="submit" id="accountBtn" class="btn btn-success">{{msg . "submit"}}</button>
+			</footer>
+		</section>
+	</form>
+</div>
+
+</div>
+
+{{template "member/footer.html" .}}
+<script>
+$(function() {
+// 第三方账号设置
+var acountVd = new vd.init("#formData");
+$("#accountBtn").click(function(e) {
+	e.preventDefault();
+	if(!acountVd.valid()) {
+		return;
+	}
+	var email = $("#thirdEmail").val();
+	var pwd = $("#thirdPwd").val();
+	var pwd2 = $("#thirdPwd2").val();
+	post("/user/addAccount", {email: email, pwd: pwd}, function(ret) {
+		if(ret.Ok) {
+			showAlert("#thirdAccountMsg", getMsg("createAccountSuccess"), "success");
+			setTimeout(function() {
+				location.reload();
+			}, 1000);
+		} else {
+			showAlert("#thirdAccountMsg", ret.Msg || getMsg("createAccountFailed"), "danger");
+		}
+	}, this);
+});
+});
+</script>
+
+{{template "member/end.html" .}}

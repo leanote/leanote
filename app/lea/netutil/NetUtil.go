@@ -3,6 +3,7 @@ import (
 	"strings"
 	"os"
 //	"path/filepath"
+	"net"
 	"net/http"
 	"io/ioutil"
 	. "github.com/leanote/leanote/app/lea"
@@ -89,4 +90,13 @@ func trimQueryParams(url string) string {
 		url = Substr(url, 0, pos);
 	}
 	return url;
+}
+
+// 通过domain得到ip
+func GetIpFromDomain(domain string) string {
+	ip, _ := net.LookupIP(domain)
+	if ip != nil && len(ip) > 0 {
+		return ip[0].String()
+	}
+	return ""
 }

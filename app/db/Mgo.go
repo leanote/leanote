@@ -2,9 +2,9 @@ package db
 
 import (
 	"fmt"
+	"github.com/revel/revel"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"github.com/revel/revel"
 )
 
 // Init mgo and the common DAO
@@ -23,9 +23,12 @@ var ShareNotebooks *mgo.Collection
 var HasShareNotes *mgo.Collection
 var Blogs *mgo.Collection
 var Users *mgo.Collection
+var Groups *mgo.Collection
+var GroupUsers *mgo.Collection
 
 var Tags *mgo.Collection
-var TagNotes *mgo.Collection
+//var TagNotes *mgo.Collection
+var TagCounts *mgo.Collection
 
 var UserBlogs *mgo.Collection
 
@@ -46,6 +49,8 @@ var EmailLogs *mgo.Collection
 var BlogLikes *mgo.Collection
 var BlogComments *mgo.Collection
 var Reports *mgo.Collection
+var BlogSingles *mgo.Collection
+var Themes *mgo.Collection
 
 // session
 var Sessions *mgo.Collection
@@ -54,7 +59,7 @@ var Sessions *mgo.Collection
 func Init() {
 	var url string
 	var ok bool
-	config := revel.Config;
+	config := revel.Config
 	url, ok = config.String("db.url")
 	dbname, _ := config.String("db.dbname")
 	if !ok {
@@ -66,9 +71,9 @@ func Init() {
 		if username == "" || password == "" {
 			usernameAndPassword = ""
 		}
-		url = "mongodb://" + usernameAndPassword  + host + ":" + port + "/" + dbname
+		url = "mongodb://" + usernameAndPassword + host + ":" + port + "/" + dbname
 	}
-	
+
 	// [mongodb://][user:pass@]host1[:port1][,host2[:port2],...][/database][?options]
 	// mongodb://myuser:mypass@localhost:40001,otherhost:40001/mydb
 	var err error
@@ -82,55 +87,61 @@ func Init() {
 
 	// notebook
 	Notebooks = Session.DB(dbname).C("notebooks")
-	
+
 	// notes
 	Notes = Session.DB(dbname).C("notes")
-	
+
 	// noteContents
 	NoteContents = Session.DB(dbname).C("note_contents")
 	NoteContentHistories = Session.DB(dbname).C("note_content_histories")
-	
+
 	// share
 	ShareNotes = Session.DB(dbname).C("share_notes")
 	ShareNotebooks = Session.DB(dbname).C("share_notebooks")
 	HasShareNotes = Session.DB(dbname).C("has_share_notes")
-	
+
 	// user
 	Users = Session.DB(dbname).C("users")
-	
+	// group 
+	Groups = Session.DB(dbname).C("groups")
+	GroupUsers = Session.DB(dbname).C("group_users")
+
 	// blog
 	Blogs = Session.DB(dbname).C("blogs")
-	
+
 	// tag
 	Tags = Session.DB(dbname).C("tags")
-	TagNotes = Session.DB(dbname).C("tag_notes")
-	
+//	TagNotes = Session.DB(dbname).C("tag_notes")
+	TagCounts = Session.DB(dbname).C("tag_count")
+
 	// blog
 	UserBlogs = Session.DB(dbname).C("user_blogs")
-	
+	BlogSingles = Session.DB(dbname).C("blog_singles")
+	Themes = Session.DB(dbname).C("themes")
+
 	// find password
 	Tokens = Session.DB(dbname).C("tokens")
-	
+
 	// Suggestion
 	Suggestions = Session.DB(dbname).C("suggestions")
-	
+
 	// Album & file
 	Albums = Session.DB(dbname).C("albums")
 	Files = Session.DB(dbname).C("files")
 	Attachs = Session.DB(dbname).C("attachs")
-	
+
 	NoteImages = Session.DB(dbname).C("note_images")
-	
+
 	Configs = Session.DB(dbname).C("configs")
 	EmailLogs = Session.DB(dbname).C("email_logs")
-	
+
 	// 社交
 	BlogLikes = Session.DB(dbname).C("blog_likes")
 	BlogComments = Session.DB(dbname).C("blog_comments")
-	
+
 	// 举报
 	Reports = Session.DB(dbname).C("reports")
-	
+
 	// session
 	Sessions = Session.DB(dbname).C("sessions")
 }
@@ -174,22 +185,29 @@ func UpdateByIdAndUserId2(collection *mgo.Collection, id, userId bson.ObjectId, 
 	return Err(err)
 }
 func UpdateByIdAndUserIdField(collection *mgo.Collection, id, userId, field string, value interface{}) bool {
-	return UpdateByIdAndUserId(collection, id, userId, bson.M{"$set": bson.M{field:value}})
+	return UpdateByIdAndUserId(collection, id, userId, bson.M{"$set": bson.M{field: value}})
 }
 func UpdateByIdAndUserIdMap(collection *mgo.Collection, id, userId string, v bson.M) bool {
 	return UpdateByIdAndUserId(collection, id, userId, bson.M{"$set": v})
 }
+
 func UpdateByIdAndUserIdField2(collection *mgo.Collection, id, userId bson.ObjectId, field string, value interface{}) bool {
-	return UpdateByIdAndUserId2(collection, id, userId, bson.M{"$set": bson.M{field:value}})
+	return UpdateByIdAndUserId2(collection, id, userId, bson.M{"$set": bson.M{field: value}})
 }
 func UpdateByIdAndUserIdMap2(collection *mgo.Collection, id, userId bson.ObjectId, v bson.M) bool {
 	return UpdateByIdAndUserId2(collection, id, userId, bson.M{"$set": v})
 }
-// 
+
+//
 func UpdateByQField(collection *mgo.Collection, q interface{}, field string, value interface{}) bool {
 	_, err := collection.UpdateAll(q, bson.M{"$set": bson.M{field: value}})
 	return Err(err)
 }
+func UpdateByQI(collection *mgo.Collection, q interface{}, v interface{}) bool {
+	_, err := collection.UpdateAll(q, bson.M{"$set": v})
+	return Err(err)
+}
+
 // 查询条件和值
 func UpdateByQMap(collection *mgo.Collection, q interface{}, v interface{}) bool {
 	_, err := collection.UpdateAll(q, bson.M{"$set": v})
@@ -255,6 +273,7 @@ func GetByQWithFields(collection *mgo.Collection, q bson.M, fields []string, i i
 	}
 	collection.Find(q).Select(selector).One(i)
 }
+
 // 查询某些字段, q是查询条件, fields是字段名列表
 func ListByQWithFields(collection *mgo.Collection, q bson.M, fields []string, i interface{}) {
 	selector := make(bson.M, len(fields))
@@ -268,6 +287,11 @@ func GetByIdAndUserId(collection *mgo.Collection, id, userId string, i interface
 }
 func GetByIdAndUserId2(collection *mgo.Collection, id, userId bson.ObjectId, i interface{}) {
 	collection.Find(GetIdAndUserIdBsonQ(id, userId)).One(i)
+}
+
+// 按field去重
+func Distinct(collection *mgo.Collection, q bson.M, field string, i interface{}) {
+	collection.Find(q).Distinct(field, i)
 }
 
 //----------------------
@@ -303,7 +327,7 @@ func Err(err error) bool {
 		fmt.Println(err)
 		// 删除时, 查找
 		if err.Error() == "not found" {
-			return true;
+			return true
 		}
 		return false
 	}

@@ -4,16 +4,8 @@
 <section class="panel panel-default">
 	<div class="row wrapper">
 		<div class="col-sm-5 m-b-xs">
-			<select class="input-sm form-control input-s-sm inline v-middle">
-				<option value="">
-					Bulk action
-				</option>
-				<option value="1">
-					Send Email
-				</option>
-			</select>
-			<button class="btn btn-sm btn-default bulk-btn">
-				Apply
+			<button class="btn btn-sm btn-default bulk-email">
+				Send Email
 			</button>
 		</div>
 		<div class="col-sm-4 m-b-xs">
@@ -21,7 +13,7 @@
 		</div>
 		<div class="col-sm-3">
 			<div class="input-group search-group">
-				<input type="text" class="input-sm form-control" placeholder="Email" id="keywords" value="{{.keywords}}" />
+				<input type="text" class="input-sm form-control" placeholder="Username or Email" id="keywords" value="{{.keywords}}" />
 				<span class="input-group-btn">
 					<button class="btn btn-sm btn-default" type="button" data-url="/adminUser/index">Search</button>
 				</span>
@@ -99,7 +91,8 @@
 						{{.CreatedTime|datetime}}
 					</td>
 					<td>
-						<a href="#" class="btn btn-default send-email" data-email="{{.Email}}">Send Email</a>
+						<a href="#" class="btn btn-sm btn-default reset-pwd" data-id="{{.UserId.Hex}}">Reset Password</a>
+						<a href="#" class="btn btn-sm btn-default send-email" data-email="{{.Email}}">Send Email</a>
 					</td>
 				</tr>
 				{{end}}
@@ -109,16 +102,8 @@
 	<footer class="panel-footer">
 		<div class="row">
 			<div class="col-sm-4 hidden-xs">
-				<select class="input-sm form-control input-s-sm inline v-middle">
-					<option value="">
-						Bulk action
-					</option>
-					<option value="1">
-						Send Email
-					</option>
-				</select>
-				<button class="btn btn-sm btn-default bulk-btn">
-					Apply
+				<button class="btn btn-sm btn-default bulk-email">
+					Send Email
 				</button>
 			</div>
 			
@@ -137,19 +122,22 @@ $(function() {
 	$(".send-email").click(function() {
 		openSendEmailDialog($(this).data("email"));
 	});
-	$(".bulk-btn").click(function() {
-		// email
-		if($(this).prev().val() == "1") {
-			var emails = [];
-			$(".ck:checked").each(function() {
-				emails.push($(this).data("email"));
-			});
-			if(emails.length == 0) {
-				art.alert("No user");
-				return;
-			}
-			openSendEmailDialog(emails.join(","));
+	$(".bulk-email").click(function() {
+		var emails = [];
+		$(".ck:checked").each(function() {
+			emails.push($(this).data("email"));
+		});
+		if(emails.length == 0) {
+			art.alert("No user");
+			return;
 		}
+		openSendEmailDialog(emails.join(","));
+	});
+	
+	// reset password
+	$(".reset-pwd").click(function() {
+		var id = $(this).data("id");
+		openDialog({width: 500,  url: "/adminUser/resetPwd?userId=" + id, title: "Reset Password"});
 	});
 });
 </script>

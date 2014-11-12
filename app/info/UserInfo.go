@@ -34,4 +34,47 @@ type User struct {
 	ThirdUserId   string `ThirdUserId`   // 用户Id, 在第三方中唯一可识别
 	ThirdUsername string `ThirdUsername` // 第三方中username, 为了显示
 	ThirdType     int    `ThirdType`     // 第三方类型
+
+	// 用户的帐户类型
+	
+	ImageNum         int       `bson:"ImageNum" json:"-"`        // 图片数量
+	ImageSize        int       `bson:"ImageSize" json:"-"`        // 图片大小
+	AttachNum        int       `bson:"AttachNum" json:"-"`        // 附件数量
+	AttachSize       int       `bson:"AttachSize" json:"-"`       // 附件大小
+	PerAttachSize    int       `bson:"PerAttachSize" json:"-"`    // 单个附件大小
+
+	AccountType      string    `bson:"AccountType" json:"-"`      // normal(为空), premium
+	AccountStartTime time.Time `bson:"AccountStartTime" json:"-"` // 开始日期
+	AccountEndTime   time.Time `bson:"AccountEndTime" json:"-"`   // 结束日期
+	// 阈值
+	MaxImageNum         int       `bson:"MaxImageNums" json:"-"`        // 图片数量
+	MaxImageSize        int       `bson:"MaxImageSize" json:"-"`        // 图片大小
+	MaxAttachNum        int       `bson:"MaxAttachNum" json:"-"`        // 图片数量
+	MaxAttachSize       int       `bson:"MaxAttachSize" json:"-"`       // 图片大小
+	MaxPerAttachSize    int       `bson:"MaxPerAttachSize" json:"-"`    // 单个附件大小
+}
+
+type UserAccount struct {
+	AccountType      string    `bson:"AccountType" json:"-"`      // normal(为空), premium
+	AccountStartTime time.Time `bson:"AccountStartTime" json:"-"` // 开始日期
+	AccountEndTime   time.Time `bson:"AccountEndTime" json:"-"`   // 结束日期
+	// 阈值
+	MaxImageNum         int       `bson:"MaxImageNums" json:"-"`        // 图片数量
+	MaxImageSize        int       `bson:"MaxImageSize" json:"-"`        // 图片大小
+	MaxAttachNum        int       `bson:"MaxAttachNum" json:"-"`        // 图片数量
+	MaxAttachSize       int       `bson:"MaxAttachSize" json:"-"`       // 图片大小
+	MaxPerAttachSize    int       `bson:"MaxPerAttachSize" json:"-"`    // 单个附件大小
+}
+
+// 用户与博客信息结合, 公开
+type UserAndBlog struct {
+	UserId    bson.ObjectId `bson:"_id,omitempty"` // 必须要设置bson:"_id" 不然mgo不会认为是主键
+	Email     string        `Email`                // 全是小写
+	Username  string        `Username`             // 不区分大小写, 全是小写
+	Logo      string        `Logo`
+	BlogTitle string        `BlogTitle` // 博客标题
+	BlogLogo  string        `BlogLogo`  // 博客Logo
+	BlogUrl   string        `BlogUrl`   // 博客链接, 主页
+	
+	BlogUrls // 各个页面
 }

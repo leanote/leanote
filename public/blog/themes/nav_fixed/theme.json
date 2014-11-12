@@ -1,0 +1,27 @@
+/*
+以下是本主题的配置, 采用JSON格式
+其中Name, Version, Author, AuthorUrl是必填项(注意首字大写)
+你也可以定义其它的配置, 如FriendLinks, 在模板文件使用 $.themeInfo.FriendLinks来获取值
+
+注意: 
+1) JSON语法严格, 键必须用双引号, 最后不得有空','来结尾
+2) 以下配置不能包含任何注释, 不然解析会出错!
+
+请在此解析所有配置
+* Name 主题名
+* Version 主题版本
+* Author 主题的作者
+* AuthorUrl 作者的博客链接或相关链接
+
+* FriendLinks 友情链接
+
+*/
+{
+    "Name": "leanote default theme",
+    "Version": "1.0",
+    "Author": "leanote.com",
+    "AuthorUrl": "http://leanote.com",
+    "FriendLinks": [ 
+        {"Title": "leanote", "Url": "http://leanote.com"} 
+    ]
+}

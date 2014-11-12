@@ -20,9 +20,11 @@ type Note struct {
 
 	IsTrash bool `IsTrash` // 是否是trash, 默认是false
 
-	IsBlog      bool `IsBlog,omitempty`      // 是否设置成了blog 2013/12/29 新加
-	IsRecommend bool `IsRecommend,omitempty` // 是否为推荐博客 2014/9/24新加
-	IsTop       bool `IsTop,omitempty`       // blog是否置顶
+	IsBlog         bool   `IsBlog,omitempty`      // 是否设置成了blog 2013/12/29 新加
+	UrlTitle       string `UrlTitle,omitempty`    // 博客的url标题, 为了更友好的url, 在UserId, UrlName下唯一
+	IsRecommend    bool   `IsRecommend,omitempty` // 是否为推荐博客 2014/9/24新加
+	IsTop          bool   `IsTop,omitempty`       // blog是否置顶
+	HasSelfDefined bool   `HasSelfDefined`        // 是否已经自定义博客图片, desc, abstract
 
 	// 2014/9/28 添加评论社交功能
 	ReadNum    int `ReadNum,omitempty`    // 阅读次数 2014/9/28
@@ -35,9 +37,9 @@ type Note struct {
 
 	CreatedTime   time.Time     `CreatedTime`
 	UpdatedTime   time.Time     `UpdatedTime`
-	RecommendTime time.Time     `RecommendTime,omitempty`        // 推荐时间
-	PublicTime    time.Time     `PublicTime,omitempty`           // 发表时间, 公开为博客则设置
-	UpdatedUserId bson.ObjectId `bson:"UpdatedUserId"` // 如果共享了, 并可写, 那么可能是其它他修改了
+	RecommendTime time.Time     `RecommendTime,omitempty` // 推荐时间
+	PublicTime    time.Time     `PublicTime,omitempty`    // 发表时间, 公开为博客则设置
+	UpdatedUserId bson.ObjectId `bson:"UpdatedUserId"`    // 如果共享了, 并可写, 那么可能是其它他修改了
 }
 
 // 内容

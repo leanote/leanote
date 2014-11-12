@@ -111,10 +111,16 @@ func (this *NoteService) ListNoteAbstractsByNoteIds(noteIds []bson.ObjectId) (no
 	db.ListByQWithFields(db.NoteContents, bson.M{"_id": bson.M{"$in": noteIds}}, []string{"_id", "Abstract"}, &notes)
 	return
 }
+func (this *NoteService) ListNoteContentByNoteIds(noteIds []bson.ObjectId) (notes []info.NoteContent) {
+	notes = []info.NoteContent{}
+	db.ListByQWithFields(db.NoteContents, bson.M{"_id": bson.M{"$in": noteIds}}, []string{"_id", "Abstract", "Content"}, &notes)
+	return
+}
 
 // 添加笔记
 // 首先要判断Notebook是否是Blog, 是的话设为blog
 // [ok]
+
 func (this *NoteService) AddNote(note info.Note) info.Note {
 	if(note.NoteId.Hex() == "") {
 		noteId := bson.NewObjectId();
@@ -124,6 +130,7 @@ func (this *NoteService) AddNote(note info.Note) info.Note {
 	note.UpdatedTime = note.CreatedTime
 	note.IsTrash = false
 	note.UpdatedUserId = note.UserId
+	note.UrlTitle = GetUrTitle(note.UserId.Hex(), note.Title, "note")
 	
 	// 设为blog
 	notebookId := note.NotebookId.Hex()
@@ -164,13 +171,24 @@ func (this *NoteService) AddNoteContent(noteContent info.NoteContent) info.NoteC
 	db.Insert(db.NoteContents, noteContent)
 	
 	// 更新笔记图片
-	noteImageService.UpdateNoteImages(noteContent.UserId.Hex(), noteContent.NoteId.Hex(), noteContent.Content)
+	noteImageService.UpdateNoteImages(noteContent.UserId.Hex(), noteContent.NoteId.Hex(), "", noteContent.Content)
 	
 	return noteContent;
 }
 
 // 添加笔记和内容
 // 这里使用 info.NoteAndContent 接收?
+func (this *NoteService) AddNoteAndContentForController(note info.Note, noteContent info.NoteContent, updatedUserId string) info.Note {
+	if note.UserId.Hex() != updatedUserId {
+		if !shareService.HasUpdateNotebookPerm(note.UserId.Hex(), updatedUserId, note.NotebookId.Hex()) {
+			Log("NO AUTH11")
+			return info.Note{}
+		} else {
+			Log("HAS AUTH -----------")
+		}
+	}
+	return this.AddNoteAndContent(note, noteContent, bson.ObjectIdHex(updatedUserId));
+}
 func (this *NoteService) AddNoteAndContent(note info.Note, noteContent info.NoteContent, myUserId bson.ObjectId) info.Note {
 	if(note.NoteId.Hex() == "") {
 		noteId := bson.NewObjectId()
@@ -189,16 +207,22 @@ func (this *NoteService) AddNoteAndContent(note info.Note, noteContent info.Note
 }
 
 // 修改笔记
-// [ok] TODO perm还没测
 func (this *NoteService) UpdateNote(userId, updatedUserId, noteId string, needUpdate bson.M) bool {
 	// updatedUserId 要修改userId的note, 此时需要判断是否有修改权限
 	if userId != updatedUserId {
 		if !shareService.HasUpdatePerm(userId, updatedUserId, noteId) {
-			Log("NO AUTH")
+			Log("NO AUTH2")
 			return false
 		} else {
 			Log("HAS AUTH -----------")
 		}
+	}
+	
+	// 是否已自定义
+	note := this.GetNoteById(noteId)
+	if note.IsBlog && note.HasSelfDefined {
+		delete(needUpdate, "ImgSrc")
+		delete(needUpdate, "Desc")
 	}
 	
 	needUpdate["UpdatedUserId"] = bson.ObjectIdHex(updatedUserId);
@@ -244,12 +268,18 @@ func (this *NoteService) UpdateNoteContent(userId, updatedUserId, noteId, conten
 		}
 	}
 	
-	if db.UpdateByIdAndUserIdMap(db.NoteContents, noteId, userId, 
-		bson.M{"UpdatedUserId": bson.ObjectIdHex(updatedUserId), 
+	data := bson.M{"UpdatedUserId": bson.ObjectIdHex(updatedUserId), 
 		"Content": content, 
 		"Abstract": abstract, 
-		"UpdatedTime": time.Now()}) {
-		
+		"UpdatedTime": time.Now()}
+	
+	// 是否已自定义
+	note := this.GetNoteById(noteId)
+	if note.IsBlog && note.HasSelfDefined {
+		delete(data, "Abstract")
+	}
+	
+	if db.UpdateByIdAndUserIdMap(db.NoteContents, noteId, userId, data) {
 		// 这里, 添加历史记录
 		noteContentHistoryService.AddHistory(noteId, userId, info.EachHistory{UpdatedUserId: bson.ObjectIdHex(updatedUserId), 
 			Content: content,
@@ -257,7 +287,7 @@ func (this *NoteService) UpdateNoteContent(userId, updatedUserId, noteId, conten
 		})
 		
 		// 更新笔记图片
-		noteImageService.UpdateNoteImages(userId, noteId, content)
+		noteImageService.UpdateNoteImages(userId, noteId, note.ImgSrc, content)
 		
 		return true
 	}
@@ -276,6 +306,29 @@ func (this *NoteService) updateNoteImages(noteId string, content string) bool {
 // [ok] [del]
 func (this *NoteService) UpdateTags(noteId string, userId string, tags []string) bool {
 	return db.UpdateByIdAndUserIdField(db.Notes, noteId, userId, "Tags", tags)
+}
+
+func (this *NoteService) ToBlog(userId, noteId string, isBlog, isTop bool) bool {
+	noteUpdate := bson.M{}
+	if isTop {
+		isBlog = true
+	}
+	if !isBlog {
+		isTop = false
+	}
+	noteUpdate["IsBlog"] = isBlog
+	noteUpdate["IsTop"] = isTop
+	if isBlog {
+		noteUpdate["PublicTime"] = time.Now()
+	} else {
+		noteUpdate["HasSelfDefined"] = false
+	}
+	ok := db.UpdateByIdAndUserIdMap(db.Notes, noteId, userId, noteUpdate)
+	// 重新计算tags
+	go (func() {
+		blogService.ReCountBlogTags(userId)
+	})()
+	return ok
 }
 
 // 移动note
@@ -419,15 +472,20 @@ func (this *NoteService) GetNotebookId(noteId string) bson.ObjectId {
 }
 
 //------------------
-// 搜索Note
+// 搜索Note, 博客使用了
 func (this *NoteService) SearchNote(key, userId string, pageNumber, pageSize int, sortField string, isAsc, isBlog bool) (count int, notes []info.Note) {
 	notes = []info.Note{}
 	skipNum, sortFieldR := parsePageAndSort(pageNumber, pageSize, sortField, isAsc)
 	
+	// 利用标题和desc, 不用content
+	orQ := []bson.M{
+		bson.M{"Title": bson.M{"$regex": bson.RegEx{".*?" + key + ".*", "i"}}},
+		bson.M{"Desc": bson.M{"$regex": bson.RegEx{".*?" + key + ".*", "i"}}},
+	}
 	// 不是trash的
 	query := bson.M{"UserId": bson.ObjectIdHex(userId), 
 		"IsTrash": false, 
-		"Title": bson.M{"$regex": bson.RegEx{".*?" + key + ".*", "i"}},
+		"$or": orQ,
 	}
 	if isBlog {
 		query["IsBlog"] = true
@@ -509,11 +567,20 @@ func (this *NoteService) SearchNoteByTags(tags []string, userId string, pageNumb
 	return
 }
 
+
 //------------
 // 统计
-func (this *NoteService) CountNote() int {
-	return db.Count(db.Notes, bson.M{"IsTrash": false})
+func (this *NoteService) CountNote(userId string) int {
+	q := bson.M{"IsTrash": false}
+	if userId != "" {
+		q["UserId"] = bson.ObjectIdHex(userId)
+	}
+	return db.Count(db.Notes, q)
 }
-func (this *NoteService) CountBlog() int {
-	return db.Count(db.Notes, bson.M{"IsBlog": true, "IsTrash": false})
+func (this *NoteService) CountBlog(userId string) int {
+	q := bson.M{"IsBlog": true, "IsTrash": false}
+	if userId != "" {
+		q["UserId"] = bson.ObjectIdHex(userId)
+	}
+	return db.Count(db.Notes, q)
 }

@@ -657,7 +657,7 @@ Notebook.setNotebook2Blog = function(target) {
 			}
 		});
 	}
-	ajaxPost("blog/setNotebook2Blog", {notebookId: notebookId, isBlog: isBlog}, function(ret) {
+	ajaxPost("notebook/setNotebook2Blog", {notebookId: notebookId, isBlog: isBlog}, function(ret) {
 		if(ret) {
 			// 这里要设置notebook下的note的blog状态
 			Note.setAllNoteBlogStatus(notebookId, isBlog);

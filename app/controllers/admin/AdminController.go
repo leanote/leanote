@@ -18,8 +18,8 @@ func (c Admin) Index() revel.Result {
 	c.SetLocale()
 	
 	c.RenderArgs["countUser"] = userService.CountUser()
-	c.RenderArgs["countNote"] = noteService.CountNote()
-	c.RenderArgs["countBlog"] = noteService.CountBlog()
+	c.RenderArgs["countNote"] = noteService.CountNote("")
+	c.RenderArgs["countBlog"] = noteService.CountBlog("")
 	
 	return c.RenderTemplate("admin/index.html");
 }
@@ -30,6 +30,7 @@ func (c Admin) T(t string) revel.Result {
 	c.RenderArgs["arr"] = configService.GlobalArrayConfigs
 	c.RenderArgs["map"] = configService.GlobalMapConfigs
 	c.RenderArgs["arrMap"] = configService.GlobalArrMapConfigs
+	c.RenderArgs["version"] = configService.GetVersion()
 	return c.RenderTemplate("admin/" + t + ".html")
 }
 

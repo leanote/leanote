@@ -16,7 +16,7 @@ type AdminBlog struct {
 func (c AdminBlog) Index(sorter, keywords string) revel.Result {
 	pageNumber := c.GetPage()
 	sorterField, isAsc := c.getSorter("CreatedTime", false, []string{"title", "userId", "isRecommed", "createdTime"});
-	pageInfo, blogs := blogService.ListAllBlogs("", keywords, false, pageNumber, userPageSize, sorterField, isAsc);
+	pageInfo, blogs := blogService.ListAllBlogs("", "", keywords, false, pageNumber, userPageSize, sorterField, isAsc);
 	c.RenderArgs["pageInfo"] = pageInfo
 	c.RenderArgs["blogs"] = blogs
 	c.RenderArgs["keywords"] = keywords

@@ -1,0 +1,54 @@
+{{template "member/top.html" .}}
+
+<div class="m-b-md"> <h3 class="m-b-none">头像设置</h3></div>
+
+<div class="row">
+
+<div class="col-sm-6">
+	<form id="uploadAvatar" method="post" action="/file/uploadAvatar" enctype="multipart/form-data">
+		<section class="panel panel-default">
+			<div class="panel-body">
+				<div class="form-group">
+	                <div id="dropAvatar" class="dropzone">
+	                	<div>
+							<img src="{{if .userInfo.Logo}}{{.userInfo.Logo}}{{else}}/images/blog/default_avatar.png{{end}}" id="avatar"/>
+						</div>
+	                    <a class="btn btn-success btn-choose-file">
+							<span class="fa fa-upload"></span> Choose Image
+	                    </a>
+	                    <input type="file" name="file" multiple/>
+	                </div>
+	                <div id="avatarUploadMsg">
+	                </div>
+				</div>
+			</div>
+		</section>
+	</form>
+</div>
+
+</div>
+
+{{template "member/footer.html" .}}
+<script src="/js/require.js"></script>
+<script>
+var UrlPrefix = "{{.siteUrl}}"; // 为了发weibo
+var GlobalConfigs = {{.globalConfigs|jsonJs}}; // 2014/11/9 beta2
+require.config({
+	baseUrl: '/public',
+    paths: {
+    	// ajax upload image/attach
+    	'attachment_upload': 'js/app/attachment_upload',
+    	'jquery.ui.widget': 'tinymce/plugins/leaui_image/public/js/jquery.ui.widget',
+    	'fileupload': '/tinymce/plugins/leaui_image/public/js/jquery.fileupload',
+    	'iframe-transport': '/tinymce/plugins/leaui_image/public/js/jquery.iframe-transport'
+    },
+    shim: {
+    	'fileupload': {deps: ['jquery.ui.widget', 'iframe-transport']}
+    }
+});
+$(function() {
+	require(['attachment_upload'], function(attachment_upload) {});
+});
+</script>
+
+{{template "member/end.html" .}}

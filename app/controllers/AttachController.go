@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
     "io"
+    "fmt"
     "archive/tar"
     "compress/gzip"
 )
@@ -56,8 +57,12 @@ func (c Attach) uploadAttach(noteId string) (re info.Re) {
 		return re
 	}
 	// > 5M?
-	if(len(data) > 5 * 1024 * 1024) {
-		resultMsg = "File is bigger than 5M"
+	maxFileSize := configService.GetUploadSize("uploadAttachSize");
+	if maxFileSize <= 0 {
+		maxFileSize = 1000
+	}
+	if(float64(len(data)) > maxFileSize * float64(1024*1024)) {
+		resultMsg = fmt.Sprintf("附件大于%vM", maxFileSize)
 		return re
 	}
 	

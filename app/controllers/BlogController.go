@@ -1,18 +1,19 @@
 package controllers
 
 import (
-	"strings"
-	"time"
 	"github.com/revel/revel"
-//	"encoding/json"
-	"gopkg.in/mgo.v2/bson"
-//	. "github.com/leanote/leanote/app/lea"
+	"strings"
+	//	"encoding/json"
+	"fmt"
 	"github.com/leanote/leanote/app/info"
-//	"github.com/leanote/leanote/app/types"
-//	"io/ioutil"
-//	"math"
-//	"os"
-//	"path"
+	. "github.com/leanote/leanote/app/lea"
+	"github.com/leanote/leanote/app/lea/blog"
+	"gopkg.in/mgo.v2/bson"
+	//	"github.com/leanote/leanote/app/types"
+	//	"io/ioutil"
+	//	"math"
+	//	"os"
+	//	"path"
 )
 
 type Blog struct {
@@ -21,183 +22,396 @@ type Blog struct {
 
 //-----------------------------
 // 前台
+/*
+公共
+// 分类 [ok]
+$.cates = [{title, cateId}]
+// 单页 [ok]
+$.singles = [{pageId, title}]
+// 博客信息 [ok]
+$.blog = {userId, desc, title, logo, openComment, disqusId}
 
-// 域名, 没用
+// 公用url ok
+$.indexUrl
+$.cateUrl
+$.searchUrl
+$.postUrl
+$.archiveUrl
+$.singleUrl
+$.themeBaseUrl
+
+// 静态文件 [ok]
+$.jQueryUrl
+$.fontAsomeUrl
+$.bootstrapCssUrl
+$.bootstrapJsUrl
+*/
+
+func (c Blog) render(templateName string, themePath string) revel.Result {
+	isPreview := false
+	if c.RenderArgs["isPreview"] != nil {
+		themePath2 := c.RenderArgs["themePath"]
+		if themePath2 == nil {
+			return c.E404()
+		}
+		isPreview = true
+		themePath = themePath2.(string)
+		c.setPreviewUrl()
+	}
+	return blog.RenderTemplate(templateName, c.RenderArgs, revel.BasePath+"/"+themePath, isPreview)
+}
+
+// 404
+func (c Blog) e404(themePath string) revel.Result {
+	// 不知道是谁的404, 则用系统的404
+	if themePath == "" {
+		return c.E404()
+	}
+	return c.render("404.html", themePath)
+}
+
+// 二级域名或自定义域名
+// life.leanote.com
+// lealife.com
 func (c Blog) domain() (ok bool, userBlog info.UserBlog) {
-	return 
+	host := c.Request.Request.Host // a.cc.com:9000
+	hostArr := strings.Split(host, ".")
+	if strings.Contains(host, configService.GetDefaultDomain()) {
+		// 有二级域名 a.leanoe.com 3个
+		if len(hostArr) > 2 {
+			if userBlog = blogService.GetUserBlogBySubDomain(hostArr[0]); userBlog.UserId != "" {
+				ok = true
+				return
+			}
+		}
+	} else {
+		// 自定义域名
+		// 把:9000去掉
+		hostArr2 := strings.Split(host, ":")
+		if userBlog = blogService.GetUserBlogByDomain(hostArr2[0]); userBlog.UserId != "" {
+			ok = true
+			return
+		}
+	}
+	ok = false
+	return
+}
+
+// 渲染模板之
+func (c Blog) setPreviewUrl() {
+	var indexUrl, postUrl, searchUrl, cateUrl, singleUrl, tagsUrl, archiveUrl string
+
+	userId := c.GetUserId()
+	themeId := c.Session["themeId"]
+	theme := themeService.GetTheme(userId, themeId)
+
+	siteUrl := configService.GetSiteUrl()
+	blogUrl := siteUrl + "/preview" // blog.leanote.com
+	userIdOrEmail := userId
+
+	indexUrl = blogUrl + "/" + userIdOrEmail
+	cateUrl = blogUrl + "/cate" // /notebookId
+
+	postUrl = blogUrl + "/post"                         // /xxxxx
+	searchUrl = blogUrl + "/search/" + userIdOrEmail    // blog.leanote.com/search/userId
+	singleUrl = blogUrl + "/single"                     // blog.leanote.com/single/singleId
+	archiveUrl = blogUrl + "/archives/" + userIdOrEmail // blog.leanote.com/archive/userId
+	tagsUrl = blogUrl + "/tags/" + userIdOrEmail        // blog.leanote.com/archive/userId
+
+	c.RenderArgs["indexUrl"] = indexUrl
+	c.RenderArgs["cateUrl"] = cateUrl
+	c.RenderArgs["postUrl"] = postUrl
+	c.RenderArgs["searchUrl"] = searchUrl
+	c.RenderArgs["singleUrl"] = singleUrl // 单页
+	c.RenderArgs["archiveUrl"] = archiveUrl
+	c.RenderArgs["archivesUrl"] = archiveUrl // 别名
+	c.RenderArgs["tagsUrl"] = tagsUrl
+	c.RenderArgs["tagPostsUrl"] = blogUrl + "/tag/" + userIdOrEmail
+	c.RenderArgs["tagUrl"] = c.RenderArgs["tagPostsUrl"]
+
+	// themeBaseUrl 本theme的路径url, 可以加载js, css, images之类的
+	c.RenderArgs["themeBaseUrl"] = "/" + theme.Path
 }
 
 // 各种地址设置
 func (c Blog) setUrl(userBlog info.UserBlog, userInfo info.User) {
 	// 主页 http://leanote.com/blog/life or http://blog.leanote.com/life or http:// xxxx.leanote.com or aa.com
-	var indexUrl, viewUrl, searchUrl, cateUrl, aboutMeUrl, staticUrl string
 	host := c.Request.Request.Host
-	staticUrl = configService.GetUserUrl(strings.Split(host, ":")[0])
+	var staticUrl = configService.GetUserUrl(strings.Split(host, ":")[0])
 	// staticUrl == host, 为保证同源!!! 只有host, http://leanote.com, http://blog/leanote.com
 	// life.leanote.com, lealife.com
-	if userBlog.Domain != "" && configService.AllowCustomDomain() {
-		// ok
-		indexUrl = configService.GetUserUrl(userBlog.Domain)
-		cateUrl = indexUrl + "/cate" // /xxxxx
-		viewUrl = indexUrl + "/view" // /xxxxx
-		searchUrl = indexUrl + "/search" // /xxxxx
-		aboutMeUrl = indexUrl + "/aboutMe"
-	} else if userBlog.SubDomain != "" {
-		indexUrl = configService.GetUserSubUrl(userBlog.SubDomain)
-		cateUrl = indexUrl + "/cate" // /xxxxx
-		viewUrl = indexUrl + "/view" // /xxxxx
-		searchUrl = indexUrl + "/search" // /xxxxx
-		aboutMeUrl = indexUrl + "/aboutMe"
-	} else {
-		// ok
-		blogUrl := configService.GetBlogUrl()
-		userIdOrEmail := ""
-		if userInfo.Username != "" {
-			userIdOrEmail = userInfo.Username
-		} else if userInfo.Email != "" {
-			userIdOrEmail = userInfo.Email
-		} else {
-			userIdOrEmail = userInfo.UserId.Hex()
-		}
-		indexUrl = blogUrl + "/" + userIdOrEmail
-		cateUrl = blogUrl + "/cate" // /notebookId
-		viewUrl = blogUrl + "/view" // /xxxxx
-		searchUrl = blogUrl + "/search/" + userIdOrEmail // /xxxxx
-		aboutMeUrl = blogUrl + "/aboutMe/" + userIdOrEmail
-	}
-	
+	siteUrl := configService.GetSiteUrl()
+	blogUrls := blogService.GetBlogUrls(&userBlog, &userInfo)
 	// 分类
 	// 搜索
 	// 查看
-	c.RenderArgs["indexUrl"] = indexUrl
-	c.RenderArgs["cateUrl"] = cateUrl
-	c.RenderArgs["viewUrl"] = viewUrl
-	c.RenderArgs["searchUrl"] = searchUrl
-	c.RenderArgs["aboutMeUrl"] = aboutMeUrl
-	c.RenderArgs["staticUrl"] = staticUrl
+	c.RenderArgs["siteUrl"] = siteUrl
+	c.RenderArgs["indexUrl"] = blogUrls.IndexUrl
+	c.RenderArgs["cateUrl"] = blogUrls.CateUrl
+	c.RenderArgs["postUrl"] = blogUrls.PostUrl
+	c.RenderArgs["searchUrl"] = blogUrls.SearchUrl
+	c.RenderArgs["singleUrl"] = blogUrls.SingleUrl // 单页
+	c.RenderArgs["archiveUrl"] = blogUrls.ArchiveUrl
+	c.RenderArgs["archivesUrl"] = blogUrls.ArchiveUrl // 别名
+	c.RenderArgs["tagsUrl"] = blogUrls.TagsUrl
+	c.RenderArgs["tagPostsUrl"] = blogUrls.TagPostsUrl
+	c.RenderArgs["tagUrl"] = blogUrls.TagPostsUrl // 别名
+
+	// themeBaseUrl 本theme的路径url, 可以加载js, css, images之类的
+	c.RenderArgs["themeBaseUrl"] = "/" + userBlog.ThemePath
+
+	// 其它static js
+	c.RenderArgs["jQueryUrl"] = siteUrl + "/js/jquery-1.9.0.min.js"
+
+	c.RenderArgs["prettifyJsUrl"] = siteUrl + "/js/google-code-prettify/prettify.js"
+	c.RenderArgs["prettifyCssUrl"] = siteUrl + "/js/google-code-prettify/prettify.css"
+
+	c.RenderArgs["blogCommonJsUrl"] = siteUrl + "/public/blog/js/common.js"
+
+	c.RenderArgs["shareCommentCssUrl"] = siteUrl + "/public/blog/css/share_comment.css"
+	c.RenderArgs["shareCommentJsUrl"] = siteUrl + "/public/blog/js/share_comment.js"
+
+	c.RenderArgs["fontAwesomeUrl"] = staticUrl + "/css/font-awesome-4.2.0/css/font-awesome.css"
+
+	c.RenderArgs["bootstrapCssUrl"] = siteUrl + "/css/bootstrap.css"
+	c.RenderArgs["bootstrapJsUrl"] = siteUrl + "/js/bootstrap-min.js"
+}
+
+// 笔记本分类
+// cates = [{title:"xxx", cateId: "xxxx"}, {}]
+func (c Blog) getCateUrlTitle(n *info.Notebook) string {
+	if n.UrlTitle != "" {
+		return n.UrlTitle
+	}
+	return n.NotebookId.Hex()
+}
+func (c Blog) getCates(userBlog info.UserBlog) {
+	notebooks := blogService.ListBlogNotebooks(userBlog.UserId.Hex())
+	notebooksMap := map[string]info.Notebook{}
+	for _, each := range notebooks {
+		notebooksMap[each.NotebookId.Hex()] = each
+	}
+
+	var i = 0
+	cates := make([]map[string]string, len(notebooks))
+
+	// 先要保证已有的是正确的排序
+	cateIds := userBlog.CateIds
+	has := map[string]bool{} // cateIds中有的
+	if cateIds != nil && len(cateIds) > 0 {
+		for _, cateId := range cateIds {
+			if n, ok := notebooksMap[cateId]; ok {
+				cates[i] = map[string]string{"Title": n.Title, "UrlTitle": c.getCateUrlTitle(&n), "CateId": n.NotebookId.Hex()}
+				i++
+				has[cateId] = true
+			}
+		}
+	}
+	// 之后
+	for _, n := range notebooks {
+		id := n.NotebookId.Hex()
+		if !has[id] {
+			cates[i] = map[string]string{"Title": n.Title, "UrlTitle": c.getCateUrlTitle(&n), "CateId": id}
+			i++
+		}
+	}
+	c.RenderArgs["cates"] = cates
+}
+
+// 单页
+func (c Blog) getSingles(userId string) {
+	singles := blogService.GetSingles(userId)
+	/*
+		if singles == nil {
+			return
+		}
+		singles2 := make([]map[string]string, len(singles))
+		for i, page := range singles {
+			singles2[i] = map[string]string{"title": page["Title"], "singleId": page["SingleId"]}
+		}
+	*/
+	c.RenderArgs["singles"] = singles
+}
+
+// $.blog = {userId, title, subTitle, desc, openComment, }
+func (c Blog) setBlog(userBlog info.UserBlog, userInfo info.User) {
+	blogInfo := map[string]interface{}{
+		"UserId":      userBlog.UserId.Hex(),
+		"Username":    userInfo.Username,
+		"UserLogo":    userInfo.Logo,
+		"Title":       userBlog.Title,
+		"SubTitle":    userBlog.SubTitle,
+		"Logo":        userBlog.Logo,
+		"OpenComment": userBlog.CanComment,
+		"CommentType": userBlog.CommentType, // leanote, or disqus
+		"DisqusId":    userBlog.DisqusId,
+		"ThemeId":     userBlog.ThemeId,
+		"SubDomain":   userBlog.SubDomain,
+		"Domain":      userBlog.Domain,
+	}
+	c.RenderArgs["blogInfo"] = blogInfo
+}
+
+func (c Blog) setPaging(pageInfo info.Page) {
+	c.RenderArgs["paging"] = pageInfo
 }
 
 // 公共
-func (c Blog) blogCommon(userId string, userBlog info.UserBlog, userInfo info.User) (ok bool) {
+func (c Blog) blogCommon(userId string, userBlog info.UserBlog, userInfo info.User) (ok bool, ub info.UserBlog) {
 	if userInfo.UserId == "" {
 		userInfo = userService.GetUserInfoByAny(userId)
 		if userInfo.UserId == "" {
-			return
+			return false, userBlog
 		}
 	}
-	c.RenderArgs["userInfo"] = userInfo
-	
-	// 分类导航
-	c.RenderArgs["notebooks"] = blogService.ListBlogNotebooks(userId)
+	//	c.RenderArgs["userInfo"] = userInfo
+
 	// 最新笔记
-	c.getRecentBlogs(userId)
+	_, recentBlogs := blogService.ListBlogs(userId, "", 1, 5, userBlog.SortField, userBlog.IsAsc)
+	c.RenderArgs["recentPosts"] = blogService.FixBlogs(recentBlogs)
+	c.RenderArgs["latestPosts"] = c.RenderArgs["recentPosts"]
+	c.RenderArgs["tags"] = blogService.GetBlogTags(userId)
+
 	// 语言, url地址
-	c.SetLocale();
-	c.RenderArgs["isMe"] = userId == c.GetUserId()
-	
+	c.SetLocale()
+
 	// 得到博客设置信息
 	if userBlog.UserId == "" {
 		userBlog = blogService.GetUserBlog(userId)
 	}
-	c.RenderArgs["userBlog"] = userBlog
-	
+	c.setBlog(userBlog, userInfo)
+	//	c.RenderArgs["userBlog"] = userBlog
+
+	// 分类导航
+	c.getCates(userBlog)
+
+	// 单页导航
+	c.getSingles(userId)
+
 	c.setUrl(userBlog, userInfo)
-	
-	return true
+
+	// 当前分类Id, 全设为""
+	c.RenderArgs["curCateId"] = ""
+	c.RenderArgs["curSingleId"] = ""
+
+	// 得到主题信息
+	themeInfo := themeService.GetThemeInfo(userBlog.ThemeId.Hex(), userBlog.Style)
+	c.RenderArgs["themeInfo"] = themeInfo
+
+	return true, userBlog
 }
 
-// 跨域判断是否是我的博客
-func (c Blog) IsMe(userId string) revel.Result {
-	var js = ""
-	if c.GetUserId() == userId {
-		js = "$('.is-me').removeClass('hide');"
+// 404
+func (c Blog) E(userIdOrEmail, tag string) revel.Result {
+	ok, userBlog := c.domain()
+	var userId string
+	if ok {
+		userId = userBlog.UserId.Hex()
 	}
-	return c.RenderText(js);
+	var userInfo info.User
+	if userId != "" {
+		userInfo = userService.GetUserInfoByAny(userId)
+	} else {
+		// blog.leanote.com/userid/tag
+		userInfo = userService.GetUserInfoByAny(userIdOrEmail)
+	}
+	userId = userInfo.UserId.Hex()
+	_, userBlog = c.blogCommon(userId, userBlog, userInfo)
+
+	return c.e404(userBlog.ThemePath)
 }
 
-// 进入某个用户的博客
-var blogPageSize = 5
-var searchBlogPageSize = 30
-
-// 分类 /cate/xxxxxxxx?notebookId=1212
-func (c Blog) Cate(notebookId string) revel.Result {
-	if notebookId == "" {
-		return c.E404()
-	}
+func (c Blog) Tags(userIdOrEmail string) (re revel.Result) {
 	// 自定义域名
 	hasDomain, userBlog := c.domain()
+	defer func() {
+		if err := recover(); err != nil {
+			re = c.e404(userBlog.ThemePath)
+		}
+	}()
+
 	userId := ""
 	if hasDomain {
 		userId = userBlog.UserId.Hex()
 	}
-	
-	var notebook info.Notebook
-	notebook = notebookService.GetNotebookById(notebookId)
-	if !notebook.IsBlog {
-		return c.E404()
+
+	var userInfo info.User
+	if userId != "" {
+		userInfo = userService.GetUserInfoByAny(userId)
+	} else {
+		// blog.leanote.com/userid/tag
+		userInfo = userService.GetUserInfoByAny(userIdOrEmail)
 	}
-	if userId != "" && userId != notebook.UserId.Hex() {
-		return c.E404()
+	userId = userInfo.UserId.Hex()
+
+	var ok = false
+	if ok, userBlog = c.blogCommon(userId, userBlog, userInfo); !ok {
+		return c.e404(userBlog.ThemePath) // 404 TODO 使用用户的404
 	}
-	userId = notebook.UserId.Hex()
-		
-	if !c.blogCommon(userId, userBlog, info.User{}) {
-		return c.E404()
+
+	c.RenderArgs["curIsTags"] = true
+	tags := blogService.GetBlogTags(userId)
+	c.RenderArgs["tags"] = tags
+	return c.render("tags.html", userBlog.ThemePath)
+}
+
+// 标签的文章页
+func (c Blog) Tag(userIdOrEmail, tag string) (re revel.Result) {
+	// 自定义域名
+	hasDomain, userBlog := c.domain()
+	defer func() {
+		if err := recover(); err != nil {
+			re = c.e404(userBlog.ThemePath)
+		}
+	}()
+
+	userId := ""
+	if hasDomain {
+		userId = userBlog.UserId.Hex()
 	}
-	
-	// 分页的话, 需要分页信息, totalPage, curPage
+
+	var userInfo info.User
+	if userId != "" {
+		userInfo = userService.GetUserInfoByAny(userId)
+	} else {
+		// blog.leanote.com/userid/tag
+		userInfo = userService.GetUserInfoByAny(userIdOrEmail)
+	}
+	userId = userInfo.UserId.Hex()
+
+	var ok = false
+	if ok, userBlog = c.blogCommon(userId, userBlog, userInfo); !ok {
+		return c.e404(userBlog.ThemePath) // 404 TODO 使用用户的404
+	}
+
+	if hasDomain && tag == "" {
+		tag = userIdOrEmail
+	}
+
+	c.RenderArgs["curIsTagPosts"] = true
+	c.RenderArgs["curTag"] = tag
 	page := c.GetPage()
-	count, blogs := blogService.ListBlogs(userId, notebookId, page, blogPageSize, "PublicTime", false)
-	
-	c.RenderArgs["notebookId"] = notebookId
-	c.RenderArgs["notebook"] = notebook
-	c.RenderArgs["title"] = c.Message("blogClass") + " - " + notebook.Title
-	c.RenderArgs["blogs"] = blogs
-	c.RenderArgs["page"] = page
-	c.RenderArgs["pageSize"] = blogPageSize
-	c.RenderArgs["count"] = count
-	
-	return c.RenderTemplate("blog/index.html")
+	pageInfo, blogs := blogService.SearchBlogByTags([]string{tag}, userId, page, userBlog.PerPageSize, userBlog.SortField, userBlog.IsAsc)
+	c.setPaging(pageInfo)
+
+	c.RenderArgs["posts"] = blogService.FixBlogs(blogs)
+	tagPostsUrl := c.RenderArgs["tagPostsUrl"].(string)
+	c.RenderArgs["pagingBaseUrl"] = tagPostsUrl + "/" + tag
+
+	return c.render("tag_posts.html", userBlog.ThemePath)
 }
 
-// 显示分类的最近博客, json
-func (c Blog) ListCateLatest(notebookId, callback string) revel.Result {
-	if notebookId == "" {
-		return c.E404()
-	}
+// 归档
+func (c Blog) Archives(userIdOrEmail string, cateId string, year, month int) (re revel.Result) {
+	notebookId := cateId
 	// 自定义域名
 	hasDomain, userBlog := c.domain()
-	userId := ""
-	if hasDomain {
-		userId = userBlog.UserId.Hex()
-	}
-	
-	var notebook info.Notebook
-	notebook = notebookService.GetNotebookById(notebookId)
-	if !notebook.IsBlog {
-		return c.E404()
-	}
-	if userId != "" && userId != notebook.UserId.Hex() {
-		return c.E404()
-	}
-	userId = notebook.UserId.Hex()
-		
-	if !c.blogCommon(userId, userBlog, info.User{}) {
-		return c.E404()
-	}
-	
-	// 分页的话, 需要分页信息, totalPage, curPage
-	page := 1
-	_, blogs := blogService.ListBlogs(userId, notebookId, page, 5, "PublicTime", false)
-	re := info.NewRe()
-	re.Ok = true
-	re.List = blogs
-	return c.RenderJsonP(callback, re)
-}
-
-func (c Blog) Index(userIdOrEmail string) revel.Result {
-	// 自定义域名
-	hasDomain, userBlog := c.domain()
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(err)
+			re = c.e404(userBlog.ThemePath)
+		}
+	}()
 	userId := ""
 	if hasDomain {
 		userId = userBlog.UserId.Hex()
@@ -205,7 +419,7 @@ func (c Blog) Index(userIdOrEmail string) revel.Result {
 
 	// 用户id为空, 转至博客平台
 	if userIdOrEmail == "" {
-		userIdOrEmail = leanoteUserId;
+		userIdOrEmail = configService.GetAdminUsername()
 	}
 	var userInfo info.User
 	if userId != "" {
@@ -215,158 +429,250 @@ func (c Blog) Index(userIdOrEmail string) revel.Result {
 	}
 	userId = userInfo.UserId.Hex()
 
-	if !c.blogCommon(userId, userBlog, userInfo) {
-		return c.E404()
+	var ok = false
+	if ok, userBlog = c.blogCommon(userId, userBlog, userInfo); !ok {
+		return c.e404(userBlog.ThemePath) // 404 TODO 使用用户的404
 	}
-	
-	// 分页的话, 需要分页信息, totalPage, curPage
-	page := c.GetPage()
-	count, blogs := blogService.ListBlogs(userId, "", page, blogPageSize, "PublicTime", false)
-	
-	c.RenderArgs["blogs"] = blogs
-	c.RenderArgs["page"] = page
-	c.RenderArgs["pageSize"] = blogPageSize
-	c.RenderArgs["count"] = count
-	c.RenderArgs["index"] = true
-	c.RenderArgs["notebookId"] = ""
-	c.RenderArgs["title"] = userBlog.Title
-	
-	return c.RenderTemplate("blog/index.html")
+
+	arcs := blogService.ListBlogsArchive(userId, notebookId, year, month, "PublicTime", false)
+	c.RenderArgs["archives"] = arcs
+
+	c.RenderArgs["curIsArchive"] = true
+	if notebookId != "" {
+		notebook := notebookService.GetNotebookById(notebookId)
+		c.RenderArgs["curCateTitle"] = notebook.Title
+		c.RenderArgs["curCateId"] = notebookId
+	}
+	c.RenderArgs["curYear"] = year
+	c.RenderArgs["curMonth"] = month
+
+	return c.render("archive.html", userBlog.ThemePath)
 }
 
-// 详情
-func (c Blog) View(noteId string) revel.Result {
+// 进入某个用户的博客
+var blogPageSize = 5
+var searchBlogPageSize = 30
+// 分类 /cate/xxxxxxxx?notebookId=1212
+func (c Blog) Cate(userIdOrEmail string, notebookId string) (re revel.Result) {
 	// 自定义域名
 	hasDomain, userBlog := c.domain()
-	userId := ""
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(err)
+			re = c.e404(userBlog.ThemePath)
+		}
+	}()
+
+	userId, userInfo := c.userIdOrEmail(hasDomain, userBlog, userIdOrEmail)
+	notebookId2 := notebookId
+	var notebook info.Notebook
+	if userId == "" { // 证明没有userIdOrEmail, 只有singleId, 那么直接查
+		notebook = notebookService.GetNotebookById(notebookId)
+		userId = notebook.UserId.Hex()
+	} else {
+		notebook = notebookService.GetNotebookByUserIdAndUrlTitle(userId, notebookId)
+		notebookId2 = notebook.NotebookId.Hex()
+	}
+	var ok = false
+	if ok, userBlog = c.blogCommon(userId, userBlog, userInfo); !ok {
+		return c.e404(userBlog.ThemePath) // 404 TODO 使用用户的404
+	}
+	if !notebook.IsBlog {
+		return c.e404("")
+	}
+
+	// 分页的话, 需要分页信息, totalPage, curPage
+	page := c.GetPage()
+	pageInfo, blogs := blogService.ListBlogs(userId, notebookId2, page, userBlog.PerPageSize, userBlog.SortField, userBlog.IsAsc)
+	blogs2 := blogService.FixBlogs(blogs)
+	c.RenderArgs["posts"] = blogs2
+
+	c.setPaging(pageInfo)
+
+	c.RenderArgs["curCateTitle"] = notebook.Title
+	c.RenderArgs["curCateId"] = notebookId2
+	cateUrl := c.RenderArgs["cateUrl"].(string)
+	c.RenderArgs["pagingBaseUrl"] = cateUrl + "/" + notebookId
+	c.RenderArgs["curIsCate"] = true
+
+	return c.render("cate.html", userBlog.ThemePath)
+}
+
+func (c Blog) userIdOrEmail(hasDomain bool, userBlog info.UserBlog, userIdOrEmail string) (userId string, userInfo info.User) {
+	userId = ""
 	if hasDomain {
 		userId = userBlog.UserId.Hex()
 	}
-	
-	blog := blogService.GetBlog(noteId)
-	userInfo := userService.GetUserInfo(blog.UserId.Hex())
-	if userId != "" && userInfo.UserId.Hex() != userId {
-		return c.E404()
-	}
-	c.RenderArgs["blog"] = blog
-	c.RenderArgs["userInfo"] = userInfo
-	c.RenderArgs["title"] = blog.Title + " - " + userInfo.Username
-	
-	userId = userInfo.UserId.Hex()
-	c.blogCommon(userId, userBlog, info.User{})
-	
-	// 得到访问者id
-	visitUserId := c.GetUserId()
-	if(visitUserId != "") {
-		visitUserInfo := userService.GetUserInfo(visitUserId)
-		c.RenderArgs["visitUserInfoJson"] = c.Json(visitUserInfo)
-		c.RenderArgs["visitUserInfo"] = visitUserInfo
+	if userId != "" {
+		userInfo = userService.GetUserInfoByAny(userId)
 	} else {
-		c.RenderArgs["visitUserInfoJson"] = "{}";
+		if userIdOrEmail != "" {
+			userInfo = userService.GetUserInfoByAny(userIdOrEmail)
+		} else {
+			return
+		}
 	}
-	
-	return c.RenderTemplate("blog/view.html")
+	userId = userInfo.UserId.Hex()
+	return
+}
+
+func (c Blog) Index(userIdOrEmail string) (re revel.Result) {
+	// 自定义域名
+	hasDomain, userBlog := c.domain()
+	defer func() {
+		if err := recover(); err != nil {
+			re = c.e404(userBlog.ThemePath)
+		}
+	}()
+	// 用户id为空, 则是admin用户的博客
+	if userIdOrEmail == "" {
+		userIdOrEmail = configService.GetAdminUsername()
+	}
+	userId, userInfo := c.userIdOrEmail(hasDomain, userBlog, userIdOrEmail)
+	var ok = false
+	if ok, userBlog = c.blogCommon(userId, userBlog, userInfo); !ok {
+		return c.e404(userBlog.ThemePath) // 404 TODO 使用用户的404
+	}
+
+	// 分页的话, 需要分页信息, totalPage, curPage
+	page := c.GetPage()
+	pageInfo, blogs := blogService.ListBlogs(userId, "", page, userBlog.PerPageSize, userBlog.SortField, userBlog.IsAsc)
+	blogs2 := blogService.FixBlogs(blogs)
+	c.RenderArgs["posts"] = blogs2
+
+	c.setPaging(pageInfo)
+	c.RenderArgs["pagingBaseUrl"] = c.RenderArgs["indexUrl"]
+
+	c.RenderArgs["curIsIndex"] = true
+
+	return c.render("index.html", userBlog.ThemePath)
+}
+
+func (c Blog) Post(userIdOrEmail, noteId string) (re revel.Result) {
+	// 自定义域名
+	hasDomain, userBlog := c.domain()
+	defer func() {
+		if err := recover(); err != nil {
+			Log(err)
+			re = c.e404(userBlog.ThemePath)
+		}
+	}()
+
+	userId, userInfo := c.userIdOrEmail(hasDomain, userBlog, userIdOrEmail)
+	var blogInfo info.BlogItem
+	if userId == "" { // 证明没有userIdOrEmail, 只有singleId, 那么直接查
+		blogInfo = blogService.GetBlog(noteId)
+		userId = blogInfo.UserId.Hex()
+	} else {
+		blogInfo = blogService.GetBlogByIdAndUrlTitle(userId, noteId)
+	}
+	var ok = false
+	if ok, userBlog = c.blogCommon(userId, userBlog, userInfo); !ok {
+		return c.e404(userBlog.ThemePath) // 404 TODO 使用用户的404
+	}
+	if blogInfo.NoteId == "" {
+		return c.e404(userBlog.ThemePath) // 404 TODO 使用用户的404
+	}
+
+	c.RenderArgs["post"] = blogService.FixBlog(blogInfo)
+	// c.RenderArgs["userInfo"] = userInfo
+	c.RenderArgs["curIsPost"] = true
+
+	// 上一篇, 下一篇
+	var baseTime interface{}
+	if userBlog.SortField == "PublicTime" {
+		baseTime = blogInfo.PublicTime
+	} else if userBlog.SortField == "CreatedTime" {
+		baseTime = blogInfo.CreatedTime
+	} else if userBlog.SortField == "UpdatedTime" {
+		baseTime = blogInfo.UpdatedTime
+	} else {
+		baseTime = blogInfo.Title
+	}
+
+	prePost, nextPost := blogService.PreNextBlog(userId, userBlog.SortField, userBlog.IsAsc, baseTime)
+	c.RenderArgs["prePost"] = prePost
+	c.RenderArgs["nextPost"] = nextPost
+	return c.render("post.html", userBlog.ThemePath)
+}
+
+func (c Blog) Single(userIdOrEmail, singleId string) (re revel.Result) {
+	// 自定义域名
+	hasDomain, userBlog := c.domain()
+	defer func() {
+		if err := recover(); err != nil {
+			re = c.e404(userBlog.ThemePath)
+		}
+	}()
+
+	userId, userInfo := c.userIdOrEmail(hasDomain, userBlog, userIdOrEmail)
+	var single info.BlogSingle
+	if userId == "" { // 证明没有userIdOrEmail, 只有singleId, 那么直接查
+		single = blogService.GetSingle(singleId)
+		userId = single.UserId.Hex()
+	} else {
+		single = blogService.GetSingleByUserIdAndUrlTitle(userId, singleId)
+	}
+	var ok = false
+	if ok, userBlog = c.blogCommon(userId, userBlog, userInfo); !ok {
+		return c.e404(userBlog.ThemePath) // 404 TODO 使用用户的404
+	}
+	if single.SingleId == "" {
+		panic("")
+	}
+
+	c.RenderArgs["single"] = map[string]interface{}{
+		"SingleId":    single.SingleId.Hex(),
+		"Title":       single.Title,
+		"UrlTitle":    single.UrlTitle,
+		"Content":     single.Content,
+		"CreatedTime": single.CreatedTime,
+		"UpdatedTime": single.UpdatedTime,
+	}
+	c.RenderArgs["curSingleId"] = single.SingleId.Hex()
+	c.RenderArgs["curIsSingle"] = true
+
+	return c.render("single.html", userBlog.ThemePath)
 }
 
 // 搜索
-func (c Blog) Search(userIdOrEmail, key string) revel.Result {
+func (c Blog) Search(userIdOrEmail, keywords string) (re revel.Result) {
 	// 自定义域名
 	hasDomain, userBlog := c.domain()
+	defer func() {
+		if err := recover(); err != nil {
+			re = c.e404(userBlog.ThemePath)
+		}
+	}()
 	userId := ""
 	if hasDomain {
 		userId = userBlog.UserId.Hex()
 	}
-	
-	c.RenderArgs["title"] = c.Message("search") + " - " + key
-	c.RenderArgs["key"] = key
-	
+
 	var userInfo info.User
 	if userId != "" {
 		userInfo = userService.GetUserInfoByAny(userId)
 	} else {
 		userInfo = userService.GetUserInfoByAny(userIdOrEmail)
 	}
-	c.RenderArgs["userInfo"] = userInfo
+	//	c.RenderArgs["userInfo"] = userInfo
 	userId = userInfo.UserId.Hex()
-	c.blogCommon(userId, userBlog, userInfo)
-	
+	var ok = false
+	if ok, userBlog = c.blogCommon(userId, userBlog, userInfo); !ok {
+		return c.e404(userBlog.ThemePath)
+	}
+
 	page := c.GetPage()
-	_, blogs := blogService.SearchBlog(key, userId, page, searchBlogPageSize, "PublicTime", false)
-	
-	c.RenderArgs["blogs"] = blogs
-	c.RenderArgs["key"] = key
+	pageInfo, blogs := blogService.SearchBlog(keywords, userId, page, userBlog.PerPageSize, userBlog.SortField, userBlog.IsAsc)
+	c.setPaging(pageInfo)
 
-	return c.RenderTemplate("blog/search.html")
-}
+	c.RenderArgs["posts"] = blogService.FixBlogs(blogs)
+	c.RenderArgs["keywords"] = keywords
+	searchUrl, _ := c.RenderArgs["searchUrl"].(string)
+	c.RenderArgs["pagingBaseUrl"] = searchUrl + "?keywords=" + keywords
+	c.RenderArgs["curIsSearch"] = true
 
-// 博客设置
-func (c Blog) Set() revel.Result {
-	userId := c.GetUserId()
-	userInfo := userService.GetUserInfo(userId)
-	c.RenderArgs["userInfo"] = userInfo
-	
-	// 得到博客设置信息
-	c.RenderArgs["title"] = c.Message("blogSet")
-	c.RenderArgs["isMe"] = true
-	c.RenderArgs["set"] = true
-	
-	c.RenderArgs["allowCustomDomain"] = configService.GetGlobalStringConfig("allowCustomDomain")
-	
-	userBlog := blogService.GetUserBlog(userId)
-	c.blogCommon(userId, userBlog, info.User{})
-	
-	return c.RenderTemplate("blog/set.html")
-}
-
-func (c Blog) SetUserBlogBase(userBlog info.UserBlogBase) revel.Result {
-	re := info.NewRe()
-	re.Ok = blogService.UpdateUserBlogBase(c.GetUserId(), userBlog)
-	return c.RenderJson(re)
-}
-func (c Blog) SetUserBlogComment(userBlog info.UserBlogComment) revel.Result {
-	re := info.NewRe()
-	re.Ok = blogService.UpdateUserBlogComment(c.GetUserId(), userBlog)
-	return c.RenderJson(re)
-}
-func (c Blog) SetUserBlogStyle(userBlog info.UserBlogStyle) revel.Result {
-	re := info.NewRe()
-	re.Ok = blogService.UpdateUserBlogStyle(c.GetUserId(), userBlog)
-	return c.RenderJson(re)
-}
-
-// userId可能是其它的
-func (c Blog) AboutMe(userIdOrEmail string) revel.Result {
-	// 自定义域名
-	hasDomain, userBlog := c.domain()
-	userId := ""
-	if hasDomain {
-		userId = userBlog.UserId.Hex()
-	}
-	
-	var userInfo info.User
-	if userId != "" {
-		userInfo = userService.GetUserInfoByAny(userId)
-	} else {
-		userInfo = userService.GetUserInfoByAny(userIdOrEmail)
-	}
-	
-	if userInfo.UserId == "" {
-		return c.E404()
-	}
-	userId = userInfo.UserId.Hex()
-	
-	c.RenderArgs["userInfo"] = userInfo
-	c.RenderArgs["aboutMe"] = true
-
-	c.RenderArgs["title"] = c.Message("aboutMe")
-	c.blogCommon(userId, userBlog, info.User{})
-	
-	return c.RenderTemplate("blog/about_me.html")
-}
-
-// 优化, 这里不要得到count
-func (c Blog) getRecentBlogs(userId string) {
-	_, c.RenderArgs["recentBlogs"] = blogService.ListBlogs(userId, "", 1, 5, "PublicTime", false)
+	return c.render("search.html", userBlog.ThemePath)
 }
 
 // 可以不要, 因为注册的时候已经把username设为email了
@@ -377,128 +683,155 @@ func (c Blog) setRenderUserInfo(userInfo info.User) {
 	c.RenderArgs["userInfo"] = userInfo
 }
 
-//---------------------------
-// 后台 note<->blog
-
-// 设置/取消Blog; 置顶
-func (c Blog) SetNote2Blog(noteId string, isBlog, isTop bool) revel.Result {
-	noteUpdate := bson.M{}
-	if isTop {
-		isBlog = true
-	}
-	if !isBlog {
-		isTop = false
-	}
-	noteUpdate["IsBlog"] = isBlog
-	noteUpdate["IsTop"] = isTop
-	if isBlog {
-		noteUpdate["PublicTime"] = time.Now()
-	}
-	re := noteService.UpdateNote(c.GetUserId(), c.GetUserId(),
-			noteId, noteUpdate)
-	return c.RenderJson(re)
-}
-
-// 设置notebook <-> blog
-func (c Blog) SetNotebook2Blog(notebookId string, isBlog bool) revel.Result {
-	noteUpdate := bson.M{"IsBlog": isBlog}
-	re := notebookService.UpdateNotebook(c.GetUserId(),
-			notebookId, noteUpdate)
-	return c.RenderJson(re)
-}
-
 //----------------
 // 社交, 点赞, 评论
 
-// 我是否点过赞?
+// 得到博客统计信息
+func (c Blog) GetPostStat(noteId string) revel.Result {
+	re := info.NewRe()
+	re.Ok = true
+	statInfo := blogService.GetBlogStat(noteId)
+	re.Item = statInfo
+	return c.RenderJson(re)
+}
+
+// jsonP
+// 我是否点过赞? 得到我的信息
 // 所有点赞的用户列表
 // 各个评论中是否我也点过赞?
-func (c Blog) GetLike(noteId string) revel.Result {
+func (c Blog) GetLikes(noteId string, callback string) revel.Result {
 	userId := c.GetUserId()
-	
-	// 我也点过?
-	isILikeIt := blogService.IsILikeIt(noteId, userId)
+	result := map[string]interface{}{}
+	isILikeIt := false
+	if userId != "" {
+		isILikeIt = blogService.IsILikeIt(noteId, userId)
+		result["visitUserInfo"] = userService.GetUserAndBlog(userId)
+	}
 	// 点赞用户列表
 	likedUsers, hasMoreLikedUser := blogService.ListLikedUsers(noteId, false)
 
-	result := map[string]interface{}{}
+	re := info.NewRe()
+	re.Ok = true
 	result["isILikeIt"] = isILikeIt
 	result["likedUsers"] = likedUsers
 	result["hasMoreLikedUser"] = hasMoreLikedUser
-	
-	return c.RenderJson(result)
+
+	re.Item = result
+	return c.RenderJsonP(callback, re)
 }
-func (c Blog) GetLikeAndComments(noteId string) revel.Result {
+func (c Blog) GetLikesAndComments(noteId, callback string) revel.Result {
 	userId := c.GetUserId()
-	
+	result := map[string]interface{}{}
+
 	// 我也点过?
-	isILikeIt := blogService.IsILikeIt(noteId, userId)
+	isILikeIt := false
+	if userId != "" {
+		isILikeIt = blogService.IsILikeIt(noteId, userId)
+		result["visitUserInfo"] = userService.GetUserAndBlog(userId)
+	}
+
 	// 点赞用户列表
 	likedUsers, hasMoreLikedUser := blogService.ListLikedUsers(noteId, false)
 	// 评论
 	page := c.GetPage()
 	pageInfo, comments, commentUserInfo := blogService.ListComments(userId, noteId, page, 15)
-	
-	result := map[string]interface{}{}
+
+	re := info.NewRe()
+	re.Ok = true
 	result["isILikeIt"] = isILikeIt
 	result["likedUsers"] = likedUsers
 	result["hasMoreLikedUser"] = hasMoreLikedUser
 	result["pageInfo"] = pageInfo
 	result["comments"] = comments
 	result["commentUserInfo"] = commentUserInfo
-	
-	return c.RenderJson(result)
+	re.Item = result
+	return c.RenderJsonP(callback, re)
 }
 
 func (c Blog) IncReadNum(noteId string) revel.Result {
-	blogService.IncReadNum(noteId)
-	return nil
-}
-// 点赞
-func (c Blog) LikeBlog(noteId string) revel.Result {
-	userId := c.GetUserId()
 	re := info.NewRe()
-	re.Ok, re.Item = blogService.LikeBlog(noteId, userId)
-	
+	re.Ok = blogService.IncReadNum(noteId)
 	return c.RenderJson(re)
 }
-func (c Blog) ListLikes(noteId string) revel.Result {
-	return nil
-}
 
-func (c Blog) ListComments(noteId string) revel.Result {
+// 点赞, 要用jsonp
+func (c Blog) LikePost(noteId string, callback string) revel.Result {
+	re := info.NewRe()
+	userId := c.GetUserId()
+	re.Ok, re.Item = blogService.LikeBlog(noteId, userId)
+	return c.RenderJsonP(callback, re)
+}
+func (c Blog) GetComments(noteId string) revel.Result {
 	// 评论
 	userId := c.GetUserId()
 	page := c.GetPage()
 	pageInfo, comments, commentUserInfo := blogService.ListComments(userId, noteId, page, 15)
-	
+	re := info.NewRe()
+	re.Ok = true
 	result := map[string]interface{}{}
 	result["pageInfo"] = pageInfo
 	result["comments"] = comments
 	result["commentUserInfo"] = commentUserInfo
-	
-	return c.RenderJson(result)
+	re.Item = result
+
+	return c.RenderJson(re)
 }
-func (c Blog) DeleteComment(noteId, commentId string) revel.Result {
+
+// jsonp
+func (c Blog) DeleteComment(noteId, commentId string, callback string) revel.Result {
 	re := info.NewRe()
 	re.Ok = blogService.DeleteComment(noteId, commentId, c.GetUserId())
-	return c.RenderJson(re)
+	return c.RenderJsonP(callback, re)
 }
-func (c Blog) Comment(noteId, content, toCommentId string) revel.Result {
+
+// jsonp
+func (c Blog) CommentPost(noteId, content, toCommentId string, callback string) revel.Result {
 	re := info.NewRe()
-	re.Ok, re.Item = blogService.Comment(noteId, toCommentId, c.GetUserId(), content);
-	return c.RenderJson(re)
+	re.Ok, re.Item = blogService.Comment(noteId, toCommentId, c.GetUserId(), content)
+	return c.RenderJsonP(callback, re)
 }
-func (c Blog) LikeComment(commentId string) revel.Result {
+
+// jsonp
+func (c Blog) LikeComment(commentId string, callback string) revel.Result {
 	re := info.NewRe()
 	ok, isILikeIt, num := blogService.LikeComment(commentId, c.GetUserId())
 	re.Ok = ok
 	re.Item = bson.M{"IsILikeIt": isILikeIt, "Num": num}
-	return c.RenderJson(re)
+	return c.RenderJsonP(callback, re)
 }
 
-func (c Blog) Report(noteId, commentId, reason string) revel.Result {
+// 显示分类的最近博客, jsonp
+func (c Blog) ListCateLatest(notebookId, callback string) revel.Result {
+	if notebookId == "" {
+		return c.e404("")
+	}
+	// 自定义域名
+	hasDomain, userBlog := c.domain()
+	userId := ""
+	if hasDomain {
+		userId = userBlog.UserId.Hex()
+	}
+
+	var notebook info.Notebook
+	notebook = notebookService.GetNotebookById(notebookId)
+	if !notebook.IsBlog {
+		return c.e404(userBlog.ThemePath)
+	}
+	if userId != "" && userId != notebook.UserId.Hex() {
+		return c.e404(userBlog.ThemePath)
+	}
+	userId = notebook.UserId.Hex()
+
+	var ok = false
+	if ok, userBlog = c.blogCommon(userId, userBlog, info.User{}); !ok {
+		return c.e404(userBlog.ThemePath)
+	}
+
+	// 分页的话, 需要分页信息, totalPage, curPage
+	page := 1
+	_, blogs := blogService.ListBlogs(userId, notebookId, page, 5, userBlog.SortField, userBlog.IsAsc)
 	re := info.NewRe()
-	re.Ok = blogService.Report(noteId, commentId, reason, c.GetUserId());
-	return c.RenderJson(re)
+	re.Ok = true
+	re.List = blogs
+	return c.RenderJsonP(callback, re)
 }

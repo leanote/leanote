@@ -42,7 +42,7 @@ $(function() {
 			var t = this;
 			if($("#add_user_form").valid()) {
 				$(t).button('loading');
-				ajaxPost("/auth/doRegister", getFormJsonData("add_user_form"), function(ret){
+				ajaxPost("/adminUser/register", getFormJsonData("add_user_form"), function(ret){
 					$(t).button('reset')
 					if(!ret.Ok) {
 						art.alert(ret.Msg);

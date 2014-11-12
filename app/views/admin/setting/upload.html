@@ -1,0 +1,65 @@
+{{template "admin/top.html" .}}
+<div class="m-b-md"> <h3 class="m-b-none">Upload File Size Limit</h3></div>
+
+<div class="row">
+
+<div class="col-sm-6">
+	<form id="add_user_form">
+		<section class="panel panel-default">
+			<div class="panel-body">
+				<div class="form-group">
+					<label>Image</label>
+					<input type="text" class="form-control" name="uploadImageSize" value="{{.str.uploadImageSize}}">
+					MB. Default is unlimit;
+				</div>
+				<div class="form-group">
+					<label>Avatar</label>
+					<input type="text" class="form-control" name="uploadAvatarSize" value="{{.str.uploadAvatarSize}}">
+					MB. Default is unlimit;
+				</div>
+				<div class="form-group">
+					<label>Blog Logo</label>
+					<input type="text" class="form-control" name="uploadBlogLogoSize" value="{{.str.uploadBlogLogoSize}}">
+					MB. Default is unlimit;
+				</div>
+				<div class="form-group">
+					<label>Attachment</label>
+					<input type="text" class="form-control" name="uploadAttachSize" value="{{.str.uploadAttachSize}}">
+					MB. Default is unlimit;
+				</div>
+			</div>
+			
+			<footer class="panel-footer text-right bg-light lter">
+				<button type="submit" id="submit" class="btn btn-success btn-s-xs">Submit</button>
+			</footer>
+		</section>
+	</form>
+</div>
+
+</div>
+
+{{template "admin/footer.html" .}}
+<script src="/public/admin/js/jquery-validation-1.13.0/jquery.validate.js"></script>
+<script>
+$(function() {
+	init_validator("#add_user_form");
+	
+	$("#submit").click(function(e){
+			e.preventDefault();
+			var t = this;
+			if($("#add_user_form").valid()) {
+				$(t).button('loading');
+				ajaxPost("/adminSetting/uploadSize", getFormJsonData("add_user_form"), function(ret){
+					$(t).button('reset')
+					if(!ret.Ok) {
+						art.alert(ret.Msg)
+					} else {
+						art.tips("Success");
+					}
+				});
+			}
+		});
+});
+</script>
+
+{{template "admin/end.html" .}}

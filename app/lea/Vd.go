@@ -27,6 +27,12 @@ var rulesStr = `{
 	],
 	"domain": [
 		{"rule": "domain", "msg": "errorDomain"}
+	],
+	"perPageSize": [
+		{"rule": "min", "data": "1", "msg": "errorPerPageSize"}
+	],
+	"sortField": [
+		{"rule": "sortField", "msg": "errorSortField"}
 	]
 }
 `
@@ -47,6 +53,25 @@ var rules = map[string]func(string, map[string]string)(bool, string) {
 		data := rule["data"]
 		dataI, _ := strconv.Atoi(data)
 		ok = len(value) >= dataI
+		return
+	},
+	"min": func(value string, rule map[string]string)(ok bool, msg string) {
+		if value == "" {
+			return
+		}
+		data := rule["data"]
+		dataI, _ := strconv.Atoi(data)
+		vI, _ := strconv.Atoi(value)
+		ok = vI >= dataI
+		return
+	},
+	
+	"sortField": func(value string, rule map[string]string)(ok bool, msg string) {
+		if value == "" {
+			return
+		}
+		sortFields := []string{"PublicTime", "CreatedTime", "UpdatedTime", "Title"}
+		ok = InArray(sortFields, value)
 		return
 	},
 	

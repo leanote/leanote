@@ -1,0 +1,127 @@
+{{template "member/top.html" .}}
+
+<style>
+.img-src {
+	max-height: 200px;
+}
+</style>
+
+<div class="m-b-md"> <h3 class="m-b-none">
+{{.note.Title}} - 摘要设置
+</h3>
+</div>
+
+<link rel="stylesheet" href="/tinymce/skins/custom/skin.min.css" type="text/css">
+<div class="row">
+<div class="col-sm-10">
+	<form id="formData">
+		<section class="panel panel-default">
+			<div class="panel-body">
+				以下内容设置后, 以后修改笔记时将不自动获取. 若将该文章取消为博客后, 以下内容会自动获取.
+				<hr />
+  				<div class="alert alert-danger" id="baseMsg" style="display: none"></div>
+				<div class="form-group">
+					<label>
+					主图片
+						<a class="btn btn-default btn-select-img">从笔记中自动获取下一张</a>
+					</label>
+					<div>
+						<img src="{{.note.ImgSrc}}" class="img-src" id="imgSrc"/>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label>描述</label>
+					<textarea type="text" rows="6" class="form-control" id="desc" name="desc">{{.note.Desc}}</textarea>
+				</div>
+				
+				<div class="form-group">
+					<label for="content1">摘要</label>
+					<div id="popularToolbar"></div>
+					<textarea id="content1" name="content">{{.note.Abstract}}</textarea>
+				</div>
+			</div>
+			<footer class="panel-footer text-right bg-light lter">
+			    <button type="submit" id="submitBtn" class="btn btn-success">{{msg . "submit"}}</button>
+			</footer>
+			
+			<div class="panel-body">
+				<p>
+				原文:
+				</p>
+				<div id="rawContent">
+				{{.note.Content|raw}}
+				</div>
+			</div>
+		</section>
+	</form>
+</div>
+
+</div>
+{{template "member/footer.html" .}}
+<script type="text/javascript" src="/tinymce/tinymce.js"></script>
+<script>
+var UrlPrefix = "{{.siteUrl}}";
+$(function() {
+	tinymce.init({
+		selector : "#content1",
+		content_css : [ "/css/bootstrap.css", "/css/editor/editor.css" ],
+		skin : "custom",
+		language : "{{.locale}}",
+		height : 300,
+		width : "100%",
+		skin : "custom",
+		plugins : [
+				"advlist autolink link leanote_image lists charmap hr ",
+				"searchreplace visualblocks visualchars leanote_code tabfocus",
+				"table contextmenu directionality textcolor paste fullpage textcolor"],
+		toolbar1 : "formatselect |fontselect fontsizeselect| forecolor backcolor | bold italic underline strikethrough | bullist numlist | leanote_code",
+		menubar : false,
+		statusbar : false,
+		font_formats : "Arial=arial,helvetica,sans-serif;"
+				+ "Arial Black=arial black,avant garde;"
+				+ "Times New Roman=times new roman,times;"
+				+ "Courier New=courier new,courier;"
+				+ "Tahoma=tahoma,arial,helvetica,sans-serif;"
+				+ "Verdana=verdana,geneva;" + "宋体=SimSun;"
+				+ "新宋体=NSimSun;" + "黑体=SimHei;"
+				+ "微软雅黑=Microsoft YaHei",
+		block_formats : "Header 1=h1;Header 2=h2;Header 3=h3; Header 4=h4;Pre=pre;Paragraph=p"
+	});
+	
+	// 提交
+	$("#submitBtn").click(function(e) {
+		e.preventDefault();
+		var data = {
+			noteId: "{{.noteId}}",
+			imgSrc: $("#imgSrc").attr("src"),
+			desc : $("#desc").val(),
+			abstract : getEditorContent()
+		}
+		ajaxPost("/member/blog/doUpdateBlogAbstract/", data, function(re) {
+			if(reIsOk(re)) {
+				art.tips("Success");
+				location.href = "/member/blog/index";
+			} else {
+				art.alert(re.Msg || "error")
+			}
+		});
+	});
+	
+	// 选择主图
+	var $imgs = $("#rawContent").find("img");
+	var imgLen = $imgs.length;
+	var imgSeq = 0;
+	var $imgSrc = $("#imgSrc");
+	$(".btn-select-img").click(function() {
+		if(imgLen == 0) {
+			return;
+		}
+		imgSeq++;
+		imgSeq = imgSeq%imgLen;
+		$imgSrc.attr("src", $imgs.eq(imgSeq).attr("src"));
+	});
+});
+</script>
+
+{{template "member/end.html" .}}

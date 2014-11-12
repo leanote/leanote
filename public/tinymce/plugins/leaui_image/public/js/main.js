@@ -718,7 +718,7 @@ var o = {
 	    $('#upload').fileupload({
 	        dataType: 'json',
 	        acceptFileTypes: /(\.|\/)(gif|jpg|jpeg|png|jpe)$/i,
-	        maxFileSize: 210000,
+	        // maxFileSize: 210000,
 
 	        // This element will accept file drag/drop uploading
 	        dropZone: $('#drop'),
@@ -734,9 +734,17 @@ var o = {
 	        // This function is called when a file is added to the queue;
 	        // either via the browse button, or via drag/drop:
 	        add: function(e, data) {
-
+	        	// 文件大小限制
+				var size = data.files[0].size;
+	            var maxFileSize = +parent.GlobalConfigs["uploadImageSize"] || 100;
+	            if(typeof size == 'number' && size > 1024 * 1024 * maxFileSize) {
+	                var tpl = $('<li><div class="alert alert-danger"><a class="close" data-dismiss="alert">×</a></div></li>');
+	                tpl.find('div').append('<b>Warning:</b> ' + data.files[0].name + ' <small>[<i>' + formatFileSize(data.files[0].size) + '</i>] is bigger than ' + maxFileSize + 'M</small> ');
+	                tpl.appendTo(ul);
+	            	return;
+	            }
+	            
 	            var tpl = $('<li><div class="alert alert-info"><img class="loader" src="public/images/ajax-loader.gif"> <a class="close" data-dismiss="alert">×</a></div></li>');
-
 	            // Append the file name and file size
 	            tpl.find('div').append(data.files[0].name + ' <small>[<i>' + formatFileSize(data.files[0].size) + '</i>]</small>');
 
@@ -763,6 +771,11 @@ var o = {
 	                var tpl = $('<li><div class="alert alert-danger"><a class="close" data-dismiss="alert">×</a></div></li>');
 	                tpl.find('div').append('<b>Error:</b> ' + data.files[0].name + ' <small>[<i>' + formatFileSize(data.files[0].size) + '</i>]</small> ' + data.result.Msg);
 	                data.context.append(tpl);
+	                setTimeout((function(tpl) {
+	                	return function() {
+		                	tpl.remove();
+	                	}
+	                })(tpl), 3000);
 	            }
 	            $("#upload-msg").scrollTop(1000);
 	        },

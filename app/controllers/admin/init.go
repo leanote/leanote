@@ -28,7 +28,6 @@ var configService *service.ConfigService
 var emailService *service.EmailService
 var upgradeService *service.UpgradeService
 
-var adminUsername = "admin"
 // 拦截器
 // 不需要拦截的url
 // Index 除了Note之外都不需要
@@ -83,7 +82,7 @@ func AuthInterceptor(c *revel.Controller) revel.Result {
 	
 	// 验证是否已登录
 	// 必须是管理员
-	if username, ok := c.Session["Username"]; ok && username == adminUsername {
+	if username, ok := c.Session["Username"]; ok && username == configService.GetAdminUsername() {
 		return nil // 已登录
 	}
 	

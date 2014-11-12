@@ -7,6 +7,7 @@ import (
 	. "github.com/leanote/leanote/app/lea"
 	"github.com/leanote/leanote/app/info"
 	"os/exec"
+//	"time"
 //	"github.com/leanote/leanote/app/types"
 //	"io/ioutil"
 //	"fmt"
@@ -52,8 +53,9 @@ func (c Note) Index() revel.Result {
 	}
 	// 当然, 还需要得到第一个notes的content
 	//...
+	Log(configService.GetAdminUsername())
+	c.RenderArgs["isAdmin"] = configService.GetAdminUsername() == userInfo.Username
 	
-	c.RenderArgs["isAdmin"] = leanoteUserId == userInfo.Username
 	c.RenderArgs["userInfo"] = userInfo
 	c.RenderArgs["userInfoJson"] = c.Json(userInfo)
 	c.RenderArgs["notebooks"] = c.Json(notebooks)
@@ -65,6 +67,8 @@ func (c Note) Index() revel.Result {
 	c.RenderArgs["noteContent"] = noteContent.Content
 	
 	c.RenderArgs["tagsJson"] = c.Json(tagService.GetTags(c.GetUserId()))
+	
+	c.RenderArgs["globalConfigs"] = configService.GetGlobalConfigForUser()
 	
 	if isDev, _ := revel.Config.Bool("mode.dev"); isDev {
 		return c.RenderTemplate("note/note-dev.html")
@@ -121,7 +125,7 @@ func (c Note) UpdateNoteOrContent(noteOrContent NoteOrContent) revel.Result {
 	// 新添加note
 	if noteOrContent.IsNew {
 		userId := c.GetObjectUserId();
-		myUserId := userId
+//		myUserId := userId
 		// 为共享新建?
 		if noteOrContent.FromUserId != "" {
 			userId = bson.ObjectIdHex(noteOrContent.FromUserId)
@@ -143,7 +147,7 @@ func (c Note) UpdateNoteOrContent(noteOrContent NoteOrContent) revel.Result {
 			Content: noteOrContent.Content, 
 			Abstract: noteOrContent.Abstract};
 		
-		note = noteService.AddNoteAndContent(note, noteContent, myUserId)
+		note = noteService.AddNoteAndContentForController(note, noteContent, c.GetUserId())
 		return c.RenderJson(note)
 	}
 	
@@ -296,7 +300,7 @@ func (c Note) Html2Image(noteId string) revel.Result {
 	appKey, _ := revel.Config.String("app.secret")
 	cookieDomain, _ := revel.Config.String("cookie.domain")
 	// 生成之
-	url := siteUrl + "/note/toImage?noteId=" + noteId + "&appKey=" + appKey;
+	url := configService.GetSiteUrl() + "/note/toImage?noteId=" + noteId + "&appKey=" + appKey;
 	// /Users/life/Documents/bin/phantomjs/bin/phantomjs /Users/life/Desktop/test/b.js
 	binPath := configService.GetGlobalStringConfig("toImageBinPath")
 	if binPath == "" {
@@ -350,4 +354,10 @@ func (c Note) Html2Image(noteId string) revel.Result {
     }
 	*/
 	
+}
+
+// 设置/取消Blog; 置顶
+func (c Note) SetNote2Blog(noteId string, isBlog, isTop bool) revel.Result {
+	re := noteService.ToBlog(c.GetUserId(), noteId, isBlog, isTop)
+	return c.RenderJson(re)
 }

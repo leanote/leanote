@@ -149,7 +149,11 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 						}
 						if(fileId) {
 							// 得到fileId, 如果这个笔记不是我的, 那么肯定是协作的笔记, 那么需要将图片copy给原note owner
-							var curNote = Note.getCurNote();
+							// 博客设置中不用没有Note
+							var curNote;
+							if(Note && Note.getCurNote) {
+								curNote = Note.getCurNote();
+							}
 							if(curNote && curNote.UserId != UserInfo.UserId) {
 								(function(data) {
 									ajaxPost("/file/copyImage", {userId: UserInfo.UserId, fileId: fileId, toUserId: curNote.UserId}, function(re) {

@@ -82,9 +82,9 @@ func (this *EmailService) RegisterSendActiveEmail(userInfo info.User, email stri
 		return false
 	}
 	
-	tokenUrl := siteUrl + "/user/activeEmail?token=" + token
+	tokenUrl := configService.GetSiteUrl() + "/user/activeEmail?token=" + token
 	// {siteUrl} {tokenUrl} {token} {tokenTimeout} {user.id} {user.email} {user.username}
-	token2Value := map[string]interface{}{"siteUrl": siteUrl, "tokenUrl": tokenUrl, "token": token, "tokenTimeout": strconv.Itoa(int(tokenService.GetOverHours(info.TokenActiveEmail))),
+	token2Value := map[string]interface{}{"siteUrl": configService.GetSiteUrl(), "tokenUrl": tokenUrl, "token": token, "tokenTimeout": strconv.Itoa(int(tokenService.GetOverHours(info.TokenActiveEmail))),
 		"user": map[string]interface{}{
 			"userId": userInfo.UserId.Hex(),
 			"email": userInfo.Email,
@@ -122,9 +122,9 @@ func (this *EmailService) UpdateEmailSendActiveEmail(userInfo info.User, email s
 	tpl := configService.GetGlobalStringConfig("emailTemplateUpdateEmail");
 	
 	// 发送邮件
-	tokenUrl := siteUrl + "/user/updateEmail?token=" + token
+	tokenUrl := configService.GetSiteUrl() + "/user/updateEmail?token=" + token
 	// {siteUrl} {tokenUrl} {token} {tokenTimeout} {user.userId} {user.email} {user.username}
-	token2Value := map[string]interface{}{"siteUrl": siteUrl, "tokenUrl": tokenUrl, "token": token, "tokenTimeout": strconv.Itoa(int(tokenService.GetOverHours(info.TokenActiveEmail))),
+	token2Value := map[string]interface{}{"siteUrl": configService.GetSiteUrl(), "tokenUrl": tokenUrl, "token": token, "tokenTimeout": strconv.Itoa(int(tokenService.GetOverHours(info.TokenActiveEmail))),
 		"newEmail": email,
 		"user": map[string]interface{}{
 			"userId": userInfo.UserId.Hex(),
@@ -148,9 +148,9 @@ func (this *EmailService) FindPwdSendEmail(token, email string) (ok bool, msg st
 	tpl := configService.GetGlobalStringConfig("emailTemplateFindPassword");
 	
 	// 发送邮件
-	tokenUrl := siteUrl + "/findPassword/" + token
+	tokenUrl := configService.GetSiteUrl() + "/findPassword/" + token
 	// {siteUrl} {tokenUrl} {token} {tokenTimeout} {user.id} {user.email} {user.username}
-	token2Value := map[string]interface{}{"siteUrl": siteUrl, "tokenUrl": tokenUrl, 
+	token2Value := map[string]interface{}{"siteUrl": configService.GetSiteUrl(), "tokenUrl": tokenUrl, 
 		"token": token, "tokenTimeout": strconv.Itoa(int(tokenService.GetOverHours(info.TokenActiveEmail)))}
 		
 	ok, msg, subject, tpl = this.renderEmail(subject, tpl, token2Value)
@@ -167,8 +167,8 @@ func (this *EmailService) SendInviteEmail(userInfo info.User, email, content str
 	subject := configService.GetGlobalStringConfig("emailTemplateInviteSubject");
 	tpl := configService.GetGlobalStringConfig("emailTemplateInvite");
 	
-	token2Value := map[string]interface{}{"siteUrl": siteUrl,
-		"registerUrl": siteUrl + "/register?from=" + userInfo.Username,
+	token2Value := map[string]interface{}{"siteUrl": configService.GetSiteUrl(),
+		"registerUrl": configService.GetSiteUrl() + "/register?from=" + userInfo.Username,
 		"content": content,
 		"user": map[string]interface{}{
 			"username": userInfo.Username,
@@ -225,7 +225,7 @@ func (this *EmailService) SendCommentEmail(note info.Note, comment info.BlogComm
 	// {blog.id} {blog.title} {blog.url}
 	// {commentUser.userId} {commentUser.username} {commentUser.email} 
 	// {commentedUser.userId} {commentedUser.username} {commentedUser.email}
-	token2Value := map[string]interface{}{"siteUrl": siteUrl, "blogUrl": configService.GetBlogUrl(),
+	token2Value := map[string]interface{}{"siteUrl": configService.GetSiteUrl(), "blogUrl": configService.GetBlogUrl(),
 		"blog": map[string]string{
 			"id": note.NoteId.Hex(),
 			"title": note.Title,
@@ -316,7 +316,7 @@ func (this *EmailService) renderEmail(subject, body string, values map[string]in
 	
 	var tpl *template.Template
 	
-	values["siteUrl"] = siteUrl;
+	values["siteUrl"] = configService.GetSiteUrl();
 	
 	// subject
 	if subject != "" {

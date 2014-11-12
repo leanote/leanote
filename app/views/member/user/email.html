@@ -1,0 +1,117 @@
+{{template "member/top.html" .}}
+<div class="m-b-md"> <h3 class="m-b-none">邮箱设置</h3></div>
+
+<div class="row">
+
+<div class="col-sm-6">
+	<form id="formData">
+		<section class="panel panel-default">
+			<div class="panel-body">
+  				{{msg . "currentEmail" .userInfo.Email}}
+  				<br />
+  				{{if .userInfo.Verified}}
+  					<span class="label label-green">{{msg . "verified"}}</span>
+  				{{else}}
+  					<span class="label label-red">{{msg . "unVerified"}}</span>
+					<a class="raw nowToActive">{{msg . "verifiedNow"}}</a> 
+					{{msg . "or"}}
+					<a class="raw reSendActiveEmail">{{msg . "resendVerifiedEmail"}}</a> 
+  				{{end}}
+  				
+  				<div class="alert alert-danger" id="emailMsg" style="display: none"></div>
+				<div class="form-group">
+					<label>{{msg . "email"}}</label>
+					<input type="text" class="form-control" 
+				    	id="email" 
+				    	data-rules='[
+					    	{rule: "required", msg: "inputEmail"},
+					    	{rule: "email", msg: "errorEmail"}
+				    	]'
+				    	data-msg_target="#emailMsg"
+				    />
+				    {{msg . "updateEmailTips"}}
+				</div>
+			</div>
+			<footer class="panel-footer text-right bg-light lter">
+			    <button type="submit" id="emailBtn" class="btn btn-success">{{msg . "submit"}}</button>
+			</footer>
+		</section>
+	</form>
+</div>
+
+<!-- 激活邮件 -->
+<div class="modal fade bs-modal-sm" id="reSendActiveEmailDialog" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+	  <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" class="modalTitle">{{msg . "sendVerifiedEmail"}}</h4>
+      </div>
+		<div class="modal-body">
+			<div style="max-height: 300px; padding: 5px 0; text-align: center; overflow-y: auto; overflow-x: hidden" class="weibo">
+				<span class="text">
+					<img src="/images/loading-24.gif"/>
+					{{msg . "emailInSending"}} {{.userInfo.Email}}...
+				</span>
+	    	</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">{{msg . "close"}}</button>
+			<button type="button" class="btn btn-success viewEmailBtn disabled">{{msg . "checkEmail"}}</button>
+		</div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+{{template "member/footer.html" .}}
+<script>
+$(function() {
+// 修改邮箱
+var emailVd = new vd.init("#formData");
+$("#emailBtn").click(function(e) {
+	e.preventDefault();
+	if(!emailVd.valid()) {
+		return;
+	}
+	var email = $("#email").val();
+	post("/user/updateEmailSendActiveEmail", {email: email}, function(e) {
+		if(e.Ok) {
+			var url = getEmailLoginAddress(email);
+			showAlert("#emailMsg", getMsg("verifiedEmaiHasSent") +" <a href='" + url + "' target='_blank'>" + getMsg("checkEmail") + "</a>", "success");
+		} else {
+			showAlert("#emailMsg", e.Msg || getMsg("emailSendFailed"), "danger");
+		}
+	}, "#emailBtn");
+});
+
+// 重新发送
+$(".reSendActiveEmail").click(function() {
+	// 弹框出来
+	showDialog2("#reSendActiveEmailDialog", {postShow: function() {
+		ajaxGet("/user/reSendActiveEmail", {}, function(ret) {
+			if (typeof ret == "object" && ret.Ok) {
+				$("#reSendActiveEmailDialog .text").html(getMsg("sendSuccess"))
+				$("#reSendActiveEmailDialog .viewEmailBtn").removeClass("disabled");
+				$("#reSendActiveEmailDialog .viewEmailBtn").click(function() {
+					hideDialog();
+					var url = getEmailLoginAddress("{{.userInfo.Email}}");
+					window.open(url, "_blank");
+				});
+			} else {
+				$("#reSendActiveEmailDialog .text").html(getMsg("sendFailed"))
+			}
+		});
+	}});
+});
+// 现在去验证
+$(".nowToActive").click(function() {
+	var url = getEmailLoginAddress("{{.userInfo.Email}}");
+	window.open(url, "_blank");
+});
+
+});
+</script>
+
+{{template "member/end.html" .}}

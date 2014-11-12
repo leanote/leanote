@@ -5,6 +5,7 @@ import (
 //	. "github.com/leanote/leanote/app/lea"
 	"github.com/leanote/leanote/app/info"
 	"strings"
+	"fmt"
 )
 
 // admin 首页
@@ -110,10 +111,28 @@ func (c AdminSetting) OpenRegister(openRegister string) revel.Result {
 	return c.RenderJson(re)
 }
 
+func (c AdminSetting) HomePage(homePage string) revel.Result {
+	re := info.NewRe()
+	if homePage == "0" {
+		homePage = ""
+	}
+	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "homePage", homePage)
+	return c.RenderJson(re)
+}
+
 func (c AdminSetting) Mongodb(mongodumpPath, mongorestorePath string) revel.Result {
 	re := info.NewRe()
 	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "mongodumpPath", mongodumpPath)
 	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "mongorestorePath", mongorestorePath)
 
+	return c.RenderJson(re)
+}
+
+func (c AdminSetting) UploadSize(uploadImageSize, uploadAvatarSize, uploadBlogLogoSize, uploadAttachSize float64) revel.Result {
+	re := info.NewRe()
+	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "uploadImageSize", fmt.Sprintf("%v", uploadImageSize))
+	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "uploadAvatarSize", fmt.Sprintf("%v", uploadAvatarSize))
+	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "uploadBlogLogoSize", fmt.Sprintf("%v", uploadBlogLogoSize))
+	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "uploadAttachSize", fmt.Sprintf("%v", uploadAttachSize))
 	return c.RenderJson(re)
 }

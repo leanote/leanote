@@ -1,1 +1,1 @@
-{ "indexes" : [ { "v" : 1, "key" : { "_id" : 1 }, "ns" : "leanote.leanote.has_share_notes", "name" : "_id_" }, { "v" : 1, "key" : { "UserId" : 1, "ToUserId" : 1 }, "unique" : true, "ns" : "leanote.leanote.has_share_notes", "name" : "UserId_1_ToUserId_1" } ] }
+{ "indexes" : [ { "v" : 1, "key" : { "_id" : 1 }, "ns" : "leanote_beta2.leanote.has_share_notes", "name" : "_id_" }, { "v" : 1, "key" : { "UserId" : 1, "ToUserId" : 1 }, "unique" : true, "ns" : "leanote_beta2.leanote.has_share_notes", "name" : "UserId_1_ToUserId_1" } ] }

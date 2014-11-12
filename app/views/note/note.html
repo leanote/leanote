@@ -136,30 +136,28 @@ function log(o) {
 							<i class="fa fa-angle-down"></i>
 						</a>
 						<ul class="dropdown-menu li-a" role="menu">
-							<li role="presentation" id="setInfo">
-								<a>
-								<i class="fa fa-info"></i> 
-								{{msg . "accountSetting"}}
+							<li role="presentation">
+								<a href="/member" target="_blank">
+								<i class="fa fa-user"></i> 
+								{{msg . "memberCenter"}}
 								</a>
 							</li>
-							<li role="presentation" id="setAvatarMenu">
-								<a>
-								<i class="fa fa-smile-o"></i> 
-								{{msg . "setAvatar"}}
-								</a>
-							</li>
+							
 							<li role="presentation" id="setTheme">
 								<a>
 								<i class="fa fa-sun-o"></i> 
 								{{msg . "themeSetting"}}
 								</a>
 							</li>
-							<!--
-							<li role="presentation" id="yourSuggestions">
-								<i class="fa fa-comment-o"></i> 
-								{{msg . "yourSuggestions"}}
+							
+							<li role="presentation" class="divider"></li>
+							<li role="presentation">
+								<a href="/member/blog/base" target="_blank">
+								<i class="fa fa-bold"></i> 
+								{{msg . "blogSet"}}
+								</a>
 							</li>
-							-->
+							
 							<li role="presentation" class="my-link" >
 								<a target="_blank" href="{{$.blogUrl}}/{{.userInfo.Username}}">
 								<i class="fa fa-bold"></i>

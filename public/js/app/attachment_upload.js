@@ -83,10 +83,11 @@ define('attachment_upload', ['jquery.ui.widget', 'fileupload'], function(){
 	            
 	            // 检查文件大小
 	            var size = data.files[0].size;
-	            if(typeof size == 'number' && size > 1024 * 1024 * 5) {
+	            var maxFileSize = +GlobalConfigs["uploadAttachSize"] || 100;
+	            if(typeof size == 'number' && size > 1024 * 1024 * maxFileSize) {
 	            	tpl.find("img").remove();
 	            	tpl.removeClass("alert-info").addClass("alert-danger");
-	            	tpl.append(" Warning: File size is bigger than 5M");
+	            	tpl.append(" Warning: File size is bigger than " + maxFileSize + "M");
 	            	setTimeout((function(tpl) {
 	                	return function() {
 		                	tpl.remove();
@@ -156,10 +157,11 @@ define('attachment_upload', ['jquery.ui.widget', 'fileupload'], function(){
 	            
 	            // 检查文件大小
 	            var size = data.files[0].size;
-	            if(typeof size == 'number' && size > 1024 * 1024) {
+	            var maxFileSize = +GlobalConfigs["uploadAvatarSize"] || 100;
+	            if(typeof size == 'number' && size > 1024 * 1024 * maxFileSize) {
 	            	tpl.find("img").remove();
 	            	tpl.removeClass("alert-info").addClass("alert-danger");
-	            	tpl.append(" Warning: File size is bigger than 1M");
+	            	tpl.append(" Warning: File size is bigger than " + maxFileSize + "M");
 	            	setTimeout((function(tpl) {
 	                	return function() {
 		                	tpl.remove();

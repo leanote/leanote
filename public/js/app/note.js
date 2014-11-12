@@ -1131,7 +1131,7 @@ Note.setNote2Blog = function(target) {
 	} else {
 		$(target).find(".item-blog").hide();
 	}
-	ajaxPost("/blog/setNote2Blog", {noteId: noteId, isBlog: isBlog}, function(ret) {
+	ajaxPost("/note/setNote2Blog", {noteId: noteId, isBlog: isBlog}, function(ret) {
 		if(ret) {
 			Note.setNoteCache({NoteId: noteId, IsBlog: isBlog}, false); // 不清空NotesByNotebookId缓存
 		}

@@ -1,0 +1,101 @@
+{{template "member/top.html" .}}
+<div class="m-b-md"> <h3 class="m-b-none">
+{{if .page}}
+修改页面
+{{else}}
+添加页面
+{{end}}
+</h3></div>
+
+<link rel="stylesheet" href="/tinymce/skins/custom/skin.min.css" type="text/css">
+<div class="row">
+<div class="col-sm-10">
+	<form id="formData">
+		<section class="panel panel-default">
+			<div class="panel-body">
+	  				<div class="alert alert-danger" id="baseMsg" style="display: none"></div>
+					<input type="hidden" id="singleId" value="{{.single.SingleId.Hex}}" />
+					<div class="form-group">
+						<label>标题</label>
+						<input type="text" class="form-control" id="title" name="title"
+								value="{{.single.Title}}" 
+								data-rules='[
+							    	{rule: "required", msg: "请输入页面标题"},
+						    	]'
+						    	data-msg_target="#baseMsg"
+								/>
+					</div>
+
+					<div class="form-group">
+						<label for="content1">内容</label>
+						<div id="popularToolbar"></div>
+						<textarea id="content1" name="content">{{.single.Content}}</textarea>
+					</div>
+			</div>
+			<footer class="panel-footer text-right bg-light lter">
+			    <button type="submit" id="baseBtn" class="btn btn-success">{{msg . "submit"}}</button>
+			</footer>
+		</section>
+	</form>
+</div>
+
+</div>
+{{template "member/footer.html" .}}
+<script type="text/javascript" src="/tinymce/tinymce.min.js"></script>
+<script>
+var urlPrefix = "{{.siteUrl}}";
+$(function() {
+	tinymce.init({
+		selector : "#content1",
+		content_css : [ "/css/bootstrap.css", "/css/editor/editor.css" ],
+		skin : "custom",
+		language : "{{.locale}}",
+		height : 300,
+		width : "100%",
+		skin : "custom",
+		plugins : [
+				"advlist autolink link leanote_image lists charmap hr ",
+				"searchreplace visualblocks visualchars leanote_code tabfocus",
+				"table contextmenu directionality textcolor paste fullpage textcolor"],
+		toolbar1 : "formatselect |fontselect fontsizeselect| forecolor backcolor | bold italic underline strikethrough | bullist numlist |",
+		menubar : false,
+		statusbar : false,
+		font_formats : "Arial=arial,helvetica,sans-serif;"
+				+ "Arial Black=arial black,avant garde;"
+				+ "Times New Roman=times new roman,times;"
+				+ "Courier New=courier new,courier;"
+				+ "Tahoma=tahoma,arial,helvetica,sans-serif;"
+				+ "Verdana=verdana,geneva;" + "宋体=SimSun;"
+				+ "新宋体=NSimSun;" + "黑体=SimHei;"
+				+ "微软雅黑=Microsoft YaHei",
+		block_formats : "Header 1=h1;Header 2=h2;Header 3=h3; Header 4=h4;Pre=pre;Paragraph=p"
+	});
+	
+	// 基本设置
+	var vdPage = new vd.init("#formData");
+	$("#baseBtn").click(function(e) {
+		e.preventDefault();
+		if(!vdPage.valid()) {
+			return;
+		}
+		var data = {
+			singleId: $("#singleId").val(),
+			title : $("#title").val(),
+			content : getEditorContent()
+		}
+		ajaxPost("/member/blog/doAddOrUpdateSingle/", data, function(re) {
+			if(reIsOk(re)) {
+				// 添加成功后, 跳转之
+				art.tips("Success")
+				if(!data.pageId) {
+					location.href = "/member/blog/single";
+				}
+			} else {
+				art.alert(re.Msg || "error")
+			}
+		});
+	});
+});
+</script>
+
+{{template "member/end.html" .}}
