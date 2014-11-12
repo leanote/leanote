@@ -30,7 +30,7 @@
           <h3>最近发表</h3>
           <ul>
           	{{range .recentPosts}}
-          	<li title="{{.Title}}"><a href="{{$.postUrl}}/{{.NoteId}}/">{{.Title}}</a></li>
+          	<li title="{{.Title}}"><a href="{{$.postUrl}}/{{.UrlTitle}}">{{.Title}}</a></li>
           	{{end}}
           </ul>
        </div>
