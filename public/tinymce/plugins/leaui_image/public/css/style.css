@@ -211,3 +211,8 @@
 	  width: 90px;
 	}
 }
+#imageUrlForm {
+	min-height: 260px;
+	text-align: center;
+	padding-top: 100px;
+}
