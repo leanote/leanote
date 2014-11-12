@@ -90,14 +90,14 @@ function log(o) {
 		    <!-- 分类页 -->
 		   	{{range $.cates}}
 				<li class="{{if eq .CateId $.curCateId}}active{{end}}">
-					<a href="{{$.cateUrl}}/{{.CateId}}" 
+					<a href="{{$.cateUrl}}/{{.UrlTitle}}" 
 					>{{.Title}}</a>
 				</li>
 			{{end}}
 			<!-- 单页 -->
 			{{range $.singles}}
 			    <li class="{{if eq $.curSingleId .SingleId}}active{{end}}">
-					<a href="{{$.singleUrl}}/{{.SingleId}}">{{.Title}}</a>
+					<a href="{{$.singleUrl}}/{{.UrlTitle}}">{{.Title}}</a>
 				</li>
 			{{end}}
 			

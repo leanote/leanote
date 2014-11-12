@@ -438,14 +438,15 @@ func (this *ThemeService) ImportTheme(userId, path string) (ok bool, msg string)
 
 func (this *ThemeService) UpgradeThemeBeta2() (ok bool) {
 	adminUserId := configService.GetAdminUserId()
-	this.upgradeThemeBeta2(adminUserId, this.GetDefaultThemePath(defaultStyle), true)
-	this.upgradeThemeBeta2(adminUserId, this.GetDefaultThemePath(elegantStyle), false)
-	this.upgradeThemeBeta2(adminUserId, this.GetDefaultThemePath(fixedStyle), false)
+	this.upgradeThemeBeta2(adminUserId, defaultStyle, true)
+	this.upgradeThemeBeta2(adminUserId, elegantStyle, false)
+	this.upgradeThemeBeta2(adminUserId, fixedStyle, false)
 	return true
 }
-func (this *ThemeService) upgradeThemeBeta2(userId, targetPath string, isActive bool) (ok bool) {
+func (this *ThemeService) upgradeThemeBeta2(userId, style string, isActive bool) (ok bool) {
 	// 解压成功, 那么新建之
 	// 保存到数据库中
+	targetPath := this.GetDefaultThemePath(style)
 	theme, _ := this.getThemeConfig(revel.BasePath + "/" + targetPath)
 	if theme.Name == "" {
 		ok = false
@@ -459,6 +460,7 @@ func (this *ThemeService) upgradeThemeBeta2(userId, targetPath string, isActive 
 	theme.UserId = bson.ObjectIdHex(userId)
 	theme.IsActive = isActive
 	theme.IsDefault = true
+	theme.Style = style
 	ok = db.Insert(db.Themes, theme)
 	return ok
 }

@@ -49,7 +49,6 @@ func (this *UpgradeService) UpgradeBetaToBeta2(userId string) (ok bool, msg stri
 		blogService.AddOrUpdateSingle(userBlog.UserId.Hex(), "", "About Me", userBlog.AboutMe)
 	}
 	
-	
 	// 2. 默认主题, 给admin用户
 	themeService.UpgradeThemeBeta2()
 	
@@ -97,7 +96,6 @@ func (this *UpgradeService) UpgradeBetaToBeta2(userId string) (ok bool, msg stri
 	
 	// 删除索引
 	db.ShareNotes.DropIndex("UserId", "ToUserId", "NoteId")
-	
 	ok = true
 	msg = "success"
 	configService.UpdateGlobalStringConfig(userId, "UpgradeBetaToBeta2", "1")

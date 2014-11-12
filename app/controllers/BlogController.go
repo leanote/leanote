@@ -297,6 +297,9 @@ func (c Blog) blogCommon(userId string, userBlog info.UserBlog, userInfo info.Us
 	// 得到主题信息
 	themeInfo := themeService.GetThemeInfo(userBlog.ThemeId.Hex(), userBlog.Style)
 	c.RenderArgs["themeInfo"] = themeInfo
+	Log(">>")
+	Log(userBlog.Style)
+	Log(userBlog.ThemeId.Hex())
 
 	return true, userBlog
 }

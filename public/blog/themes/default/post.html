@@ -51,10 +51,10 @@
 			
 		    <div class="pre-next-post">
 		        <p>
-			    上一篇: {{if $.prePost}}<a href="{{$.postUrl}}/{{$.prePost.NoteId}}">{{$.prePost.Title}}</a>{{else}}无{{end}}
+			    上一篇: {{if $.prePost}}<a href="{{$.postUrl}}/{{$.prePost.UrlTitle}}">{{$.prePost.Title}}</a>{{else}}无{{end}}
                 </p>
                 <p>
-                下一篇: {{if $.nextPost}}<a href="{{$.postUrl}}/{{$.nextPost.NoteId}}">{{$.nextPost.Title}}</a>{{else}}无{{end}}
+                下一篇: {{if $.nextPost}}<a href="{{$.postUrl}}/{{$.nextPost.UrlTitle}}">{{$.nextPost.Title}}</a>{{else}}无{{end}}
 			    </p>
 			</div>
 			
