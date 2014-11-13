@@ -82,13 +82,13 @@ GET		/preview/archives	Preview.Archives
 GET		/preview/view/:noteId			Preview.Post
 
 GET		/preview/post/:noteId			Preview.Post
-GET		/preview/post/userIdOrEmail/:noteId			Preview.Post
+GET		/preview/post/:userIdOrEmail/:noteId			Preview.Post
 
-GET		/preview/single/userIdOrEmail/:singleId			Preview.Single
+GET		/preview/single/:userIdOrEmail/:singleId			Preview.Single
 GET		/preview/single/:singleId			Preview.Single
 
 GET		/preview/cate/:notebookId		Preview.Cate
-GET		/preview/cate/userIdOrEmail/:notebookId		Preview.Cate
+GET		/preview/cate/:userIdOrEmail/:notebookId		Preview.Cate
 
 GET		/preview/:userIdOrEmail		Preview.Index
 GET		/preview						Preview.Index

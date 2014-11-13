@@ -102,19 +102,23 @@ func (c Blog) setPreviewUrl() {
 	var indexUrl, postUrl, searchUrl, cateUrl, singleUrl, tagsUrl, archiveUrl string
 
 	userId := c.GetUserId()
+	userIdOrEmail := userId
+	username := c.GetUsername()
+	if username != "" {
+		userIdOrEmail = username
+	}
 	themeId := c.Session["themeId"]
 	theme := themeService.GetTheme(userId, themeId)
 
 	siteUrl := configService.GetSiteUrl()
 	blogUrl := siteUrl + "/preview" // blog.leanote.com
-	userIdOrEmail := userId
 
 	indexUrl = blogUrl + "/" + userIdOrEmail
-	cateUrl = blogUrl + "/cate" // /notebookId
+	cateUrl = blogUrl + "/cate/" + userIdOrEmail // /notebookId
 
-	postUrl = blogUrl + "/post"                         // /xxxxx
+	postUrl = blogUrl + "/post/" + userIdOrEmail                         // /xxxxx
 	searchUrl = blogUrl + "/search/" + userIdOrEmail    // blog.leanote.com/search/userId
-	singleUrl = blogUrl + "/single"                     // blog.leanote.com/single/singleId
+	singleUrl = blogUrl + "/single/" + userIdOrEmail                     // blog.leanote.com/single/singleId
 	archiveUrl = blogUrl + "/archives/" + userIdOrEmail // blog.leanote.com/archive/userId
 	tagsUrl = blogUrl + "/tags/" + userIdOrEmail        // blog.leanote.com/archive/userId
 
