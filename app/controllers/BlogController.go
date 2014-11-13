@@ -581,7 +581,8 @@ func (c Blog) Post(userIdOrEmail, noteId string) (re revel.Result) {
 		return c.e404(userBlog.ThemePath) // 404 TODO 使用用户的404
 	}
 
-	c.RenderArgs["post"] = blogService.FixBlog(blogInfo)
+	post := blogService.FixBlog(blogInfo)
+	c.RenderArgs["post"] = post
 	// c.RenderArgs["userInfo"] = userInfo
 	c.RenderArgs["curIsPost"] = true
 
@@ -597,7 +598,7 @@ func (c Blog) Post(userIdOrEmail, noteId string) (re revel.Result) {
 		baseTime = blogInfo.Title
 	}
 
-	prePost, nextPost := blogService.PreNextBlog(userId, userBlog.SortField, userBlog.IsAsc, baseTime)
+	prePost, nextPost := blogService.PreNextBlog(userId, userBlog.SortField, userBlog.IsAsc, post.NoteId, baseTime)
 	if prePost.NoteId != "" {
 		c.RenderArgs["prePost"] = prePost
 	}

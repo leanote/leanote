@@ -353,7 +353,7 @@ func (this *BlogService) SearchBlog(key, userId string, page, pageSize int, sort
 // 上一篇文章, 下一篇文章
 // sorterField, baseTime是基准, sorterField=PublicTime, title
 // isAsc是用户自定义的排序方式
-func (this *BlogService) PreNextBlog(userId string, sorterField string, isAsc bool, baseTime interface{}) (info.Post, info.Post) {
+func (this *BlogService) PreNextBlog(userId string, sorterField string, isAsc bool, noteId string, baseTime interface{}) (info.Post, info.Post) {
 	userIdO := bson.ObjectIdHex(userId)
 
 	var sortFieldT1, sortFieldT2 bson.M
@@ -367,10 +367,10 @@ func (this *BlogService) PreNextBlog(userId string, sorterField string, isAsc bo
 		--
 		*/
 		// 上一篇时间要比它大, 找最小的
-		sortFieldT1 = bson.M{"$gt": baseTime}
+		sortFieldT1 = bson.M{"$gte": baseTime} // 为什么要相等, 因为将notebook发布成博客, 会统一修改note的publicTime, 此时所有notes都一样
 		sortFieldR1 = sorterField
 		// 下一篇时间要比它小
-		sortFieldT2 = bson.M{"$lt": baseTime}
+		sortFieldT2 = bson.M{"$lte": baseTime}
 		sortFieldR2 = "-" + sorterField
 	} else {
 		// 升序
@@ -381,22 +381,28 @@ func (this *BlogService) PreNextBlog(userId string, sorterField string, isAsc bo
 		   ---------
 		*/
 		// 上一篇要比它小, 找最大的
-		sortFieldT1 = bson.M{"$lt": baseTime}
+		sortFieldT1 = bson.M{"$lte": baseTime}
 		sortFieldR1 = "-" + sorterField
 		// 下一篇, 找最小的
-		sortFieldT2 = bson.M{"$gt": baseTime}
+		sortFieldT2 = bson.M{"$gte": baseTime}
 		sortFieldR2 = sorterField
 	}
 
 	// 上一篇, 比基时间要小, 但是是最后一篇, 所以是降序
 	note := info.Note{}
-	query := bson.M{"UserId": userIdO, "IsTrash": false, "IsBlog": true,
+	query := bson.M{"UserId": userIdO, 
+		"IsTrash": false, 
+		"IsBlog": true,
+		"_id": bson.M{"$ne": bson.ObjectIdHex(noteId)},
 		sorterField: sortFieldT1,
 	}
 	q := db.Notes.Find(query)
 	q.Sort(sortFieldR1).Limit(1).One(&note)
 
 	// 下一篇, 比基时间要大, 但是是第一篇, 所以是升序
+	if note.NoteId != "" {
+		query["_id"] = bson.M{"$nin": []bson.ObjectId{bson.ObjectIdHex(noteId), note.NoteId}}
+	}
 	note2 := info.Note{}
 	query[sorterField] = sortFieldT2
 	//	Log(isAsc)
