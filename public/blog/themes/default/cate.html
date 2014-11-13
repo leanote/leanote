@@ -8,7 +8,7 @@
 		{{range $.posts}}
 		<div class="each-post">
 			<div class="title">
-				<a href="{{$.postUrl}}/{{.NoteId}}" title="全文">
+				<a href="{{$.postUrl}}/{{.UrlTitle}}" title="全文">
 					{{.Title}}
 				</a>
 			</div>
@@ -27,7 +27,7 @@
 			<div class="desc">
 				{{.Abstract | raw}}
 			</div>
-			<a class="more" href="{{$.postUrl}}/{{.NoteId}}" title="全文">查看</a>
+			<a class="more" href="{{$.postUrl}}/{{.UrlTitle}}" title="全文">查看</a>
 		</div>
 		{{end}}
 		<!-- 分页 -->
