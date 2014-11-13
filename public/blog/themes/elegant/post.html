@@ -35,7 +35,7 @@
 			{{end}}
 			</div>
 			
-			<div class="desc" id="content">
+			<div class="desc {{if $.post.IsMarkdown }}markdown-content{{end}}" id="content">
 				{{if $.post.IsMarkdown }}
 					<div id="markdownContent" style="display: none">
 						<!-- 用textarea装html, 防止得到的值失真 -->
