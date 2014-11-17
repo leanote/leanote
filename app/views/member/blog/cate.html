@@ -36,7 +36,7 @@ $(function() {
 		$(".list-group-item").each(function() {
 			ids.push($(this).data("id"));
 		});
-		ajaxPost("/member/blog/", {cateIds: ids}, function(re){
+		ajaxPost("/member/blog/upateCateIds", {cateIds: ids}, function(re){
 			if(reIsOk(re)) {
 				art.tips("Success");
 			} else {
