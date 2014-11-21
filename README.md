@@ -2,7 +2,7 @@
 
 ## 1. Introduction
 
-Leanote, note just a notebook!
+Leanote, not just a notebook!
 
 **Some Features**
 
