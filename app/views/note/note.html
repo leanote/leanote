@@ -160,12 +160,20 @@ function log(o) {
 								{{msg . "myBlog"}}</a>
 							</li>
 							
+							<!--
+							<li role="presentation" class="divider my-link"></li>
+							<li role="presentation" class="my-link toggle-editor-mode" >
+								<a href="#writing"><i class="fa fa-rocket"></i>
+								{{msg . "writingMode"}}</a>
+							</li>
+							-->
+							
 							{{if .isAdmin}}
 							<li role="presentation" class="divider"></li>
 							<li role="presentation">
 								<a target="_blank" title="{{msg . "amdin"}}" href="/admin/index">
 									<i class="fa fa-dashboard"></i> 
-									{{msg . "admin"}}
+									<span>{{msg . "admin"}}</span>
 								</a>
 							</li>
 							{{end}}
@@ -178,14 +186,20 @@ function log(o) {
 					</div>
 				</div>
 
-				<div class="pull-right top-nav" id="myBlog">
+				<div class="pull-right top-nav writting-hide lea-blog">
+					<a target="_blank" href="http://lea.leanote.com"> 
+						lea++
+					</a>
+				</div>
+				
+				<div class="pull-right top-nav writting-hide" id="myBlog">
 					<a target="_blank" href="{{$.blogUrl}}/{{.userInfo.Username}}"> 
 						{{msg . "myBlog"}}
 					</a>
 				</div>
 
-				<div class="pull-right" style="line-height: 60px; margin-right:10px" id="toggleEditorMode">
-					<a href="#writing">{{msg . "writingMode"}}</a>
+				<div class="pull-right toggle-editor-mode" style="line-height: 60px; margin-right:10px" id="toggleEditorMode">
+					<a href="#writing"><span>{{msg . "writingMode"}}</span></a>
 				</div>
 				
 				{{if eq .userInfo.Email "demo@leanote.com"}}

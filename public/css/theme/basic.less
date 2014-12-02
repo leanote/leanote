@@ -38,6 +38,20 @@
 
 /*"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue", Helvetica, "Microsoft Yahei", Verdana, Simsun, "Segoe UI", "Segoe UI Web Regular", "Segoe UI Symbol",  "BBAlpha Sans", "S60 Sans", Arial, sans-serif;*/
 
+#noteItemList, #notebook, #leftNotebook, 
+.slimScrollDiv,
+#editorContent_ifr,
+.mce-edit-area,.mce-container-body,.mce-tinymce,
+#editor .mce-ifr,
+.wmd-input,
+#noteReadContent,
+#attachList,
+#tags
+{
+	-webkit-overflow-scrolling: touch !important; // for iphone
+}
+
+
 .btn {
 	border-radius: 2px;
 }
@@ -618,7 +632,7 @@
 }
 #tag {
 	position: absolute;
-	right: 270px;
+	right: 300px;
 	left: 0;
 	top: 0;
 	bottom: 0;

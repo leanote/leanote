@@ -31,6 +31,21 @@
   font-style: normal;
 }
 /*"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue", Helvetica, "Microsoft Yahei", Verdana, Simsun, "Segoe UI", "Segoe UI Web Regular", "Segoe UI Symbol",  "BBAlpha Sans", "S60 Sans", Arial, sans-serif;*/
+#noteItemList,
+#notebook,
+#leftNotebook,
+.slimScrollDiv,
+#editorContent_ifr,
+.mce-edit-area,
+.mce-container-body,
+.mce-tinymce,
+#editor .mce-ifr,
+.wmd-input,
+#noteReadContent,
+#attachList,
+#tags {
+  -webkit-overflow-scrolling: touch !important;
+}
 .btn {
   border-radius: 2px;
 }
@@ -561,7 +576,7 @@
 }
 #tag {
   position: absolute;
-  right: 270px;
+  right: 300px;
   left: 0;
   top: 0;
   bottom: 0;
@@ -1638,14 +1653,12 @@ body {
 }
 #newNoteWrap,
 #topNav,
-#lea,
-#myBlog {
+#lea {
   opacity: 0;
 }
 #newNoteWrap:hover,
 #topNav:hover,
-#lea:hover,
-#myBlog:hover {
+#lea:hover {
   opacity: 1;
 }
 #mainContainer {
@@ -1845,4 +1858,46 @@ body {
 }
 #searchNotebookForAdd {
   background: none;
+}
+.writting-hide {
+  display: none;
+}
+@media screen and (max-width: 800px) {
+  #leanoteMsg {
+    display: none;
+  }
+  #noteItemList,
+  #notebook,
+  #leftNotebook,
+  .slimScrollDiv,
+  #editorContent_ifr,
+  .mce-edit-area,
+  .mce-container-body,
+  .mce-tinymce,
+  #editor .mce-ifr,
+  .wmd-input,
+  #noteReadContent,
+  #attachList,
+  #tags {
+    overflow: scroll !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+}
+@media screen and (max-device-width: 1024px) and (orientation: landscape) {
+  #noteItemList,
+  #notebook,
+  #leftNotebook,
+  .slimScrollDiv,
+  #editorContent_ifr,
+  .mce-edit-area,
+  .mce-container-body,
+  .mce-tinymce,
+  #editor .mce-ifr,
+  .wmd-input,
+  #noteReadContent,
+  #attachList,
+  #tags {
+    overflow: scroll !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
 }

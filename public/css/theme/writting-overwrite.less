@@ -869,7 +869,7 @@ html,body {
 	z-index:333;
 	#leanoteMsg {
 		position: absolute;
-		width: @editorWidth;
+		width: 700px;
 		left:0;
 		right:0;
 		text-align: right;
@@ -884,7 +884,7 @@ html,body {
 	margin-left: 10px;
 }
 
-#newNoteWrap, #topNav, #lea, #myBlog {
+#newNoteWrap, #topNav, #lea {
 	opacity: 0;
 	&:hover {
 		opacity: 1;
@@ -1096,4 +1096,42 @@ body {
 }
 #searchNotebookForAdd {
 	background: none;
+}
+.writting-hide {
+	display: none;
+}
+
+@media screen and (max-width: 800px) {
+#leanoteMsg {
+	display: none;
+}
+#noteItemList, #notebook, #leftNotebook, 
+.slimScrollDiv,
+#editorContent_ifr,
+.mce-edit-area,.mce-container-body,.mce-tinymce,
+#editor .mce-ifr,
+.wmd-input,
+#noteReadContent,
+#attachList,
+#tags
+{
+	overflow: scroll !important;
+	-webkit-overflow-scrolling: touch !important; // for iphone
+}
+}
+
+@media screen and (max-device-width: 1024px) and (orientation: landscape) {
+#noteItemList, #notebook, #leftNotebook, 
+.slimScrollDiv,
+#editorContent_ifr,
+.mce-edit-area,.mce-container-body,.mce-tinymce,
+#editor .mce-ifr,
+.wmd-input,
+#noteReadContent,
+#attachList,
+#tags
+{
+	overflow: scroll !important;
+	-webkit-overflow-scrolling: touch !important; // for iphone
+}
 }

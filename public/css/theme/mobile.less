@@ -1,6 +1,6 @@
-@media screen and (max-width:700px) {
 @green: #65bd77;
 
+@media screen and (max-width:700px) {
 #toggleEditorMode,
 #lea,
 #myBlog,
@@ -18,7 +18,10 @@
 .new-note-text,
 .username,
 #notebookMin,
-.ui-loader 
+.ui-loader,
+#md-section-helper,
+#right-column,
+.writing-mobile-hide
 {
 	display: none !important;
 }
@@ -159,7 +162,6 @@ a:focus, a:hover, a:active {
 		bottom: 0;
 		overflow-y: hidden;
 		overflow-x: scroll;
-		-webkit-overflow-scrolling: touch !important; // for iphone
 		position: absolute;
 		line-height: 40px;
 		line-height: inherit !important;
@@ -188,12 +190,7 @@ a:focus, a:hover, a:active {
 #mdEditor #wmd-input {
 	font-size: 16px;
 }
-#md-section-helper {
-	display: none;
-}
-#right-column {
-	display: none !important;
-}
+
 .new-markdown-text-abbr, .new-note-text-abbr {
 	display: inline;
 }
@@ -214,12 +211,12 @@ a:focus, a:hover, a:active {
 #editorContent_ifr,
 .mce-edit-area,.mce-container-body,.mce-tinymce,
 #editor .mce-ifr,
-.wmd-input{
+.wmd-input,
+#noteReadContent,
+#attachList,
+#tags
+{
 	overflow: scroll !important;
-	-webkit-overflow-scrolling: touch !important; // for iphone
-}
-
-#noteReadContent {
 	-webkit-overflow-scrolling: touch !important; // for iphone
 }
 
@@ -228,7 +225,6 @@ a:focus, a:hover, a:active {
 }
 #attachList {
 	max-height: 200px;
-	-webkit-overflow-scrolling: touch !important; // for iphone
 }
 #attachList li .attach-title {
 	width: 170px;
@@ -264,6 +260,181 @@ a:focus, a:hover, a:active {
 
 #noteMaskForLoading {
 	opacity: .8
+}
+
+}
+
+// ipad 
+@media screen and (max-device-width: 1024px) and (orientation: landscape) {
+#noteItemList, #notebook, #leftNotebook, 
+.slimScrollDiv,
+#editorContent_ifr,
+.mce-edit-area,.mce-container-body,.mce-tinymce,
+#editor .mce-ifr,
+.wmd-input,
+#noteReadContent,
+#attachList,
+#tags
+{
+	overflow: scroll !important;
+	-webkit-overflow-scrolling: touch !important; // for iphone
+}
+
+#tag {
+	position: absolute;
+	right: 140px;
+	left:0;
+	top:0;
+	bottom:0;
+	overflow: hidden;
+
+	#tags {
+		position: absolute;
+		left: 50px;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		overflow-y: hidden;
+		overflow-x: scroll;
+		position: absolute;
+		line-height: 40px;
+		line-height: inherit !important;
+	}
+	#tagDropdown {
+		float: left;
+		width: 50px;
+		line-height: 40px;
+		overflow: hidden;
+		padding-left: 3px;
+	}
+	.add-tag-text {
+		display: none;
+	}
+	#addTagInput {
+		width: 30px;
+		display: inline-block;
+	}
+	#tagColor {
+		display: none !important;
+	}
+}
+
+}
+
+@media screen and (max-width: 800px) {
+#noteItemList, #notebook, #leftNotebook, 
+.slimScrollDiv,
+#editorContent_ifr,
+.mce-edit-area,.mce-container-body,.mce-tinymce,
+#editor .mce-ifr,
+.wmd-input,
+#noteReadContent,
+#attachList,
+#tags
+{
+	overflow: scroll !important;
+	-webkit-overflow-scrolling: touch !important; // for iphone
+}
+
+#lea,
+.lea-blog,
+#myBlog,
+#demoRegister,
+.noteSplit,
+#tipsBtn,
+#contentHistory,
+#curNotebookForNewNote,
+#curNotebookForNewSharedNote,
+.for-split,
+#listNotebookDropdownMenu,
+#listShareNotebookDropdownMenu,
+.username,
+.ui-loader,
+#md-section-helper,
+#right-column
+{
+	display: none !important;
+}
+
+#tag {
+	position: absolute;
+	right: 160px;
+	left:0;
+	top:0;
+	bottom:0;
+	overflow: hidden;
+
+	#tags {
+		position: absolute;
+		left: 50px;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		overflow-y: hidden;
+		overflow-x: scroll;
+		position: absolute;
+		line-height: 40px;
+		line-height: inherit !important;
+	}
+	#tagDropdown {
+		float: left;
+		width: 50px;
+		line-height: 40px;
+		overflow: hidden;
+		padding-left: 3px;
+	}
+	.add-tag-text {
+		display: none;
+	}
+	#addTagInput {
+		width: 30px;
+		display: inline-block;
+	}
+	#tagColor {
+		display: none !important;
+	}
+}
+
+.my-link {
+	display: block;
+}
+
+#attachMenu {
+	width: 320px;
+}
+#attachList {
+	max-height: 200px;
+}
+#attachList li .attach-title {
+	width: 170px;
+}
+#dropAttach .btn {
+	padding: 5px 3px;
+	margin-top: 3px;
+	display: block;
+}
+#myTag .folderBody li {
+	margin: 5px;
+	a:hover {
+		span {
+			color: @green;
+		}
+	}
+}
+
+#left-column {
+	width: 100% !important;
+}
+#mdEditor #wmd-input {
+	font-size: 16px;
+}
+
+.my-link {
+	display: block;
+}
+
+#themeForm img {
+	height: 70px !important;
 }
 
 }

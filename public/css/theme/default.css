@@ -31,6 +31,21 @@
   font-style: normal;
 }
 /*"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue", Helvetica, "Microsoft Yahei", Verdana, Simsun, "Segoe UI", "Segoe UI Web Regular", "Segoe UI Symbol",  "BBAlpha Sans", "S60 Sans", Arial, sans-serif;*/
+#noteItemList,
+#notebook,
+#leftNotebook,
+.slimScrollDiv,
+#editorContent_ifr,
+.mce-edit-area,
+.mce-container-body,
+.mce-tinymce,
+#editor .mce-ifr,
+.wmd-input,
+#noteReadContent,
+#attachList,
+#tags {
+  -webkit-overflow-scrolling: touch !important;
+}
 .btn {
   border-radius: 2px;
 }
@@ -561,7 +576,7 @@
 }
 #tag {
   position: absolute;
-  right: 270px;
+  right: 300px;
   left: 0;
   top: 0;
   bottom: 0;
@@ -1807,7 +1822,10 @@ background-position:-1px -670px
   .new-note-text,
   .username,
   #notebookMin,
-  .ui-loader {
+  .ui-loader,
+  #md-section-helper,
+  #right-column,
+  .writing-mobile-hide {
     display: none !important;
   }
   *,
@@ -1940,7 +1958,6 @@ background-position:-1px -670px
     bottom: 0;
     overflow-y: hidden;
     overflow-x: scroll;
-    -webkit-overflow-scrolling: touch !important;
     position: absolute;
     line-height: 40px;
     line-height: inherit !important;
@@ -1968,12 +1985,6 @@ background-position:-1px -670px
   #mdEditor #wmd-input {
     font-size: 16px;
   }
-  #md-section-helper {
-    display: none;
-  }
-  #right-column {
-    display: none !important;
-  }
   .new-markdown-text-abbr,
   .new-note-text-abbr {
     display: inline;
@@ -1997,11 +2008,11 @@ background-position:-1px -670px
   .mce-container-body,
   .mce-tinymce,
   #editor .mce-ifr,
-  .wmd-input {
+  .wmd-input,
+  #noteReadContent,
+  #attachList,
+  #tags {
     overflow: scroll !important;
-    -webkit-overflow-scrolling: touch !important;
-  }
-  #noteReadContent {
     -webkit-overflow-scrolling: touch !important;
   }
   #attachMenu {
@@ -2009,7 +2020,6 @@ background-position:-1px -670px
   }
   #attachList {
     max-height: 200px;
-    -webkit-overflow-scrolling: touch !important;
   }
   #attachList li .attach-title {
     width: 170px;
@@ -2041,5 +2051,166 @@ background-position:-1px -670px
   }
   #noteMaskForLoading {
     opacity: 0.8;
+  }
+}
+@media screen and (max-device-width: 1024px) and (orientation: landscape) {
+  #noteItemList,
+  #notebook,
+  #leftNotebook,
+  .slimScrollDiv,
+  #editorContent_ifr,
+  .mce-edit-area,
+  .mce-container-body,
+  .mce-tinymce,
+  #editor .mce-ifr,
+  .wmd-input,
+  #noteReadContent,
+  #attachList,
+  #tags {
+    overflow: scroll !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  #tag {
+    position: absolute;
+    right: 140px;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+  }
+  #tag #tags {
+    left: 50px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    position: absolute;
+    line-height: 40px;
+    line-height: inherit !important;
+  }
+  #tag #tagDropdown {
+    float: left;
+    width: 50px;
+    line-height: 40px;
+    overflow: hidden;
+    padding-left: 3px;
+  }
+  #tag .add-tag-text {
+    display: none;
+  }
+  #tag #addTagInput {
+    width: 30px;
+    display: inline-block;
+  }
+  #tag #tagColor {
+    display: none !important;
+  }
+}
+@media screen and (max-width: 800px) {
+  #noteItemList,
+  #notebook,
+  #leftNotebook,
+  .slimScrollDiv,
+  #editorContent_ifr,
+  .mce-edit-area,
+  .mce-container-body,
+  .mce-tinymce,
+  #editor .mce-ifr,
+  .wmd-input,
+  #noteReadContent,
+  #attachList,
+  #tags {
+    overflow: scroll !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  #lea,
+  .lea-blog,
+  #myBlog,
+  #demoRegister,
+  .noteSplit,
+  #tipsBtn,
+  #contentHistory,
+  #curNotebookForNewNote,
+  #curNotebookForNewSharedNote,
+  .for-split,
+  #listNotebookDropdownMenu,
+  #listShareNotebookDropdownMenu,
+  .username,
+  .ui-loader,
+  #md-section-helper,
+  #right-column {
+    display: none !important;
+  }
+  #tag {
+    position: absolute;
+    right: 160px;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+  }
+  #tag #tags {
+    left: 50px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    position: absolute;
+    line-height: 40px;
+    line-height: inherit !important;
+  }
+  #tag #tagDropdown {
+    float: left;
+    width: 50px;
+    line-height: 40px;
+    overflow: hidden;
+    padding-left: 3px;
+  }
+  #tag .add-tag-text {
+    display: none;
+  }
+  #tag #addTagInput {
+    width: 30px;
+    display: inline-block;
+  }
+  #tag #tagColor {
+    display: none !important;
+  }
+  .my-link {
+    display: block;
+  }
+  #attachMenu {
+    width: 320px;
+  }
+  #attachList {
+    max-height: 200px;
+  }
+  #attachList li .attach-title {
+    width: 170px;
+  }
+  #dropAttach .btn {
+    padding: 5px 3px;
+    margin-top: 3px;
+    display: block;
+  }
+  #myTag .folderBody li {
+    margin: 5px;
+  }
+  #myTag .folderBody li a:hover span {
+    color: #65bd77;
+  }
+  #left-column {
+    width: 100% !important;
+  }
+  #mdEditor #wmd-input {
+    font-size: 16px;
+  }
+  .my-link {
+    display: block;
+  }
+  #themeForm img {
+    height: 70px !important;
   }
 }

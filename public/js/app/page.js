@@ -14,11 +14,14 @@ function editorMode() {
 editorMode.prototype.toggleAText = function(isWriting) {
 	var self = this;
 	setTimeout(function() {
-		toggleA = $("#toggleEditorMode a");
+		var toggleA = $(".toggle-editor-mode a");
+		var toggleSpan = $(".toggle-editor-mode span");
 		if(isWriting) {
-			toggleA.attr("href", self.normalHash).text(getMsg("normalMode"));
+			toggleA.attr("href", self.normalHash);
+			toggleSpan.text(getMsg("normalMode"));
 		} else {
-			toggleA.attr("href", self.writingHash).text(getMsg("writingMode"));
+			toggleA.attr("href", self.writingHash);
+			toggleSpan.text(getMsg("writingMode"));
 		}	
 	}, 0);
 }
@@ -28,7 +31,7 @@ editorMode.prototype.isWriting = function(hash) {
 editorMode.prototype.init = function() {
 	this.changeMode(this.isWritingMode);
 	var self = this;
-	$("#toggleEditorMode").click(function() {
+	$(".toggle-editor-mode").click(function() {
 		// 
 		saveBookmark();
 		var $a = $(this).find("a");
@@ -310,7 +313,8 @@ Mobile = {
 	isMobile: function() {
 		var u = navigator.userAgent;
 		LEA.isMobile = false;
-		LEA.isMobile = /Mobile|Android|iPhone/i.test(u);
+		LEA.isMobile = /Mobile|Android|iPhone|iPad/i.test(u);
+		LEA.isIpad =  /iPhone|iPad/i.test(u);
 		if(!LEA.isMobile && $(document).width() <= 700){ 
 			LEA.isMobile = true
 		}
@@ -345,7 +349,7 @@ Mobile = {
 	},
 	switchPage: function() {
 		var self = this;
-		if(!LEA.isMobile) {return true;}
+		if(!LEA.isMobile || LEA.isIpad) {return true;}
 		if(self.bodyO.hasClass("full-editor")) {
 			self.toNormal(true);
 		} else {
