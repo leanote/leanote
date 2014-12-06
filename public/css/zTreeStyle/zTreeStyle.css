@@ -63,7 +63,7 @@ ul.ztree.zTreeDragUL {z-index: 333;margin:0; padding:0; position:absolute; width
 .ztree li span.button {margin-top: -5px;}
 .ztree li span.button.switch {width: 16px;height: 30px; line-height: 30px; text-align: center}
 
-.ztree li a.level0 span {font-size: 14px;}
+.ztree li a.level0 span {font-size: 13px;}
 .ztree li span.button {
 	background-image: none;
 }
