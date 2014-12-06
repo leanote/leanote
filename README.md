@@ -3,6 +3,7 @@
 ## 1. Introduction
 
 Leanote, not just a notebook!
+![leanote.png](leanote.png "")
 
 **Some Features**
 
@@ -99,6 +100,7 @@ Please fork this repository and contribute back using [pull requests](https://gi
 ## 1. 介绍
 
 Leanote, 不只是笔记!
+![leanote.png](leanote.png "")
 
 **特性**
 
