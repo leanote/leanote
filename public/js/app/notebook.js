@@ -846,6 +846,12 @@ $(function() {
 		} else {
 			items.push("set2Blog");
 		}
+
+		//asktalk bebug#23
+		if(notebookId=="548125adf4e872105c000007"){
+			items.push("delete");
+		}
+
 		// 是否还有笔记
 		if(Note.notebookHasNotes(notebookId)) {
 			items.push("delete");
