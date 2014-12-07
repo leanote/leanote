@@ -20,12 +20,18 @@ To be honest, our inspiration comes from Evernote. We use Evernote to manage our
 
 ## 3. How to install leanote
 
+More information about how to install leanote please see:
+* [leanote binary distribution installation tutorial](https://github.com/leanote/leanote/wiki/leanote-binary-distribution-installation-tutorial)
+* [leanote develop distribution installation tutorial](https://github.com/leanote/leanote/wiki/leanote-develop-distribution-installation-tutorial)
+
 ### 3.1. Download leanote
 
-Leanote V1.0-beta has been released. Binaries:
+Leanote V1.0.2-beta has been released. Binaries:
 
-* Linux: [leanote-linux-x86_64.v1.0-beta.bin.tar.gz](https://github.com/leanote/leanote/releases/download/1.0-beta/leanote-linux-x86_64.v1.0-beta.bin.tar.gz)
-* MacOS X: [leanote-mac-x86_64.v1.0-beta.bin.tar.gz](https://github.com/leanote/leanote/releases/download/1.0-beta/leanote-mac-x86_64.v1.0-beta.bin.tar.gz)
+* Linux: [leanote-linux-x86_64.v1.0-beta.2.bin.tar.gz](https://github.com/leanote/leanote/releases/download/1.0-beta/leanote-linux-x86_64.v1.0-beta.2.bin.tar.gz)
+* MacOS X: [leanote-mac-x86_64.v1.0-beta.2.bin.tar.gz](https://github.com/leanote/leanote/releases/download/1.0-beta/leanote-mac-x86_64.v1.0-beta.bin.2.tar.gz)
+
+Or you can clone [Leanote bin repository](https://github.com/leanote/leanote-bin) (Recommend)
 
 ### 3.2. Install MongoDB
 
@@ -89,6 +95,11 @@ this project. Your help is much appreciated.
 
 Please fork this repository and contribute back using [pull requests](https://github.com/leanote/leanote/pulls).
 
+## Docs
+* [leanote binary distribution installation tutorial](https://github.com/leanote/leanote/wiki/leanote-binary-distribution-installation-tutorial)
+* [leanote develop distribution installation tutorial](https://github.com/leanote/leanote/wiki/leanote-develop-distribution-installation-tutorial)
+* [leanote blog theme api](https://github.com/leanote/leanote/wiki/leanote-blog-theme-api_en)
+
 ## Discussion
 * [leanote bbs](http://bbs.leanote.com)
 * [leanote google group](https://groups.google.com/forum/#!forum/leanote)
@@ -123,10 +134,12 @@ leanote是一款私有云笔记, 你可以下载它安装在自己的服务器�
 
 ### 3.1. 下载leanote
 
-Leanote V1.0-beta 已发布, 二进制文件(暂时没有windows版的):
+Leanote V1.0-beta.2 已发布, 二进制文件(暂时没有windows版的):
 
-* Linux: [leanote-linux-x86_64.v1.0-beta.bin.tar.gz](https://github.com/leanote/leanote/releases/download/1.0-beta/leanote-linux-x86_64.v1.0-beta.bin.tar.gz)
-* MacOS X: [leanote-mac-x86_64.v1.0-beta.bin.tar.gz](https://github.com/leanote/leanote/releases/download/1.0-beta/leanote-mac-x86_64.v1.0-beta.bin.tar.gz)
+* Linux: [leanote-linux-x86_64.v1.0-beta.2.bin.tar.gz](https://github.com/leanote/leanote/releases/download/1.0-beta/leanote-linux-x86_64.v1.0-beta.2.bin.tar.gz)
+* MacOS X: [leanote-mac-x86_64.v1.0-beta.2.bin.tar.gz](https://github.com/leanote/leanote/releases/download/1.0-beta/leanote-mac-x86_64.v1.0-beta.2.bin.tar.gz)
+
+或者直接检出[Leanote bin repository](https://github.com/leanote/leanote-bin) (推荐, 因为为最新版本)
 
 ### 3.2. 安装 MongodbDB
 
@@ -187,6 +200,14 @@ $> sudo sh run.sh
 欢迎提交[pull requests](https://github.com/leanote/leanote/pulls) 到leanote.
 
 leanote还有很多问题, 如果你喜欢它, 欢迎加入我们一起完善leanote.
+
+## 相关文档
+* [leanote二进制版详细安装教程](https://github.com/leanote/leanote/wiki/leanote%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
+* [leanote开发版详细安装教程](https://github.com/leanote/leanote/wiki/leanote%E5%BC%80%E5%8F%91%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
+* [Leanote source leanote源码导读](https://github.com/leanote/leanote/wiki/Leanote-source-leanote源码导读)
+* [leanote blog theme api(中文版)](https://github.com/leanote/leanote/wiki/leanote-blog-theme-api)
+* [How to develop leanote 如何开发leanote](https://github.com/leanote/leanote/wiki/How-to-develop-leanote-如何开发leanote)
+
 
 ## 讨论
 * [leanote 社区](http://bbs.leanote.com)

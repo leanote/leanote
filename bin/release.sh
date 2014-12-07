@@ -10,7 +10,7 @@ cd ../
 # tmp path to store leanote release files
 tmp="/Users/life/Desktop/leanote_release"
 
-version=x86_64.v1.0-beta2
+version=x86_64.v1.0-beta.2
 
 rm -rf $tmp/leanote
 mkdir -p $tmp/leanote/app
@@ -52,7 +52,7 @@ rm $tmp/leanote/public/config.codekit
 # make link
 cd $tmp/leanote/bin
 mkdir ./src/github.com/leanote
-ln -s ../../../../ ./src/github.com/leanote/leanote
+# ln -s ../../../../ ./src/github.com/leanote/leanote
 
 # archieve
 # << 'BLOCK
@@ -72,5 +72,12 @@ cp ./bin/leanote-mac $tmp/leanote/bin/
 cd $tmp
 tar -cvf $tmp/leanote-mac-$version.bin.tar leanote
 gzip $tmp/leanote-mac-$version.bin.tar
+
+cd $SP
+cd ../
+cp ./bin/leanote-linux $tmp/leanote/bin/
+
+rm $tmp/bin/src/github.com/leanote/leanote
+cp -r $tmp/leanote/* $tmp/leanote_release_github
 
 # BLOCK'

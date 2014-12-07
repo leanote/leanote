@@ -2,12 +2,12 @@
 SCRIPTPATH=$(cd "$(dirname "$0")"; pwd)
 
 # set link
-#
-#path="$SCRIPTPATH/src/github.com/leanote"
-#if [ ! -d "$path" ]; then 
-#	mkdir -p "$path" 
-#fi 
-# ln -s ../../../../ $SCRIPTPATH/src/github.com/leanote/leanote
+
+path="$SCRIPTPATH/src/github.com/leanote"
+if [ ! -d "$path" ]; then
+	mkdir -p "$path"
+fi
+ln -s ../../../../ $SCRIPTPATH/src/github.com/leanote/leanote
 
 # set GOPATH
 export GOPATH=$GOPATH:$SCRIPTPATH
