@@ -12,17 +12,17 @@
 
 <link href="/css/bootstrap.css" rel="stylesheet" />
 <!-- 先加载, 没有样式, 宽度不定 -->
-<link rel="stylesheet" href="tinymce/skins/custom/skin.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="/tinymce/skins/custom/skin.min.css" rel="stylesheet"/>
 
 <!-- leanote css -->
-<link href="css/font-awesome-4.2.0/css/font-awesome.css" rel="stylesheet" />
-<link href="css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+<link href="/css/font-awesome-4.2.0/css/font-awesome.css" rel="stylesheet" />
+<link href="/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
 <script>
 var hash = location.hash;
-if(hash == "#writing") {
-	var files = '<link rel="stylesheet" href="css/theme/writting-overwrite.css" type="text/css" id="themeLink" />';
+if(hash.indexOf("writing") >= 0) {
+	var files = '<link rel="stylesheet" href="/css/theme/writting-overwrite.css" type="text/css" id="themeLink" />';
 } else {
-	var files ='<link rel="stylesheet" href="css/theme/{{if .userInfo.Theme}}{{.userInfo.Theme}}{{else}}default{{end}}.css" type="text/css" id="themeLink" />';
+	var files ='<link rel="stylesheet" href="/css/theme/{{if .userInfo.Theme}}{{.userInfo.Theme}}{{else}}default{{end}}.css" type="text/css" id="themeLink" />';
 }
 document.write(files);
 </script>
@@ -184,6 +184,14 @@ function log(o) {
 					</div>
 				</div>
 
+				<!--
+				<div class="pull-right top-nav writting-hide lea-blog">
+					<a target="_blank" href="http://lea.leanote.com"> 
+						lea++
+					</a>
+				</div>
+				-->
+				
 				<div class="pull-right top-nav writting-hide" id="myBlog">
 					<a target="_blank" href="{{$.blogUrl}}/{{.userInfo.Username}}"> 
 						{{msg . "myBlog"}}
@@ -327,6 +335,11 @@ function log(o) {
 				<div class="noteSplit" id="notebookSplitter"></div>
 				
 				<div id="noteAndEditor">
+					<div id="noteAndEditorMask">
+						<img src="/images/loading-24.gif"/>
+						<br />
+						loading...
+					</div>
 					<div id="noteList">
 					<div class="clearfix" id="notesAndSort" style="position: relative">
 						<div class="pull-left">
@@ -411,11 +424,11 @@ function log(o) {
 									<span id="noteReadTags"></span>
 									
 									<!-- 修改时间 -->
-									<i class="fa fa-calendar"></i>{{msg . "update"}} 
+									<i class="fa fa-clock-o"></i>{{msg . "update"}} 
 									<span id="noteReadUpdatedTime"></span>  
 									
 									<!-- 修改时间 -->
-									<i class="fa fa-calendar"></i>{{msg . "create"}} 										
+									<i class="fa fa-clock-o"></i>{{msg . "create"}} 										
 									<span id="noteReadCreatedTime"></span>
 								</div>
 							</div>
@@ -737,17 +750,22 @@ function log(o) {
 		</div>
 	</div>
 </div>
-<script src="js/jquery-1.9.0.min.js"></script>
-<script src="js/jquery.ztree.all-3.5.js"></script>
-<script src="js/i18n/msg.{{.locale}}.js"></script>
-<script src="js/common-min.js"></script>
+<script src="/js/jquery-1.9.0.min.js"></script>
+<script src="/js/jquery.ztree.all-3.5.js"></script>
+<script src="/js/i18n/msg.{{.locale}}.js"></script>
+<script src="/js/common-min.js"></script>
 <script>
-var UrlPrefix = "{{.siteUrl}}"; // 为了发weibo
+var UrlPrefix = '{{.siteUrl}}'; // 为了发weibo
 var UserInfo = {{.userInfo|jsonJs}};
 var notebooks = {{.notebooks|jsonJs}};
 var shareNotebooks = {{.shareNotebooks|jsonJs}};
 var sharedUserInfos = {{.sharedUserInfos|jsonJs}};
-var notes = {{.notes|jsonJs}}
+var curNoteId = '{{.curNoteId}}';
+var curNotebookId = '{{.curNotebookId}}';
+var curSharedNoteNotebookId = '{{.curSharedNoteNotebookId}}';
+var curSharedUserId = '{{.curSharedUserId}}';
+var notes = {{.notes|jsonJs}};
+var latestNotes = {{if .latestNotes}}{{.latestNotes|jsonJs}}{{else}}[]{{end}};
 var noteContentJson = {{.noteContentJson|jsonJs}};
 var tagsJson = {{.tags|jsonJs}};
 LEA.locale = "{{.locale}}";
@@ -755,35 +773,20 @@ var GlobalConfigs = {{.globalConfigs|jsonJs}}; // 2014/11/9 beta2
 </script>
 
 <!-- 渲染view -->
-<script src="tinymce/tinymce.js"></script>
-<script src="js/app/page-min.js"></script>
+<script src="/tinymce/tinymce.js"></script>
+<script src="/js/app/page-min.js"></script>
 <script src="/js/jQuery-slimScroll-1.3.0/jquery.slimscroll.js"></script>
 <script src="/js/contextmenu/jquery.contextmenu-min.js"></script>
-<script src="js/jquery-cookie.js"></script>
-<script src="js/bootstrap-min.js"></script>
-<script src="js/app/note-min.js"></script>
-<script src="js/app/tag-min.js"></script>
-<script src="js/app/notebook-min.js"></script>
-<script src="js/app/share-min.js"></script>
-<script src="js/object_id-min.js"></script>
-<script src="js/ZeroClipboard/ZeroClipboard-min.js"></script>
+<script src="/js/jquery-cookie.js"></script>
+<script src="/js/bootstrap-min.js"></script>
+<script src="/js/app/note-min.js"></script>
+<script src="/js/app/tag-min.js"></script>
+<script src="/js/app/notebook-min.js"></script>
+<script src="/js/app/share-min.js"></script>
+<script src="/js/object_id-min.js"></script>
+<script src="/js/ZeroClipboard/ZeroClipboard-min.js"></script>
 <script>
-Notebook.renderNotebooks(notebooks);
-Share.renderShareNotebooks(sharedUserInfos, shareNotebooks);
-
-Note.setNoteCache(noteContentJson);
-Note.renderNotes(notes);
-if(!isEmpty(notes)) {
-	Note.changeNote(notes[0].NoteId);
-}
-
-// Note.chanteNote设置content
-// Note.renderNoteContent(noteContentJson)
-
-Tag.renderTagNav(tagsJson);
-
-// init notebook后才调用
-initSlimScroll();
+initPage();
 </script>
  
 <!-- context-menu -->

@@ -14,15 +14,15 @@ Note.interval = ""; // 定时器
 Note.itemIsBlog = '<div class="item-blog"><i class="fa fa-bold" title="blog"></i></div><div class="item-setting"><i class="fa fa-cog" title="setting"></i></div>';
 // for render
 Note.itemTplNoImg = '<li href="#" class="item ?" noteId="?">'
-Note.itemTplNoImg += Note.itemIsBlog +'<div class="item-desc"><p class="item-title">?</p><p class="item-info"><i class="fa fa-book"></i> <span class="note-notebook">?</span> <i class="fa fa-calendar"></i> <span class="updated-time">?</span></p><p class="desc">?</p></div></li>';
+Note.itemTplNoImg += Note.itemIsBlog +'<div class="item-desc"><p class="item-title">?</p><p class="item-info"><i class="fa fa-book"></i> <span class="note-notebook">?</span> <i class="fa fa-clock-o"></i> <span class="updated-time">?</span></p><p class="desc">?</p></div></li>';
 
 // 有image
 Note.itemTpl = '<li href="#" class="item ? item-image" noteId="?"><div class="item-thumb" style=""><img src="?"/></div>'
-Note.itemTpl +=Note.itemIsBlog + '<div class="item-desc" style=""><p class="item-title">?</p><p class="item-info"><i class="fa fa-book"></i> <span class="note-notebook">?</span> <i class="fa fa-calendar"></i> <span class="updated-time">?</span></p><p class="desc">?</p></div></li>';
+Note.itemTpl +=Note.itemIsBlog + '<div class="item-desc" style=""><p class="item-title">?</p><p class="item-info"><i class="fa fa-book"></i> <span class="note-notebook">?</span> <i class="fa fa-clock-o"></i> <span class="updated-time">?</span></p><p class="desc">?</p></div></li>';
 
 // for new
 Note.newItemTpl = '<li href="#" class="item item-active ?" fromUserId="?" noteId="?">'
-Note.newItemTpl += Note.itemIsBlog + '<div class="item-desc" style="right: 0px;"><p class="item-title">?</p><p class="item-text"><i class="fa fa-book"></i> <span class="note-notebook">?</span> <i class="fa fa-calendar"></i> <span class="updated-time">?</span><br /><span class="desc">?</span></p></div></li>';
+Note.newItemTpl += Note.itemIsBlog + '<div class="item-desc" style="right: 0px;"><p class="item-title">?</p><p class="item-text"><i class="fa fa-book"></i> <span class="note-notebook">?</span> <i class="fa fa-clock-o"></i> <span class="updated-time">?</span><br /><span class="desc">?</span></p></div></li>';
 
 Note.noteItemListO = $("#noteItemList");
 
@@ -178,10 +178,9 @@ Note.renderNotesAndFirstOneContent = function(ret) {
 	Note.renderNotes(ret);
 	// 渲染第一个
 	if(!isEmpty(ret[0])) {
-		Note.changeNote(ret[0].NoteId);
+		Note.changeNoteForPjax(ret[0].NoteId, true, false);
 	} else {
 	}
-
 }
 
 // 当前的note是否改变过了?
@@ -255,10 +254,12 @@ Note.curHasChanged = function(force) {
 		// 从html中得到...
 		var c = preview || content;
 		
-		hasChanged.Desc = Note.genDesc(c);
-		hasChanged.ImgSrc = Note.getImgSrc(c);
-		hasChanged.Abstract = Note.genAbstract(c);
-		
+		// 不是博客或没有自定义设置的
+		if(!cacheNote.HasSelfDefined || !cacheNote.IsBlog) {
+			hasChanged.Desc = Note.genDesc(c);
+			hasChanged.ImgSrc = Note.getImgSrc(c);
+			hasChanged.Abstract = Note.genAbstract(c);
+		}
 	} else {
 		log("text相同");
 		log(cacheNote.Content == content);
@@ -315,6 +316,9 @@ Note.genDesc = function(content) {
 
 // 得到摘要
 Note.genAbstract = function(content, len) {
+	if(!content) {
+		return "";
+	}
 	if(len == undefined) {
 		len = 1000;
 	}
@@ -392,11 +396,14 @@ Note.curChangedSaveIt = function(force) {
 		
 		// 保存之
 		showMsg(getMsg("saving"));
-		ajaxPost("/note/UpdateNoteOrContent", hasChanged, function(ret) {
+		ajaxPost("/note/updateNoteOrContent", hasChanged, function(ret) {
 			if(hasChanged.IsNew) {
 				// 缓存之, 后台得到其它信息
 				ret.IsNew = false;
 				Note.setNoteCache(ret, false);
+				
+				// 新建笔记也要change history
+				Pjax.changeNote(ret);
 			}
 			showMsg(getMsg("saveSuccess"), 1000);
 		});
@@ -418,14 +425,93 @@ Note.selectTarget = function(target) {
 // 2. ajax得到现在的note
 Note.showContentLoading = function() {
 	$("#noteMaskForLoading").css("z-index", 99999);
-}
+};
 Note.hideContentLoading = function() {
 	$("#noteMaskForLoading").css("z-index", -1);
-}
+};
+
+Note.directToNote = function(noteId) {
+	var $p = $("#noteItemList");
+	var pHeight = $p.height();
+	// 相对于父亲的位置
+	var pTop = $("[noteId='" + noteId + "']").position().top;
+	var scrollTop = $p.scrollTop();
+	pTop += scrollTop;
+	/*
+	log("..");
+	log(noteId);
+	log(pTop + ' ' + pHeight + ' ' + scrollTop);
+	*/
+	
+	// 当前的可视范围的元素位置是[scrollTop, pHeight + scrollTop]
+	if(pTop >= scrollTop && pTop <= pHeight + scrollTop) {
+	} else {
+		var top = pTop;
+		log("定位到特定note, 在可视范围内");
+		// 手机不用slimScroll
+		if(!LEA.isMobile && !Mobile.isMobile()) {
+			$("#noteItemList").scrollTop(top);
+			$("#noteItemList").slimScroll({ scrollTo: top + 'px', height: "100%", onlyScrollBar: true});
+		} else {
+		}
+	}
+};
+
+// mustPush表示是否将状态push到state中, 默认为true
+// 什么时候为false, 在popstate时
+// needTargetNobook默认为false, 在点击notebook, renderfirst时为false
+Note.changeNoteForPjax = function(noteId, mustPush, needTargetNotebook) {
+	var me = this;
+	var note = me.getNote(noteId);
+	if(!note) {
+		return;
+	}
+	var isShare = note.Perm != undefined;
+	if(needTargetNotebook == undefined) {
+		needTargetNotebook = true;
+	}
+	me.changeNote(noteId, isShare, true, function(note) {
+		// push state
+		if(mustPush == undefined) {
+			mustPush = true;
+		}
+		if(mustPush) {
+			Pjax.changeNote(note);
+		}
+		
+		// popstate时虽然选中了note, 但位置可能不可见
+		if(needTargetNotebook) {
+			Note.directToNote(noteId);
+		}
+	});
+	
+	// 第一次render时定位到第一个笔记的notebook 12.06 life
+	// 或通过pop时
+	// 什么时候需要? 1. 第一次changeNote, 2. pop时, 只有当点击了notebook后才不要
+	
+	// 这里, 万一是共享笔记呢?
+	// 切换到共享中
+	if(needTargetNotebook) {
+		if(isShare) {
+			if($("#myShareNotebooks").hasClass("closed")) {
+				$("#myShareNotebooks .folderHeader").trigger("click");
+			}
+		} else {
+			if($("#myNotebooks").hasClass("closed")) {
+				$("#myNotebooks .folderHeader").trigger("click");
+			}
+		}
+		// 如果是子笔记本, 那么要展开父笔记本
+		Notebook.expandNotebookTo(note.NotebookId);
+	}
+};
+
+// 点击notebook时调用, 渲染第一个笔记
 Note.contentAjax = null;
 Note.contentAjaxSeq = 1;
-Note.changeNote = function(selectNoteId, isShare, needSaveChanged) {
+Note.changeNote = function(selectNoteId, isShare, needSaveChanged, callback) {
 	var self = this;
+	
 	// -1 停止定时器
 	Note.stopInterval();
 	
@@ -486,6 +572,8 @@ Note.changeNote = function(selectNoteId, isShare, needSaveChanged) {
 			Note.renderNoteContentReadOnly(ret);
 		}
 		self.hideContentLoading();
+		
+		callback && callback(ret);
 	}
 	
 	if(cacheNote.Content) {
@@ -493,10 +581,10 @@ Note.changeNote = function(selectNoteId, isShare, needSaveChanged) {
 		return;
 	}
 	
-	var url = "/note/GetNoteContent";
+	var url = "/note/getNoteContent";
 	var param = {noteId: selectNoteId};
 	if(isShare) {
-		url = "/share/GetShareNoteContent";
+		url = "/share/getShareNoteContent";
 		param.sharedUserId = cacheNote.UserId // 谁的笔记
 	}
 	
@@ -891,7 +979,7 @@ Note.deleteNote = function(target, contextmenuItem, isShared) {
 // 显示共享信息
 Note.listNoteShareUserInfo = function(target) {
 	var noteId = $(target).attr("noteId");
-	showDialogRemote("share/listNoteShareUserInfo", {noteId: noteId});
+	showDialogRemote("/share/listNoteShareUserInfo", {noteId: noteId});
 }
 	
 // 共享笔记
@@ -918,7 +1006,7 @@ Note.listNoteContentHistories = function() {
 	options.show = true;
 	$("#leanoteDialog").modal(options);
 	
-	ajaxGet("noteContentHistory/listHistories", {noteId: Note.curNoteId}, function(re) {
+	ajaxGet("/noteContentHistory/listHistories", {noteId: Note.curNoteId}, function(re) {
 		if(!isArray(re)) {$content.html(getMsg("noHistories")); return}
 		// 组装成一个tab
 		var str = "<p>" + getMsg("historiesNum") + '</p><div id="historyList"><table class="table table-hover">';
@@ -1587,7 +1675,8 @@ $(function() {
 		}
 		// 当前的和所选的是一个, 不改变
 		if(Note.curNoteId != noteId) {
-			Note.changeNote(noteId);
+			// 不用重定向到notebook
+			Note.changeNoteForPjax(noteId, true, false);
 		}
 	});
 	
@@ -1658,7 +1747,7 @@ $(function() {
 		e.stopPropagation();
 		// 得到ID
 		var noteId = $(this).parent().attr('noteId');
-		window.open("/blog/post/" + noteId);
+		window.open("/blog/view/" + noteId);
 	});
 	
 	// note setting

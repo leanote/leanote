@@ -165,7 +165,8 @@ if(typeof art != "undefined") {
 	        title: false,
 	        cancel: false,
 	        fixed: true,
-	        lock: true,
+	        //lock: true,
+	        top: 0,
 	        opacity: 0.3
 	    })
 	    .content('<div style="padding: 0 1em;">' + content + '</div>')

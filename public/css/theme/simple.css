@@ -139,6 +139,19 @@
   overflow-y: hidden;
   */
 }
+#noteAndEditorMask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: #fff;
+  text-align: center;
+  padding-top: 60px;
+  opacity: .3;
+  z-index: 20;
+  display: none;
+}
 .dropdown-submenu {
   position: relative;
 }
@@ -868,6 +881,17 @@
 }
 .dropdown-menu .divider {
   margin: 3px 0;
+}
+.ace_eidtor,
+.ace_editor * {
+  font: 12px / normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+}
+#editorContent {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  outline: none;
+  margin-top: 5px;
 }
 ::selection {
   background: #000000;
@@ -1947,8 +1971,8 @@ background-position:-1px -670px
   #noteReadContent,
   #attachList,
   #tags {
-    overflow: scroll !important;
     -webkit-overflow-scrolling: touch !important;
+    overflow: auto !important;
   }
   #attachMenu {
     width: 320px;
@@ -1988,7 +2012,7 @@ background-position:-1px -670px
     opacity: 0.8;
   }
 }
-@media screen and (max-device-width: 1024px) and (orientation: landscape) {
+@media screen and (max-width: 1024px) {
   #noteItemList,
   #notebook,
   #leftNotebook,
@@ -2002,12 +2026,12 @@ background-position:-1px -670px
   #noteReadContent,
   #attachList,
   #tags {
-    overflow: scroll !important;
+    overflow: auto !important;
     -webkit-overflow-scrolling: touch !important;
   }
   #tag {
     position: absolute;
-    right: 140px;
+    right: 310px;
     left: 0;
     top: 0;
     bottom: 0;
@@ -2056,7 +2080,7 @@ background-position:-1px -670px
   #noteReadContent,
   #attachList,
   #tags {
-    overflow: scroll !important;
+    overflow: auto !important;
     -webkit-overflow-scrolling: touch !important;
   }
   #lea,

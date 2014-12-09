@@ -22,9 +22,8 @@ type Note struct {
 // 笔记首页, 判断是否已登录
 // 已登录, 得到用户基本信息(notebook, shareNotebook), 跳转到index.html中
 // 否则, 转向登录页面
-func (c Note) Index() revel.Result {
+func (c Note) Index(noteId string) revel.Result {
 	c.SetLocale()
-	
 	userInfo := c.GetUserInfo()
 	
 	userId := userInfo.UserId.Hex()
@@ -35,7 +34,7 @@ func (c Note) Index() revel.Result {
 	}
 	
 	c.RenderArgs["openRegister"] = configService.IsOpenRegister()
-	
+
 	// 已登录了, 那么得到所有信息
 	notebooks := notebookService.GetNotebooks(userId)
 	shareNotebooks, sharedUserInfos := shareService.GetShareNotebooks(userId)
@@ -43,22 +42,78 @@ func (c Note) Index() revel.Result {
 	// 还需要按时间排序(DESC)得到notes
 	notes := []info.Note{}
 	noteContent := info.NoteContent{}
+	
 	if len(notebooks) > 0 {
-//		_, notes = noteService.ListNotes(c.GetUserId(), "", false, c.GetPage(), pageSize, defaultSortField, false, false);
-		// 变成最新
-		_, notes = noteService.ListNotes(c.GetUserId(), "", false, c.GetPage(), 50, defaultSortField, false, false);
-		if len(notes) > 0 {
-			noteContent = noteService.GetNoteContent(notes[0].NoteId.Hex(), userId)
+		// noteId是否存在
+		// 是否传入了正确的noteId
+		hasRightNoteId := false
+		if IsObjectId(noteId) {
+			note := noteService.GetNoteById(noteId)
+			var noteOwner = note.UserId.Hex()
+			noteContent = noteService.GetNoteContent(noteId, noteOwner)
+			
+			if note.NoteId != "" {
+				hasRightNoteId = true
+				c.RenderArgs["curNoteId"] = noteId
+				c.RenderArgs["curNotebookId"] = note.NotebookId.Hex()
+				
+				// 打开的是共享的笔记, 那么判断是否是共享给我的默认笔记
+				if noteOwner != c.GetUserId() {
+					if shareService.HasReadPerm(noteOwner, c.GetUserId(), noteId) {
+						// 不要获取notebook下的笔记
+						// 在前端下发请求
+						c.RenderArgs["curSharedNoteNotebookId"] = note.NotebookId.Hex()
+						c.RenderArgs["curSharedUserId"] = noteOwner;
+					// 没有读写权限
+					} else {
+						hasRightNoteId = false
+					}
+				} else {
+					_, notes = noteService.ListNotes(c.GetUserId(), note.NotebookId.Hex(), false, c.GetPage(), 50, defaultSortField, false, false);
+					
+					// 如果指定了某笔记, 则该笔记放在首位
+					lenNotes := len(notes)
+					if lenNotes > 1 {
+						notes2 := make([]info.Note, len(notes))
+						notes2[0] = note
+						i := 1
+						for _, note := range notes {
+							if note.NoteId.Hex() != noteId {
+								if i == lenNotes { // 防止越界
+									break;
+								}
+								notes2[i] = note
+								i++
+							}
+						}
+						notes = notes2
+					}
+				}
+			}
+			
+			// 得到最近的笔记
+			_, latestNotes := noteService.ListNotes(c.GetUserId(), "", false, c.GetPage(), 50, defaultSortField, false, false);
+			c.RenderArgs["latestNotes"] = latestNotes
+		}
+		
+		// 没有传入笔记
+		// 那么得到最新笔记
+		if !hasRightNoteId {
+			_, notes = noteService.ListNotes(c.GetUserId(), "", false, c.GetPage(), 50, defaultSortField, false, false);
+			if len(notes) > 0 {
+				noteContent = noteService.GetNoteContent(notes[0].NoteId.Hex(), userId)
+				c.RenderArgs["curNoteId"] = notes[0].NoteId.Hex()
+			}
 		}
 	}
+	
 	// 当然, 还需要得到第一个notes的content
 	//...
-	Log(configService.GetAdminUsername())
 	c.RenderArgs["isAdmin"] = configService.GetAdminUsername() == userInfo.Username
 	
 	c.RenderArgs["userInfo"] = userInfo
 	c.RenderArgs["notebooks"] = notebooks
-	c.RenderArgs["shareNotebooks"] = shareNotebooks
+	c.RenderArgs["shareNotebooks"] = shareNotebooks // note信息在notes列表中
 	c.RenderArgs["sharedUserInfos"] = sharedUserInfos
 	
 	c.RenderArgs["notes"] = notes
@@ -68,6 +123,7 @@ func (c Note) Index() revel.Result {
 	c.RenderArgs["tags"] = tagService.GetTags(c.GetUserId())
 	
 	c.RenderArgs["globalConfigs"] = configService.GetGlobalConfigForUser()
+	
 	
 	if isDev, _ := revel.Config.Bool("mode.dev"); isDev {
 		return c.RenderTemplate("note/note-dev.html")

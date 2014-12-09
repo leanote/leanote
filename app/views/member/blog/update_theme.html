@@ -2,13 +2,18 @@
 <div class="m-b-md"> 
 	<h3 class="m-b-none">
 		{{if .isNew}}
-			新建主题
+			{{msg $ "addTheme"}}
 		{{else}}
-			编辑主题
+			{{msg $ "updateTheme"}}
 		- 
 		{{.theme.Name}}
 		{{end}}
-		<a class="btn btn-default" href="{{$.siteUrl}}/preview?themeId={{.themeId}}" target="_blank"><span class="fa fa-eye"></span> 预览</a>
+		<a class="btn btn-default" href="{{$.siteUrl}}/preview?themeId={{.themeId}}" target="_blank"><span class="fa fa-eye"></span> {{msg . "preview"}}</a>
+		
+		<small>
+		(<a href="http://blog.leanote.com/post/545f1a5c380782565e000000" target="_blank">{{msg . "needHelp"}}</a> 
+		<a target="_blank" href="https://github.com/leanote/leanote/wiki/leanote-blog-theme-api">Leanote Blog Theme Api</a>)
+		</small>
 	</h3>
 </div>
 
@@ -42,7 +47,7 @@
 <div class="col-sm-4">
 	<section class="panel panel-default">
 		<header class="panel-heading">
-			模板, 样式, 脚本:
+			{{msg . "tplStyleScript"}}:
 		</header>
 		<div class="panel-body" style="height:430px;overflow: auto;">
 	
@@ -58,14 +63,14 @@
 		</div>
 	</div>
 	<footer class="panel-footer text-right bg-light lter">
-		<a class="btn btn-default" id="newFile">新建文件</a>
+		<a class="btn btn-default" id="newFile">{{msg . "newFile"}}</a>
 	</footer>
 	</section>
 </div>
 <div class="col-sm-8">
 	<section class="panel panel-default">
 		<header class="panel-heading">
-			当前文件: <span id="curTpl">header.html</span>
+			{{msg . "currentFile"}}: <span id="curTpl">header.html</span>
 			<span id="msg"></span>
 		</header>
 		<div class="panel-body">
@@ -82,7 +87,7 @@
 <div class="col-sm-12">
 	<section class="panel panel-default">
 		<header class="panel-heading">
-			图片: images/
+			{{msg . "image"}}: images/
 		</header>
 		<div class="panel-body">
 			<ul class="image-list" id="imageList">
@@ -118,7 +123,7 @@ var theme = {
 	saveBtnO: $("#saveBtn"),
 	newFileO: $("#newFile"),
 	curTpl: "",
-	tplInfos: {"header.html": "头部", "footer.html": "底部", "index.html": "首页", "cate.html": "分类页", "search.html": "搜索页", "single.html": "单页", "archive.html": "归档页", "post.html": "文章页", "tags.html": "标签页", "tag_posts.html": "标签文章页", "share_comment.html": "分享评论", "404.html":"404", "theme.json": "主题配置", "paging.html": "分页", "highlight.html": "高亮"},
+	tplInfos: {"header.html": "{{msg . "header"}}", "footer.html": "{{msg . "footer"}}", "index.html": "{{msg . "header"}}", "cate.html": "{{msg . "cate"}}", "search.html": "{{msg . "search"}}", "single.html": "{{msg . "single"}}", "archive.html": "{{msg . "archive"}}", "post.html": "{{msg . "post"}}", "tags.html": "{{msg . "tags"}}", "tag_posts.html": "{{msg . "tag_posts"}}", "share_comment.html": "{{msg . "share_comment"}}", "404.html":"404", "theme.json": "{{msg . "themeJson"}}", "paging.html": "{{msg . "paging"}}", "highlight.html": "{{msg . "highlight"}}"},
 	init: function() {
 		var self = this;
 		self.showTplInfo();
@@ -183,11 +188,11 @@ var theme = {
 			info = self.tplInfos[file];
 			if(!info) {
 				if(file.indexOf(".css") > 0) {
-					info = "样式";
+					info = "{{msg . "style"}}";
 				} else if(file.indexOf(".js") > 0) {
-					info = "脚本";
+					info = "{{msg . "script"}}";
 				}  else if(file.indexOf(".html") > 0) {
-					info = "模板";
+					info = "{{msg . "tpl"}}";
 				}
 			} else {
 				$(this).find(".remove-file").remove();
@@ -209,7 +214,7 @@ var theme = {
 		if(t) {
 			t.button("loading");
 		}
-		self.msgO.html("正在保存...");
+		self.msgO.html("...");
 		ajaxPost("/member/blog/updateTplContent", {themeId: themeId, filename: self.curTpl, content: content}, function(re) {
 			if(t) {
 				t.button("reset");
@@ -217,7 +222,7 @@ var theme = {
 			if(reIsOk(re)) {
 				self.cache[filename] = content;
 				// art.tips("Success");
-				self.msgO.html("保存成功")
+				self.msgO.html("{{msg . "saveSuccess"}}")
 				setTimeout(function() {
 					self.msgO.html("");
 				}, 3000);

@@ -1147,3 +1147,44 @@ var vd = {
 		}
 	}
 };
+
+// 返回hash的#a=1&b=3 返回{a:1, b:3}
+function getHashObject() {
+	var hash = location.hash; // #life	
+	if(!hash) {
+		return {};
+	}
+	var hashKV = hash.substr(1);
+	var kvs = hashKV.split("&");
+	var kvsObj = {};
+	for(var i = 0; i < kvs.length; ++i) {
+		var kv = kvs[i].split('=');
+		if(kv.length == 2) {
+			kvsObj[kv[0]] = kv[1];
+		}
+	}
+	return kvsObj;
+}
+function getHash(key, value) {
+	var kvs = getHashObject();
+	return kvs[key];
+}
+function setHash(key, value) {
+	var hash = location.hash; // #life	
+	if(!hash) {
+		location.href = "#" + key + "=" + value;
+		return;
+	}
+	var kvs = getHashObject();
+	kvs[key] = value;
+	var str = "";
+	for(var i in kvs) {
+		if(kvs[i]) {
+			if(str) {
+				str += "&";
+			}
+			str += i + '=' + kvs[i];
+		}
+	}
+	location.href = "#" + str;
+}

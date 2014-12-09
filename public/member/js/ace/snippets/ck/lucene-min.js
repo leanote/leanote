@@ -1,0 +1,1 @@
+ace.define("ace/snippets/lucene",["require","exports","module"],function(e,n,c){n.snippetText="",n.scope="lucene"});

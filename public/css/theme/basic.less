@@ -149,6 +149,20 @@
   overflow-y: hidden;
   */
 }
+// 笔记列表与editor的遮罩
+#noteAndEditorMask {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background: #fff;
+	text-align: center;
+	padding-top: 60px;
+	opacity: .3;
+	z-index: 20;
+	display: none;
+}
 
 //-----------------
 // 下拉菜单
@@ -940,4 +954,17 @@ top: 4px;
 
 .dropdown-menu .divider {
 	margin: 3px 0;
+}
+
+// ace 重置css, 必须
+.ace_eidtor, .ace_editor * {
+	font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+}
+
+#editorContent {
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	padding: 5px;
+	outline: none;
+	margin-top: 5px;
 }

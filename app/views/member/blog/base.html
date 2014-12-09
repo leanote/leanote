@@ -1,26 +1,23 @@
 {{template "member/top.html" .}}
-<div class="m-b-md"> <h3 class="m-b-none">{{msg . "baseInfoSet"}}</h3></div>
+<div class="m-b-md"> <h3 class="m-b-none">{{msg $ "basicInfoSet"}}</h3></div>
 
 <div class="row">
-<div class="col-sm-10">
+<div class="col-sm-8">
 	<div id="formData">
 		<section class="panel panel-default">
 			<div class="panel-body">
   				<div class="alert alert-danger" id="baseMsg" style="display: none"></div>
-				<div class="form-horizontal" role="form" id="userBlogForm">
+				<div role="form" id="userBlogForm">
 					
 					<div class="form-group">
-						<label for="title" class="col-sm-2 control-label">{{msg . "blogName"}}</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control" id="Title" name="Title"
+						<label for="title" >{{msg . "blogName"}}</label>
+						<input type="text" class="form-control" id="Title" name="Title"
 								placeholder="eg: leanote's blog"
 								value="{{if .userBlog.Title}}{{.userBlog.Title}}{{else}}{{.userInfo.Email}} 's blog{{end}}">
-						</div>
 					</div>
 
 					<div class="form-group">
-						<label for="logo" class="col-sm-2 control-label">{{msg . "blogLogo"}}</label>
-						<div class="col-sm-10">
+						<label for="logo">{{msg . "blogLogo"}}</label>
 							<input type="hidden" name="Logo" id="Logo"
 								value="{{.userBlog.Logo}}" />
 							<form id="formLogo" action="{{$.siteUrl}}/file/uploadBlogLogo" method="post"
@@ -37,16 +34,13 @@
 								</div>
 							</form>
 							<iframe id="logoTarget" name="logoTarget" src="#" style="display: none"></iframe>
-						</div>
 					</div>
 
 					<div class="form-group">
-						<label for="subTitle" class="col-sm-2 control-label">{{msg . "blogDesc"}}</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control" id="SubTitle"
+						<label for="subTitle">{{msg . "blogDesc"}}</label>
+						<input type="text" class="form-control" id="SubTitle"
 								name="SubTitle" value="{{.userBlog.SubTitle}}"
 								placeholder="eg: leanote, Not Just A Notebook">
-						</div>
 					</div>
 
 					<div class="form-group">

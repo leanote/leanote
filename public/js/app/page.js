@@ -4,10 +4,9 @@
 //----------------------
 // 编辑器模式
 function editorMode() {
-	this.writingHash = "#writing";
-	this.normalHash = "#normal";
-	this.isWritingMode = location.hash == this.writingHash;
-	
+	this.writingHash = "writing";
+	this.normalHash = "normal";
+	this.isWritingMode = location.hash.indexOf(this.writingHash) >= 0;
 	this.toggleA = null;
 }
 
@@ -17,27 +16,33 @@ editorMode.prototype.toggleAText = function(isWriting) {
 		var toggleA = $(".toggle-editor-mode a");
 		var toggleSpan = $(".toggle-editor-mode span");
 		if(isWriting) {
-			toggleA.attr("href", self.normalHash);
+			toggleA.attr("href", "#" + self.normalHash);
 			toggleSpan.text(getMsg("normalMode"));
 		} else {
-			toggleA.attr("href", self.writingHash);
+			toggleA.attr("href", "#" + self.writingHash);
 			toggleSpan.text(getMsg("writingMode"));
 		}	
 	}, 0);
 }
 editorMode.prototype.isWriting = function(hash) {
-	return hash == this.writingHash;
+	return hash.indexOf(this.writingHash) >= 0
 }
 editorMode.prototype.init = function() {
 	this.changeMode(this.isWritingMode);
 	var self = this;
-	$(".toggle-editor-mode").click(function() {
-		// 
+	$(".toggle-editor-mode").click(function(e) {
+		e.preventDefault();
 		saveBookmark();
 		var $a = $(this).find("a");
 		var isWriting = self.isWriting($a.attr("href"));
 		self.changeMode(isWriting);
 		// 
+		if(isWriting) {
+			setHash("m", self.writingHash);
+		} else {
+			setHash("m", self.normalHash);
+		}
+		
 		restoreBookmark();
 	});
 }
@@ -123,7 +128,7 @@ editorMode.prototype.writtingMode = function() {
 
 editorMode.prototype.getWritingCss = function() {
 	if(this.isWritingMode) {
-		return ["css/editor/editor-writting-mode.css"];
+		return ["/css/editor/editor-writting-mode.css"];
 	}
 	return [];
 }
@@ -276,6 +281,7 @@ Mobile = {
 	noteO: $("#note"),
 	bodyO: $("body"),
 	setMenuO: $("#setMenu"),
+	// 弃用, 统一使用Pjax
 	hashChange: function() {
 		var self = Mobile;
 		var hash = location.hash;
@@ -292,8 +298,8 @@ Mobile = {
 	init: function() {
 		var self = this;
 		self.isMobile();
-		$(window).on("hashchange", self.hashChange);
-		self.hashChange();
+		// $(window).on("hashchange", self.hashChange);
+		// self.hashChange();
 		/*
 		$("#noteItemList").on("tap", ".item", function(event) {
 			$(this).click();
@@ -320,6 +326,8 @@ Mobile = {
 		}
 		return LEA.isMobile;
 	},
+	// 改变笔记, 此时切换到编辑器模式下
+	// note.js click事件处理, 先切换到纯编辑器下, 再调用Note.changeNote()
 	changeNote: function(noteId) {
 		var self = this;
 		if(!LEA.isMobile) {return true;}
@@ -331,21 +339,25 @@ Mobile = {
 		var self = this;
 		self.bodyO.addClass("full-editor");
 		self.noteO.addClass("editor-show");
+		/*
 		if(changeHash) {
 			if(!noteId) {
 				noteId = Note.curNoteId;
 			}
 			location.hash = "noteId=" + noteId;
 		}
+		*/
 	},
 	toNormal: function(changeHash) {
 		var self = this;
 		self.bodyO.removeClass("full-editor");
 		self.noteO.removeClass("editor-show");
 	
+		/*
 		if(changeHash) {
 			location.hash = "notebookAndNote";
 		}
+		*/
 	},
 	switchPage: function() {
 		var self = this;
@@ -410,13 +422,13 @@ function initEditor() {
 
 	// 初始化编辑器
 	tinymce.init({
+		// inline: true,
 		setup: function(ed) {
 			ed.on('keydown', Note.saveNote);
 			// indent outdent
 			ed.on('keydown', function(e) {
 				var num = e.which ? e.which : e.keyCode;
 		    	if (num == 9) { // tab pressed
-				
 		    		if(!e.shiftKey) {
 //		                ed.execCommand('Indent');
 		    			// TODO 如果当前在li, ul, ol下不执行!!
@@ -458,7 +470,8 @@ function initEditor() {
 		selector : "#editorContent",
 		// height: 100,//这个应该是文档的高度, 而其上层的高度是$("#content").height(),
 		// parentHeight: $("#content").height(),
-		content_css : ["css/bootstrap.css", "css/editor/editor.css"].concat(em.getWritingCss()),
+		content_css : ["/css/bootstrap.css", "/css/editor/editor.css"].concat(em.getWritingCss()),
+		// content_css : ["/css/editor/editor.css"].concat(em.getWritingCss()),
 		skin : "custom",
 		language: LEA.locale, // 语言
 		plugins : [
@@ -797,3 +810,177 @@ $(function() {
 	Mobile.init();
 });
 
+
+//------------
+// pjax
+//------------
+var Pjax = {
+	init: function() {
+		var me = this;
+		// 当history改变时
+		window.addEventListener('popstate', function(evt){
+			var state = evt.state;
+			if(!state) {
+				return;
+			}
+			document.title = state.title || "Untitled";
+			log("pop");
+			me.changeNotebookAndNote(state.noteId);
+		}, false);
+		
+		// ie9
+		if(!history.pushState) {
+			$(window).on("hashchange", function() {
+				var noteId = getHash("noteId");;
+				if(noteId) {
+					me.changeNotebookAndNote(noteId);
+				}
+			});
+		}
+	},
+	// pjax调用
+	// popstate事件发生时, 转换到noteId下, 此时要转换notebookId
+	changeNotebookAndNote: function(noteId) {
+		var note = Note.getNote(noteId);
+		if(!note) {
+			return;
+		}
+		var isShare = note.Perm != undefined;
+		
+		var notebookId = note.NotebookId;
+		// 如果是在当前notebook下, 就不要转换notebook了
+		if(Notebook.curNotebookId == notebookId) {
+			// 不push state
+			Note.changeNoteForPjax(noteId, false);
+			return;
+		}
+		
+		// 自己的
+		if(!isShare) {
+			// 先切换到notebook下, 得到notes列表, 再changeNote
+			Notebook.changeNotebook(notebookId, function(notes) {
+				Note.renderNotes(notes);
+				// 不push state
+				Note.changeNoteForPjax(noteId, false, true);
+			});
+		// 共享笔记
+		} else {
+			Share.changeNotebook(note.UserId, notebookId, function(notes) {
+				Note.renderNotes(notes);
+				// 不push state
+				Note.changeNoteForPjax(noteId, false, true);
+			});
+		}
+	},
+		
+	// ajax后调用
+	changeNote: function(noteInfo) {
+		var me = this;
+		log("push");
+		var noteId = noteInfo.NoteId;
+		var title = noteInfo.Title;
+		var url = '/note/' + noteId;
+		if(location.hash) {
+			url += location.hash;
+		}
+		// 如果支持pushState
+		if(history.pushState) {
+			var state=({
+				url: url,
+				noteId: noteId,
+				title: title,
+			});
+			history.pushState(state, title, url);
+			document.title = title || 'Untitled';
+		// 不支持, 则用hash
+		} else {
+			setHash("noteId", noteId);
+		}
+	}
+};
+$(function() {
+	Pjax.init();
+});
+
+// note.html调用
+// 实始化页面
+function initPage() {
+	$(function() {
+		Notebook.renderNotebooks(notebooks);
+		Share.renderShareNotebooks(sharedUserInfos, shareNotebooks);
+		
+		// 如果初始打开的是共享的笔记
+		// 那么定位到我的笔记
+		if(curSharedNoteNotebookId) {
+			Share.firstRenderShareNote(curSharedUserId, curSharedNoteNotebookId, curNoteId);
+		// 初始打开的是我的笔记
+		} else {
+			Note.setNoteCache(noteContentJson);
+			Note.renderNotes(notes);
+			if(curNoteId) {
+				// 指定某个note时才target notebook, /note定位到最新
+				// ie10&+要setTimeout
+				setTimeout(function() {
+					Note.changeNoteForPjax(curNoteId, true, curNotebookId);
+				});
+				if(!curNotebookId) {
+					Notebook.selectNotebook($(tt('#notebook [notebookId="?"]', Notebook.allNotebookId)));
+				}
+			}
+		}
+		
+		// 指定笔记, 也要保存最新笔记
+		if(latestNotes.length > 0) {
+			for(var i = 0; i < latestNotes.length; ++i) {
+				Note.addNoteCache(latestNotes[i]);
+			}
+		}
+		
+		Tag.renderTagNav(tagsJson);
+		// init notebook后才调用
+		initSlimScroll();
+	});
+}
+
+//----------
+// aceeditor
+
+var aceEditors = {};
+function initAce(id, val){ 
+	var aceEditor = ace.edit(id);
+	aceEditor.setTheme("ace/theme/tomorrow");
+	aceEditor.session.setMode("ace/mode/javascript");
+	aceEditor.setAutoScrollEditorIntoView(true);
+	aceEditor.setOption("maxLines", 100);
+	if(val) {
+		aceEditor.setValue(val);
+	}
+	aceEditors [id] = aceEditor;
+	return aceEditor;
+}
+
+function getAce(id) {
+	return aceEditors[id];
+}
+// 是否在node内
+function isInAce(node, brush) {
+	var $node = $(node);
+	var node = $node.get(0);
+	if(node.nodeName == "PRE") {
+		$node.data('brush', brush);
+		var id = $node.attr('id');
+		var aceEditor = getAce(id);
+		if(aceEditor) {
+			return [aceEditor, $node];
+		}
+		return false;
+	} else {
+		// 找到父是pre
+		$pre = $node.closest("pre");
+		if($pre.length == 0) {
+			return false;
+		}
+		return isInAce($pre, brush);
+	}
+	return false;
+}
