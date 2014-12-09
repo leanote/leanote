@@ -315,8 +315,11 @@ Share.changeNotebook = function(userId, notebookId, callback) {
 
 // 是否有更新权限
 // called by Note
-Share.hasUpdatePerm = function(notebookId) {
-	var note = Share.cache[notebookId];
+Share.hasUpdatePerm = function(noteId) {
+	var note = Share.cache[noteId];
+	if(!note) {
+		note = Note.getNote(noteId);
+	}
 	if(!note || !note.Perm) {
 		return false;
 	}
