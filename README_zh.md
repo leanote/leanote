@@ -110,4 +110,4 @@ leanote还有很多问题, 如果你喜欢它, 欢迎加入我们一起完善leanote.
 * [leanote google group](https://groups.google.com/forum/#!forum/leanote)
 
 ----------------------------------------------------------------
-[English](README_zh.md)
+[English](README.md)

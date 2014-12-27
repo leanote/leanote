@@ -1,4 +1,5 @@
 
+# Leanote
 
 ## 1. Introduction
 
@@ -107,6 +108,6 @@ Please fork this repository and contribute back using [pull requests](https://gi
 * QQ Group: 158716820
 
 -----------------------------------------------------------------------
-[中文](https://github.com/leanote/leanote#1-介绍)
+[中文](README_zh.md)
 
 
