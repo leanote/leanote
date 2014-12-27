@@ -1,0 +1,143 @@
+{{template "header.html" .}}
+
+<div id="postsContainer">
+	<div id="posts">
+		<div class="each-post">
+			<div class="title">
+				{{.post.Title}}
+			</div>
+			<div class="created-time">
+				<i class="fa fa-bookmark-o"></i>
+				{{if .post.Tags}} 
+					{{blogTags $ .post.Tags}}
+				{{else}}
+					无
+				{{end}}
+				|
+				<i class="fa fa-calendar"></i> 更新 {{$.post.UpdatedTime | datetime}} 
+				| 
+				<i class="fa fa-calendar"></i> 创建 {{$.post.CreatedTime | datetime}}
+			</div>
+			
+			<!-- 仅为移动端 -->
+			<div class="mobile-created-time">
+			{{ if $.blogInfo.UserLogo}}
+				<img src="{{$.blogInfo.UserLogo}}" id="userLogo">
+			{{else}}
+				<img src="{{$.siteUrl}}/images/blog/default_avatar.png" id="userLogo">
+			{{end}}
+			{{$.blogInfo.Username}}
+	
+			{{if .post.Tags}}
+				&nbsp;
+				<i class="fa fa-bookmark-o" style="color: #666"></i>
+				{{blogTags $ $.post.Tags}}
+			{{end}}
+			</div>
+			
+			<div class="desc {{if $.post.IsMarkdown }}markdown-content{{end}}" id="content">
+				{{if $.post.IsMarkdown }}
+					<div id="markdownContent" style="display: none">
+						<!-- 用textarea装html, 防止得到的值失真 -->
+						<textarea>{{$.post.Content | raw}}</textarea>
+					</div>
+					<div style="padding: 20px; text-align: center">
+						<img src="{{$.themeBaseUrl}}/images/loading-32.gif" />
+					</div>
+				{{else}}
+						{{$.post.Content | raw}}
+				{{end}}
+			</div>
+			
+		    <div class="pre-next-post">
+		        <p>
+			    上一篇: {{if $.prePost}}<a href="{{$.postUrl}}/{{$.prePost.UrlTitle}}">{{$.prePost.Title}}</a>{{else}}无{{end}}
+                </p>
+                <p>
+                下一篇: {{if $.nextPost}}<a href="{{$.postUrl}}/{{$.nextPost.UrlTitle}}">{{$.nextPost.Title}}</a>{{else}}无{{end}}
+			    </p>
+			</div>
+			
+			<!-- share & comment -->
+			{{template "share_comment.html" $}}
+		</div>
+	</div>
+</div>
+
+{{template "footer.html" $}}
+{{template "highlight.html" $}}
+
+<div id="blogNav">
+	<div id="blogNavNav">
+		<i class="fa fa-align-justify" title="文档导航"></i>
+		<span>文档导航</span>
+	</div>
+	<div id="blogNavContent">
+	</div>
+</div>
+
+<!-- 一些在share_comment.js 需要使用的变量 -->
+<script>
+var siteUrl = "{{$.siteUrl}}"; // common.js需要
+// 以下 share_comment.js需要
+var blogInfo={UserId: "{{$.blogInfo.UserId}}", OpenComment: {{$.blogInfo.OpenComment}}, CommentType: "{{$.blogInfo.CommentType}}"}; 
+var noteId = "{{$.post.NoteId}}"; // 
+var preLikeNum = +"{{$.post.LikeNum}}";
+var commentNum = +"{{$.post.CommentNum}}";
+</script>
+
+<!-- 共享与评论css -->
+<link href="{{$.shareCommentCssUrl}}" rel="stylesheet">
+<!-- 一些公用的js -->
+<script src="{{$.blogCommonJsUrl}}"></script>
+<script src="{{$.siteUrl}}/public/blog/js/jsrender.js"></script>
+<script src="{{$.siteUrl}}/public/blog/js/jquery-cookie-min.js"></script>
+<script src="{{$.siteUrl}}/public/blog/js/bootstrap-dialog.min.js"></script>
+<script src="{{$.siteUrl}}/public/blog/js/jquery.qrcode.min.js"></script>
+<!-- share && comment -->
+<script src="{{$.shareCommentJsUrl}}"></script>
+
+<!-- 
+markdown 
+调用markdown来解析得到html
+-->
+
+{{if $.post.IsMarkdown }}
+<script src="/public/mdeditor/editor/pagedown/Markdown.Converter.js"></script>
+<script src="/public/mdeditor/editor/pagedown/Markdown.Sanitizer.js"></script>
+<script src="/public/mdeditor/editor/pagedown/Markdown.Editor.js"></script>
+<script src="/public/mdeditor/editor/pagedown/local/Markdown.local.zh.js"></script>
+<script src="/public/mdeditor/editor/Markdown.Extra.js"></script>
+
+<!--mathjax-->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ["\\(","\\)"]], processEscapes: true },  messageStyle: "none"});
+</script>
+<script src="/public/mdeditor/editor/mathJax.js"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+var content = $.trim($("#markdownContent textarea").val());
+var converter = Markdown.getSanitizingConverter();
+Markdown.Extra.init(converter, {extensions: ["tables", "fenced_code_gfm", "def_list"]});
+var html = converter.makeHtml(content);
+$("#content").html(html);
+$("pre").addClass("prettyprint linenums");
+prettyPrint();
+MathJax.Hub.Queue(["Typeset",MathJax.Hub,"wmd-preview"]);
+
+initNav();
+weixin();
+</script>
+
+<!-- 不是markdown -->
+{{else}}
+<script>
+$(function() {
+	initNav();
+	weixin();
+});
+</script>
+{{end}}
+
+</body>
+</html>

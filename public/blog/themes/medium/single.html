@@ -1,0 +1,53 @@
+{{template "header.html" .}}
+
+<div id="postsContainer">
+	<div id="posts">
+		<div class="each-post">
+			<div class="title">
+				{{.single.Title}}
+			</div>
+			<div class="created-time">
+				<i class="fa fa-calendar"></i> 更新 {{$.single.UpdatedTime | datetime}} 
+				| 
+				<i class="fa fa-calendar"></i> 创建 {{$.single.CreatedTime | datetime}}
+			</div>
+			
+			<!-- 仅为移动端 -->
+			<div class="mobile-created-time">
+			{{ if $.blogInfo.UserLogo}}
+				<img src="{{$.blogInfo.UserLogo}}" id="userLogo">
+			{{else}}
+				<img src="{{$.siteUrl}}/images/blog/default_avatar.png" id="userLogo">
+			{{end}}
+			{{$.blogInfo.Username}}
+			</div>
+			
+			<div class="desc" id="content">
+					{{$.single.Content | raw}}
+			</div>
+		</div>
+	</div>
+</div>
+{{template "footer.html" $}}
+
+{{template "highlight.html" $}}
+
+<div id="blogNav">
+	<div id="blogNavNav">
+		<i class="fa fa-align-justify" title="文档导航"></i>
+		<span>文档导航</span>
+	</div>
+	<div id="blogNavContent">
+	</div>
+</div>
+
+<!-- 一些公用的js -->
+<script src="{{$.leanoteUrl}}/public/blog/js/common.js"></script>
+<script>
+$(function() {
+	initNav();
+});
+</script>
+
+</body>
+</html>
