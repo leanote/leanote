@@ -721,7 +721,6 @@ function hideLoading() {
 
 // 注销, 先清空cookie
 function logout() {
-	$.removeCookie("LEANOTE_SESSION");
 	location.href = UrlPrefix + "/logout?id=1";
 }
 
