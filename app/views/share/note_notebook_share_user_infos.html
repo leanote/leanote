@@ -5,11 +5,14 @@
         <h4 class="modal-title" id="modalTitle">{{msg . "share"}} <b>{{.title}}</b></h4>
       </div>
       {{$noteOrNotebookId := .noteOrNotebookId}}
-      
+      {{$isNote := .isNote}}
       <div class="modal-body">
       	<ul id="myTab" class="nav nav-tabs">
 			<li class="active"><a href="#baseInfo" data-toggle="tab">分享给好友</a></li>
 			<li class=""><a href="#groupInfo" data-toggle="tab">分享给项目组</a></li>
+			{{if $isNote}}
+			<li class=""><a href="#shareInfo" data-toggle="tab">分享给未注册好友</a></li>
+			{{end}}
 		</ul>
 	
 <div class="tab-content">
@@ -95,6 +98,19 @@
 	        {{end}}
 	    </table>
 	</div>
+	
+	<div class="tab-pane" id="shareInfo">
+		<p>
+		<button class="btn btn-default" id="genShareLink">生成该笔记的分享链接和密码</button>
+		<span id="showMsg"></span>
+		</p>
+		
+		<br>
+		
+		分享链接：<input type="text" id="shareLink" value=""  size=50> <br/><br/>
+		查看密码：<input type="text" id="sharePass" value="" />	
+	</div>
+	
 </div>
 
       </div>
@@ -108,11 +124,40 @@
 <script>
 Share.dialogIsNote = {{.isNote}};
 Share.dialogNoteOrNotebookId = '{{.noteOrNotebookId}}';
+
 $(function() {
 setTimeout(function() {
 	$("#tr1 #friendsEmail").focus();
 }, 500);
+
+if (Share.dialogIsNote) {
+	var url = "/share/querySharePass";
+	var data = {noteId: Share.dialogNoteOrNotebookId};
+	ajaxPost(url, data, function(re) {
+		if(reIsOk(re)) {
+			if (re.Item >= 1000 && re.Item < 10000) {
+				var shareLink = "https://leanote.com/share/" + '{{.noteOrNotebookId}}';
+				$("#shareLink").val(shareLink);
+				$("#sharePass").val(re.Item);
+			}
+		}
+	});
+}
+
+$("#shareLink").hover(function() {
+	$("#shareLink").focus(function(){
+	    $(this).css({'background-color' : '#f5f5dc'});
+	}).select();
 	
+})
+
+$("#sharePass").hover(function() {
+	$("#sharePass").focus(function(){
+	    $(this).css({'background-color' : '#f5f5dc'});
+	}).select();
+	
+})
+
 // 分享/删除给分组
 $("#groupInfo").on("click", ".btn-share-or-not", function() {
 	var $t = $(this);
@@ -155,6 +200,28 @@ $("#groupInfo").on("click", ".btn-share-or-not", function() {
 	});
 });
 
+
+//生成分享链接和密码
+$("#genShareLink").on("click", function() {
+	var sharePass = $("#sharePass").val();
+	if (sharePass != '' && sharePass > 1000 ) {
+		$("#showMsg").html("<font color='red'>不能重复生成分享链接和密码</font>");
+		return;
+	}
+	
+	var url = "/share/genShareLinkPass";
+	var shareLink = "https://leanote.com/share/note/" + '{{.noteOrNotebookId}}';
+	var data = {noteId: Share.dialogNoteOrNotebookId};
+	ajaxPost(url, data, function(re) {
+		if(reIsOk(re)) {
+			$("#shareLink").val(shareLink);
+			$("#sharePass").val(re.Item);
+		}
+	});
+});
+
+
+
 $(".group-perm").click(function() {
 	var $t = $(this);
 	var $ptr = $t.closest("tr");
@@ -178,6 +245,7 @@ $(".group-perm").click(function() {
 		}
 	});
 });
+
 
 });
 </script>

@@ -36,6 +36,8 @@ func (c Share) AddShareNote(noteId string, emails []string, perm int) revel.Resu
 	return c.RenderJson(status)
 }
 
+
+
 // 添加共享notebook
 func (c Share) AddShareNotebook(notebookId string, emails []string, perm int) revel.Result {
 	status := make(map[string]info.Re, len(emails))
@@ -186,3 +188,32 @@ func (c Share) DeleteShareNotebookGroup(notebookId, groupId string) revel.Result
 func (c Share) UpdateShareNotebookGroupPerm(notebookId, groupId string, perm int) revel.Result {
 	return c.AddShareNotebookGroup(notebookId, groupId, perm)
 }
+
+//生成笔记分享密码及更新到db
+func (c Share) GenShareLinkPass(noteId string) revel.Result {
+	pass, ok := shareService.GenSharePass(noteId)
+	re := info.Re{Ok : true, Item : pass, List: ok}
+	return c.RenderJson(re);
+}
+
+func (c Share) QuerySharePass(noteId string) revel.Result {
+	pass := shareService.QuerySharePass(noteId)
+	re := info.Re{Ok : true, Item : pass}
+	return c.RenderJson(re);
+}
+
+//展示分享笔记
+func (c Share) ShowShareNote(noteId string) revel.Result {
+//	note := noteService.GetNote(noteId, c.GetUserId())
+//	
+//	c.RenderArgs["title"] = note.UserId
+//	c.RenderArgs["title"] = note.UserId
+	return c.RenderTemplate("share/show_share_note.html")
+}
+
+//验证分享密码
+//func (c Share) Verify4ShareNote(noteId string, sharePass int) revel.Result {
+//	ok = shareService.Verify4ShareNote(noteId, sharePass);
+//	re := info.Re{Ok : true, Item : pass}
+//	
+//}

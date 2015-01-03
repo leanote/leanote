@@ -7,6 +7,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"time"
 	"sort"
+	"math/rand"
 )
 
 // 共享Notebook, Note服务
@@ -336,12 +337,14 @@ func (this *ShareService) AddShareNote(noteId string, perm int, userId, email st
 		"ToUserId": bson.ObjectIdHex(toUserId),
 	});
 	
+	
 	shareNote := info.ShareNote{NoteId: bson.ObjectIdHex(noteId), 
 		UserId: bson.ObjectIdHex(userId), 
 		ToUserId: bson.ObjectIdHex(toUserId),
 		Perm: perm,
 		CreatedTime: time.Now(),
 	}
+	
 	return db.Insert(db.ShareNotes, shareNote), "", toUserId
 }
 
@@ -775,4 +778,23 @@ func (this *ShareService) DeleteShareNotebookGroup(userId, notebookId, groupId s
 		"UserId": bson.ObjectIdHex(userId), 
 		"ToGroupId": bson.ObjectIdHex(groupId),
 	});
+}
+
+
+func (this *ShareService) GenSharePass(noteId string) (int, bool) {
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+    pass := 1000 + r.Intn(10000)
+    
+    if pass >= 10000 {
+    	pass -= 1000
+    }
+    ok := db.Update(db.Notes, bson.M{"_id": bson.ObjectIdHex(noteId)}, bson.M{"$set": bson.M{"SharePass": pass}})
+	return pass, ok
+}
+
+func (this *ShareService) QuerySharePass(noteId string) int {
+    note := &info.Note{}
+    db.Get(db.Notes, noteId, note)
+	
+	return note.SharePass
 }

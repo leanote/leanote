@@ -40,6 +40,8 @@ type Note struct {
 	RecommendTime time.Time     `RecommendTime,omitempty` // 推荐时间
 	PublicTime    time.Time     `PublicTime,omitempty`    // 发表时间, 公开为博客则设置
 	UpdatedUserId bson.ObjectId `bson:"UpdatedUserId"`    // 如果共享了, 并可写, 那么可能是其它他修改了
+	
+	SharePass int `SharePass`  //分享笔记的密码
 }
 
 // 内容

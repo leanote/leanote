@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="apple-touch-fullscreen" content="yes">
+<meta name=”apple-mobile-web-app-capable” content=”yes” />
+<meta name="keywords" content="leanote,leanote.com">
+<meta name="description" content="leanote, Not Just A Notebook">
+<title>leanote, Not Just A Notebook</title>
+
+<link href="/css/bootstrap.css" rel="stylesheet" />
+<!-- 先加载, 没有样式, 宽度不定 -->
+<link rel="stylesheet" href="tinymce/skins/custom/skin.min.css" rel="stylesheet"/>
+
+<!-- leanote css -->
+<link href="css/font-awesome-4.2.0/css/font-awesome.css" rel="stylesheet" />
+<link href="css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+<script>
+var hash = location.hash;
+if(hash == "#writing") {
+	var files = '<link rel="stylesheet" href="css/theme/writting-overwrite.css" type="text/css" id="themeLink" />';
+} else {
+	var files ='<link rel="stylesheet" href="css/theme/{{if .userInfo.Theme}}{{.userInfo.Theme}}{{else}}default{{end}}.css" type="text/css" id="themeLink" />';
+}
+document.write(files);
+</script>
+
+
+<!-- For Develop writting mod -->
+<script>
+function log(o) {
+	
+}
+</script>
+查看分享笔记{{.noteId}}
+
+您需要输入分享密码才能查看：<br/>
+<input type="password" id="sharePass" /><br/>
+<button id="showShareNote">点击查看</button>
+
+<script>
+var noteId = {{ .noteId }};
+var sharePass = $("#sharePass").val();
+$(function() {
+ 
+	
+$("#showShareNote").on("click", function() {
+	var url = "/share/verify4ShareNote";
+	var data = {noteId: noteId};
+	data.sharePass = $("#sharePass").val();
+	ajaxPost(url, data, function(re) {
+		if(reIsOk(re)) {
+			$("#shareLink").val(shareLink);
+			$("#sharePass").val(re.Item);
+		}
+	}); 
+});
+
+
+
+
+
+})
+</script>
+
+<script src="js/jquery-1.9.0.min.js"></script>
+<script src="js/jquery.ztree.all-3.5.js"></script>
+<script src="js/i18n/msg.{{.locale}}.js"></script>
+<script src="js/common-min.js"></script>
+<script src="tinymce/tinymce.js"></script>
+<script src="js/app/page-min.js"></script>
+<script src="/js/jQuery-slimScroll-1.3.0/jquery.slimscroll.js"></script>
+<script src="/js/contextmenu/jquery.contextmenu-min.js"></script>
+<script src="js/jquery-cookie.js"></script>
+<script src="js/bootstrap-min.js"></script>
+<script src="js/app/note-min.js"></script>
+<script src="js/app/tag-min.js"></script>
+<script src="js/app/notebook-min.js"></script>
+<script src="js/app/share-min.js"></script>
+<script src="js/object_id-min.js"></script>
+<script src="js/ZeroClipboard/ZeroClipboard-min.js"></script>
