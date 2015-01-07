@@ -119,6 +119,7 @@ function start()
 
 	// Set CodeMirror cursor to same position as cursor was in TinyMCE:
 	var html = editor.getContent({source_view: true});
+	// var html = editor.getBody().innerHTML; // life
 	html = html.replace(/<span\s+class="CmCaReT"([^>]*)>([^<]*)<\/span>/gm, String.fromCharCode(chr));
 	editor.dom.remove(editor.dom.select('.CmCaReT'));
 

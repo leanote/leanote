@@ -1388,7 +1388,9 @@ define("tinymce/Editor", [
 			var self = this, state = 0, cmdItem;
 
 			if (!/^(mceAddUndoLevel|mceEndUndoLevel|mceBeginUndoLevel|mceRepaint)$/.test(cmd) && (!args || !args.skip_focus)) {
-				self.focus();
+				// life ace
+				if(cmd != "toggleCode")
+					self.focus();
 			}
 
 			args = extend({}, args);
@@ -1688,6 +1690,18 @@ define("tinymce/Editor", [
 		setContent: function(content, args) {
 			var self = this, body = self.getBody(), forcedRootBlockName;
 
+			/**
+			 * life ace
+			 */
+			// 先destroy之前的ace
+			if(LeaAce && LeaAce.canAce) { // 有些地方不用, 比如单页面
+				var everContent = $(self.getBody());
+				if(everContent) {
+					LeaAce.destroyAceFromContent(everContent);
+				}
+			}
+			// end
+
 			// Setup args object
 			args = args || {};
 			args.format = args.format || 'html';
@@ -1730,6 +1744,7 @@ define("tinymce/Editor", [
 				self.fire('SetContent', args);
 			} else {
 				// Parse and serialize the html
+				var a = (self.parser.parse(content, {isRootContent: true}));
 				if (args.format !== 'raw') {
 					content = new Serializer({}, self.schema).serialize(
 						self.parser.parse(content, {isRootContent: true})
@@ -1751,6 +1766,23 @@ define("tinymce/Editor", [
 					self.selection.normalize();
 				}*/
 			}
+
+			/**
+			 * life ace
+			 */
+			if(LeaAce && LeaAce.canAce) {
+				if(LeaAce.canAce() && LeaAce.isAce) {
+					try {
+						LeaAce.initAceFromContent(self);
+					} catch(e) {
+						log(e);
+					}
+				} else {
+					// 为了在firefox下有正常的显示
+					$("#editorContent pre").removeClass("ace-tomorrow ace_editor");
+				}
+			}
+			// end
 
 			return args.content;
 		},

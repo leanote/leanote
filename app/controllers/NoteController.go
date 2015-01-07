@@ -125,6 +125,8 @@ func (c Note) Index(noteId string) revel.Result {
 	c.RenderArgs["globalConfigs"] = configService.GetGlobalConfigForUser()
 	
 	
+	return c.RenderTemplate("note/note.html")
+	
 	if isDev, _ := revel.Config.Bool("mode.dev"); isDev {
 		return c.RenderTemplate("note/note-dev.html")
 	} else {

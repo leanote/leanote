@@ -20,17 +20,6 @@
 ::-moz-selection { background:@selectionBg; color:@selectionColor; } 
 ::-webkit-selection { background:@selectionBg; color:@selectionColor; }
 
-html,body {
-}
-*, body {
-  font-family: @fontFamily;
-  font-weight: 300;
-  font-size: @fontSize;
-}
-h1, h2, h3 {
-  font-family: @fontFamily;
-  font-weight: 300 !important;
-}
 a {
   color: @aBlackColor;
   cursor: pointer;
@@ -168,15 +157,6 @@ a.raw:hover {
 }
 .dropdown-menu  li > a:hover, .dropdown-menu li > a:focus {
   background-color: @borderColor;
-}
-
-.ios7-a {
-  display: inline-block;
-  padding: 0 10px 0 5px;
-  height: 40px;
-  vertical-align: middle;
-  line-height: 38px;
-  cursor: pointer; 
 }
 
 /*********************/
@@ -524,25 +504,6 @@ a.raw:hover {
   outline: none !important;
   // border: 1px solid @hColor;
 }
-#editor, #mdEditor {
-  position: absolute; 
-	z-index: 2;
-  top: 71px; 
-  bottom: 0px;
-  right: 0; 
-  left: 5px;  
-  padding: 0; // 0px 0px 0px 0px;
-  display: none;
-}
-#mdEditor {
-	z-index: 1;
-	background-color: #fff;
-    bottom: 10px; 
-    #md-section-helper, #wmd-input {
-		font-size: 14px;
-		line-height: 22px;			
-    }
-}
 
 #editorContent {
   position: absolute; 
@@ -623,19 +584,8 @@ a.raw:hover {
 }
 
 /*标签与其它工具*/
-#tool {
-  border-bottom: 1px solid #ddd;
-}
 
 /* tag */
-#tag {
-  height: 40px;
-  line-height: 38px
-}
-// 前面的38影响了dropdown
-#tag .dropdown {
-  line-height: 30px;
-}
 #addTagInput {
   line-height: 25px;
   display: none;
@@ -677,88 +627,6 @@ a.raw:hover {
 .label i:hover {
   opacity: 1;
   // font-weight: bold;
-}
-
-/* leanote nav */
-
-#leanoteNavTrigger {
- 
-}
-
-#leanoteNav {
-  position: absolute; 
-  right: 5px;
-  border: 1px solid #ccc; 
-  border-radius: 3px;
-  background-color: #fff;
-  opacity: 0.5;
-  // display: none;
-  z-index: 11;
-  margin-right: 2px;
-  h1 {
-	margin:0;
-  	font-size: 18px;
-  	padding: 3px;
-  	cursor: pointer;
-  }
-  i {
-    padding: 3px;
-  }
-  span {
-  	display: none;
-  }
-  #leanoteNavContent {
-  	display: none;
-	overflow: auto;
-  } 
-}
-
-#leanoteNav.unfolder {
-  min-width: 200px;
-  max-width: 300px;
-  // bottom: 1px;
-  opacity: 0.8;
-  h1 {
-  	border-bottom: 1px dashed @borderColor;
-  }
-  span {
-	  display: inline;
-  }
-  
-  #leanoteNavContent {
-  	display: block;
-	min-height: 30px;
-  }
-}
-
-#leanoteNav ul {
-  margin:0;
-  padding-left: 23px;
-  li {
-  	list-style-type: disc;
-  	a {
-  		&:hover {
-  			color: @hColor;
-  		}	
-  	}
-  }
-}
-#leanoteNav ul .nav-h1 {
-}
-#leanoteNav ul .nav-h2 {
-  margin-left: 20px;
-}
-#leanoteNav ul .nav-h3 {
-  margin-left: 30px;
-}
-#leanoteNav ul .nav-h4 {
-  margin-left: 40px;
-}
-#leanoteNav ul .nav-h5 {
-  margin-left: 50px;
-}
-.scrollTo-a {
-  cursor: pointer !important;
 }
 
 //---------------

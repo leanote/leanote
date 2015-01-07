@@ -18,11 +18,13 @@ var Tag = {};
 var Notebook = {};
 var Share = {};
 var Mobile = {}; // 手机端处理
+var LeaAce = {};
 
 // markdown
 var Converter;
 var MarkdownEditor;
 var ScrollLink;
+var MD;
 
 //---------------------
 // 公用方法
@@ -276,18 +278,39 @@ ajaxPostJson(
 	});
 */
 
+function getVendorPrefix() {
+  // 使用body是为了避免在还需要传入元素
+  var body = document.body || document.documentElement,
+    style = body.style,
+    vendor = ['webkit', 'khtml', 'moz', 'ms', 'o'],
+    i = 0;
+ 
+  while (i < vendor.length) {
+    // 此处进行判断是否有对应的内核前缀
+    if (typeof style[vendor[i] + 'Transition'] === 'string') {
+      return vendor[i];
+    }
+    i++;
+  }
+}
+
 //-----------------
 
 // 切换编辑器时要修改tabIndex
 function editorIframeTabindex(index) {
-	var $i = $("#editorContent_ifr");
-	if($i.size() == 0) {
-		setTimeout(function() {
-			editorIframeTabindex(index);
-		}, 100);
-	} else {
+	var $i = $("#editorContent");
+	// var $i = $("#editorContent_ifr");
+	// if($i.size() == 0) {
 		$i.attr("tabindex", index);
-	}
+		setTimeout(function() {
+			$i.attr("tabindex", index);
+		}, 500);
+		setTimeout(function() {
+			$i.attr("tabindex", index);
+		}, 1000);
+	// } else {
+		// $i.attr("tabindex", index);
+	// }
 }
 //切换编辑器
 LEA.isM = false;
@@ -299,7 +322,7 @@ function switchEditor(isMarkdown) {
 	// 富文本永远是2
 	if(!isMarkdown) {
 		$("#editor").show();
-		$("#mdEditor").css("z-index", 1);
+		$("#mdEditor").css("z-index", 1).hide();
 		
 		// 刚开始没有
 		editorIframeTabindex(2);
@@ -314,26 +337,56 @@ function switchEditor(isMarkdown) {
 	}
 }
 
+
+
 // editor 设置内容
 // 可能是tinymce还没有渲染成功
 var previewToken = "<div style='display: none'>FORTOKEN</div>"
+var clearIntervalForSetContent;
 function setEditorContent(content, isMarkdown, preview) {
 	if(!content) {
 		content = "";
 	}
+	if(clearIntervalForSetContent) {
+		clearInterval(clearIntervalForSetContent);
+	}
 	if(!isMarkdown) {
+		// 先destroy之前的ace
+		/*
+		if(typeof tinymce != "undefined" && tinymce.activeEditor) {
+			var editor = tinymce.activeEditor;
+			var everContent = $(editor.getBody());
+			if(everContent) {
+				LeaAce.destroyAceFromContent(everContent);
+			}
+		}
+		*/
+
 		$("#editorContent").html(content);
 		if(typeof tinymce != "undefined" && tinymce.activeEditor) {
 			var editor = tinymce.activeEditor;
 			editor.setContent(content);
+			/*
+			if(LeaAce.canAce() && LeaAce.isAce) {
+				try {
+					LeaAce.initAceFromContent(editor);
+				} catch(e) {
+					log(e);
+				}
+			} else {
+				// 为了在firefox下有正常的显示
+				$("#editorContent pre").removeClass("ace-tomorrow ace_editor");
+			}
+			*/
 			editor.undoManager.clear(); // 4-7修复BUG
 		} else {
 			// 等下再设置
-			setTimeout(function() {
+			clearIntervalForSetContent = setTimeout(function() {
 				setEditorContent(content, false);
 			}, 100);
 		}
 	} else {
+	/*
 		$("#wmd-input").val(content);
 		$("#wmd-preview").html(""); // 防止先点有的, 再点tinymce再点没内容的
 		if(!content || preview) { // 没有内容就不要解析了
@@ -348,10 +401,18 @@ function setEditorContent(content, isMarkdown, preview) {
 				MarkdownEditor.refreshPreview();
 			} else {
 				// 等下再设置
-				setTimeout(function() {
+				clearIntervalForSetContent = setTimeout(function() {
 					setEditorContent(content, true, preview);
 				}, 200);
 			}
+		}
+	*/
+		if(MD) {
+			MD.setContent(content);
+		} else {
+			clearIntervalForSetContent = setTimeout(function() {
+				setEditorContent(content, true);
+			}, 100);
 		}
 	}
 }
@@ -369,7 +430,24 @@ function getEditorContent(isMarkdown) {
 	if(!isMarkdown) {
 		var editor = tinymce.activeEditor;
 		if(editor) {
-			var content = $(editor.getBody());
+			var content = $(editor.getBody()).clone();
+			// 删除toggle raw 
+			content.find('.toggle-raw').remove();
+
+			// 替换掉ace editor
+			var pres = content.find('pre');
+			for(var i = 0 ; i < pres.length; ++i) {
+				var pre = pres.eq(i);
+				var id = pre.attr('id');
+				var aceEditor = LeaAce.getAce(id);
+				if(aceEditor) {
+					var val = aceEditor.getValue();
+					val = val.replace(/</g, '&lt').replace(/>/g, '&gt');
+					pre.removeAttr('style', '').removeAttr('contenteditable').removeClass('ace_editor');
+					pre.html(val);
+				}
+			}
+			
 			// 去掉恶心的花瓣注入
 			// <pinit></pinit>
 			// 把最后的<script>..</script>全去掉
@@ -404,7 +482,8 @@ function getEditorContent(isMarkdown) {
 			return content;
 		}
 	} else {
-		return [$("#wmd-input").val(), $("#wmd-preview").html()]
+		// return [$("#wmd-input").val(), $("#wmd-preview").html()]
+		return [MD.getContent(), '<div>' + $("#preview-contents").html() + '</div>']
 	}
 }
 
@@ -601,6 +680,10 @@ function resizeEditor(second) {
     ifrParent.height(height);
     // log(height + '---------------------------------------')
     $("#editorContent_ifr").height(height);
+
+    // life 12.9
+    // inline editor
+    $("#editorContent").css("top", $("#mceToolbar").height());
     
     /*
     // 第一次时可能会被改变
@@ -720,8 +803,13 @@ function hideLoading() {
 }
 
 // 注销, 先清空cookie
+function setCookie(c_name, value, expiredays){
+	var exdate = new Date();
+	exdate.setDate(exdate.getDate() + expiredays);
+	document.cookie = c_name+ "=" + escape(value) + ((expiredays==null) ? "" : ";expires="+exdate.toGMTString());
+}
 function logout() {
-	$.removeCookie("LEANOTE_SESSION");
+	setCookie("LEANOTE_SESSION", '', -1);
 	location.href = UrlPrefix + "/logout?id=1";
 }
 

@@ -247,7 +247,7 @@ Note.curHasChanged = function(force) {
 	}
 	
 	// 比较text, 因为note Nav会添加dom会导致content改变
-	if((force && cacheNote.Content != content) || (!force && $(cacheNote.Content).text() != contentText)) {
+	if((force && cacheNote.Content != content) || (!force && (/**/(!cacheNote.IsMarkdown && $(cacheNote.Content).text() != contentText) || (cacheNote.IsMarkdown && cacheNote.Content != contentText)) /**/) ) {
 		hasChanged.hasChanged = true;
 		hasChanged.Content = content;
 		
@@ -303,6 +303,7 @@ Note.genDesc = function(content) {
 	
 	// 避免其它的<img 之类的不完全
 	content = $("<div></div>").html(content).text();
+	
 	
 	// pre下text()会将&lt; => < &gt; => >
 	content = content.replace(/</g, "&lt;");
@@ -638,8 +639,10 @@ Note.clearNoteInfo = function() {
 	setEditorContent("");
 	
 	// markdown editor
+	/*
 	$("#wmd-input").val("");
 	$("#wmd-preview").html("");
+	*/
 	
 	// 只隐藏即可
 	$("#noteRead").hide();
@@ -1056,6 +1059,13 @@ Note.listNoteContentHistories = function() {
 	});
 }
 
+// 导出成PDF
+Note.exportPDF = function(target) {
+	var noteId = $(target).attr("noteId");
+	ajaxGet("/note/exportPdf", {noteId: noteId}, function(ret) {
+	});
+};
+
 // 长微博
 Note.html2Image = function(target) {
 	var noteId = $(target).attr("noteId");
@@ -1384,8 +1394,9 @@ Note.initContextmenu = function() {
 			{ type: "splitLine" },
 			{ text: getMsg("publicAsBlog"), alias: 'set2Blog', faIcon: "fa-bold", action: Note.setNote2Blog },
 			{ text: getMsg("cancelPublic"), alias: 'unset2Blog', faIcon: "fa-undo", action: Note.setNote2Blog },
-			//{ type: "splitLine" },
-			//{ text: "分享到社区", alias: 'html2Image', icon: "", action: Note.html2Image},
+			// { type: "splitLine" },
+			// { text: "分享到社区", alias: 'html2Image', icon: "", action: Note.html2Image},
+			// { text: "导出PDF", alias: 'exportPDF', icon: "", action: Note.exportPDF},
 			{ type: "splitLine" },
 			{ text: getMsg("delete"), icon: "", faIcon: "fa-trash-o", action: Note.deleteNote },
 			{ text: getMsg("move"), alias: "move", faIcon: "fa-arrow-right",
@@ -1510,8 +1521,8 @@ var Attach = {
 			var attachId = $(this).closest('li').data("id");
 			var attach = self.attachsMap[attachId];
 			var src = UrlPrefix + "/attach/download?attachId=" + attachId;
-			if(LEA.isMarkdownEditor() && MarkdownEditor) {
-				MarkdownEditor.insertLink(src, attach.Title);
+			if(LEA.isMarkdownEditor() && MD) {
+				MD.insertLink(src, attach.Title);
 			} else {
 				tinymce.activeEditor.insertContent('<a target="_blank" href="' + src + '">' + attach.Title + '</a>');
 			}
@@ -1527,8 +1538,8 @@ var Attach = {
 			var src = UrlPrefix +  "/attach/downloadAll?noteId=" + Note.curNoteId
 			var title = note.Title ? note.Title + ".tar.gz" : "all.tar.gz";
 			
-			if(LEA.isMarkdownEditor() && MarkdownEditor) {
-				MarkdownEditor.insertLink(src, title);
+			if(LEA.isMarkdownEditor() && MD) {
+				MD.insertLink(src, title);
 			} else {
 				tinymce.activeEditor.insertContent('<a target="_blank" href="' + src + '">' + title + '</a>');
 			}
@@ -1661,9 +1672,15 @@ $(function() {
 	Attach.init();
 	
 	//-----------------
-	// for list nav
+	// 点击笔记展示之
+	// 避免iphone, ipad两次点击
+	// http://stackoverflow.com/questions/3038898/ipad-iphone-hover-problem-causes-the-user-to-double-click-a-link
+	$("#noteItemList").on("mouseenter", ".item", function(event) {
+		if(LEA.isIpad || LEA.isIphone) {
+			$(this).trigger("click");
+		}
+	});
 	$("#noteItemList").on("click", ".item", function(event) {
-		log(event);
 		event.stopPropagation();
 		var noteId = $(this).attr("noteId");
 		

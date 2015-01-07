@@ -28,13 +28,21 @@ define("tinymce/UndoManager", [
 	return function(editor) {
 		var self, index = 0, data = [], beforeBookmark, isFirstTypedCharacter, lock;
 
+		// life ace
+		var canAdd = true;
+
 		// Returns a trimmed version of the current editor contents
 		function getContent() {
-			return trim(editor.getContent({format: 'raw', no_events: 1}).replace(trimContentRegExp, ''));
+			// TODO 性能有待检测
+			// life ace editor, 获取真正的内容, 只有<pre>
+			return getEditorContent();
+			// 这个有XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+			// return trim(editor.getContent({format: 'raw', no_events: 1}).replace(trimContentRegExp, ''));
 		}
 
 		function addNonTypingUndoLevel() {
 			self.typing = false;
+			// log('addNonTypingUndoLevel')
 			self.add();
 		}
 
@@ -76,11 +84,23 @@ define("tinymce/UndoManager", [
 		editor.on('KeyUp', function(e) {
 			var keyCode = e.keyCode;
 
+			// ctrl + shift + c, command + shift + c 代码
+			// life ace
+			if((e.metaKey && e.shiftKey) || (e.ctrlKey && e.shiftKey)) {
+				return;
+			}
+
+			// 在ace中回车也会加history
+			if(keyCode == 13 && LeaAce.nowIsInAce()) {
+				return;
+			}
+
 			if ((keyCode >= 33 && keyCode <= 36) || (keyCode >= 37 && keyCode <= 40) || keyCode == 45 || keyCode == 13 || e.ctrlKey) {
 				addNonTypingUndoLevel();
 				editor.nodeChanged();
 			}
 
+			// 8 表示删除
 			if (keyCode == 46 || keyCode == 8 || (Env.mac && (keyCode == 91 || keyCode == 93))) {
 				editor.nodeChanged();
 			}
@@ -105,13 +125,31 @@ define("tinymce/UndoManager", [
 
 		editor.on('KeyDown', function(e) {
 			var keyCode = e.keyCode;
+			log('keyCode' + keyCode)
+
+			// 在ace中回车也会加history
+			if(keyCode == 13/* && LeaAce.nowIsInAce()*/) {
+				return;
+			}
 
 			// Is caracter positon keys left,right,up,down,home,end,pgdown,pgup,enter
 			if ((keyCode >= 33 && keyCode <= 36) || (keyCode >= 37 && keyCode <= 40) || keyCode == 45) {
 				if (self.typing) {
 					addNonTypingUndoLevel();
 				}
+				return;
+			}
 
+			// ctrl + shift + c, command + shift + c 代码
+			// life ace
+			if((e.metaKey && e.shiftKey) || (e.ctrlKey || e.shiftKey)) {
+				log("no add history");
+				return;
+			}
+
+			// ctrl + z
+			if(e.metaKey && keyCode == 90 || (e.ctrlKey && keyCode == 90)) {
+				log('ctrl + z');
 				return;
 			}
 
@@ -164,6 +202,10 @@ define("tinymce/UndoManager", [
 				}
 			},
 
+			setCanAdd: function(status) {
+				canAdd = status;
+			},
+
 			/**
 			 * Adds a new undo level/snapshot to the undo list.
 			 *
@@ -172,6 +214,11 @@ define("tinymce/UndoManager", [
 			 * @return {Object} Undo level that got added or null it a level wasn't needed.
 			 */
 			add: function(level) {
+				if(!canAdd) {
+					log('cant add history')
+					return;
+				}
+				log('add history')
 				var i, settings = editor.settings, lastLevel;
 
 				level = level || {};
@@ -250,6 +297,10 @@ define("tinymce/UndoManager", [
 					}
 
 					editor.setContent(level.content, {format: 'raw'});
+					// undo后如果有pre, 那么要重新init下
+					// life ace
+					// LeaAce.undo(editor);
+
 					editor.selection.moveToBookmark(level.beforeBookmark);
 
 					editor.fire('undo', {level: level});

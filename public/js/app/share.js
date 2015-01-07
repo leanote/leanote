@@ -579,16 +579,8 @@ function addShareNoteOrNotebook(trSeq) {
 				tpl += tt('<td><a href="#" noteOrNotebookId="?" toUserId="?" class="btn btn-warning delete-share">' + getMsg("delete") +'</a></td>', id, ret.Id);
 				$(trId).html(tpl);
 			} else {
-				var shareUrl = UrlPrefix + '/register?from=' + UserInfo.Username;
-				showAlert("#shareMsg", getMsg('friendNotExits', [getMsg("app"), shareUrl]) + ' <a id="shareCopy"  data-clipboard-target="copyDiv">' + getMsg("clickToCopy") + '</a> <span id="copyStatus"></span> <br /> ' + getMsg("sendInviteEmailToYourFriend") + ', <a href="#" onclick="sendRegisterEmail(\'' + emails + '\')">' + getMsg("send"), "warning");
-				$("#copyDiv").text(shareUrl);
-				initCopy("shareCopy", function(args) {
-					if(args.text) {
-						showMsg2("#copyStatus", getMsg("copySuccess"), 1000);
-					} else {
-						showMsg2("#copyStatus", getMsg("copyFailed"), 1000);
-					}
-				});
+				var shareUrl = UrlPrefix + '/register?iu=' + UserInfo.Username;
+				showAlert("#shareMsg", getMsg('friendNotExits', [getMsg("app"), '<input style="background: none;border: 1px solid #ccc;width: 300px;padding: 3px;border-radius: 3px;outline: none;" onclick="$(this).focus().select()" type="text" value="' + shareUrl + '" />']) + '</a> <br /> ' + getMsg("sendInviteEmailToYourFriend") + ', <a href="#" onclick="sendRegisterEmail(\'' + emails + '\')">' + getMsg("send"), "warning");
 			}
 		}
 	}, trId + " .btn-success");

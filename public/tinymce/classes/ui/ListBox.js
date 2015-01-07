@@ -67,6 +67,31 @@ define("tinymce/ui/ListBox", [
 			});
 		},
 
+
+		/**
+		 * disable/enable 某一list的item
+		 * leanote ace life ace
+		 * value = convert, state = true | false
+		 */
+		diableValue: function(value, state) {
+			var self = this;
+			var menu = self.settings.menu;
+			if (self.menu) {
+				self.menu.items().each(function(ctrl) {// menuitem
+					if(ctrl.value() === value) {
+						ctrl.disabled(state);
+						return;
+					}
+				});
+			} else {
+				for (var i = 0; i < menu.length; i++) {
+					if(menu[i].value == value) {
+						menu[i].disabled = state;
+						return;
+					}
+				}
+			}
+		},
 		/**
 		 * Getter/setter function for the control value.
 		 *
@@ -78,7 +103,7 @@ define("tinymce/ui/ListBox", [
 			var self = this, active, selectedText, menu, i;
 
 			function activateByValue(menu, value) {
-				menu.items().each(function(ctrl) {
+				menu.items().each(function(ctrl) {// menuitem
 					active = ctrl.value() === value;
 
 					if (active) {
@@ -111,7 +136,6 @@ define("tinymce/ui/ListBox", [
 
 				self.text(selectedText || this.settings.text);
 			}
-
 			return self._super(value);
 		}
 	});

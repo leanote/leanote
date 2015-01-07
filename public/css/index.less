@@ -67,7 +67,7 @@ a:hover {
 }
 @headerHeight: 60px;
 #headerContainer {
-	height: @headerHeight;
+	// height: @headerHeight;
 	background-color: #fff;
 	-webkit-box-shadow: 1px 1px 8px -1px rgba(0, 0, 0, 0.1);
 	box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.1);
@@ -642,4 +642,51 @@ input, .form-control {
 	* {
 		max-width: 100% !important;
 	}
+}
+
+.slider-desc {
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    left:0;
+    right:0;
+}
+.slider-desc span {
+    display: inline-block;
+    padding: 3px 10px;
+    background: rgba(27, 37, 46, 0.7);
+    border-radius: 3px;
+    color: #fff;
+}
+.mobile-text {
+    bottom: 80px;
+}
+#webSliderContainer {
+    position: relative;
+    width: 750px;
+    height: 370px;
+    margin: auto;
+    
+}
+#webSliderContainer img {
+    position: absolute;
+    width: 100%;
+    left:0;
+    top:0;
+}
+#mobileSliderContainer {
+    position: relative;
+    width: 200px;
+    height: 300px;
+    margin: auto;
+}
+
+#mobileSliderContainer img {
+    position: absolute;
+    width: 100%;
+    left:0;
+    top:0;
+}
+.hide-img {
+    opacity: 0;
 }

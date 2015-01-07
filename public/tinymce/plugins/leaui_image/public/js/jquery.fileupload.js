@@ -369,6 +369,8 @@
                         formData = options.formData;
                     } else {
                         formData = new FormData();
+                        var a = this._getFormData(options);
+                        log(a);
                         $.each(this._getFormData(options), function (index, field) {
                             formData.append(field.name, field.value);
                         });

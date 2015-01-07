@@ -299,7 +299,8 @@ var o = {
 		num = this.maxSelected;
 		self.previewO.html("");
 		for(var i = 1; i <= num; ++i) {
-			self.previewO.append("<li>" + i + "</li>");
+			// self.previewO.append("<li>" + i + "</li>");
+			self.previewO.append("<li>?</li>");
 		}
 	},
 		
@@ -311,7 +312,7 @@ var o = {
 		for(var i = 0; i < this.maxSelected; ++i) {
 			var target = lis.eq(i);
 			if(i > size) {
-				target.html(i+1);
+				target.html('?');
 			} else {
 				src = this.selectedImages[i];
 
@@ -353,7 +354,7 @@ var o = {
 		self.clearAttrs();
 	},
 	addSelectedImage: function($li) {
-		if(this.maxSelected <= this.selectedImages.length) {
+		if(this.maxSelected > 1 && this.maxSelected <= this.selectedImages.length) {
 			return false;
 		}
 		
@@ -369,7 +370,16 @@ var o = {
 				src = urlPrefix + "/file/outputImage?fileId=" + $li;
 			}
 		}
-		this.selectedImages.push(src);
+		
+		// 如果只允许选1个
+		if(this.maxSelected == 1) {
+			// 先把其它的去掉
+			$("#imageList li").removeClass("selected");
+			this.selectedImages = [src];
+		} else {
+			this.selectedImages.push(src);
+		}
+		
 		this.reRenderSelectedImages(false, src);
 	
 		return true;
@@ -713,10 +723,10 @@ var o = {
 	        // trigger to show file select
 	        $(this).parent().find('input').click();
 	    });
-
 	    // Initialize the jQuery File Upload plugin
 	    $('#upload').fileupload({
 	        dataType: 'json',
+	        pasteZone: '',
 	        acceptFileTypes: /(\.|\/)(gif|jpg|jpeg|png|jpe)$/i,
 	        // maxFileSize: 210000,
 
@@ -842,3 +852,11 @@ var o = {
 $(function() {
 	o.init();
 });
+
+// 为md得到图片链接
+function mdGetImgSrc() {
+	if(o.selectedImages && o.selectedImages.length) {
+		return o.selectedImages[0];
+	}
+	return "";
+}

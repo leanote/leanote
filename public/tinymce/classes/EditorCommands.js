@@ -301,6 +301,7 @@ define("tinymce/EditorCommands", [
 				selection.select(value);
 			},
 
+			// 插入内容
 			mceInsertContent: function(command, ui, value) {
 				var parser, serializer, parentNode, rootNode, fragment, args;
 				var marker, rng, node, node2, bookmarkHtml;
@@ -340,6 +341,7 @@ define("tinymce/EditorCommands", [
 
 				// Setup parser and serializer
 				parser = editor.parser;
+
 				serializer = new Serializer({}, editor.schema);
 				bookmarkHtml = '<span id="mce_marker" data-mce-type="bookmark">&#xFEFF;</span>';
 
@@ -433,6 +435,154 @@ define("tinymce/EditorCommands", [
 						)
 					);
 
+					// life ace
+					// 插入的时候把<pre>内的标签全清掉
+					// life 把<pre></pre>间的代码拿出, 去掉标签<span>之类的
+					value = value.replace(/<pre([^>]*?)>([\s\S]*?)<\/pre>/g, function(v, v1, v2) {
+						// v == "<pre>a, b, c</pre>"
+						v2 = v2.replace(/(<([^>]+)>)/gi, '').replace(/\s+$/, ''); // 把最后一个换行去掉
+						return "<pre " + v1 + ">" + v2 + "</pre>";
+					});
+
+					// Set the inner/outer HTML depending on if we are in the root or not
+					if (parentNode == rootNode) {
+						dom.setHTML(rootNode, value);
+					} else {
+						dom.setOuterHTML(parentNode, value);
+					}
+				}
+
+				marker = dom.get('mce_marker');
+				selection.scrollIntoView(marker);
+
+				// Move selection before marker and remove it
+				rng = dom.createRng();
+				try {
+				// If previous sibling is a text node set the selection to the end of that node
+				// if(marker) {
+					node = marker.previousSibling;
+					if (node && node.nodeType == 3) {
+						rng.setStart(node, node.nodeValue.length);
+
+						// TODO: Why can't we normalize on IE
+						if (!isIE) {
+							node2 = marker.nextSibling;
+							if (node2 && node2.nodeType == 3) {
+								node.appendData(node2.data);
+								node2.parentNode.removeChild(node2);
+							}
+						}
+					} else {
+						// If the previous sibling isn't a text node or doesn't exist set the selection before the marker node
+						rng.setStartBefore(marker);
+						rng.setEndBefore(marker);
+					}
+
+					// Remove the marker node and set the new range
+					dom.remove(marker);
+					selection.setRng(rng);
+
+					// Dispatch after event and add any visual elements needed
+					editor.fire('SetContent', args);
+					editor.addVisual();
+				// }
+				} catch(e) {
+
+				}
+			},
+
+			// life 修改
+			// 之前不是这个版本, 为什么要改, 因为考虑到在pre下粘贴后全部内容会修改(ace不友好)
+			// 这里不是改全部的内容, 对ace好
+			mceInsertRawHTML: function(command, ui, value) {
+				var parser, serializer, parentNode, rootNode, fragment, args;
+				var marker, rng, node, node2, bookmarkHtml;
+
+				// Setup parser and serializer
+				parser = editor.parser;
+				serializer = new Serializer({}, editor.schema);
+				bookmarkHtml = '<span id="mce_marker" data-mce-type="bookmark">&#xFEFF;</span>';
+
+				// Run beforeSetContent handlers on the HTML to be inserted
+				args = {content: value, format: 'html', selection: true};
+				editor.fire('BeforeSetContent', args);
+				value = args.content;
+
+				// Add caret at end of contents if it's missing
+				if (value.indexOf('{$caret}') == -1) {
+					value += '{$caret}';
+				}
+
+				// Replace the caret marker with a span bookmark element
+				value = value.replace(/\{\$caret\}/, bookmarkHtml);
+
+				// If selection is at <body>|<p></p> then move it into <body><p>|</p>
+				var body = editor.getBody();
+				if (dom.isBlock(body.firstChild) && dom.isEmpty(body.firstChild)) {
+					body.firstChild.appendChild(dom.doc.createTextNode('\u00a0'));
+					selection.select(body.firstChild, true);
+					dom.remove(body.firstChild.lastChild);
+				}
+
+				// Insert node maker where we will insert the new HTML and get it's parent
+				if (!selection.isCollapsed()) {
+					editor.getDoc().execCommand('Delete', false, null);
+				}
+
+				parentNode = selection.getNode();
+
+				// Parse the fragment within the context of the parent node
+				var parserArgs = {context: parentNode.nodeName.toLowerCase()};
+				fragment = parser.parse(value, parserArgs);
+
+				// Move the caret to a more suitable location
+				node = fragment.lastChild;
+				if (node.attr('id') == 'mce_marker') {
+					marker = node;
+
+					for (node = node.prev; node; node = node.walk(true)) {
+						if (node.type == 3 || !dom.isBlock(node.name)) {
+							node.parent.insert(marker, node, node.name === 'br');
+							break;
+						}
+					}
+				}
+
+				// If parser says valid we can insert the contents into that parent
+				if (!parserArgs.invalid) {
+					// Check if parent is empty or only has one BR element then set the innerHTML of that parent
+					node = parentNode.firstChild;
+					node2 = parentNode.lastChild;
+					if (!node || (node === node2 && node.nodeName === 'BR')) {
+						dom.setHTML(parentNode, value);
+					} else {
+						selection.setContent(value);
+					}
+				} else {
+					// If the fragment was invalid within that context then we need
+					// to parse and process the parent it's inserted into
+
+					// Insert bookmark node and get the parent
+					selection.setContent(bookmarkHtml);
+					parentNode = selection.getNode();
+					rootNode = editor.getBody();
+
+					// Opera will return the document node when selection is in root
+					if (parentNode.nodeType == 9) {
+						parentNode = node = rootNode;
+					} else {
+						node = parentNode;
+					}
+
+					// Find the ancestor just before the root element
+					while (node !== rootNode) {
+						parentNode = node;
+						node = node.parentNode;
+					}
+
+					// Get the outer/inner HTML depending on if we are in the root and parser and serialize that
+					value = parentNode == rootNode ? rootNode.innerHTML : dom.getOuterHTML(parentNode);
+
 					// Set the inner/outer HTML depending on if we are in the root or not
 					if (parentNode == rootNode) {
 						dom.setHTML(rootNode, value);
@@ -472,36 +622,7 @@ define("tinymce/EditorCommands", [
 
 				// Dispatch after event and add any visual elements needed
 				editor.fire('SetContent', args);
-				editor.addVisual();
-			},
-
-			// life 修改
-			mceInsertRawHTML: function(command, ui, value) {
-				selection.setContent('tiny_mce_marker');
-				
-				// start----------
-				// 为了定位到粘贴后
-				var bookmarkHtml = '<span id="mce_marker" data-mce-type="bookmark">&#xFEFF;</span>';
-				if (value.indexOf('{$caret}') == -1) {
-					value += '{$caret}';
-				}
-				// Replace the caret marker with a span bookmark element
-				value = value.replace(/\{\$caret\}/, bookmarkHtml);
-				
-				editor.setContent(
-					editor.getContent().replace(/tiny_mce_marker/g, function() {
-						return value;
-					})
-				);
-				var marker = dom.get('mce_marker');
-				var rng = dom.createRng();
-				rng.setStartBefore(marker);
-				rng.setEndBefore(marker);
-	
-				// Remove the marker node and set the new range
-				dom.remove(marker);
-				selection.setRng(rng);
-				//--------end 
+				editor.addVisual()
 			},
 
 			mceToggleFormat: function(command, ui, value) {

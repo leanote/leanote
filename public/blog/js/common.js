@@ -355,10 +355,10 @@ function getCurVisitUserInfo() {
 }
 // 增加阅读次数
 function incReadNum(noteId) {
-	if(!$.cookie(noteId)) {
-		$.cookie(noteId, 1);
+	//if(!$.cookie(noteId)) {
+	//	$.cookie(noteId, 1);
 		ajaxGet(getCurHostUrl() + "/blog/incReadNum", {noteId: noteId});
-	}
+	//}
 }
 function getCurHostUrl() {
 	return "//" + location.host;

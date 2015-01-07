@@ -830,8 +830,10 @@
 				}
 
 				if (!isSilent) {
-					if(parentNode.Subs.length > 0) {
+					if(parentNode.Subs && parentNode.Subs.length > 0) {
 						view.expandCollapseParentNode(setting, parentNode, true);
+					} else {
+						parentNode.Subs = [];
 					}
 				}
 

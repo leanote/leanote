@@ -30,11 +30,32 @@
   font-weight: normal;
   font-style: normal;
 }
+*,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+  font-family: 'Open Sans', 'Helvetica Neue', Arial, 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;
+}
+body {
+  font-family: 'Open Sans', 'Helvetica Neue', Arial, 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+}
+h1,
+h2,
+h3 {
+  font-family: 'Open Sans', 'Helvetica Neue', Arial, 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;
+  font-weight: 300 !important;
+}
 /*"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue", Helvetica, "Microsoft Yahei", Verdana, Simsun, "Segoe UI", "Segoe UI Web Regular", "Segoe UI Symbol",  "BBAlpha Sans", "S60 Sans", Arial, sans-serif;*/
 #noteItemList,
 #notebook,
 #leftNotebook,
 .slimScrollDiv,
+#editorContent,
 #editorContent_ifr,
 .mce-edit-area,
 .mce-container-body,
@@ -45,6 +66,47 @@
 #attachList,
 #tags {
   -webkit-overflow-scrolling: touch !important;
+}
+.ios7-a {
+  display: inline-block;
+  padding: 0 10px 0 5px;
+  height: 36px;
+  vertical-align: middle;
+  line-height: 36px;
+  cursor: pointer;
+}
+#tool {
+  border-bottom: 1px solid #ddd;
+  height: 36px;
+  margin-left: -5px;
+}
+#tag {
+  height: 36px;
+  line-height: 36px;
+}
+#editor,
+#mdEditor {
+  position: absolute;
+  z-index: 2;
+  top: 66px;
+  bottom: 0px;
+  right: 0;
+  left: 5px;
+  padding: 0;
+  display: none;
+}
+#mdEditor {
+  z-index: 1;
+  background-color: #fff;
+  bottom: 5px;
+}
+#mdEditor #md-section-helper,
+#mdEditor #wmd-input {
+  font-size: 14px;
+  line-height: 22px;
+}
+#tag .dropdown {
+  line-height: 30px;
 }
 .btn {
   border-radius: 2px;
@@ -590,8 +652,8 @@
 #tag {
   position: absolute;
   right: 300px;
-  left: 0;
   top: 0;
+  left: 5px;
   bottom: 0;
 }
 #tagColor {
@@ -672,11 +734,6 @@
   /*一条横线....*/
   z-index: -1;
   opacity: none;
-}
-#right-column {
-  border: 1px dashed #BBBBBB;
-  border-radius: 5px;
-  padding-left: 5px;
 }
 .preview-container {
   overflow: auto;
@@ -886,12 +943,137 @@
 .ace_editor * {
   font: 12px / normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
 }
+/* leanote nav */
+.leanoteNav {
+  position: absolute;
+  right: 0px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background-color: #fff;
+  opacity: 0.5;
+  z-index: 11;
+  margin-top: 4px;
+}
+.leanoteNav h1 {
+  margin: 0;
+  font-size: 16px;
+  padding: 3px;
+  cursor: pointer;
+}
+.leanoteNav i {
+  padding: 3px;
+}
+.leanoteNav span {
+  display: none;
+}
+.leanoteNav .leanoteNavContent {
+  display: none;
+  overflow: auto;
+}
+.leanoteNav.unfolder {
+  min-width: 200px;
+  max-width: 300px;
+  opacity: 0.8;
+}
+.leanoteNav.unfolder h1 {
+  border-bottom: 1px dashed #ebeff2;
+}
+.leanoteNav.unfolder span {
+  display: inline;
+}
+.leanoteNav.unfolder .leanoteNavContent {
+  display: block;
+  min-height: 30px;
+}
+.leanoteNav ul {
+  margin: 0;
+  padding-left: 23px;
+}
+.leanoteNav ul li {
+  list-style-type: disc;
+}
+.leanoteNav ul li a:hover {
+  color: #0fb264;
+}
+.leanoteNav ul .nav-h2 {
+  margin-left: 20px;
+}
+.leanoteNav ul .nav-h3 {
+  margin-left: 30px;
+}
+.leanoteNav ul .nav-h4 {
+  margin-left: 40px;
+}
+.leanoteNav ul .nav-h5 {
+  margin-left: 50px;
+}
+.scrollTo-a {
+  cursor: pointer !important;
+}
 #editorContent {
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 5px;
   outline: none;
   margin-top: 5px;
+  bottom: 5px !important;
+}
+#editorContent pre {
+  position: relative;
+  -mo-height: auto !important;
+}
+#editorContent pre .toggle-raw {
+  position: absolute;
+  left: 2px;
+  top: -2px;
+  z-index: 100;
+  display: none;
+}
+#editorContent pre:hover .toggle-raw {
+  display: block;
+}
+.ace_invisible_space {
+  visibility: hidden !important;
+}
+.mce-tinymce-inline {
+  border-width: 0 !important;
+}
+#editorContent a {
+  color: #2a6496;
+  text-decoration: underline;
+}
+#editorContent pre {
+  font: 12px / normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+  color: #4D4D4C;
+}
+#editorContent .ace-tomorrow {
+  padding: 0;
+  padding-left: 44px;
+}
+#editorContent .ace-to-pre {
+  padding: 0;
+  padding-left: 5px;
+}
+#editorContent .ace_scrollbar-v {
+  overflow-y: hidden;
+}
+#editorContent .leanote-image-container {
+  display: inline-block;
+  width: 100px;
+}
+#editorContent .leanote-image-container .loader {
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 3px;
+  margin-top: 5px;
+}
+#editorContent .leanote-image-container .progress {
+  display: inline-block;
+  margin: 0;
+  width: 80px;
+}
+.close:focus {
+  outline: none;
 }
 @font-face {
   font-family: 'Open Sans';

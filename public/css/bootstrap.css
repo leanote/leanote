@@ -7099,7 +7099,41 @@ td.visible-print {
 /* life */
 .btn {
 }
+.label-post {
+	font-weight: normal;
+}
 .mce-item-table, .mce-item-table td, .mce-item-table th, .mce-item-table caption {
 	border: 1px solid #9B9898;
 	border-collapse: collapse;
+}
+.label-default {
+  background-color: #464C5E;
+}
+.label-red {
+  background-color: #d9534f;
+}
+.label-red:hover {
+	background-color: #ba6e6c;
+}
+.label-yellow {
+  background-color: #f0ad4e;
+}
+.label-yellow:hover {
+  background-color: #bd955d
+}
+.label-blue {
+  background-color: #428bca;
+}
+.label-blue:hover {
+	background-color: #4f7ca3;
+}
+.label-green {
+  background-color: #5cb85c;
+}
+.label-green:hover {
+  background-color: #4b764b;
+}
+#posts .each-post .title .label-post {
+	font-size: 14px;
+	padding: .2em .6em .3em;
 }
