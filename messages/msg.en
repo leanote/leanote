@@ -79,7 +79,7 @@ myBlog=Blog
 history=Histories
 save=Save
 editorTips=Tips
-editorTipsInfo=<h4>1. Short cuts</h4>ctrl+shift+c Toggle code <br /> ctrl+shift+i Insert/edit image <h4>2. shift+enter Get out of current block</h4> eg. <img src="/images/outofcode.png" style="width: 90px"/> in this situation you can use shift+enter to get out of current code block.
+editorTipsInfo=<h4>1. Short cuts</h4>ctrl+shift+c Toggle code<h4>2. shift+enter Get out of current block</h4> eg. <img src="/images/outofcode.png" style="width: 90px"/> in this situation you can use shift+enter to get out of current code block.
 newNote=New note
 newMarkdownNote=New Markdown Note
 noNoteNewNoteTips=The notebook is empty, why not...
@@ -238,6 +238,7 @@ subDomainExisted=Sub domain is already existed
 domainNotPointToLeanote=The custom domin hasn't pointed to d.leanote.com
 errorPerPageSize=Page size is error
 errorSortField=Sort Field is error
+themeValidHasRoundInclude=WARNING: Templates have circular references!
 
 # lea++
 leaDesc=leanote blog platform

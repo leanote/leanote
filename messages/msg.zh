@@ -100,7 +100,7 @@ myBlog=我的博客
 history=历史记录
 save=保存
 editorTips=帮助
-editorTipsInfo=<h4>1. 快捷键</h4>ctrl+shift+c 代码块切换 <br /> ctrl+shift+i 插入/修改图片<h4>2. shift+enter 跳出当前区域</h4>比如在代码块中<img src="/images/outofcode.png" style="width: 90px"/>按shift+enter可跳出当前代码块.
+editorTipsInfo=<h4>1. 快捷键</h4>ctrl+shift+c 代码块切换 <h4>2. shift+enter 跳出当前区域</h4>比如在代码块中<img src="/images/outofcode.png" style="width: 90px"/>按shift+enter可跳出当前代码块.
 newNote=新建笔记
 newMarkdownNote=新建Markdown笔记
 noNoteNewNoteTips=该笔记本下空空如也...何不
@@ -264,6 +264,7 @@ subDomainExisted=博客子域名已存在
 domainNotPointToLeanote=该域名还未指向 d.leanote.com, 请稍后再试
 errorPerPageSize=每页记录数至少为1
 errorSortField=排序类型错误
+themeValidHasRoundInclude=警告: 模板存在循环引用问题!
 
 # lea++
 leaDesc=leanote博客平台
