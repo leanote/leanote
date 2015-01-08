@@ -32,10 +32,10 @@ import (
 //var jss = []string{"js/jquery-cookie", "js/bootstrap"}
 var jss = []string{"js/jquery-cookie", "js/bootstrap", 
 	"js/common", "js/app/note", "js/app/tag", "js/app/notebook", "js/app/share", 
-	"js/object_id", "js/ZeroClipboard/ZeroClipboard"}
+	"js/object_id"}
 	
-var base1 = "/Users/life/Documents/Go/package1/src/github.com/leanote/leanote/"
-var base = "/Users/life/Documents/Go/package1/src/github.com/leanote/leanote/public/"
+var base1 = "/Users/life/Documents/Go/package2/src/github.com/leanote/leanote/"
+var base = "/Users/life/Documents/Go/package2/src/github.com/leanote/leanote/public/"
 var cmdPath = "/usr/local/bin/uglifyjs"
 
 func cmdError(err error) {

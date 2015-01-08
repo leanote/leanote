@@ -17,7 +17,7 @@ type FileService struct {
 }
 
 // add Image
-func (this *FileService) AddImage(image info.File, albumId, userId string) bool {
+func (this *FileService) AddImage(image info.File, albumId, userId string, needCheckSize bool) (ok bool, msg string) {
 	image.CreatedTime = time.Now()
 	if albumId != "" {
 		image.AlbumId = bson.ObjectIdHex(albumId)
@@ -27,7 +27,8 @@ func (this *FileService) AddImage(image info.File, albumId, userId string) bool 
 	}
 	image.UserId = bson.ObjectIdHex(userId)
 	
-	return db.Insert(db.Files, image)
+	ok = db.Insert(db.Files, image)
+	return
 }
 
 // list images
@@ -232,7 +233,7 @@ func (this *FileService) CopyImage(userId, fileId, toUserId string) (bool, strin
 	id := bson.NewObjectId();
 	fileInfo.FileId = id
 	fileId = id.Hex()
-	Ok := this.AddImage(fileInfo, "", toUserId)
+	Ok, _ := this.AddImage(fileInfo, "", toUserId, false)
 	
 	if Ok {
 		return Ok, id.Hex()

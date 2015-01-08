@@ -111,6 +111,7 @@ func init() {
 	}
 
 	// tags
+	// 2014/12/30 标签添加链接
 	revel.TemplateFuncs["blogTags"] = func(renderArgs map[string]interface{}, tags []string) template.HTML {
 		if tags == nil || len(tags) == 0 {
 			return ""
@@ -118,18 +119,68 @@ func init() {
 		locale, _ := renderArgs[revel.CurrentLocaleRenderArg].(string)
 		tagStr := ""
 		lenTags := len(tags)
+		
+		tagPostUrl, _ := renderArgs["tagPostsUrl"].(string)
+		
 		for i, tag := range tags {
 			str := revel.Message(locale, tag)
+			var classes = "label"
 			if strings.HasPrefix(str, "???") {
 				str = tag
 			}
-			tagStr += str
+			if InArray([]string{"red", "blue", "yellow", "green"}, tag) {
+				classes += " label-" + tag
+			} else {
+				classes += " label-default"
+			}
+			
+			classes += " label-post"
+			var url = tagPostUrl + "/" + url.QueryEscape(tag)
+			tagStr += "<a class=\"" + classes + "\" href=\"" + url + "\">" + str + "</a>";
 			if i != lenTags - 1 {
-				tagStr += ","
+				tagStr += " "
 			}
 		}
 		return template.HTML(tagStr)
 	}
+	
+	// lea++
+	revel.TemplateFuncs["blogTagsLea"] = func(renderArgs map[string]interface{}, tags []string, isRecommend bool) template.HTML {
+		if tags == nil || len(tags) == 0 {
+			return ""
+		}
+		locale, _ := renderArgs[revel.CurrentLocaleRenderArg].(string)
+		tagStr := ""
+		lenTags := len(tags)
+		
+		tagPostUrl := "http://lea.leanote.com/"
+		if isRecommend {
+			tagPostUrl += "?tag=";
+		} else {
+			tagPostUrl += "latest?tag=";
+		}
+		
+		for i, tag := range tags {
+			str := revel.Message(locale, tag)
+			var classes = "label"
+			if strings.HasPrefix(str, "???") {
+				str = tag
+			}
+			if InArray([]string{"red", "blue", "yellow", "green"}, tag) {
+				classes += " label-" + tag
+			} else {
+				classes += " label-default"
+			}
+			classes += " label-post"
+			var url = tagPostUrl + url.QueryEscape(tag)
+			tagStr += "<a class=\"" + classes + "\" href=\"" + url + "\">" + str + "</a>";
+			if i != lenTags - 1 {
+				tagStr += " "
+			}
+		}
+		return template.HTML(tagStr)
+	}
+	
 	/*
 	revel.TemplateFuncs["blogTags"] = func(tags []string) template.HTML {
 		if tags == nil || len(tags) == 0 {
@@ -311,7 +362,7 @@ func init() {
 	// init Email
 	revel.OnAppStart(func() {
 		// 数据库
-		db.Init()
+		db.Init("", "")
 		// email配置
 		InitEmail()
 		InitVd()
@@ -323,4 +374,5 @@ func init() {
 		member.InitService()
 		service.ConfigS.InitGlobalConfigs()
 	})
+	
 }

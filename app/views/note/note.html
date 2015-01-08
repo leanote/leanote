@@ -13,12 +13,11 @@
 <link href="/css/bootstrap.css" rel="stylesheet" />
 <!-- 先加载, 没有样式, 宽度不定 -->
 <link rel="stylesheet" href="/tinymce/skins/custom/skin.min.css" rel="stylesheet"/>
-
 <!-- leanote css -->
 <link href="/css/font-awesome-4.2.0/css/font-awesome.css" rel="stylesheet" />
 <link href="/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
-
-<link href="/public/res-min/themes/default.css" rel="stylesheet" />
+<!-- mdeditor -->
+<link href="/public/dist/themes/default.css" rel="stylesheet" />
 
 <script>
 var hash = location.hash;
@@ -899,7 +898,7 @@ var GlobalConfigs = {{.globalConfigs|jsonJs}}; // 2014/11/9 beta2
 
 <!-- 渲染view -->
 <script src="/tinymce/tinymce.min.js"></script>
-<script src="/js/ace/ace.js"></script>
+<script src="/public/libs/ace/ace.js"></script>
 <script src="/js/app/page-min.js"></script>
 <script src="/js/jQuery-slimScroll-1.3.0/jquery.slimscroll-min.js"></script>
 <script src="/js/contextmenu/jquery.contextmenu-min.js"></script>
@@ -915,8 +914,10 @@ initPage();
 
 <!-- context-menu -->
 <link rel="stylesheet" href="/js/contextmenu/css/contextmenu.css" type="text/css" />
+
+<!-- v2 use require.js, mdeditor -->
 <script>
-window.baseDir = '/public/res-min';
+window.baseDir = '/public/dist';
 window.require = {
     baseUrl: window.baseDir,
     deps: ['main']
