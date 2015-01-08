@@ -28,17 +28,12 @@
 			
 			<ul class="nav navbar-nav navbar-right m-n hidden-xs nav-user">
 				<li class="hidden-xs">
-					<a href="http://lea.leanote.com" class="dk" target="_blank">
-						lea++
-					</a>
-				</li>
-				<li class="hidden-xs">
 					<a href="/note" class="dk" target="_blank">
 						{{msg . "myNote"}}
 					</a>
 				</li>
 				<li class="hidden-xs">
-					<a href="http://blog.leanote.com/{{$.session.Username}}" class="dk" target="_blank">
+					<a href="/blog/{{$.session.Username}}" class="dk" target="_blank">
 						{{msg . "myBlog"}}
 					</a>
 				</li>
@@ -79,7 +74,7 @@
 						</section>
 						<footer class="footer lt hidden-xs b-t b-light" style="min-height: initial;
 padding: 10px 15px;text-align:center;">
-							<a href="http://leanote.com" target="_blank">leanote</a> © 2014
+							<a href="http://leanote.com" target="_blank">leanote</a> © 2015
 							<!--
 							<a href="#nav" data-toggle="class:nav-xs" class="pull-right btn btn-sm btn-default btn-icon">
 								<i class="fa fa-angle-left text">
