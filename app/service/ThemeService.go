@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"html/template"
 	"regexp"
+	"io/ioutil"
 	"encoding/json"
 )
 
@@ -127,7 +128,8 @@ func (this *ThemeService) CopyDefaultTheme(userBlog info.UserBlog) (ok bool, the
 // 设为active true
 func (this *ThemeService) NewThemeForFirst(userBlog info.UserBlog) (ok bool, themeId string) {
 	ok, themeId = this.CopyDefaultTheme(userBlog)
-	db.UpdateByQField(db.Themes, bson.M{"_id": bson.ObjectIdHex(themeId)}, "IsActive", true)
+	this.ActiveTheme(userBlog.UserId.Hex(), themeId)
+	// db.UpdateByQField(db.Themes, bson.M{"_id": bson.ObjectIdHex(themeId)}, "IsActive", true)
 	return
 }
 
@@ -285,11 +287,15 @@ func (this *ThemeService) GetThemePath(userId, themeId string) string {
 }
 // 更新模板内容
 func (this *ThemeService) UpdateTplContent(userId, themeId, filename, content string) (ok bool, msg string) {
-	path := this.GetThemeAbsolutePath(userId, themeId) + "/" + filename
+	basePath := this.GetThemeAbsolutePath(userId, themeId)
+	path := basePath + "/" + filename
 	if strings.Contains(filename, ".html") {
-		// 模板
-		if ok, msg = this.mustTpl(filename, content); ok {
-			ok = PutFileStrContent(path, content)
+		Log(">>")
+		if ok, msg = this.ValidateTheme(basePath, filename, content); ok {
+			// 模板
+			if ok, msg = this.mustTpl(filename, content); ok {
+				ok = PutFileStrContent(path, content)
+			}
 		}
 		return
 	} else if filename == "theme.json" {
@@ -410,6 +416,11 @@ func (this *ThemeService) ImportTheme(userId, path string) (ok bool, msg string)
 		DeleteFile(targetPath)
 		return
 	}
+	// 主题验证
+	if ok, msg = this.ValidateTheme(targetPath, "", ""); !ok {
+		DeleteFile(targetPath)
+		return
+	}
 	// 解压成功, 那么新建之
 	// 保存到数据库中
 	theme, _ := this.getThemeConfig(targetPath)
@@ -505,5 +516,119 @@ func (this *ThemeService) InstallTheme(userId, themeId string) (ok bool) {
 	
 	ok = db.Insert(db.Themes, theme)
 	
+	// 激活之
+	this.ActiveTheme(userId, themeId);
+
 	return ok
+}
+
+// 验证主题是否全法, 存在循环引用?
+// filename, newContent 表示在修改模板时要判断模板修改时是否有错误
+func (this *ThemeService) ValidateTheme(path string, filename, newContent string) (ok bool, msg string) {
+	Log("theme Path")
+	Log(path)
+	// 建立一个有向图	
+	// 将该path下的所有文件提出, 得到文件的引用情况
+	files := ListDir(path)
+	LogJ(files);
+	size := len(files)
+	if(size > 100) {
+		ok = false;
+		msg = "tooManyFiles"
+		return
+	}
+	/*
+	111111111
+	111000000
+	*/
+	vector := make([][]int, size)
+	for i := 0; i < size; i++ {
+		vector[i] = make([]int, size)
+	}
+	fileIndexMap := map[string]int{} // fileName => index
+	fileContent := map[string]string{} // fileName => content
+	index := 0
+	// 得到文件内容, 和建立索引, 每个文件都有一个index, 对应数组位置
+	for _, t := range files {
+		if !strings.Contains(t, ".html") {
+			continue;
+		}
+		if t != filename {
+			fileBytes, err := ioutil.ReadFile(path + "/" + t)
+			if err != nil {
+				continue
+			}
+			
+			fileIndexMap[t] = index;
+			// html内容
+			fileStr := string(fileBytes)
+			fileContent[t] = fileStr
+		} else {
+			fileIndexMap[t] = index
+			fileContent[t] = newContent
+		}
+		index++
+	}
+	// 分析文件内容, 建立有向图
+	reg, _ := regexp.Compile("{{ *template \"(.+?\\.html)\".*}}")
+	for filename, content := range fileContent {
+		thisIndex := fileIndexMap[filename]
+		finds := reg.FindAllStringSubmatch(content, -1) // 子匹配
+		LogJ(finds)
+//		Log(content)
+		if finds != nil && len(finds) > 0 {
+			for _, includes := range finds {
+				include := includes[1]
+				includeIndex, has := fileIndexMap[include]
+				Log(includeIndex)
+				Log("??")
+				Log(has)
+				if has {
+					vector[thisIndex][includeIndex] = 1
+				}
+			}
+		}
+	}
+	
+	LogJ(vector)
+	LogJ(fileIndexMap)
+	// 建立图后, 判断是否有环
+	if this.hasRound(vector, index) {
+		ok = false
+		msg = "themeValidHasRoundInclude"
+	} else {
+		ok = true
+	}
+	return;
+}
+
+// 检测有向图是否有环, DFS
+func (this *ThemeService) hasRound(vector [][]int, size int) (ok bool) {
+	for i := 0; i < size; i++ {
+		visited := make([]int, size)
+		if this.hasRoundEach(vector, i, size, visited) {
+			Log(">>")
+			Log(i);
+			return true;
+		}
+	}
+	return false
+}
+
+// 从每个节点出发, 判断是否有环
+func (this *ThemeService) hasRoundEach(vector [][]int, index int, size int, visited []int) (ok bool) {
+	if visited[index] > 0 {
+		Log("<")
+		Log(index)
+		return true
+	}
+	visited[index] = 1;
+	// 遍历它的孩子
+	for i := 0; i < size; i++ {
+		if vector[index][i] > 0 {
+			return this.hasRoundEach(vector, i, size, visited);
+		}
+	}
+	visited[index] = 0;
+	return false;
 }

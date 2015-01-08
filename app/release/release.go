@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"strings"
 )
+
 /*
 用golang exec 总是说找不到uglifyjs命令, 需要全部路径
 而且node, npm要在/usr/bin下, 已建ln
@@ -33,8 +34,8 @@ var jss = []string{"js/jquery-cookie", "js/bootstrap",
 	"js/common", "js/app/note", "js/app/tag", "js/app/notebook", "js/app/share", 
 	"js/object_id", "js/ZeroClipboard/ZeroClipboard"}
 	
-var base1 = "/Users/life/Documents/Go/package2/src/github.com/leanote/leanote/"
-var base = "/Users/life/Documents/Go/package2/src/github.com/leanote/leanote/public/"
+var base1 = "/Users/life/Documents/Go/package1/src/github.com/leanote/leanote/"
+var base = "/Users/life/Documents/Go/package1/src/github.com/leanote/leanote/public/"
 var cmdPath = "/usr/local/bin/uglifyjs"
 
 func cmdError(err error) {
@@ -52,7 +53,7 @@ func compressJs(filename string) {
 	to := base + filename + "-min.js"
 	cmd := exec.Command(cmdPath, source, "-o", to)
 	_, err := cmd.CombinedOutput()
-
+	fmt.Println(source);
 	cmdError(err)
 }
 	
@@ -80,7 +81,10 @@ func combineJs() {
 // 改note-dev->note
 func dev() {
 	// 即替换note.js->note-min.js
-	m := map[string]string{"note.js": "note-min.js", 
+	m := map[string]string{"tinymce.dev.js": "tinymce.min.js", 
+		"tinymce.js": "tinymce.min.js", 
+		"jquery.ztree.all-3.5.js": "jquery.ztree.all-3.5-min.js",
+		"note.js": "note-min.js", 
 		"app.js": "app-min.js", 
 		"page.js": "page-min.js", 
 		"common.js": "common-min.js",
@@ -88,6 +92,7 @@ func dev() {
 		"share.js": "share-min.js",
 		"tag.js": "tag-min.js",
 		"main.js": "main-min.js",
+		"jquery.slimscroll.js": "jquery.slimscroll-min.js",
 		"jquery.contextmenu.js": "jquery.contextmenu-min.js",
 		"editor/editor.js": "editor/editor-min.js",
 		"/public/mdeditor/editor/scrollLink.js": "/public/mdeditor/editor/scrollLink-min.js",
@@ -111,12 +116,21 @@ func tinymce() {
 //	cmd := exec.Command("/Users/life/Documents/eclipse-workspace/go/leanote_release/tinymce-master/node_modules/jake/bin/cli.js", "minify", "bundle[themes:modern,plugins:table,paste,advlist,autolink,link,image,lists,charmap,hr,searchreplace,visualblocks,visualchars,code,nav,tabfocus,contextmenu,directionality,codemirror,codesyntax,textcolor,fullpage]")
 	cmd := exec.Command("/Users/life/Documents/eclipse-workspace/go/leanote_release/tinymce-master/node_modules/jake/bin/cli.js", "minify")
 	cmd.Dir = "/Users/life/Documents/eclipse-workspace/go/leanote_release/tinymce-master"
-	c, err := cmd.CombinedOutput()
+	
+	// 必须要先删除
+	cmd2 := exec.Command("/bin/sh", "-c", "rm " + cmd.Dir + "/js/tinymce/tinymce.dev.js")
+	cmd2.CombinedOutput()
+	cmd2 = exec.Command("/bin/sh", "-c", "rm " + cmd.Dir + "/js/tinymce/tinymce.jquery.dev.js")
+	c, _ := cmd2.CombinedOutput()
 	fmt.Println(string(c))
-	cmdError(err)
+	c, _ = cmd.CombinedOutput()
+	fmt.Println(string(c))
 }
 
 func main() {
+	// 压缩tinymce
+	tinymce()
+	
 	dev();
 	
 	// 其它零散的需要压缩的js
@@ -133,6 +147,10 @@ func main() {
 		"mdeditor/editor/underscore",
 		"mdeditor/editor/mathJax",
 		"js/jQuery-slimScroll-1.3.0/jquery.slimscroll",
+		"js/app/editor_drop_paste",
+		"js/app/attachment_upload",
+		"js/jquery.ztree.all-3.5",
+		"js/jQuery-slimScroll-1.3.0/jquery.slimscroll",
 		}
 		
 	for _, js := range otherJss {
@@ -141,7 +159,5 @@ func main() {
 	
 	// 先压缩后合并
 	combineJs()
-	
-	// 压缩tinymce
-	tinymce()
+
 }

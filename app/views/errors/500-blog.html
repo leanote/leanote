@@ -1,0 +1,63 @@
+{{template "home/header_box.html" .}}
+
+<section id="box">
+	<div>
+		<div>
+			<h1 class="h text-white animated fadeInDownBig">ERROR!</h1>
+		</div>
+		<div id="errorBox">
+			<p class="error-info">
+				Sorry, you(not we) got an error. This error is just showing in blog preview for test.
+			</p>
+			
+		    <div class="list-group m-b-sm bg-white m-b-lg"> 
+		    
+		{{with .Error}}
+		<div id="header" class="block">
+			<h1>
+				{{.Title}}
+			</h1>
+			<p>
+				{{if .SourceType}}
+					The {{.SourceType}} <strong>{{.Path}}</strong> does not compile: <strong>{{.Description}}</strong>
+				{{else}}
+					{{.Description}}
+				{{end}}
+			</p>
+		</div>
+		{{if .Path}}
+		<div id="source" class="block">
+			<h2>In {{.Path}}
+				{{if .Line}}
+					(around {{if .Line}}line {{.Line}}{{end}}{{if .Column}} column {{.Column}}{{end}})
+				{{end}}
+			</h2>
+			{{range .ContextSource}}
+				<div class="line {{if .IsError}}error{{end}}">
+					<span class="lineNumber">{{.Line}}:</span>
+					<pre>{{.Source}}</pre>
+				</div>
+			{{end}}
+		</div>
+		{{end}}
+		{{if .MetaError}}
+			<div id="source" class="block">
+				<h2>Additionally, an error occurred while handling this error.</h2>
+				<div class="line error">
+					{{.MetaError}}
+				</div>
+			</div>
+		{{end}}
+		{{end}}
+ 
+		    </div>
+		</div>		
+    </div>
+</section>
+<div id="boxFooter">
+	<p>
+		<a href="/index">leanote</a> © 2014
+	</p>
+</div>
+</body>
+</html>

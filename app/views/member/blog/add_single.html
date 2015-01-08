@@ -1,6 +1,6 @@
 {{template "member/top.html" .}}
 <div class="m-b-md"> <h3 class="m-b-none">
-{{if .page}}
+{{if .single}}
 {{msg . "updateSingle"}}
 {{else}}
 {{msg . "addSingle"}}
@@ -41,7 +41,7 @@
 
 </div>
 {{template "member/footer.html" .}}
-<script type="text/javascript" src="/tinymce/tinymce.min.js"></script>
+<script type="text/javascript" src="/tinymce/tinymce.js"></script>
 <script>
 var urlPrefix = "{{.siteUrl}}";
 $(function() {

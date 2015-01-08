@@ -20,7 +20,7 @@
 						<label for="logo">{{msg . "blogLogo"}}</label>
 							<input type="hidden" name="Logo" id="Logo"
 								value="{{.userBlog.Logo}}" />
-							<form id="formLogo" action="{{$.siteUrl}}/file/uploadBlogLogo" method="post"
+							<form id="formLogo" action="/file/uploadBlogLogo" method="post"
 								enctype="multipart/form-data" target="logoTarget">
 								<input type="file" class="form-control" id="logo2" name="file"
 									onChange='$("#formLogo").submit();' /> 

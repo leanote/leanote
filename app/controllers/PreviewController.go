@@ -33,6 +33,8 @@ func (c Preview) getPreviewThemeAbsolutePath(themeId string) bool {
 	theme := themeService.GetTheme(c.GetUserId(), themeId)
 	
 	c.RenderArgs["isPreview"] = true
+	c.RenderArgs["themeId"] = themeId
+	c.RenderArgs["themeInfoPreview"] = theme.Info
 	c.RenderArgs["themePath"] = theme.Path
 	if theme.Path == "" {
 		return false

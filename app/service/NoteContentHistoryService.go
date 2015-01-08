@@ -33,7 +33,8 @@ func (this *NoteContentHistoryService) AddHistory(noteId, userId string, eachHis
 		// TODO
 		l := len(history.Histories)
 		if l >= maxSize {
-			history.Histories = history.Histories[l-maxSize:]
+			// history.Histories = history.Histories[l-maxSize:] // BUG, 致使都是以前的
+			history.Histories = history.Histories[:maxSize]
 		}
 		newHistory := []info.EachHistory{eachHistory}
 		newHistory = append(newHistory, history.Histories...) // 在开头加了, 最近的在最前

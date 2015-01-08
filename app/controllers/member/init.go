@@ -128,6 +128,7 @@ func init() {
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &MemberIndex{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &MemberUser{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &MemberBlog{})
+	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &MemberGroup{})
 	revel.OnAppStart(func() {
 	})
 }

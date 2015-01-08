@@ -8,6 +8,7 @@
 		</small>
 	</h3>
 </div>
+
 <div class="row">
 <div class="col-sm-12 theme-container">
 	<section class="panel panel-default">
@@ -27,8 +28,8 @@
 			<p>
 			{{msg . "currentTheme"}}:
 			</p>
-			<ul class="themes">
-				<li class="theme">	
+			<div class="themes clearfix">
+				<div class="theme pull-left">	
 				    <a class="choose-theme" data-method="put" href="#" rel="nofollow">
 				      <div class="theme-thumb thumb active-theme">
 					      <img src="/{{.activeTheme.Path}}/images/screenshot.png" alt="preview">
@@ -41,12 +42,21 @@
 				    <div class="theme-btns">
 				    	<div class="btn-group" data-id="{{.activeTheme.ThemeId.Hex}}">
 					    	<a class="btn btn-default btn-sm btn-export"><span class="fa fa-download"></span> {{msg $ "export"}}</a>
-					    	<a class="btn btn-default btn-sm" href="{{$.siteUrl}}/preview?themeId={{.activeTheme.ThemeId.Hex}}" target="_blank"><span class="fa fa-eye"></span> {{msg $ "preview"}}</a>
+					    	<!-- 必须是自己的主题 -->
+					    	{{if .activeTheme.ThemeId}}
+						    	<a class="btn btn-default btn-sm" href="{{$.siteUrl}}/preview?themeId={{.activeTheme.ThemeId.Hex}}" target="_blank"><span class="fa fa-eye"></span> {{msg $ "preview"}}</a>
+					    	{{end}}
 					    	<a class="btn btn-primary btn-sm" target="_blank" href="/member/blog/updateTheme?themeId={{if .activeTheme.ThemeId}}{{.activeTheme.ThemeId.Hex}}{{end}}"><span class="fa fa-pencil"></span> {{msg $ "edit"}}</a>
 				    	</div>
 				    </div>
-			    </li>
-			</ul>
+			    </div>
+			    {{if .activeTheme.Info.Desc}}
+			    <!-- 描述 -->
+			    <div class="pull-left theme-desc">
+			    	{{.activeTheme.Info.Desc|raw}}
+			    </div>
+			    {{end}}
+			</div>
 			
 			<hr />
 			<p>
@@ -59,6 +69,11 @@
 				    <a class="choose-theme" data-method="put" href="#" rel="nofollow">
 				      <div class="theme-thumb thumb">
 					      <img src="/{{.Path}}/images/screenshot.png" alt="preview">
+					      {{if .Info.Desc}}
+					      <div class="theme-desc-mask">
+					      	{{.Info.Desc|raw}}
+					      </div>
+					      {{end}}
 				      </div>
 				      <span class="theme-title">{{.Name}}</span>
 					</a>
@@ -100,6 +115,11 @@
 				    <a class="choose-theme" data-method="put" href="#" rel="nofollow">
 				      <div class="theme-thumb thumb">
 					      <img src="/{{.Path}}/images/screenshot.png" alt="preview">
+					      {{if .Info.Desc}}
+					      <div class="theme-desc-mask">
+					      	{{.Info.Desc|raw}}
+					      </div>
+					      {{end}}
 				      </div>
 				      <span class="theme-title">{{.Name}}</span>
 					</a>
