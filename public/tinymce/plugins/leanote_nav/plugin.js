@@ -32,8 +32,8 @@ tinymce.PluginManager.add('leanote_nav', function(editor) {
 		
 		// 这里, resize Height
 		var curH = $("#leanoteNavContent").height();
-		var pH = $("#editorContent_ifr").height()-29;
-		if(curH > pH) {
+		var pH = $("#editorContent").height()-29;
+		if(curH > pH) {	
 			$("#leanoteNavContent").height(pH);
 		}
 	}

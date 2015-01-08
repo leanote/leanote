@@ -10,7 +10,7 @@ import (
 	"io/ioutil"
 	"os"
 	"fmt"
-	"strconv"
+//	"strconv"
 	"strings"
 )
 
@@ -85,7 +85,7 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 	var fileUrlPath = ""
 	var fileId = ""
 	var resultCode = 0 // 1表示正常
-	var resultMsg = "内部错误" // 错误信息
+	var resultMsg = "error" // 错误信息
 	var Ok = false
 	
 	defer func() {
@@ -120,7 +120,7 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 	} else {
 		_, ext = SplitFilename(filename)
 		if(ext != ".gif" && ext != ".jpg" && ext != ".png" && ext != ".bmp" && ext != ".jpeg") {
-			resultMsg = "不是图片"
+			resultMsg = "Please upload image"
 			return re
 		}
 	}
@@ -147,7 +147,7 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 	// > 2M?
 	if(float64(len(data)) > maxFileSize * float64(1024*1024)) {
 		resultCode = 0
-		resultMsg = fmt.Sprintf("图片大于%vM", maxFileSize)
+		resultMsg = fmt.Sprintf("The file Size is bigger than %vM", maxFileSize)
 		return re
 	}
 	
@@ -163,7 +163,7 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 	filesize := GetFilesize(toPathGif)
 	fileUrlPath += "/" + filename
 	resultCode = 1
-	resultMsg = "上传成功!"
+	resultMsg = "Upload Success!"
 	
 	// File
 	fileInfo := info.File{Name: filename,
@@ -178,7 +178,8 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 		fileId = "public/upload/" + c.GetUserId() + "/images/logo/" + filename
 	}
 	
-	Ok = fileService.AddImage(fileInfo, albumId, c.GetUserId())
+	Ok, resultMsg = fileService.AddImage(fileInfo, albumId, c.GetUserId(), from == "" || from == "pasteImage")
+	resultMsg = c.Message(resultMsg)
 	
 	fileInfo.Path = ""; // 不要返回
 	re.Item = fileInfo
@@ -203,55 +204,6 @@ func (c File) DeleteImage(fileId string) revel.Result {
 	re.Ok, re.Msg = fileService.DeleteImage(c.GetUserId(), fileId)
 	return c.RenderJson(re)
 }
-
-// update image uploader to leaui image, 
-// scan all user's images and insert into db
-func (c File) UpgradeLeauiImage() revel.Result {
-	re := info.NewRe()
-	
-	if ok, _ := revel.Config.Bool("upgradeLeauiImage"); !ok {
-		re.Msg = "Not allowed"
-		return c.RenderJson(re)
-	}
-	
-	uploadPath := revel.BasePath + "/public/upload";
-	userIds := ListDir(uploadPath)
-	if userIds == nil {
-		re.Msg = "no user"
-		return c.RenderJson(re)
-	}
-	
-	msg := "";
-	
-	for _, userId := range userIds {
-		dirPath := uploadPath + "/" + userId +  "/images"
-		images := ListDir(dirPath)
-		if images == nil {
-			msg += userId + " no images "
-			continue;
-		}
-		
-		hadImages := fileService.GetAllImageNamesMap(userId)
-		
-		i := 0
-		for _, filename := range images {
-			if _, ok := hadImages[filename]; !ok {
-				fileUrlPath := "/upload/" + userId + "/images/" + filename
-				fileInfo := info.File{Name: filename,
-					Title: filename,
-					Path: fileUrlPath,
-					Size: GetFilesize(dirPath + "/" + filename)}
-				fileService.AddImage(fileInfo, "", userId)
-				i++
-			}
-		}
-		msg += userId + ": " + strconv.Itoa(len(images)) + " -- " + strconv.Itoa(i) + " images "
-	}
-	
-	re.Msg = msg
-	return c.RenderJson(re)
-}
-
 //-----------
 
 // 输出image
@@ -267,15 +219,15 @@ func (c File) OutputImage(noteId, fileId string) revel.Result {
 }
 
 // 协作时复制图片到owner
+// 需要计算对方大小
 func (c File) CopyImage(userId, fileId, toUserId string) revel.Result {
 	re := info.NewRe()
-	
 	re.Ok, re.Id = fileService.CopyImage(userId, fileId, toUserId)
-	
 	return c.RenderJson(re)
 }
 
 // 复制外网的图片, 成公共图片 放在/upload下
+// 都要好好的计算大小
 func (c File) CopyHttpImage(src string) revel.Result {
 	re := info.NewRe()
 	fileUrlPath := "upload/" + c.GetUserId() + "/images"
@@ -302,29 +254,7 @@ func (c File) CopyHttpImage(src string) revel.Result {
 	
 	re.Id = id.Hex()
 	re.Item = fileInfo.Path
-	re.Ok = fileService.AddImage(fileInfo, "", c.GetUserId())
+	re.Ok, re.Msg = fileService.AddImage(fileInfo, "", c.GetUserId(), true)
 	
-	return c.RenderJson(re)
-}
-
-//------------
-// 过时 已弃用!
-func (c File) UploadImage(renderHtml string) revel.Result {
-	if renderHtml == "" {
-		renderHtml = "file/image.html"
-	}
-	
-	re := c.uploadImage("", "");
-	
-	c.RenderArgs["fileUrlPath"] = configService.GetSiteUrl() + re.Id
-	c.RenderArgs["resultCode"] = re.Code
-	c.RenderArgs["resultMsg"] = re.Msg
-
-	return c.RenderTemplate(renderHtml)
-}
-
-// 已弃用
-func (c File) UploadImageJson(from, noteId string) revel.Result {
-	re := c.uploadImage(from, "");
 	return c.RenderJson(re)
 }

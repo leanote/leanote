@@ -54,11 +54,12 @@ define('attachment_upload', ['jquery.ui.widget', 'fileupload'], function(){
 	    $('.dropzone .btn-choose-file').click(function() {
 	        $(this).parent().find('input').click();
 	    });
-	
+
 		var $msg = $('#attachUploadMsg');
 	    // Initialize the jQuery File Upload plugin
 	    $('#uploadAttach').fileupload({
 	        dataType: 'json',
+	        pasteZone: '', // 不能通过paste来上传图片
 	        // This element will accept file drag/drop uploading
 	        dropZone: $('#dropAttach'),
 	        formData: function(form) {
@@ -72,6 +73,7 @@ define('attachment_upload', ['jquery.ui.widget', 'fileupload'], function(){
 	        		alert("This note hasn't saved, please save it firstly!")
 	        		return;
 	        	}
+
 	            var tpl = $('<div class="alert alert-info"><img class="loader" src="/tinymce/plugins/leaui_image/public/images/ajax-loader.gif"> <a class="close" data-dismiss="alert">×</a></div>');
 	
 	            // Append the file name and file size
@@ -140,11 +142,13 @@ define('attachment_upload', ['jquery.ui.widget', 'fileupload'], function(){
 	    });
 	    
 	    //-------------------
+	    // 已经过时, 没有avatar了
 	    
 	    var $msg2 = $('#avatarUploadMsg');
 	    $('#uploadAvatar').fileupload({
 	        dataType: 'json',
 	        dropZone: $('#dropAvatar'),
+	        pasteZone: '',
 	        add: function(e, data) {
 	            var tpl = $('<div class="alert alert-info"><img class="loader" src="/tinymce/plugins/leaui_image/public/images/ajax-loader.gif"> <a class="close" data-dismiss="alert">×</a></div>');
 	
@@ -206,7 +210,7 @@ define('attachment_upload', ['jquery.ui.widget', 'fileupload'], function(){
 	             })(tpl), 3000);
 	        }
 	    });
-	}
-	
+	};
+
 	initUploader();
 });

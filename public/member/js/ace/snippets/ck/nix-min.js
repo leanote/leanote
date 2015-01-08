@@ -1,0 +1,1 @@
+ace.define("ace/snippets/nix",["require","exports","module"],function(e,i,n){i.snippetText="",i.scope="nix"});

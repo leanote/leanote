@@ -15,10 +15,9 @@
     <script src="public/js/html5shiv.js">
     </script>
 <![endif]-->
+
 </head>
-
-<body>
-
+<body class="md" id="body">
 <div style="margin: 3px;">
 	<div class="holder"></div>
 
@@ -154,7 +153,15 @@
 var G = {};
 G.imageSrcPrefix = 'upload';
 G.perPageItems = 12;
-G.maxSelected = 10;
+G.maxSelected = 1;
+/*
+var url = location.href;
+var classes = "";
+if(url.indexOf("md=1") >= 0) {
+	classes = "md";
+	document.getElementById("body").className = classes;
+}
+*/
 </script>
 
 <script src="public/js/jquery.js"></script>

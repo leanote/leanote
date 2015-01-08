@@ -1,5 +1,5 @@
 {{template "member/top.html" .}}
-<div class="m-b-md"> <h3 class="m-b-none">分页与排序设置</h3></div>
+<div class="m-b-md"> <h3 class="m-b-none">{{msg $ "pagingAndSort"}}</h3></div>
 
 <div class="row">
 <div class="col-sm-8">
@@ -8,43 +8,35 @@
 			<div class="panel-body">
   				<div class="alert alert-danger" id="domainMsg" style="display: none"></div>
   				
-				<form class="form-horizontal" role="form" id="dataFrom">
-					
+				<form  role="form" id="dataFrom">
 					<div class="form-group">
-						<label for="perPageSize" class="col-sm-2 control-label">每页记录数</label>
-						<div class="col-sm-10">
-							  <input type="text" class="form-control"
+						<label for="perPageSize">{{msg . "perPageSize"}}</label>
+						  <input type="text" class="form-control"
 								placeholder="10"
 								id="perPageSize"
 								name="perPageSize"
 								value="{{.userBlog.PerPageSize}}" />
-						</div>
 					</div>
 					<div class="form-group">
-						<label for="perPageSize" class="col-sm-2 control-label">排序字段</label>
-						<div class="col-sm-10">
-							  <select class="form-control"
-								id="sortField"
-								name="sortField"
-								value="">
-								<option value="PublicTime" {{if eq $.userBlog.SortField "PublicTime"}}selected{{end}}>公开为博客时间</option>
-								<option value="CreatedTime" {{if eq $.userBlog.SortField "CreatedTimeTime"}}selected{{end}}>创建时间</option>
-								<option value="UpdatedTime" {{if eq $.userBlog.SortField "UpdatedTime"}}selected{{end}}>更新时间</option>
-								<option value="Title" {{if eq $.userBlog.SortField "Title"}}selected{{end}}>标题</option>
-							  </select>
-						</div>
+						<label for="perPageSize" >{{msg . "sortField"}}</label>
+						  <select class="form-control"
+							id="sortField"
+							name="sortField"
+							value="">
+							<option value="PublicTime" {{if eq $.userBlog.SortField "PublicTime"}}selected{{end}}>{{msg $ "publicTime"}}</option>
+							<option value="CreatedTime" {{if eq $.userBlog.SortField "CreatedTimeTime"}}selected{{end}}>{{msg $ "createdTime"}}</option>
+							<option value="UpdatedTime" {{if eq $.userBlog.SortField "UpdatedTime"}}selected{{end}}>{{msg $ "updatedTime"}}</option>
+							<option value="Title" {{if eq $.userBlog.SortField "Title"}}selected{{end}}>{{msg . "title"}}</option>
+						  </select>
 					</div>
 					<div class="form-group">
-						<label class="col-sm-2 control-label">排序类型</label>
-						<div class="col-sm-10" style="margin-top: 5px;">
-							<label><input type="radio" name="isAsc" value="0" {{if not .userBlog.IsAsc}}checked{{end}}> 降序</label>
-							<label><input type="radio" name="isAsc" value="1" {{if .userBlog.IsAsc}}checked{{end}}> 升序</label>
+						<label>{{msg $ "sortType"}}</label>
+						<div>
+						<label><input type="radio" name="isAsc" value="0" {{if not .userBlog.IsAsc}}checked{{end}}> {{msg . "desc"}}</label>
+						<label><input type="radio" name="isAsc" value="1" {{if .userBlog.IsAsc}}checked{{end}}> {{msg . "asc"}}</label>
 						</div>
 					</div>
-				
-					
 				</form>
-				
 			</div>
 			<footer class="panel-footer text-right bg-light lter">
 			    <button type="submit" id="baseBtn" class="btn btn-success">{{msg . "submit"}}</button>

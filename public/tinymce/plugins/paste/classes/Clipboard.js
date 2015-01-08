@@ -101,7 +101,10 @@ define("tinymce/pasteplugin/Clipboard", [
 						// 纯HTML编辑也会
 						text = text.replace(/</g, "&lt;");
 						text = text.replace(/>/g, "&gt;");
+						// firefox下必须这个
 						editor.insertRawContent(text);
+						// 之前用insertRawContent()有问题, ace paste下, TODO
+						// editor.insertContent(text);
 					} else {
 						// life 这里得到图片img, 复制到leanote下
 						if(!self.copyImage) {
@@ -263,6 +266,21 @@ define("tinymce/pasteplugin/Clipboard", [
 			return data;
 		}
 
+		function inAcePrevent() {
+			// 这个事件是从哪触发的? 浏览器自带的
+			// life ace 如果在pre中, 直接返回 TODO
+			var ace = LeaAce.nowIsInAce();
+			if(ace) {
+				// log("in aceEdiotr 2 paste");
+				// 原来这里focus了
+				setTimeout(function() {
+					ace[0].focus();
+				});
+				return true;
+			}
+			return false;
+		}
+
 		editor.on('keydown', function(e) {
 			if (e.isDefaultPrevented()) {
 				return;
@@ -270,6 +288,11 @@ define("tinymce/pasteplugin/Clipboard", [
 
 			// Ctrl+V or Shift+Insert
 			if ((VK.metaKeyPressed(e) && e.keyCode == 86) || (e.shiftKey && e.keyCode == 45)) {
+
+				if(inAcePrevent()) {
+					return;
+				}
+
 				keyboardPastePlainTextState = e.shiftKey && e.keyCode == 86;
 
 				// Prevent undoManager keydown handler from making an undo level with the pastebin in it
@@ -381,8 +404,10 @@ define("tinymce/pasteplugin/Clipboard", [
 		}
 
 		editor.on('paste', function(e) {
-			
-			
+			if(inAcePrevent()) {
+				return;
+			}
+
 			var clipboardContent = getClipboardContent(e);
 			var isKeyBoardPaste = new Date().getTime() - keyboardPasteTimeStamp < 100;
 			var plainTextMode = self.pasteFormat == "text" || keyboardPastePlainTextState;
@@ -438,9 +463,11 @@ define("tinymce/pasteplugin/Clipboard", [
 			//-----------
 			// paste image
 			try {
+				/*
 				if(pasteImage(e)) {
 					return;
 				}
+				*/
 			} catch(e) {};
 
 		});

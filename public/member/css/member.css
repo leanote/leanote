@@ -4262,8 +4262,19 @@ fieldset[disabled] .btn-gplus.active {
 .active-theme {
   border: 2px solid #ffc333;
 }
+.theme-desc {
+  width: 500px;
+  height: 188px;
+  margin-left: 5px;
+  padding: 3px;
+  border: 1px solid #eee;
+  border-radius: 3px;
+  overflow: auto;
+}
 .theme-thumb {
   width: 290px;
+  height: 188px;
+  line-height: 188px;
   margin-bottom: 3px;
   position: relative;
   overflow: hidden;
@@ -4278,6 +4289,21 @@ fieldset[disabled] .btn-gplus.active {
   -webkit-box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.15), 0 0 3px 1px rgba(0, 0, 0, 0.15);
   -moz-box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.15), 0 0 3px 1px rgba(0, 0, 0, 0.15);
   box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.15), 0 0 3px 1px rgba(0, 0, 0, 0.15);
+}
+.theme-thumb:hover .theme-desc-mask {
+  display: block;
+}
+.theme-thumb .theme-desc-mask {
+  position: absolute;
+  line-height: 1.2;
+  padding: 5px;
+  display: none;
+  top: 20px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.6);
+  overflow: auto;
 }
 .theme-btns {
   margin-top: 5px;

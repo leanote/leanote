@@ -279,7 +279,7 @@ a:hover {
   color: #000000;
 }
 #header h1 a img {
-  max-height: 40px;
+  height: 40px;
 }
 #header #blogDesc {
   font-size: 32px;

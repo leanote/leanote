@@ -26,45 +26,47 @@
 					</i>
 				</span>
 				<span>
-					帐户信息
+					{{msg . "accountInfo"}}
 				</span>
 			</a>
 			<!-- 导航列表 -->
 			<ul class="nav lt">
-			{{if $.userInfo.Email}}
-				<li>
-					<a href="/member/user/username">
-						<span>
-							用户名
-						</span>
-					</a>
-				</li>
 				<li>
 					<a href="/member/user/avatar">
 						<span>
-							头像
+							{{msg . "avatar"}}
 						</span>
 					</a>
 				</li>
+				
+				{{if $.userInfo.Email}}
+				<li>
+					<a href="/member/user/username">
+						<span>
+							{{msg . "username"}}
+						</span>
+					</a>
+				</li>
+				
 				<li>
 					<a href="/member/user/email">
 						<span>
-							邮箱
+							{{msg . "email"}}
 						</span>
 					</a>
 				</li>
 				<li>
 					<a href="/member/user/password">
 						<span>
-							密码
+							{{msg . "password"}}
 						</span>
 					</a>
 				</li>
 				{{else}}
 				<li>
-					<a href="/member/user/add_account">
+					<a href="/member/user/addAccount">
 						<span>
-							添加leanote帐户
+							{{msg . "addLeanoteAccount"}}
 						</span>
 					</a>
 				</li>
@@ -85,14 +87,14 @@
 					</i>
 				</span>
 				<span>
-					博客
+					{{msg . "blog"}}
 				</span>
 			</a>
 			<ul class="nav lt">
 				<li>
 					<a href="/member/blog/index">
 						<span>
-							文章列表
+							{{msg . "postList"}}
 						</span>
 					</a>
 				</li>
@@ -100,42 +102,43 @@
 				<li>
 					<a href="/member/blog/base">
 						<span>
-							基本信息
+							{{msg . "basicInfoSet"}}
 						</span>
 					</a>
 				</li>
 				<li>
 					<a href="/member/blog/comment">
 						<span>
-							评论
+							{{msg . "comment"}}
 						</span>
 					</a>
 				</li>
+
 				<li>
 					<a href="/member/blog/cate">
 						<span>
-							分类
+							{{msg . "cate"}}
 						</span>
 					</a>
 				</li>
 				<li>
 					<a href="/member/blog/single">
 						<span>
-							单页面
+							{{msg . "single"}}
 						</span>
 					</a>
 				</li>
 				<li>
 					<a href="/member/blog/paging">
 						<span>
-							分页与排序设置
+							{{msg . "pagingAndSort"}}
 						</span>
 					</a>
 				</li>
 				<li>
 					<a href="/member/blog/theme">
 						<span>
-							主题
+							{{msg . "theme"}}
 						</span>
 					</a>
 				</li>
@@ -149,7 +152,7 @@
 					</b>
 				</i>
 				<span>
-					项目组/成员
+					{{msg . "group"}}
 				</span>
 			</a>
 		</li>

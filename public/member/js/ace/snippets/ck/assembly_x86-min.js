@@ -1,0 +1,1 @@
+ace.define("ace/snippets/assembly_x86",["require","exports","module"],function(e,s,p){s.snippetText="",s.scope="assembly_x86"});

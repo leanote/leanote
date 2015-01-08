@@ -100,7 +100,9 @@ $(function() {
 		$("#registerBtn").html("{{msg . "ing"}}...").addClass("disabled");
 		// hideMsg();
 		
-		$.post("/doRegister", {email: email, pwd: pwd}, function(e) {
+		var iu = "{{.iu}}";
+		
+		$.post("/doRegister", {email: email, pwd: pwd, iu: iu}, function(e) {
 			$("#registerBtn").html("{{msg . "register"}}").removeClass("disabled");
 			if(e.Ok) {
 				$("#registerBtn").html("{{msg . "registerSuccessAndRdirectToNote"}}");

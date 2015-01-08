@@ -809,6 +809,10 @@ define("tinymce/dom/Selection", [
 		getRng: function(w3c) {
 			var self = this, selection, rng, elm, doc = self.win.document, ieRng;
 
+			// if(aa) {
+				// log("..");
+			// }
+
 			// Use last rng passed from FocusManager if it's available this enables
 			// calls to editor.selection.getStart() to work when caret focus is lost on IE
 			if (!w3c && self.lastFocusBookmark) {
@@ -886,6 +890,9 @@ define("tinymce/dom/Selection", [
 				}
 			}
 
+			// log(">>")
+			// log((new Date()).getTime())
+			// log(rng);
 			return rng;
 		},
 
@@ -963,6 +970,7 @@ define("tinymce/dom/Selection", [
 		},
 
 		/**
+		 * 这里, 很重要
 		 * Returns the currently selected element or the common ancestor element for both start and end of the selection.
 		 *
 		 * @method getNode
@@ -973,8 +981,13 @@ define("tinymce/dom/Selection", [
 		 */
 		getNode: function() {
 			var self = this, rng = self.getRng(), elm;
+			// log(rng);
 			var startContainer = rng.startContainer, endContainer = rng.endContainer;
 			var startOffset = rng.startOffset, endOffset = rng.endOffset, root = self.dom.getRoot();
+			// log('start');
+			// log(startContainer);
+			// log('end');
+			// log(endContainer);
 
 			function skipEmptyTextNodes(node, forwards) {
 				var orig = node;

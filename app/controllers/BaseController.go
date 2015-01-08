@@ -193,12 +193,13 @@ func (c BaseController) SetLocale() string {
 }
 
 // 设置userInfo
-func (c BaseController) SetUserInfo() {
+func (c BaseController) SetUserInfo() info.User {
 	userInfo := c.GetUserInfo()
 	c.RenderArgs["userInfo"] = userInfo
 	if(userInfo.Username == configService.GetAdminUsername()) {
 		c.RenderArgs["isAdmin"] = true
 	}
+	return userInfo
 }
 
 // life
@@ -224,6 +225,7 @@ func (c BaseController) RenderTemplateStr(templatePath string) string {
 // 为了msg
 // msg-v1-v2-v3
 func (c BaseController) RenderRe(re info.Re) revel.Result {
+	oldMsg := re.Msg
 	if re.Msg != "" {
 		if(strings.Contains(re.Msg, "-")) {
 			msgAndValues := strings.Split(re.Msg, "-")
@@ -240,6 +242,9 @@ func (c BaseController) RenderRe(re info.Re) revel.Result {
 		} else {
 			re.Msg = c.Message(re.Msg)
 		}
+	}
+	if strings.HasPrefix(re.Msg, "???") {
+		re.Msg = oldMsg
 	}
 	return c.RenderJson(re)
 }

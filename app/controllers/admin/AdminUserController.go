@@ -44,7 +44,7 @@ func (c AdminUser) Register(email, pwd string) revel.Result {
 	}
 	
 	// 注册
-	re.Ok, re.Msg = authService.Register(email, pwd)
+	re.Ok, re.Msg = authService.Register(email, pwd, "")
 	
 	return c.RenderRe(re)
 }

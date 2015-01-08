@@ -289,6 +289,41 @@ Notebook.cacheAllNotebooks = function(notebooks) {
 	}
 }
 
+// 展开到笔记本
+Notebook.expandNotebookTo = function(notebookId, userId) {
+	var me = this;
+	var selected = false;
+	var tree = me.tree;
+	
+	// 共享的
+	if(userId) {
+		tree = Share.trees[userId];
+	}
+	if(!tree) {
+		return;
+	}
+	var curNode = tree.getNodeByTId(notebookId);
+	if(!curNode) {
+		return;
+	}
+	while(true) {
+		var pNode = curNode.getParentNode();
+		if(pNode) {
+			tree.expandNode(pNode, true);
+			if(!selected) {
+				Notebook.changeNotebookNav(notebookId);
+				selected = true;
+			}
+			curNode = pNode;
+		} else {
+			if(!selected) {
+				Notebook.changeNotebookNav(notebookId);
+			}
+			break;
+		}
+	}
+}
+
 
 // RenderNotebooks调用, 
 // nav 为了新建, 快速选择, 移动笔记
@@ -507,10 +542,11 @@ Notebook.toggleToMyNav = function(userId, notebookId) {
 	$("#tagSearch").hide();
 }
 Notebook.changeNotebookNav = function(notebookId) {
+	Notebook.curNotebookId = notebookId;
 	Notebook.toggleToMyNav();
 	
-	// 1
-	Notebook.selectNotebook($(tt('#notebookList [notebookId="?"]', notebookId)));
+	// 1 改变当前的notebook
+	Notebook.selectNotebook($(tt('#notebook [notebookId="?"]', notebookId)));
 	
 	var notebook = Notebook.cache[notebookId];
 	
@@ -542,7 +578,9 @@ Notebook.curActiveNotebookIsAll = function() {
 // 1. 改变note, 此时需要先保存
 // 2. ajax得到该notebook下的所有note
 // 3. 使用Note.RederNotes()
-Notebook.changeNotebook = function(notebookId) {
+// callback Pjax, 当popstate时调用
+Notebook.changeNotebook = function(notebookId, callback) {
+	var me = this;
 	Notebook.changeNotebookNav(notebookId);
 	
 	Notebook.curNotebookId = notebookId;
@@ -553,7 +591,7 @@ Notebook.changeNotebook = function(notebookId) {
 	// 2 先清空所有
 	Note.clearAll();
 	
-	var url = "/note/ListNotes/";
+	var url = "/note/listNotes/";
 	var param = {notebookId: notebookId};
 	
 	// 废纸篓
@@ -565,21 +603,45 @@ Notebook.changeNotebook = function(notebookId) {
 		// 得到全部的...
 		cacheNotes = Note.getNotesByNotebookId();
 		if(!isEmpty(cacheNotes)) { // 万一真的是没有呢?
-			Note.renderNotesAndFirstOneContent(cacheNotes);
+			if(callback) {
+				callback(cacheNotes);
+			} else {
+				Note.renderNotesAndFirstOneContent(cacheNotes);
+			}
 			return;
 		}
 	} else {
 		cacheNotes = Note.getNotesByNotebookId(notebookId);
-		if(!isEmpty(cacheNotes)) { // 万一真的是没有呢?
-			Note.renderNotesAndFirstOneContent(cacheNotes);
+		if(!isEmpty(cacheNotes)) { // 万一真的是没有呢? 执行后面的ajax
+			if(callback) {
+				callback(cacheNotes);
+			} else {
+				Note.renderNotesAndFirstOneContent(cacheNotes);
+			}
 			return;
 		}
 	}
 	
 	// 2 得到笔记本
 	// 这里可以缓存起来, note按notebookId缓存
-	ajaxGet(url, param, Note.renderNotesAndFirstOneContent);
+	me.showNoteAndEditorLoading();
+	ajaxGet(url, param, function(cacheNotes) { 
+		if(callback) {
+			callback(cacheNotes);
+		} else {
+			Note.renderNotesAndFirstOneContent(cacheNotes);
+		}
+		me.hideNoteAndEditorLoading();
+	});
 }
+
+// 笔记列表与编辑器的mask loading
+Notebook.showNoteAndEditorLoading = function() {
+	$("#noteAndEditorMask").show();
+};
+Notebook.hideNoteAndEditorLoading = function() {
+	$("#noteAndEditorMask").hide();
+};
 
 // 是否是当前选中的notebookId
 // 还包括共享
@@ -596,10 +658,10 @@ Notebook.changeNotebookForNewNote = function(notebookId) {
 		return;
 	}
 	
-	Notebook.changeNotebookNav(notebookId);
+	Notebook.changeNotebookNav(notebookId, true);
 	Notebook.curNotebookId = notebookId;
 	
-	var url = "/note/ListNotes/";
+	var url = "/note/listNotes/";
 	var param = {notebookId: notebookId};
 		
 	// 2 得到笔记本
@@ -614,7 +676,7 @@ Notebook.changeNotebookForNewNote = function(notebookId) {
 // 显示共享信息
 Notebook.listNotebookShareUserInfo = function(target) {
 	var notebookId = $(target).attr("notebookId");
-	showDialogRemote("share/listNotebookShareUserInfo", {notebookId: notebookId});
+	showDialogRemote("/share/listNotebookShareUserInfo", {notebookId: notebookId});
 }
 // 共享笔记本
 Notebook.shareNotebooks= function(target) {
@@ -657,7 +719,7 @@ Notebook.setNotebook2Blog = function(target) {
 			}
 		});
 	}
-	ajaxPost("notebook/setNotebook2Blog", {notebookId: notebookId, isBlog: isBlog}, function(ret) {
+	ajaxPost("/notebook/setNotebook2Blog", {notebookId: notebookId, isBlog: isBlog}, function(ret) {
 		if(ret) {
 			// 这里要设置notebook下的note的blog状态
 			Note.setAllNoteBlogStatus(notebookId, isBlog);
@@ -849,12 +911,6 @@ $(function() {
 		} else {
 			items.push("set2Blog");
 		}
-
-		//asktalk bebug#23
-		if(notebookId=="548125adf4e872105c000007"){
-			items.push("delete");
-		}
-
 		// 是否还有笔记
 		if(Note.notebookHasNotes(notebookId)) {
 			items.push("delete");

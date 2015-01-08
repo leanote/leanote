@@ -27,9 +27,12 @@ func (this *GroupService) AddGroup(userId, title string) (bool, info.Group) {
 // 删除分组
 // 判断是否有好友
 func (this *GroupService) DeleteGroup(userId, groupId string) (ok bool, msg string) {
+	/*
 	if db.Has(db.GroupUsers, bson.M{"GroupId": bson.ObjectIdHex(groupId)}) {
-		return false, "hasUsers"
+		return false, "groupHasUsers"
 	}
+	*/
+	db.DeleteAll(db.GroupUsers, bson.M{"GroupId": bson.ObjectIdHex(groupId)})
 	return db.DeleteByIdAndUserId(db.Groups, groupId, userId), ""
 	
 	// TODO 删除分组后, 在shareNote, shareNotebook中也要删除

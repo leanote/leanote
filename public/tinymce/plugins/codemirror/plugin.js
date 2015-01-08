@@ -39,14 +39,14 @@ tinymce.PluginManager.add('codemirror', function(editor, url) {
 	};
 
 	// Add a button to the button bar
-	editor.addButton('code', {
+	editor.addButton('code_source', {
 		title: 'Source code',
 		image: url + '/img/file-html.png',
 		onclick: showSourceEditor
 	});
 
 	// Add a menu item to the tools menu
-	editor.addMenuItem('code', {
+	editor.addMenuItem('code_source', {
 		icon: 'code',
 		text: 'Source code',
 		context: 'tools',

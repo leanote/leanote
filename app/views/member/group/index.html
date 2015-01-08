@@ -8,17 +8,19 @@
 	width: 200px;
 }
 </style>
-<div class="m-b-md"> <h3 class="m-b-none">项目组/成员</h3></div>
+<div class="m-b-md"> <h3 class="m-b-none">{{msg . "group"}}</h3></div>
 
 <p>
-	<a class="btn btn-default btn-add-group"><span class="fa fa-plus"></span> 新建分组</a>
+	<a class="btn btn-default btn-add-group"><span class="fa fa-plus"></span> {{msg . "newGroup"}}</a>
 </p>
 
 
 <script type="text/x-jsrender" id="tUser">
 	<li class="list-group-item" data-id="[[:UserId]]">
 		[[:Username]] [[if Email != Username]]([[:Email]])[[/if]]
-		<span class="fa fa-remove pull-right text-xs m-t-sm"></span>
+		<a title="{{msg . "deleteMember"}}" class="delete-user">
+			<span class="fa fa-remove pull-right text-xs m-t-sm"></span>
+		</a>
 	</li>
 </script>
 
@@ -30,7 +32,7 @@
 				<div class="clear">
 					<div class="h3 m-t-xs m-b-xs text-white">
 						 <input type="text" data-ever="[[:Title]]" value="[[:Title]]" class="group-title" />
-						 <a title="删除分组" class="delete-group">
+						 <a title="{{msg . "deleteGroup"}}" class="delete-group">
 							 <i class="fa fa-remove text-white pull-right text-xs m-t-sm"></i>
 						 </a>
 					</div>
@@ -39,7 +41,7 @@
 		</header>
 		<ul class="list-group no-radius">
 			<li class="list-group-item">
-				<input type="text" class="add-user-input form-control" placeholder="输入用户名或邮箱添加成员" />
+				<input type="text" class="add-user-input form-control" placeholder="{{msg . "addMemberTips"}}" />
 			</li>
 		</ul>
 		</section>
@@ -57,7 +59,7 @@
 				<div class="clear">
 					<div class="h3 m-t-xs m-b-xs text-white">
 						 <input type="text" data-ever="{{.Title}}" value="{{.Title}}" class="group-title" />
-						 <a title="删除分组" class="delete-group">
+						 <a title="{{msg $ "deleteGroup"}}" class="delete-group">
 							 <i class="fa fa-remove text-white pull-right text-xs m-t-sm"></i>
 						 </a>
 					</div>
@@ -69,13 +71,13 @@
 			{{range .Users}}
 			<li class="list-group-item" data-id="{{.UserId.Hex}}">
 				{{.Username}} {{if not (eq .Email .Username)}}({{.Email}}){{end}}
-				<a title="删除成员" class="delete-user">
+				<a title="{{msg $ "deleteMember"}}" class="delete-user">
 					<span class="fa fa-remove pull-right text-xs m-t-sm"></span>
 				</a>
 			</li>
 			{{end}}
 			<li class="list-group-item">
-				<input type="text" class="add-user-input form-control" placeholder="输入用户名或邮箱添加成员" />
+				<input type="text" class="add-user-input form-control" placeholder="{{msg $ "addMemberTips"}}" />
 			</li>
 		</ul>
 		</section>
@@ -85,7 +87,7 @@
 </div>
 	
 {{template "member/footer.html" .}}
-<script src="http://leanote.com/public/blog/js/jsrender.js"></script>
+<script src="/public/blog/js/jsrender.js"></script>
 <script>
 var group = {
 	tGroupO: $("#tGroup"),
@@ -111,7 +113,7 @@ var group = {
 	addGroupEvent: function() {
 		var self = this;
 		$('.btn-add-group').click(function() {
-			ajaxPost("/member/group/addGroup", {title: "分组名"}, function(re) {
+			ajaxPost("/member/group/addGroup", {title: "Group Title"}, function(re) {
 				if(reIsOk(re)) {
 					var group = re.Item;
 					self.groupsO.prepend(self.tGroupO.render(group))

@@ -62,7 +62,7 @@ func (c Attach) uploadAttach(noteId string) (re info.Re) {
 		maxFileSize = 1000
 	}
 	if(float64(len(data)) > maxFileSize * float64(1024*1024)) {
-		resultMsg = fmt.Sprintf("附件大于%vM", maxFileSize)
+		resultMsg = fmt.Sprintf("The file's size is bigger than %vM", maxFileSize)
 		return re
 	}
 	
@@ -100,11 +100,15 @@ func (c Attach) uploadAttach(noteId string) (re info.Re) {
 	id := bson.NewObjectId();
 	fileInfo.AttachId = id
 	fileId = id.Hex()
-	Ok = attachService.AddAttach(fileInfo)
+	Ok, resultMsg = attachService.AddAttach(fileInfo)
+	if resultMsg != "" {
+		resultMsg = c.Message(resultMsg)
+	}
 	
 	fileInfo.Path = ""; // 不要返回
-	resultMsg = "success"
-	
+	if Ok {
+		resultMsg = "success"
+	}
 	return re
 }
 

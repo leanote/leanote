@@ -35,7 +35,7 @@ func (c MemberGroup) UpdateGroupTitle(groupId, title string) revel.Result {
 func (c MemberGroup) DeleteGroup(groupId string) revel.Result {
 	re := info.NewRe()
 	re.Ok, re.Msg = groupService.DeleteGroup(c.GetUserId(), groupId)
-	return c.RenderJson(re)
+	return c.RenderRe(re)
 }
 
 // 添加用户

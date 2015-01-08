@@ -49,7 +49,7 @@ ul.ztree.zTreeDragUL {z-index: 333;margin:0; padding:0; position:absolute; width
 	background-color: cfcfcf; 
 	border:1px #00B83F dotted; opacity:0.8; filter:alpha(opacity=80)}
 .zTreeMask {z-index:1000; background-color:#cfcfcf; opacity:0.0; filter:alpha(opacity=0); position:absolute}
-.ztree li ul{ margin:0; padding:0}
+.ztree li ul{ margin:0; padding:0;margin-left: 10px;}
 .ztree li {line-height:30px;}
 .ztree > li {
 	border-bottom: 1px dashed #eee;
@@ -63,7 +63,7 @@ ul.ztree.zTreeDragUL {z-index: 333;margin:0; padding:0; position:absolute; width
 .ztree li span.button {margin-top: -5px;}
 .ztree li span.button.switch {width: 16px;height: 30px; line-height: 30px; text-align: center}
 
-.ztree li a.level0 span {font-size: 13px;}
+.ztree li a.level0 span {font-size: 14px;}
 .ztree li span.button {
 	background-image: none;
 }

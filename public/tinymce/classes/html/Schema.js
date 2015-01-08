@@ -825,7 +825,6 @@ define("tinymce/html/Schema", [
 		 */
 		self.isValidChild = function(name, child) {
 			var parent = children[name];
-
 			return !!(parent && parent[child]);
 		};
 

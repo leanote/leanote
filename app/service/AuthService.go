@@ -5,6 +5,7 @@ import (
 //	"github.com/leanote/leanote/app/db"
 	"github.com/leanote/leanote/app/info"
 //	"github.com/revel/revel"
+	"strings"
 	. "github.com/leanote/leanote/app/lea"
 	"fmt"
 	"strconv"
@@ -17,6 +18,8 @@ type AuthService struct {
 
 // pwd已md5了
 func (this *AuthService) Login(emailOrUsername, pwd string) info.User {
+	emailOrUsername = strings.Trim(emailOrUsername, " ")
+//	pwd = strings.Trim(pwd, " ")
 	userInfo := userService.LoginGetUserInfo(emailOrUsername, Md5(pwd))
 	return userInfo
 }
@@ -32,12 +35,16 @@ func (this *AuthService) Login(emailOrUsername, pwd string) info.User {
 // 1. 添加用户
 // 2. 将leanote共享给我
 // [ok]
-func (this *AuthService) Register(email, pwd string) (bool, string) {
+func (this *AuthService) Register(email, pwd, fromUserId string) (bool, string) {
 	// 用户是否已存在
 	if userService.IsExistsUser(email) {
 		return false, "userHasBeenRegistered-" + email
 	}
 	user := info.User{UserId: bson.NewObjectId(), Email: email, Username: email, Pwd: Md5(pwd)}
+	if fromUserId != "" && IsObjectId(fromUserId) {
+		user.FromUserId = bson.ObjectIdHex(fromUserId)
+	}
+	LogJ(user)
 	return this.register(user)
 }
 

@@ -79,6 +79,8 @@ tinymce.ThemeManager.add('modern', function(editor) {
 						});
 					}
 
+					// log(itemName)
+					// log(item);
 					if (item.settings.stateSelector) {
 						selection.selectorChanged(item.settings.stateSelector, function(state) {
 							item.active(state);
@@ -87,11 +89,13 @@ tinymce.ThemeManager.add('modern', function(editor) {
 					
 					// life 4/25
 					// 在pre时都disabled
-					if(itemName != "leanote_code" && itemName != "formatselect") {
+					if(itemName != "leanote_code") {// } && itemName != "formatselect") {
 						item.settings.disabledStateSelector = "pre";
 						selection.selectorChanged(item.settings.disabledStateSelector, function(state) {
+							// log(itemName + " " + state);
 							item.disabled(state);
 						});
+						// log(itemName);
 					}
 				}
 
@@ -454,8 +458,13 @@ tinymce.ThemeManager.add('modern', function(editor) {
 
 		settings.content_editable = true;
 
+		// life 一直显示
+		// render();
+		setTimeout(function() {
+			render();
+		});
 		editor.on('focus', render);
-		editor.on('blur', hide);
+		// editor.on('blur', hide);
 
 		// Remove the panel when the editor is removed
 		editor.on('remove', function() {

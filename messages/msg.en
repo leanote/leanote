@@ -79,7 +79,7 @@ myBlog=Blog
 history=Histories
 save=Save
 editorTips=Tips
-editorTipsInfo=<h4>1. Short cuts</h4>ctrl+shift+c Toggle code <br /> ctrl+shift+i Insert/edit image <h4>2. shift+enter Get out of current block</h4> eg. <img src="/images/outofcode.png" style="width: 90px"/> in this situation you can use shift+enter to get out of current code block.
+editorTipsInfo=<h4>1. Short cuts</h4>ctrl+shift+c Toggle code<h4>2. shift+enter Get out of current block</h4> eg. <img src="/images/outofcode.png" style="width: 90px"/> in this situation you can use shift+enter to get out of current code block.
 newNote=New note
 newMarkdownNote=New Markdown Note
 noNoteNewNoteTips=The notebook is empty, why not...
@@ -129,9 +129,12 @@ themeSetting=Theme
 setAvatar=Avatar
 logout=Logout
 basicInfo=Basic
+basicInfoSet=Blog Basic Setting
 updateEmail=Update email
 usernameSetting=Update username
 username=Username
+avatar=Avatar
+chooseImage=Choose Image
 oldPassword=Old password
 newPassword=New password
 admin=Admin
@@ -144,7 +147,7 @@ uploadImage=Upload image
 
 # blog
 aboutMe=About me
-blogSet=Set blog
+blogSet=Blog Settings
 
 # index
 discussion=Discussion
@@ -235,6 +238,7 @@ subDomainExisted=Sub domain is already existed
 domainNotPointToLeanote=The custom domin hasn't pointed to d.leanote.com
 errorPerPageSize=Page size is error
 errorSortField=Sort Field is error
+themeValidHasRoundInclude=WARNING: Templates have circular references!
 
 # lea++
 leaDesc=leanote blog platform
@@ -243,8 +247,94 @@ latest=Latest
 
 # 用户中心
 memberCenter=Member Center
-userNotExists=该成员沿未注册
-hasUsers=已存在该成员
+userNotExists=The user is not exists
+hasUsers=The user already exists
+
+# yu
+service=Service
+imageSizeOver=Sorry, you have no image opacity, please <a href="/service">upgrade your account</a>.
+attachSizeOver=Sorry, you have no attachment opacity, please <a href="/service">upgrade your account</a>.
+
+
+#memeber
+welcomeToLeanote=Welcome
+accountInfo=Account Info
+accountType=Account Type
+premiumAccountType=Premium
+normalAccountType=Normal
+imageSize=Image Opacity
+attachSize=Attachment Opacity
+upgrade=Upgrade My Account
+leanoteEvents=Leanote News
+addLeanoteAccount=New Leanote Account
+defaultComment=Default leanote comment system
+upgradeAccountTips=I want to using a custom domain for my blog, <a class="btn btn-default" href="/service">Upgrade My Account</a>
+cateIsPublicNotebook=Category is the published notebooks
+dragAndSort=Drag it to sort
+permanentLink=Permanent Link
+cate=Category
+noCates=No Category
+single=Single Page
+singleTips=You can add many single pages
+addSingle=New single page
+updateSingle=Update single page
+inputSingleTitle=Single page title is required
+saveSort=Save sequencing
+pagingAndSort=Paging And Sort Settings
+perPageSize=Per page size
+sortField=Sorter field
+sortType=Sorter type
+publicTime=Published time
+createdTime=Created time
+updatedTime=Updated time
+desc=Desc
+asc=Asc
+postList=Post List
+hasSelfDefined=Has defined
+noSelfDefined=Not defined
+setAbstract=Abstract settings
+title=Title
+content=Content
+
+addTheme=New theme
+importTheme=Import theme
+exportTheme=Export theme
+export=Export
+preview=Preview
+edit=Edit
+use=Use
+install=Install
+currentTheme=Current theme
+myOtherThemes=My other themes
+leanoteThemeMarket=Leanote theme market
+updateTheme=Update Theme
+tplStyleScript=template, style, script
+newFile=New file
+image=Image
+currentFile=Current file
+tpl=Template
+style=Style
+script=Script
+header=Header
+footer=Footer
+index=Home
+cate=Category
+search=Search
+single=Single Page
+archive=Archive
+post=Post
+tags=Tags
+tag_posts=Tag's posts
+share_comment=Comments
+themeJson=Theme settings
+paging=Paging
+highlight=Code highlight
+
+group=Group
+newGroup=New group
+deleteGroup=Delete group
+addMemberTips=Input username or email to add member
+deleteMember=Delete member
 
 # error 
 notFound=This page cann't found.

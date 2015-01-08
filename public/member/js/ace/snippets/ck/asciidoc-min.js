@@ -1,0 +1,1 @@
+ace.define("ace/snippets/asciidoc",["require","exports","module"],function(e,i,c){i.snippetText="",i.scope="asciidoc"});

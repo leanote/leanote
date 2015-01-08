@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="keywords" content="leanote,leanote.com">
+<meta name="description" content="leanote, {{msg $ "moto"}}">
+<meta name="author" content="leanote">
+
+<title>{{.title}}</title>
+<!-- Bootstrap core CSS -->
+<link href="{{$.bootstrapCssUrl}}" rel="stylesheet">
+<!-- 字体必须同一域 -->
+<link href="{{$.fontAwesomeUrl}}" rel="stylesheet">
+<link href="{{$.themeBaseUrl}}/style.css" rel="stylesheet">
+<link href="{{$.commentCssUrl}}" rel="stylesheet">
+<script>
+function log(o) {
+}
+</script>
+<style>
+
+</style>
+</head>
+<body>
+
+<div id="headerAndNav" >
+	<div id="headerContainer" class="container">
+		<!-- 头部可放博客名, 导航 -->
+		<div id="header">
+		
+			{{$username := .userInfo.Username}}
+			<h1>
+				<a href="{{$.indexUrl}}" id="logo">
+				{{if $.blogInfo.Logo}}
+				<img src="{{$.blogInfo.Logo}}" title="{{$.blogInfo.Title}}"/>
+				{{else}}
+					{{$.blogInfo.Title | raw}}
+				{{end}}
+				</a>
+			</h1>
+			<div id="blogDesc">
+				{{$.blogInfo.SubTitle | raw}}
+			</div>
+		</div>
+	</div>
+	
+	<!-- Static navbar -->
+	<div class="navbar navbar-default">
+	  <div class="container">
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <a class="navbar-brand" href="{{.indexUrl}}">
+	      	{{if $.blogInfo.Logo}}
+	      	
+			<img src="{{$.blogInfo.Logo}}" title="{{$.blogInfo.Title}}"/>
+			{{else}}
+				{{$.blogInfo.Title | raw}}
+			{{end}}
+	      </a>
+	    </div>
+	    <div class="navbar-collapse collapse">
+	      <ul class="nav navbar-nav">
+	      	
+	    	<li class="{{if $.curIsIndex}}active{{end}}"><a href="{{.indexUrl}}">主页</a></li>
+		    <!-- 分类页 -->
+		   	{{range $.cates}}
+				<li class="{{if eq .CateId $.curCateId}}active{{end}}">
+					<a href="{{$.cateUrl}}/{{.CateId}}" 
+					>{{.Title}}</a>
+				</li>
+			{{end}}
+			<!-- 单页 -->
+			{{range $.singles}}
+			    <li class="{{if eq $.curSingleId .SingleId}}active{{end}}">
+					<a href="{{$.singleUrl}}/{{.SingleId}}">{{.Title}}</a>
+				</li>
+			{{end}}
+			
+			<!-- 归档 -->
+			<li class="{{if $.curIsArchive}}active{{end}}">
+				<a href="{{$.archiveUrl}}">归档</a>
+			</li>
+			<li class="{{if $.curIsTags}}active{{end}}">
+				<a href="{{$.tagsUrl}}">标签</a>
+			</li>
+			
+	      </ul>
+	      <form class="navbar-form navbar-right" id="search" onsubmit="search(event);return false;">
+	      	<div class="input-group">
+			  	<span class="input-group-addon" id="searchIcon" onclick="search(event);"><i class="fa fa-search"></i></span>
+		        <input type="text" placeholder="search" id="searchInput" class="form-control" value="{{.keywords}}">
+		  	</div>
+	      </form>
+	    </div><!--/.nav-collapse -->
+	  </div>
+	</div>
+</div>
+
+<script>
+var UserInfo = {UserId: "{{$.blogInfo.UserId}}", Email: "{{.userInfo.Email}}", Username: "{{.userInfo.Username}}"};
+var UserBlogInfo={CanComment: {{.userBlog.CanComment}}, CommentType: "{{.userBlog.CommentType}}"};
+var indexUrl = "{{$.indexUrl}}";
+var viewUrl = "{{$.viewUrl}}";
+var blogUrl = "{{$.blogUrl}}";
+var staticUrl = "{{$.staticUrl}}"; // blog.leanote.com, life.leanote.com, aaa.com
+</script>

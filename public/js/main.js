@@ -5,21 +5,21 @@ require.config({
     	// base editor
     	'tinymce': 'tinymce/tinymce',
     	'jquery.slimscroll': 'js/jQuery-slimScroll-1.3.0/jquery.slimscroll',
-    	'contextmenu': 'js/contextmenu/jquery.contextmenu',
+    	'contextmenu': 'js/contextmenu/jquery.contextmenu-min',
     	'jquery.cookie': 'js/jquery-cookie',
-    	'page': 'js/app/page',
-    	'note': 'js/app/note',
-    	'notebook': 'js/app/notebook',
-    	'tag': 'js/app/tag',
-    	'share': 'js/app/share',
+    	'page': 'js/app/page-min',
+    	'note': 'js/app/note-min',
+    	'notebook': 'js/app/notebook-min',
+    	'tag': 'js/app/tag-min',
+    	'share': 'js/app/share-min',
     	'objectId': 'js/object_id-min',
     	'ZeroClipboard': 'js/ZeroClipboard/ZeroClipboard-min',
     	'bootstrap': 'js/bootstrap-min',
     	'leanote': 'js/main',
     	
     	// ajax upload image/attach
-    	'leaui_image': 'tinymce/plugins/leaui_image/public/js/for_editor',
-    	'attachment_upload': 'js/app/attachment_upload',
+    	'editor_drop_paste': 'js/app/editor_drop_paste-min',
+    	'attachment_upload': 'js/app/attachment_upload-min',
     	'jquery.ui.widget': 'tinymce/plugins/leaui_image/public/js/jquery.ui.widget',
     	'fileupload': '/tinymce/plugins/leaui_image/public/js/jquery.fileupload',
     	'iframe-transport': '/tinymce/plugins/leaui_image/public/js/jquery.iframe-transport',
@@ -32,8 +32,8 @@ require.config({
     	'Markdown.en': 'mdeditor/editor/pagedown/local/Markdown.local.en-min',
     	'Markdown.Extra': 'mdeditor/editor/Markdown.Extra-min',
     	'underscore': 'mdeditor/editor/underscore-min',
-    	'scrollLink': 'mdeditor/editor/scrollLink',
-    	'mathJax': 'mdeditor/editor/mathJax',
+    	'scrollLink': 'mdeditor/editor/scrollLink-min',
+    	'mathJax': 'mdeditor/editor/mathJax-min',
     	'jquery.waitforimages': 'mdeditor/editor/jquery.waitforimages-min',
     	'pretty': 'mdeditor/editor/google-code-prettify/prettify',
     	'mdeditor': 'mdeditor/editor/mdeditor',
@@ -80,26 +80,6 @@ require(['jquery.slimscroll', 'contextmenu', 'jquery.cookie',
 });
 */
 
-require(['mdeditor'], function(mdeditor) {});
-require(['leaui_image'], function(leaui_image) {});
+// require(['mdeditor'], function(mdeditor) {});
+require(['editor_drop_paste'], function(leaui_image) {});
 require(['attachment_upload'], function(attachment_upload) {});
-
-require(['attachment_upload'], function(attachment_upload) {});
-if(Mobile.isMobile()) {
-	// 不能要, 要了样式会有问题, 会增加一些class(也会减少之前的class)
-	// fastclick会focus
-	require(['fastclick'], function() {
-	/*
-		 FastClick.attach($("#noteItemList").get(0));
-		 FastClick.attach($("#leftNotebook").get(0));
-		 FastClick.attach($("#switcher").get(0));
-	*/
-	});
-	/*
-	$("#noteItemList,#leftSwitcher").on("touchend", function(e) {
-		$(this).trigger("click");
-		e.stopPropagation();
-	});
-	*/
-}
-	

@@ -1,13 +1,13 @@
 {{template "member/top.html" .}}
-<div class="m-b-md"> <h3 class="m-b-none">单页面</h3></div>
+<div class="m-b-md"> <h3 class="m-b-none">{{msg . "single"}}</h3></div>
 
 <div class="row">
 <div class="col-sm-8">
 	<section class="panel panel-default">
 		<div class="panel-body">
 		<p>
-		您可以添加多个单页面
-	    <a href="/member/blog/addOrUpdateSingle" id="addBtn" class="btn btn-success">添加页面</a>
+			{{msg $ "singleTips"}}
+		    <a href="/member/blog/addOrUpdateSingle" id="addBtn" class="btn btn-success">{{msg $ "addSingle"}}</a>
 	    </p>
         <ul class="list-group gutter list-group-lg list-group-sp sortable">
         	{{range .singles}}
@@ -18,7 +18,7 @@
 	              <a href="#"><i class="fa fa-times icon-muted fa-fw page-delete" data-id="{{.SingleId}}"></i></a> 
 	            </span>
 	            <div class="pull-right" style="margin-right: 10px">
-	            	固定链接: /single/<input data-id="{{.SingleId}}" class="url-title" type="text" value="{{if .UrlTitle}}{{.UrlTitle|decodeUrlValue}}{{else}}{{.SingleId}}{{end}}"/>
+	            	{{msg $ "permanentLink"}}: /single/<input data-id="{{.SingleId}}" class="url-title" type="text" value="{{if .UrlTitle}}{{.UrlTitle|decodeUrlValue}}{{else}}{{.SingleId}}{{end}}"/>
 	            </div>
 	            <div class="clear">
 		          {{.Title}}	
@@ -29,7 +29,7 @@
       </div>
       {{if .singles}}
       <footer class="panel-footer text-right bg-light lter">
-		    <button type="submit" id="baseBtn" class="btn btn-success">保存排序</button>
+		    <button type="submit" id="baseBtn" class="btn btn-success">{{msg . "saveSort"}}</button>
 	</footer>
 	{{end}}
 	</section>
@@ -37,7 +37,7 @@
 
 </div>
 {{template "member/footer.html" .}}
-<script type="text/javascript" src="{{.siteUrl}}/public/member/js/jquery.sortable.js"></script>
+<script type="text/javascript" src="/public/member/js/jquery.sortable.js"></script>
 <script>
 $(function() {
 	$("#baseBtn").click(function(){

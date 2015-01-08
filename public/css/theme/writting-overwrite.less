@@ -68,15 +68,12 @@
 html,body {
 	background-color: @bgColor;
 }
-*, body {
+body {
   font-family: @fontFamily;
   font-weight: 300;
   font-size: @fontSize;
 }
-h1, h2, h3 {
-  font-family: @fontFamily;
-  font-weight: 300 !important;
-}
+
 a {
   color: @aBlackColor;
   cursor: pointer;
@@ -381,6 +378,13 @@ a.raw:hover {
 		font-size: 14px;
 		line-height: 22px;			
     }
+	.navbar-default {
+		height: auto !important;
+		border: none !important;
+	}
+	.layout-wrapper-l3 {
+		border: none !important;
+	}
 }
 #editorContent {
   position: absolute;
@@ -519,7 +523,7 @@ a.raw:hover {
 
 /* leanote nav */
 
-#leanoteNav {
+.leanoteNav {
   position: absolute; 
   right: 5px;
   border: 1px solid #ccc; 
@@ -541,13 +545,13 @@ a.raw:hover {
   span {
   	display: none;
   }
-  #leanoteNavContent {
+  .leanoteNavContent {
   	display: none;
 	overflow: auto;
   } 
 }
 
-#leanoteNav.unfolder {
+.leanoteNav.unfolder {
   min-width: 200px;
   max-width: 300px;
   // bottom: 1px;
@@ -559,13 +563,13 @@ a.raw:hover {
 	  display: inline;
   }
   
-  #leanoteNavContent {
+  .leanoteNavContent {
   	display: block;
 	min-height: 30px;
   }
 }
 
-#leanoteNav ul {
+.leanoteNav ul {
   margin:0;
   padding-left: 23px;
   li {
@@ -577,22 +581,27 @@ a.raw:hover {
   	}
   }
 }
-#leanoteNav ul .nav-h1 {
+.leanoteNav ul .nav-h1 {
 }
-#leanoteNav ul .nav-h2 {
+.leanoteNav ul .nav-h2 {
   margin-left: 20px;
 }
-#leanoteNav ul .nav-h3 {
+.leanoteNav ul .nav-h3 {
   margin-left: 30px;
 }
-#leanoteNav ul .nav-h4 {
+.leanoteNav ul .nav-h4 {
   margin-left: 40px;
 }
-#leanoteNav ul .nav-h5 {
+.leanoteNav ul .nav-h5 {
   margin-left: 50px;
 }
 .scrollTo-a {
   cursor: pointer !important;
+}
+
+#mdEditor .leanoteNav {
+	top: 10px;
+	right: 0px;
 }
 
 //---------------
@@ -811,8 +820,11 @@ background-position:-1px -670px
 	width: 100% !important;
 }
 #editorMask {
-	position: absolute; top: 0px; bottom: 0px; right: 0; left: 0; 
-	background-color: #fff;
+	position: absolute; 
+  top: 30px; 
+  bottom: 0px; right: -30px; 
+  left: 0; 
+	background-color: #fbfcf7;
 	z-index: -10;
 	.fa, a {
 		font-size: 24px;
@@ -920,10 +932,11 @@ html,body {
 	position: absolute;
 	top: @headerHeight;
 	z-index: 2;
+  background-color: #fbfcf7;
 }
 #wmd-input {
 	border: none;
-	background-color: @bgColor;
+	background-color: @bgColor !important;
 	font-size: 16px !important;
 }
 #md-section-helper {
@@ -1134,4 +1147,11 @@ body {
 	overflow: scroll !important;
 	-webkit-overflow-scrolling: touch !important; // for iphone
 }
+}
+
+#editorContent {
+  border: none;
+}
+#editorContent .ace-tomorrow {
+  background-color: #fbfcf7;
 }

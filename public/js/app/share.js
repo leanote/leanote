@@ -243,25 +243,47 @@ Share.toggleToSharedNav = function(userId, notebookId) {
 	$("#tagSearch").hide();
 }
 
+// 刷新加载共享的笔记本, page.js调用
+Share.firstRenderShareNote = function(ownerUserId, notebookId, noteId) {
+	$("#myShareNotebooks .folderHeader").trigger("click");
+	// 这里, 可能这个笔记本是子笔记本, 所以先扩展
+	Notebook.expandNotebookTo(notebookId, ownerUserId);
+	Share.changeNotebook(ownerUserId, notebookId, function(notes) {
+		Note.renderNotes(notes);
+		// 不push state
+		Note.changeNoteForPjax(noteId, false, false);
+	});
+};
+
 //改变笔记本
 //0. 改变样式
 //1. 改变note, 此时需要先保存
 //2. ajax得到该notebook下的所有note
 //3. 使用Note.RederNotes()
-Share.changeNotebook = function(userId, notebookId) {
+Share.changeNotebook = function(userId, notebookId, callback) {
+	var me = this;
+	Notebook.curNotebookId = notebookId;
 	// 选中
-	Notebook.selectNotebook($(tt('#friendContainer_? a[notebookId="?"]', userId, notebookId)));
+	var $t = $(tt('#friendContainer_? a[notebookId="?"]', userId, notebookId));
+	if($t.length == 0) {
+		// 切换到默认共享中
+		// 表示是popstate的默认共享笔记本下
+		Notebook.selectNotebook($(tt('#friendContainer_? a[notebookId="?"]', userId, me.defaultNotebookId)));
+		notebookId = me.defaultNotebookId;
+	} else {
+		Notebook.selectNotebook($t);
+	}
 	
 	// 改变nav!!!! TODO
 	Share.toggleToSharedNav(userId, notebookId);
-	
+
 	// 1
 	Note.curChangedSaveIt();
 	
 	// 2 先清空所有
 	Note.clearAll();
 	
-	var url = "/share/ListShareNotes/";
+	var url = "/share/listShareNotes";
 	var param = {userId: userId};
 	if(!Share.isDefaultNotebookId(notebookId)) {
 		param.notebookId = notebookId;
@@ -276,21 +298,28 @@ Share.changeNotebook = function(userId, notebookId) {
 		if(param.notebookId) {
 			
 		}
-		Note.renderNotes(ret, false, true);
-		// 渲染第一个
-		// 这里, 有点小复杂, 还要判断权限...
-		if(!isEmpty(ret)) {
-			// 定位
-			Note.changeNote(ret[0].NoteId, true);
+		if(callback) {
+			callback(ret);
 		} else {
+			Note.renderNotes(ret, false, true);
+			// 渲染第一个
+			// 这里, 有点小复杂, 还要判断权限...
+			if(!isEmpty(ret)) {
+				// 定位
+				Note.changeNoteForPjax(ret[0].NoteId, true, false);
+			} else {
+			}
 		}
 	});
 }
 
 // 是否有更新权限
 // called by Note
-Share.hasUpdatePerm = function(notebookId) {
-	var note = Share.cache[notebookId];
+Share.hasUpdatePerm = function(noteId) {
+	var note = Share.cache[noteId];
+	if(!note) {
+		note = Note.getNote(noteId);
+	}
 	if(!note || !note.Perm) {
 		return false;
 	}
@@ -338,7 +367,7 @@ Share.changeNotebookForNewNote = function(notebookId) {
 	Share.toggleToSharedNav(userId, notebookId);	
 	
 	// 得到笔记本
-	var url = "/share/ListShareNotes/";
+	var url = "/share/listShareNotes";
 	var param = {userId: userId, notebookId: notebookId};
 		
 	// 2 得到笔记本
@@ -401,7 +430,7 @@ Share.initContextmenu = function(notebooksCopy) {
 	}
 	
 	Share.contextmenu = $("#noteItemList .item-shared").contextmenu(noteListMenu);
-}
+};
 
 $(function() {
 	// note setting
@@ -412,8 +441,6 @@ $(function() {
 		var $p = $(this).parent();
 		Share.contextmenu.showMenu(e, $p);
 	});
-	
-	
 	
 	//---------------------------
 	// 新建笔记
@@ -453,10 +480,10 @@ $(function() {
 			toHtml = getMsg("readOnly");
 			toPerm = "0";
 		}
-		var url = "/share/UpdateShareNotebookPerm";
+		var url = "/share/updateShareNotebookPerm";
 		var param = {perm: toPerm, toUserId: toUserId};
 		if(Share.dialogIsNote) {
-			url = "/share/UpdateShareNotePerm";
+			url = "/share/updateShareNotePerm";
 			param.noteId = noteOrNotebookId;
 		} else {
 			param.notebookId = noteOrNotebookId;
@@ -474,10 +501,10 @@ $(function() {
 		var noteOrNotebookId = $(this).attr("noteOrNotebookId");
 		var toUserId = $(this).attr("toUserId");
 		
-		var url = "/share/DeleteShareNotebook";
+		var url = "/share/deleteShareNotebook";
 		var param = {toUserId: toUserId};
 		if(Share.dialogIsNote) {
-			url = "/share/DeleteShareNote";
+			url = "/share/deleteShareNote";
 			param.noteId = noteOrNotebookId;
 		} else {
 			param.notebookId = noteOrNotebookId;
@@ -533,10 +560,10 @@ function addShareNoteOrNotebook(trSeq) {
 	var shareNotePerm = $(trId + ' input[name="perm' + trSeq + '"]:checked').val() || 0;
 	var perm = shareNotePerm;
 	// emails = emails.split(";");
-	var url = "share/addShareNote";
+	var url = "/share/addShareNote";
 	var data = {noteId: id, emails: [emails], perm: shareNotePerm};
 	if(!Share.dialogIsNote) {
-		url = "share/addShareNotebook";
+		url = "/share/addShareNotebook";
 		data = {notebookId: id, emails: [emails], perm: shareNotePerm};
 	}
 	hideAlert("#shareMsg");
@@ -552,16 +579,8 @@ function addShareNoteOrNotebook(trSeq) {
 				tpl += tt('<td><a href="#" noteOrNotebookId="?" toUserId="?" class="btn btn-warning delete-share">' + getMsg("delete") +'</a></td>', id, ret.Id);
 				$(trId).html(tpl);
 			} else {
-				var shareUrl = UrlPrefix + '/register?from=' + UserInfo.Username;
-				showAlert("#shareMsg", getMsg('friendNotExits', [getMsg("app"), shareUrl]) + ' <a id="shareCopy"  data-clipboard-target="copyDiv">' + getMsg("clickToCopy") + '</a> <span id="copyStatus"></span> <br /> ' + getMsg("sendInviteEmailToYourFriend") + ', <a href="#" onclick="sendRegisterEmail(\'' + emails + '\')">' + getMsg("send"), "warning");
-				$("#copyDiv").text(shareUrl);
-				initCopy("shareCopy", function(args) {
-					if(args.text) {
-						showMsg2("#copyStatus", getMsg("copySuccess"), 1000);
-					} else {
-						showMsg2("#copyStatus", getMsg("copyFailed"), 1000);
-					}
-				});
+				var shareUrl = UrlPrefix + '/register?iu=' + UserInfo.Username;
+				showAlert("#shareMsg", getMsg('friendNotExits', [getMsg("app"), '<input style="background: none;border: 1px solid #ccc;width: 300px;padding: 3px;border-radius: 3px;outline: none;" onclick="$(this).focus().select()" type="text" value="' + shareUrl + '" />']) + '</a> <br /> ' + getMsg("sendInviteEmailToYourFriend") + ', <a href="#" onclick="sendRegisterEmail(\'' + emails + '\')">' + getMsg("send"), "warning");
 			}
 		}
 	}, trId + " .btn-success");
