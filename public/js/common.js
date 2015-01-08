@@ -809,10 +809,7 @@ function setCookie(c_name, value, expiredays){
 	document.cookie = c_name+ "=" + escape(value) + ((expiredays==null) ? "" : ";expires="+exdate.toGMTString());
 }
 function logout() {
-<<<<<<< HEAD
-=======
 	setCookie("LEANOTE_SESSION", '', -1);
->>>>>>> dev-life
 	location.href = UrlPrefix + "/logout?id=1";
 }
 

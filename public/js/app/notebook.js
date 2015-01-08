@@ -829,9 +829,6 @@ Notebook.deleteNotebook = function(target) {
 			
 			// 改变nav
 			Notebook.changeNav();
-
-			//显示默认笔记本keep  #5
-			$("#notebookList #548125adf4e872105c000007_span").trigger("click");
 		} else {
 			alert(ret.Msg);
 		}
