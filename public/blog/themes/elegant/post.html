@@ -4,19 +4,26 @@
 	<div id="posts">
 		<div class="each-post">
 			<div class="title">
-				{{.post.Title}}
+				{{if $.post.Title}}
+          	        {{$.post.Title}}
+          	    {{else}}
+          	        Untitled
+          	    {{end}}
 			</div>
 			<div class="created-time">
-				<i class="fa fa-bookmark-o"></i>
-				{{if .post.Tags}} 
-					{{blogTags $ .post.Tags}}
-				{{else}}
-					无
-				{{end}}
-				|
-				<i class="fa fa-calendar"></i> 更新 {{$.post.UpdatedTime | datetime}} 
-				| 
-				<i class="fa fa-calendar"></i> 创建 {{$.post.CreatedTime | datetime}}
+			    {{if $.post.Tags}} 
+				    <i class="fa fa-bookmark-o"></i>
+    				{{blogTags $ $.post.Tags}}
+    				&nbsp;&nbsp;
+    			{{end}}
+    			
+    			<i class="fa fa-clock-o"></i> {{$.post.PublicTime | datetime}} 
+    			&nbsp;&nbsp;
+    			<span class="fa fa-eye"></span> {{$.post.ReadNum}}
+    			&nbsp;&nbsp;
+    			<span class="fa fa-thumbs-o-up"></span> {{$.post.LikeNum}}
+    			&nbsp;&nbsp;
+    			<span class="fa fa-comments-o"></span> {{$.post.CommentNum}}
 			</div>
 			
 			<!-- 仅为移动端 -->
@@ -51,10 +58,10 @@
 			
 		    <div class="pre-next-post">
 		        <p>
-			    上一篇: {{if $.prePost}}<a href="{{$.postUrl}}/{{$.prePost.UrlTitle}}">{{$.prePost.Title}}</a>{{else}}无{{end}}
+			    Pre: {{if $.prePost}}<a href="{{$.postUrl}}/{{$.prePost.UrlTitle}}">{{$.prePost.Title}}</a>{{else}}无{{end}}
                 </p>
                 <p>
-                下一篇: {{if $.nextPost}}<a href="{{$.postUrl}}/{{$.nextPost.UrlTitle}}">{{$.nextPost.Title}}</a>{{else}}无{{end}}
+                Next: {{if $.nextPost}}<a href="{{$.postUrl}}/{{$.nextPost.UrlTitle}}">{{$.nextPost.Title}}</a>{{else}}无{{end}}
 			    </p>
 			</div>
 			
@@ -69,8 +76,8 @@
 
 <div id="blogNav">
 	<div id="blogNavNav">
-		<i class="fa fa-align-justify" title="文档导航"></i>
-		<span>文档导航</span>
+		<i class="fa fa-align-justify" title="Table of content"></i>
+		<span>Table of content</span>
 	</div>
 	<div id="blogNavContent">
 	</div>
@@ -114,7 +121,7 @@ markdown
   MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ["\\(","\\)"]], processEscapes: true },  messageStyle: "none"});
 </script>
 <script src="/public/mdeditor/editor/mathJax.js"></script>
-<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="/public/libs/MathJax/MathJax.js?config=TeX-AMS_HTML"></script>
 <script>
 var content = $.trim($("#markdownContent textarea").val());
 var converter = Markdown.getSanitizingConverter();

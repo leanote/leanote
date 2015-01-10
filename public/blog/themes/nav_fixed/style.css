@@ -259,6 +259,7 @@ a:hover {
   width: 200px;
   border-right: 1px solid #ebeff2;
   text-align: right;
+  overflow: scroll;
 }
 #headerContainer {
   width: 190px;

@@ -53,7 +53,7 @@ function getShareUrl() {
 	return location.href;
 }
 function getShareTitle(title) {
-	return encodeURI(title + " (来自leanote.com)");
+	return encodeURI(title + " (from https://leanote.com)");
 }
 function shareSinaWeibo(noteId, title, pic) {
 	var url = "http://service.weibo.com/share/share.php?title=" + getShareTitle(title) + "&url=" + getShareUrl(noteId);
@@ -135,17 +135,17 @@ function getDateDiff(dateTimeStamp) {
     var hourC = diffValue / diff.hour;
     var minC = parseInt(diffValue / diff.minute);
     if (monthC >= 1) {
-        result = parseInt(monthC) + "个月前";
+        result = parseInt(monthC) + " month ago";
     } else if (weekC >= 1) {
-        result = parseInt(weekC) + "周前";
+        result = parseInt(weekC) + " weeks ago";
     } else if (dayC >= 1) {
-        result = parseInt(dayC) + "天前";
+        result = parseInt(dayC) + " days ago";
     } else if (hourC >= 1) {
-        result = parseInt(hourC) + "小时前";
+        result = parseInt(hourC) + " hours ago";
     } else if (minC > 1) {
-        result = minC + "分钟前";
+        result = minC + " minutes ago";
     } else {
-        result = "刚刚";
+        result = "Just now";
     }
     return result;
 }
@@ -328,8 +328,8 @@ function needLogin() {
 		var registerUrl = siteUrl + '/register?from=' + encodeURI(location.href);
 		try {
 			var modal = BootstrapDialog.show({
-		        title: "你还未登录",
-		        message: '<div class="needLogin" style="border:none"><a href="' + loginUrl + '">立即登录</a>, 发表评论.<br />没有帐号? <a href="' + registerUrl +'">立即注册</a>',
+		        title: "Please sign in first",
+		        message: '<div class="needLogin" style="border:none"><a href="' + loginUrl + '">Sign in</a> to to leave a comment.<br />No Leanote account? <a href="' + registerUrl +'">Sign up now</a>',
 		        nl2br: false
 		   });
 	   } catch(e) {}

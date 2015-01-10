@@ -203,6 +203,7 @@ ul.dropdown-menu {
 }
 #footer {
   padding-bottom: 10px;
+  width: 700px;
 }
 .navbar-brand {
   display: none;

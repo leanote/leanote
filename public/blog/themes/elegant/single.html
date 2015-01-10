@@ -7,9 +7,7 @@
 				{{.single.Title}}
 			</div>
 			<div class="created-time">
-				<i class="fa fa-calendar"></i> 更新 {{$.single.UpdatedTime | datetime}} 
-				| 
-				<i class="fa fa-calendar"></i> 创建 {{$.single.CreatedTime | datetime}}
+				<i class="fa fa-clock-o"></i> {{$.single.UpdatedTime | datetime}} 
 			</div>
 			
 			<!-- 仅为移动端 -->
@@ -34,8 +32,8 @@
 
 <div id="blogNav">
 	<div id="blogNavNav">
-		<i class="fa fa-align-justify" title="文档导航"></i>
-		<span>文档导航</span>
+		<i class="fa fa-align-justify" title="Table of content"></i>
+		<span>Table of content</span>
 	</div>
 	<div id="blogNavContent">
 	</div>
