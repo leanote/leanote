@@ -48,6 +48,13 @@ func (this *UserService) GetUsername(userId string) string {
 	return user.Username
 }
 
+// 得到用户名
+func (this *UserService) GetUsernameById(userId bson.ObjectId) string {
+	user := info.User{}
+	db.GetByQWithFields(db.Users, bson.M{"_id": userId}, []string{"Username"}, &user)
+	return user.Username
+}
+
 // 是否存在该用户 email
 func (this *UserService) IsExistsUser(email string) bool {
 	if this.GetUserId(email) == "" {

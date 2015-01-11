@@ -125,18 +125,33 @@
 Share.dialogIsNote = {{.isNote}};
 Share.dialogNoteOrNotebookId = '{{.noteOrNotebookId}}';
 
+var getHost = function(url) { 
+    var host = "null";
+    if(typeof url == "undefined"
+                    || null == url)
+            url = window.location.href;
+    var regex = /.*\:\/\/([^\/]*).*/;
+    var match = url.match(regex);
+    if(typeof match != "undefined"
+                    && null != match)
+            host = match[1];
+    return host;
+}
+
+
 $(function() {
 setTimeout(function() {
 	$("#tr1 #friendsEmail").focus();
 }, 500);
 
+var host = getHost();
 if (Share.dialogIsNote) {
 	var url = "/share/querySharePass";
 	var data = {noteId: Share.dialogNoteOrNotebookId};
 	ajaxPost(url, data, function(re) {
 		if(reIsOk(re)) {
 			if (re.Item >= 1000 && re.Item < 10000) {
-				var shareLink = "https://leanote.com/share/" + '{{.noteOrNotebookId}}';
+				var shareLink = host + '/share/note/{{.noteOrNotebookId}}';
 				$("#shareLink").val(shareLink);
 				$("#sharePass").val(re.Item);
 			}
@@ -204,13 +219,13 @@ $("#groupInfo").on("click", ".btn-share-or-not", function() {
 //生成分享链接和密码
 $("#genShareLink").on("click", function() {
 	var sharePass = $("#sharePass").val();
-	if (sharePass != '' && sharePass > 1000 ) {
+	if (sharePass != '' && sharePass > 1000 && sharePass < 10000) {
 		$("#showMsg").html("<font color='red'>不能重复生成分享链接和密码</font>");
 		return;
 	}
 	
 	var url = "/share/genShareLinkPass";
-	var shareLink = "https://leanote.com/share/note/" + '{{.noteOrNotebookId}}';
+	var shareLink = host + '/share/note/{{.noteOrNotebookId}}';
 	var data = {noteId: Share.dialogNoteOrNotebookId};
 	ajaxPost(url, data, function(re) {
 		if(reIsOk(re)) {

@@ -783,11 +783,8 @@ func (this *ShareService) DeleteShareNotebookGroup(userId, notebookId, groupId s
 
 func (this *ShareService) GenSharePass(noteId string) (int, bool) {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-    pass := 1000 + r.Intn(10000)
+    pass := 1000 + r.Intn(9000)
     
-    if pass >= 10000 {
-    	pass -= 1000
-    }
     ok := db.Update(db.Notes, bson.M{"_id": bson.ObjectIdHex(noteId)}, bson.M{"$set": bson.M{"SharePass": pass}})
 	return pass, ok
 }
@@ -797,4 +794,15 @@ func (this *ShareService) QuerySharePass(noteId string) int {
     db.Get(db.Notes, noteId, note)
 	
 	return note.SharePass
+}
+
+func (this *ShareService) Verify4ShareNote(noteId string, sharePass int) (bool, *info.Note) {
+	note := &info.Note{}
+	db.Get(db.Notes, noteId, note)
+	if note.SharePass == sharePass {
+		return true, note
+	} else {
+		note := &info.Note{}
+		return false, note
+	}
 }

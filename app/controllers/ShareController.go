@@ -9,6 +9,7 @@ import (
 //	"github.com/leanote/leanote/app/types"
 //	"io/ioutil"
 //	"fmt"
+//	"time"
 )
 
 type Share struct {
@@ -204,16 +205,25 @@ func (c Share) QuerySharePass(noteId string) revel.Result {
 
 //展示分享笔记
 func (c Share) ShowShareNote(noteId string) revel.Result {
-//	note := noteService.GetNote(noteId, c.GetUserId())
+	note := noteService.GetNote(noteId, c.GetUserId())
 //	
-//	c.RenderArgs["title"] = note.UserId
-//	c.RenderArgs["title"] = note.UserId
+	c.RenderArgs["noteId"] = noteId
+	username := userService.GetUsernameById(note.UserId)
+	
+	c.RenderArgs["userName"] = username
+	c.RenderArgs["isMarkDown"] = note.IsMarkdown
+//	c.RenderArgs["timestamp"] = time.Now().Unix()
+	c.SetLocale()
 	return c.RenderTemplate("share/show_share_note.html")
 }
 
 //验证分享密码
-//func (c Share) Verify4ShareNote(noteId string, sharePass int) revel.Result {
-//	ok = shareService.Verify4ShareNote(noteId, sharePass);
-//	re := info.Re{Ok : true, Item : pass}
-//	
-//}
+func (c Share) Verify4ShareNote(noteId string, sharePass int) revel.Result {
+	ok, note := shareService.Verify4ShareNote(noteId, sharePass);
+	attaches := []info.Attach{}
+	if (ok == true && note.AttachNum > 0) {
+		attaches = attachService.ListAttachs(noteId, c.GetUserId())
+	}
+	re := info.Re{Ok : ok, Item: note, List: attaches}
+	return c.RenderJson(re)
+}
