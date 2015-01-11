@@ -16,3 +16,4 @@ app/tmp/main.go
 .project
 public/config.codekit
 files
+conf/app.conf
