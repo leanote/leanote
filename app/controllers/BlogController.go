@@ -57,6 +57,9 @@ func (c Blog) render(templateName string, themePath string) revel.Result {
 		isPreview = true
 		themePath = themePath2.(string)
 		c.setPreviewUrl()
+		
+		// 因为common的themeInfo是从UserBlog.ThemeId来取的, 所以这里要fugai下
+		c.RenderArgs["themeInfo"] = c.RenderArgs["themeInfoPreview"];
 	}
 	return blog.RenderTemplate(templateName, c.RenderArgs, revel.BasePath+"/"+themePath, isPreview)
 }

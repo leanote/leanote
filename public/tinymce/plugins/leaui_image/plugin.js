@@ -62,19 +62,25 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 		}
 		
 		var w = $(document).width() - 10;
-		if(w > 885) {
-			w = 885;
+		if(w > 805) {
+			w = 805;
 		}
 		var h = $(document).height() - 100;
-		if(h > 475) {
-			h = 475;
+		if(h > 365) {
+			h = 365;
 		}
 		win = editor.windowManager.open({
-			title: "Manage Image",
+			title: "Image",
 			width : w,
 			height : h,
 			html: GetTheHtml(),
 			buttons: [
+				{
+					text: 'Cancel',
+					onclick: function() {
+						this.parent().parent().close();
+					}
+				},
 				{
 				text: 'Insert Image',
 				subtype: 'primary',
@@ -132,7 +138,7 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 										data2.width = wh.width;
 									}
 									dom.setAttrib(imgElm, 'src', data2.src);
-									dom.setAttrib(imgElm, 'width', data2.width);
+									// dom.setAttrib(imgElm, 'width', data2.width);
 									dom.setAttrib(imgElm, 'title', data2.title);
 									
 									dom.setAttrib(imgElm, 'id', null);
@@ -175,13 +181,7 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 					
 					this.parent().parent().close();
 				}
-				},	
-				{
-				text: 'Cancel',
-				onclick: function() {
-					this.parent().parent().close();
-				}
-			}]
+				}]
 		});
 	}
 	

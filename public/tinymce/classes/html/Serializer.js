@@ -27,7 +27,7 @@ define("tinymce/html/Serializer", [
 	 * @constructor
 	 * @method Serializer
 	 * @param {Object} settings Name/value settings object.
-	 * @param {tinymce.html.Schema} schema Schema instance to use.
+	 * @param {tinymce.html.Schema} schema Schema instance to use. schema是一些策略, 有些合法, 一些不合法的
 	 */
 	return function(settings, schema) {
 		var self = this, writer = new Writer(settings);

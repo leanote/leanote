@@ -2,9 +2,9 @@
 	{{$userId := $.blogInfo.UserId}}
 	<div class="container" id="footer">
         <div class="col-md-4">
-          <h3>导航</h3>
+          <h3>Navigation</h3>
           <ul>
-          	<li><a href="{{$.indexUrl}}">主页</a></li>
+          	<li><a href="{{$.indexUrl}}">Home</a></li>
           	{{range $.cates}}
 			<li>
 				<a href="{{$.cateUrl}}/{{.UrlTitle}}">{{.Title}}</a>
@@ -19,23 +19,29 @@
 			
 			<!-- 归档 -->
 			<li class="{{if $.curIsArchive}}active{{end}}">
-				<a href="{{$.archiveUrl}}">归档</a>
+				<a href="{{$.archiveUrl}}">Archives</a>
 			</li>
 			<li class="{{if $.curIsTags}}active{{end}}">
-				<a href="{{$.tagsUrl}}">标签</a>
+				<a href="{{$.tagsUrl}}">Tags</a>
 			</li>
           </ul>
         </div>
         <div class="col-md-4">
-          <h3>最近发表</h3>
+          <h3>Recent Posts</h3>
           <ul>
           	{{range .recentPosts}}
-          	<li title="{{.Title}}"><a href="{{$.postUrl}}/{{.UrlTitle}}">{{.Title}}</a></li>
+          	<li title="{{.Title}}"><a href="{{$.postUrl}}/{{.UrlTitle}}">
+          	    {{if .Title}}
+          	        {{.Title}}
+          	    {{else}}
+          	        Untitled
+          	    {{end}}
+          	    </a></li>
           	{{end}}
           </ul>
        </div>
         <div class="col-md-4">
-          <h3>友情链接 </h3>
+          <h3>Friend Links</h3>
           <ul>
           	{{if $.themeInfo.FriendLinks}}
           		{{range $.themeInfo.FriendLinks}}

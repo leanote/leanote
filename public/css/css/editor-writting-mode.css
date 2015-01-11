@@ -1,0 +1,15 @@
+html {
+  border: none;
+}
+body {
+  background-color: #fbfcf7;
+}
+* {
+  font-size: 16px;
+}
+pre {
+  font-size: 14px;
+}
+img {
+  max-width: 100% !important;
+}

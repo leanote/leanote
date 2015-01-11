@@ -12,19 +12,19 @@
 {{if $.curIsIndex}}
     {{$.blogInfo.Title}}
 {{else if $.curIsCate}}
-    分类-{{$.curCateTitle}}
+    Category-{{$.curCateTitle}}
 {{else if $.curIsSearch}}
-    搜索-{{$.keywords}}
+    Search-{{$.keywords}}
 {{else if $.curIsTags}}
-    我的标签
+    Tags
 {{else if $.curIsTagPosts}}
-    标签-{{$.curTag}}
+    Tag-{{$.curTag}}
 {{else if $.curIsPost}}
 	{{$.post.Title}}
 {{else if $.curIsSingle}}
 	{{$.single.Title}}
 {{else if $.curIsArchive}}
-	归档
+	Archives
 {{end}}
     
 </title>
@@ -86,7 +86,7 @@ function log(o) {
 	    <div class="navbar-collapse collapse">
 	      <ul class="nav navbar-nav">
 	      	
-	    	<li class="{{if $.curIsIndex}}active{{end}}"><a href="{{.indexUrl}}">主页</a></li>
+	    	<li class="{{if $.curIsIndex}}active{{end}}"><a href="{{.indexUrl}}">Home</a></li>
 		    <!-- 分类页 -->
 		   	{{range $.cates}}
 				<li class="{{if eq .CateId $.curCateId}}active{{end}}">
@@ -103,10 +103,10 @@ function log(o) {
 			
 			<!-- 归档 -->
 			<li class="{{if $.curIsArchive}}active{{end}}">
-				<a href="{{$.archiveUrl}}">归档</a>
+				<a href="{{$.archiveUrl}}">Archives</a>
 			</li>
 			<li class="{{if $.curIsTags}}active{{end}}">
-				<a href="{{$.tagsUrl}}">标签</a>
+				<a href="{{$.tagsUrl}}">Tags</a>
 			</li>
 			
 	      </ul>

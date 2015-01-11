@@ -1,0 +1,1 @@
+ace.define("ace/snippets/jsx",["require","exports","module"],function(e,s,p){s.snippetText="",s.scope="jsx"});

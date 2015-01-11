@@ -15,16 +15,16 @@ type AttachService struct {
 }
 
 // add attach
-func (this *AttachService) AddAttach(attach info.Attach) bool {
+func (this *AttachService) AddAttach(attach info.Attach) (ok bool, msg string) {
 	attach.CreatedTime = time.Now()
-	ok := db.Insert(db.Attachs, attach)
+	ok = db.Insert(db.Attachs, attach)
 	
 	if ok {
 		// 更新笔记的attachs num
 		this.updateNoteAttachNum(attach.NoteId, 1)
 	}
 	
-	return ok
+	return
 }
 
 // 更新笔记的附件个数

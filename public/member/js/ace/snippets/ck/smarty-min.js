@@ -1,0 +1,1 @@
+ace.define("ace/snippets/smarty",["require","exports","module"],function(e,s,t){s.snippetText="",s.scope="smarty"});

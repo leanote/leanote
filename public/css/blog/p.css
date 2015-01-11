@@ -336,3 +336,24 @@ a:focus {
   display: inline-block;
   color: #a94442;
 }
+.article .article-info .label-post {
+  background: #fff;
+  margin: 0;
+  font-size: 14px;
+  padding: 0 2px;
+}
+.article .article-info .label-post:hover {
+  background: #000;
+}
+.article .article-info .label-yellow:hover {
+  background: #f0ad4e;
+}
+.article .article-info .label-green:hover {
+  background: #5cb85c;
+}
+.article .article-info .label-blue:hover {
+  background: #428bca;
+}
+.article .article-info .label-red:hover {
+  background: #d9534f;
+}

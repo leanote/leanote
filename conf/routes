@@ -5,7 +5,7 @@
 module:testrunner
 
 # Home is My Blog
-Get 	/											Index.Default
+Get 	/											Index.Index
 GET     /note   	                                Note.Index
 # leanote home
 GET     /index   	                                Index.Index
@@ -23,6 +23,25 @@ GET 	/findPassword								Auth.FindPassword
 POST 	/doFindPassword								Auth.DoFindPassword
 POST	/findPasswordUpdate							Auth.FindPasswordUpdate
 
+#####
+# 这么多列表, 只是为了最后一句pjax
+# note
+* /note/listNotes Note.ListNotes
+* /note/listTrashNotes Note.ListTrashNotes
+* /note/getNoteAndContent Note.GetNoteAndContent
+* /note/getNoteContent Note.GetNoteContent
+* /note/updateNoteOrContent Note.UpdateNoteOrContent
+* /note/deleteNote Note.DeleteNote
+* /note/deleteTrash Note.DeleteTrash
+* /note/moveNote Note.MoveNote
+* /note/copyNote Note.CopyNote
+* /note/copySharedNote Note.CopySharedNote
+* /note/searchNoteByTags Note.SearchNoteByTags
+* /note/toImage Note.ToImage
+* /note/html2Image Note.Html2Image
+* /note/setNote2Blog Note.SetNote2Blog
+# pjax
+GET     /note/:noteId   	                        Note.Index
 
 # blog
 
@@ -63,7 +82,6 @@ GET		/blog/listCateLatest/:notebookId	Blog.ListCateLatest
 GET		/blog/:userIdOrEmail		Blog.Index
 GET		/blog						Blog.Index
 GET		/blog/*						Blog.E()
-
 
 #---------------
 # preview
@@ -110,7 +128,6 @@ GET     /upload/*filepath                       Static.Serve("public/upload")
 *       /member               	MemberIndex.Index
 *       /member/index           MemberIndex.Index
 
-GET		/share/note/:noteId						Share.ShowShareNote
 # common
 *       /:controller/:action                    :controller.:action
 *       /api/:controller/:action                :controller.:action

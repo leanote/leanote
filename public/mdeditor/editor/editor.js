@@ -137,7 +137,7 @@ new function($) {
     scrollLink.onLayoutCreated();
 
     editor1.hooks.chain("onPreviewRefresh", function () {
-        $("pre").addClass("prettyprint linenums");
+        $("#left-column pre").addClass("prettyprint linenums");
         prettyPrint();
 
         // Call onPreviewFinished callbacks when all async preview are finished, make sure sync actions have been ABOVE the line below.

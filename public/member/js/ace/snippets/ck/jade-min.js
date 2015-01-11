@@ -1,0 +1,1 @@
+ace.define("ace/snippets/jade",["require","exports","module"],function(e,p,i){p.snippetText="",p.scope="jade"});

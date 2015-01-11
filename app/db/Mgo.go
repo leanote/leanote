@@ -3,6 +3,7 @@ package db
 import (
 	"fmt"
 	"github.com/revel/revel"
+	. "github.com/leanote/leanote/app/lea"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -56,12 +57,15 @@ var Themes *mgo.Collection
 var Sessions *mgo.Collection
 
 // 初始化时连接数据库
-func Init() {
-	var url string
-	var ok bool
+func Init(url, dbname string) {
+	ok := true
 	config := revel.Config
-	url, ok = config.String("db.url")
-	dbname, _ := config.String("db.dbname")
+	if url == "" { 
+		url, ok = config.String("db.url")
+	}
+	if dbname == "" {
+		dbname, _ = config.String("db.dbname")
+	}
 	if !ok {
 		host, _ := revel.Config.String("db.host")
 		port, _ := revel.Config.String("db.port")
@@ -73,6 +77,7 @@ func Init() {
 		}
 		url = "mongodb://" + usernameAndPassword + host + ":" + port + "/" + dbname
 	}
+	Log(url)
 
 	// [mongodb://][user:pass@]host1[:port1][,host2[:port2],...][/database][?options]
 	// mongodb://myuser:mypass@localhost:40001,otherhost:40001/mydb

@@ -50,6 +50,7 @@ func (this *ShareService) getOrQ(userId string) bson.M {
 	return q
 }
 
+// 得到共享给我的笔记本和用户(谁共享给了我)
 func (this *ShareService) GetShareNotebooks(userId string) (info.ShareNotebooksByUser, []info.User) {
 	// 得到共享给我的用户s信息
 	// 得到我参与的组织
@@ -61,7 +62,7 @@ func (this *ShareService) GetShareNotebooks(userId string) (info.ShareNotebooksB
 	db.Distinct(db.ShareNotes, q, "UserId", &userIds1)
 	
 	userIds2 := []bson.ObjectId{}
-	db.Distinct(db.ShareNotebooks, q, "UserId", &userIds1)
+	db.Distinct(db.ShareNotebooks, q, "UserId", &userIds2) // BUG之前是userId1, 2014/12/29
 	
 	userIds := append(userIds1, userIds2...)
 	userInfos := userService.GetUserInfosOrderBySeq(userIds);

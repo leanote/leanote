@@ -126,9 +126,9 @@
   margin-right: 10px;
   line-height: 64px;
   text-align: center;
-  font-style: italic;
+  /*font-style: italic;*/
   color: #E1E1E1;
-  font-size: 18px;
+  font-size: 28px;
   cursor: pointer;
 }
 #preview li:hover {
@@ -215,4 +215,25 @@
 	min-height: 260px;
 	text-align: center;
 	padding-top: 100px;
+}
+
+.md {
+	position: relative;
+	height: 350px;
+	overflow: hidden;
+}
+.md #previewAttrs {
+	display: none;
+	
+}
+.md #preview {
+	border: none;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	z-index: 3;
+}
+
+.md #drop {
+	min-height: 250px;
 }

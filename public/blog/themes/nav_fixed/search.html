@@ -2,44 +2,13 @@
 
 <div id="postsContainer">
 	<div class="container">
-		<h2>搜索 - {{.keywords}} </h2>
+		<h2>Search - {{.keywords}} </h2>
 	</div>
 
 	<div id="posts">
-		{{range .posts}}
-		<div class="each-post">
-			<div class="title">
-				<a href="{{$.postUrl}}/{{.UrlTitle}}" title="全文">
-					{{.Title}}
-				</a>
-			</div>
-			<div class="created-time">
-				<i class="fa fa-bookmark-o"></i>
-				{{if .Tags}} 
-					{{blogTags $ .Tags}}
-				{{else}}
-					无
-				{{end}}
-				|
-				<i class="fa fa-calendar"></i> 更新 {{.UpdatedTime | datetime}} | 
-				<i class="fa fa-calendar"></i> 创建  {{.CreatedTime | datetime}}
-			</div>
-			<div class="desc">
-				{{.Abstract | raw}}
-			</div>
-			<a class="more" href="{{$.postUrl}}/{{.UrlTitle}}" title="全文">查看</a>
-		</div>
-		
-		
-		{{else}}
-		    <div class="each-post">
-				无
-			</div>
-		{{end}}
-		
-		<!-- 分页 -->
+		{{template "post_abstract.html" $}}
+	    <!-- paging -->
 		{{template "paging.html" $}}
-	
 	</div>
 </div>
 

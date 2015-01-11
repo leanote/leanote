@@ -216,8 +216,8 @@ a:focus, a:hover, a:active {
 #attachList,
 #tags
 {
-	overflow: scroll !important;
 	-webkit-overflow-scrolling: touch !important; // for iphone
+	overflow: auto !important;
 }
 
 #attachMenu {
@@ -262,10 +262,19 @@ a:focus, a:hover, a:active {
 	opacity: .8
 }
 
+// editor
+#editorContent .ace-tomorrow {
+	padding: 0;
+}
+
 }
 
 // ipad 
-@media screen and (max-device-width: 1024px) and (orientation: landscape) {
+@media screen and (max-device-width: 768px) {
+}
+// ipad 
+// @media screen and (max-device-width: 1024px) and (orientation: landscape) {
+@media screen and (max-width: 1024px) {
 #noteItemList, #notebook, #leftNotebook, 
 .slimScrollDiv,
 #editorContent_ifr,
@@ -276,13 +285,13 @@ a:focus, a:hover, a:active {
 #attachList,
 #tags
 {
-	overflow: scroll !important;
+	overflow: auto !important;
 	-webkit-overflow-scrolling: touch !important; // for iphone
 }
 
 #tag {
 	position: absolute;
-	right: 140px;
+	right: 310px;
 	left:0;
 	top:0;
 	bottom:0;
@@ -332,7 +341,7 @@ a:focus, a:hover, a:active {
 #attachList,
 #tags
 {
-	overflow: scroll !important;
+	overflow: auto !important;
 	-webkit-overflow-scrolling: touch !important; // for iphone
 }
 

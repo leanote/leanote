@@ -41,7 +41,7 @@ type User struct {
 	ImageSize        int       `bson:"ImageSize" json:"-"`        // 图片大小
 	AttachNum        int       `bson:"AttachNum" json:"-"`        // 附件数量
 	AttachSize       int       `bson:"AttachSize" json:"-"`       // 附件大小
-	PerAttachSize    int       `bson:"PerAttachSize" json:"-"`    // 单个附件大小
+	FromUserId bson.ObjectId `FromUserId,omitempty` // 邀请的用户
 
 	AccountType      string    `bson:"AccountType" json:"-"`      // normal(为空), premium
 	AccountStartTime time.Time `bson:"AccountStartTime" json:"-"` // 开始日期

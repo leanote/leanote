@@ -376,7 +376,7 @@ func (this *UserService) ThirdAddUser(userId, email, pwd string) (ok bool, msg s
 // 宽度
 func (this *UserService)UpdateColumnWidth(userId string, notebookWidth, noteListWidth, mdEditorWidth int) bool {
 	return db.UpdateByQMap(db.Users, bson.M{"_id": bson.ObjectIdHex(userId)}, 
-	bson.M{"NotebookWidth": notebookWidth, "NoteListWidth": noteListWidth, "mdEditorWidth": mdEditorWidth})
+	bson.M{"NotebookWidth": notebookWidth, "NoteListWidth": noteListWidth, "MdEditorWidth": mdEditorWidth})
 }
 // 左侧是否隐藏
 func  (this *UserService)UpdateLeftIsMin(userId string, leftIsMin bool) bool {

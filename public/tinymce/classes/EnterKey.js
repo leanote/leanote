@@ -508,6 +508,46 @@ define("tinymce/EnterKey", [
 
 			// Setup range items and newBlockName
 			container = rng.startContainer;
+			
+			// life ace, 在ace editor下回车给ace来控制
+			var $container = $(container);
+			var aceEditorAndPre = LeaAce.isInAce($container);
+			if(aceEditorAndPre) {
+				// alert(2);
+				// 跳出aceEditor
+				if(evt.shiftKey) {
+					// alert(33);
+					// var id = $container.attr('id');
+					var aceEditor = aceEditorAndPre[0];
+					aceEditor.blur();
+					var pre = aceEditorAndPre[1];
+					// 必须要延迟
+					setTimeout(function() {
+						aceEditor.blur();
+						// log('blur...')
+						var newBlock = $("<p><br /></p>");
+						pre.after(newBlock);
+						// log(newBlock.get(0));
+						rng.setStart(newBlock.get(0), 0);
+						rng.setEnd(newBlock.get(0), 0);
+						// 没用
+						rng.selectNode(newBlock.get(0));
+						selection.setRng(rng);
+						// 再延迟
+						setTimeout(function() {
+							selection.setRng(rng);
+						}, 10);
+
+						// TODO ... 这里
+						// log("why");
+						// log(rng);
+						// log(selection.getRng());
+					}, 10);
+					return true;
+				}
+				return false;
+			}
+			
 			offset = rng.startOffset;
 			newBlockName = (settings.force_p_newlines ? 'p' : '') || settings.forced_root_block;
 			newBlockName = newBlockName ? newBlockName.toUpperCase() : '';

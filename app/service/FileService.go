@@ -17,7 +17,7 @@ type FileService struct {
 }
 
 // add Image
-func (this *FileService) AddImage(image info.File, albumId, userId string) bool {
+func (this *FileService) AddImage(image info.File, albumId, userId string, needCheckSize bool) (ok bool, msg string) {
 	image.CreatedTime = time.Now()
 	if albumId != "" {
 		image.AlbumId = bson.ObjectIdHex(albumId)
@@ -27,7 +27,8 @@ func (this *FileService) AddImage(image info.File, albumId, userId string) bool 
 	}
 	image.UserId = bson.ObjectIdHex(userId)
 	
-	return db.Insert(db.Files, image)
+	ok = db.Insert(db.Files, image)
+	return
 }
 
 // list images
@@ -147,7 +148,16 @@ func (this *FileService) GetFile(userId, fileId string) string {
 			return path
 		}
 		
+		// 2014/12/28 修复, 如果是分享给用户组, 那就不行, 这里可以实现
+		for _, noteId := range noteIds {
+			note := noteService.GetNoteById(noteId.Hex())
+			if shareService.HasReadPerm(note.UserId.Hex(), userId, noteId.Hex()) {
+				return path;
+			}
+		}
+		/*
 		// 若有共享给我的笔记?
+		// 对该笔记可读?
 		if db.Has(db.ShareNotes, bson.M{"ToUserId": bson.ObjectIdHex(userId), "NoteId": bson.M{"$in": noteIds}}) {
 			return path
 		}
@@ -166,6 +176,7 @@ func (this *FileService) GetFile(userId, fileId string) string {
 				return path
 			}
 		}
+		*/
 	}
 	
 	// 可能是刚复制到owner上, 但内容又没有保存, 所以没有note->imageId的映射, 此时看是否有fromFileId
@@ -222,7 +233,7 @@ func (this *FileService) CopyImage(userId, fileId, toUserId string) (bool, strin
 	id := bson.NewObjectId();
 	fileInfo.FileId = id
 	fileId = id.Hex()
-	Ok := this.AddImage(fileInfo, "", toUserId)
+	Ok, _ := this.AddImage(fileInfo, "", toUserId, false)
 	
 	if Ok {
 		return Ok, id.Hex()

@@ -9300,7 +9300,6 @@ define("tinymce/html/Schema", [
 		 */
 		self.isValidChild = function(name, child) {
 			var parent = children[name];
-
 			return !!(parent && parent[child]);
 		};
 
@@ -10804,7 +10803,7 @@ define("tinymce/html/Serializer", [
 	 * @constructor
 	 * @method Serializer
 	 * @param {Object} settings Name/value settings object.
-	 * @param {tinymce.html.Schema} schema Schema instance to use.
+	 * @param {tinymce.html.Schema} schema Schema instance to use. schema是一些策略, 有些合法, 一些不合法的
 	 */
 	return function(settings, schema) {
 		var self = this, writer = new Writer(settings);
@@ -13160,6 +13159,10 @@ define("tinymce/dom/Selection", [
 		getRng: function(w3c) {
 			var self = this, selection, rng, elm, doc = self.win.document, ieRng;
 
+			// if(aa) {
+				// log("..");
+			// }
+
 			// Use last rng passed from FocusManager if it's available this enables
 			// calls to editor.selection.getStart() to work when caret focus is lost on IE
 			if (!w3c && self.lastFocusBookmark) {
@@ -13237,6 +13240,9 @@ define("tinymce/dom/Selection", [
 				}
 			}
 
+			// log(">>")
+			// log((new Date()).getTime())
+			// log(rng);
 			return rng;
 		},
 
@@ -13314,6 +13320,7 @@ define("tinymce/dom/Selection", [
 		},
 
 		/**
+		 * 这里, 很重要
 		 * Returns the currently selected element or the common ancestor element for both start and end of the selection.
 		 *
 		 * @method getNode
@@ -13324,8 +13331,13 @@ define("tinymce/dom/Selection", [
 		 */
 		getNode: function() {
 			var self = this, rng = self.getRng(), elm;
+			// log(rng);
 			var startContainer = rng.startContainer, endContainer = rng.endContainer;
 			var startOffset = rng.startOffset, endOffset = rng.endOffset, root = self.dom.getRoot();
+			// log('start');
+			// log(startContainer);
+			// log('end');
+			// log(endContainer);
 
 			function skipEmptyTextNodes(node, forwards) {
 				var orig = node;
@@ -16477,13 +16489,21 @@ define("tinymce/UndoManager", [
 	return function(editor) {
 		var self, index = 0, data = [], beforeBookmark, isFirstTypedCharacter, lock;
 
+		// life ace
+		var canAdd = true;
+
 		// Returns a trimmed version of the current editor contents
 		function getContent() {
-			return trim(editor.getContent({format: 'raw', no_events: 1}).replace(trimContentRegExp, ''));
+			// TODO 性能有待检测
+			// life ace editor, 获取真正的内容, 只有<pre>
+			return getEditorContent();
+			// 这个有XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+			// return trim(editor.getContent({format: 'raw', no_events: 1}).replace(trimContentRegExp, ''));
 		}
 
 		function addNonTypingUndoLevel() {
 			self.typing = false;
+			// log('addNonTypingUndoLevel')
 			self.add();
 		}
 
@@ -16525,11 +16545,23 @@ define("tinymce/UndoManager", [
 		editor.on('KeyUp', function(e) {
 			var keyCode = e.keyCode;
 
+			// ctrl + shift + c, command + shift + c 代码
+			// life ace
+			if((e.metaKey && e.shiftKey) || (e.ctrlKey && e.shiftKey)) {
+				return;
+			}
+
+			// 在ace中回车也会加history
+			if(keyCode == 13 && LeaAce.nowIsInAce()) {
+				return;
+			}
+
 			if ((keyCode >= 33 && keyCode <= 36) || (keyCode >= 37 && keyCode <= 40) || keyCode == 45 || keyCode == 13 || e.ctrlKey) {
 				addNonTypingUndoLevel();
 				editor.nodeChanged();
 			}
 
+			// 8 表示删除
 			if (keyCode == 46 || keyCode == 8 || (Env.mac && (keyCode == 91 || keyCode == 93))) {
 				editor.nodeChanged();
 			}
@@ -16554,13 +16586,31 @@ define("tinymce/UndoManager", [
 
 		editor.on('KeyDown', function(e) {
 			var keyCode = e.keyCode;
+			log('keyCode' + keyCode)
+
+			// 在ace中回车也会加history
+			if(keyCode == 13/* && LeaAce.nowIsInAce()*/) {
+				return;
+			}
 
 			// Is caracter positon keys left,right,up,down,home,end,pgdown,pgup,enter
 			if ((keyCode >= 33 && keyCode <= 36) || (keyCode >= 37 && keyCode <= 40) || keyCode == 45) {
 				if (self.typing) {
 					addNonTypingUndoLevel();
 				}
+				return;
+			}
 
+			// ctrl + shift + c, command + shift + c 代码
+			// life ace
+			if((e.metaKey && e.shiftKey) || (e.ctrlKey || e.shiftKey)) {
+				log("no add history");
+				return;
+			}
+
+			// ctrl + z
+			if(e.metaKey && keyCode == 90 || (e.ctrlKey && keyCode == 90)) {
+				log('ctrl + z');
 				return;
 			}
 
@@ -16613,6 +16663,10 @@ define("tinymce/UndoManager", [
 				}
 			},
 
+			setCanAdd: function(status) {
+				canAdd = status;
+			},
+
 			/**
 			 * Adds a new undo level/snapshot to the undo list.
 			 *
@@ -16621,6 +16675,11 @@ define("tinymce/UndoManager", [
 			 * @return {Object} Undo level that got added or null it a level wasn't needed.
 			 */
 			add: function(level) {
+				if(!canAdd) {
+					log('cant add history')
+					return;
+				}
+				log('add history')
 				var i, settings = editor.settings, lastLevel;
 
 				level = level || {};
@@ -16699,6 +16758,10 @@ define("tinymce/UndoManager", [
 					}
 
 					editor.setContent(level.content, {format: 'raw'});
+					// undo后如果有pre, 那么要重新init下
+					// life ace
+					// LeaAce.undo(editor);
+
 					editor.selection.moveToBookmark(level.beforeBookmark);
 
 					editor.fire('undo', {level: level});
@@ -17297,6 +17360,46 @@ define("tinymce/EnterKey", [
 
 			// Setup range items and newBlockName
 			container = rng.startContainer;
+			
+			// life ace, 在ace editor下回车给ace来控制
+			var $container = $(container);
+			var aceEditorAndPre = LeaAce.isInAce($container);
+			if(aceEditorAndPre) {
+				// alert(2);
+				// 跳出aceEditor
+				if(evt.shiftKey) {
+					// alert(33);
+					// var id = $container.attr('id');
+					var aceEditor = aceEditorAndPre[0];
+					aceEditor.blur();
+					var pre = aceEditorAndPre[1];
+					// 必须要延迟
+					setTimeout(function() {
+						aceEditor.blur();
+						// log('blur...')
+						var newBlock = $("<p><br /></p>");
+						pre.after(newBlock);
+						// log(newBlock.get(0));
+						rng.setStart(newBlock.get(0), 0);
+						rng.setEnd(newBlock.get(0), 0);
+						// 没用
+						rng.selectNode(newBlock.get(0));
+						selection.setRng(rng);
+						// 再延迟
+						setTimeout(function() {
+							selection.setRng(rng);
+						}, 10);
+
+						// TODO ... 这里
+						// log("why");
+						// log(rng);
+						// log(selection.getRng());
+					}, 10);
+					return true;
+				}
+				return false;
+			}
+			
 			offset = rng.startOffset;
 			newBlockName = (settings.force_p_newlines ? 'p' : '') || settings.forced_root_block;
 			newBlockName = newBlockName ? newBlockName.toUpperCase() : '';
@@ -17462,6 +17565,7 @@ define("tinymce/ForceBlocks", [], function() {
 		var schema = editor.schema, blockElements = schema.getBlockElements();
 
 		function addRootBlocks() {
+
 			var node = selection.getStart(), rootNode = editor.getBody(), rng;
 			var startContainer, startOffset, endContainer, endOffset, rootBlockNode;
 			var tempNode, offset = -0xFFFFFF, wrapped, restoreSelection;
@@ -17884,6 +17988,7 @@ define("tinymce/EditorCommands", [
 				selection.select(value);
 			},
 
+			// 插入内容
 			mceInsertContent: function(command, ui, value) {
 				var parser, serializer, parentNode, rootNode, fragment, args;
 				var marker, rng, node, node2, bookmarkHtml;
@@ -17923,6 +18028,7 @@ define("tinymce/EditorCommands", [
 
 				// Setup parser and serializer
 				parser = editor.parser;
+
 				serializer = new Serializer({}, editor.schema);
 				bookmarkHtml = '<span id="mce_marker" data-mce-type="bookmark">&#xFEFF;</span>';
 
@@ -18016,6 +18122,154 @@ define("tinymce/EditorCommands", [
 						)
 					);
 
+					// life ace
+					// 插入的时候把<pre>内的标签全清掉
+					// life 把<pre></pre>间的代码拿出, 去掉标签<span>之类的
+					value = value.replace(/<pre([^>]*?)>([\s\S]*?)<\/pre>/g, function(v, v1, v2) {
+						// v == "<pre>a, b, c</pre>"
+						v2 = v2.replace(/(<([^>]+)>)/gi, '').replace(/\s+$/, ''); // 把最后一个换行去掉
+						return "<pre " + v1 + ">" + v2 + "</pre>";
+					});
+
+					// Set the inner/outer HTML depending on if we are in the root or not
+					if (parentNode == rootNode) {
+						dom.setHTML(rootNode, value);
+					} else {
+						dom.setOuterHTML(parentNode, value);
+					}
+				}
+
+				marker = dom.get('mce_marker');
+				selection.scrollIntoView(marker);
+
+				// Move selection before marker and remove it
+				rng = dom.createRng();
+				try {
+				// If previous sibling is a text node set the selection to the end of that node
+				// if(marker) {
+					node = marker.previousSibling;
+					if (node && node.nodeType == 3) {
+						rng.setStart(node, node.nodeValue.length);
+
+						// TODO: Why can't we normalize on IE
+						if (!isIE) {
+							node2 = marker.nextSibling;
+							if (node2 && node2.nodeType == 3) {
+								node.appendData(node2.data);
+								node2.parentNode.removeChild(node2);
+							}
+						}
+					} else {
+						// If the previous sibling isn't a text node or doesn't exist set the selection before the marker node
+						rng.setStartBefore(marker);
+						rng.setEndBefore(marker);
+					}
+
+					// Remove the marker node and set the new range
+					dom.remove(marker);
+					selection.setRng(rng);
+
+					// Dispatch after event and add any visual elements needed
+					editor.fire('SetContent', args);
+					editor.addVisual();
+				// }
+				} catch(e) {
+
+				}
+			},
+
+			// life 修改
+			// 之前不是这个版本, 为什么要改, 因为考虑到在pre下粘贴后全部内容会修改(ace不友好)
+			// 这里不是改全部的内容, 对ace好
+			mceInsertRawHTML: function(command, ui, value) {
+				var parser, serializer, parentNode, rootNode, fragment, args;
+				var marker, rng, node, node2, bookmarkHtml;
+
+				// Setup parser and serializer
+				parser = editor.parser;
+				serializer = new Serializer({}, editor.schema);
+				bookmarkHtml = '<span id="mce_marker" data-mce-type="bookmark">&#xFEFF;</span>';
+
+				// Run beforeSetContent handlers on the HTML to be inserted
+				args = {content: value, format: 'html', selection: true};
+				editor.fire('BeforeSetContent', args);
+				value = args.content;
+
+				// Add caret at end of contents if it's missing
+				if (value.indexOf('{$caret}') == -1) {
+					value += '{$caret}';
+				}
+
+				// Replace the caret marker with a span bookmark element
+				value = value.replace(/\{\$caret\}/, bookmarkHtml);
+
+				// If selection is at <body>|<p></p> then move it into <body><p>|</p>
+				var body = editor.getBody();
+				if (dom.isBlock(body.firstChild) && dom.isEmpty(body.firstChild)) {
+					body.firstChild.appendChild(dom.doc.createTextNode('\u00a0'));
+					selection.select(body.firstChild, true);
+					dom.remove(body.firstChild.lastChild);
+				}
+
+				// Insert node maker where we will insert the new HTML and get it's parent
+				if (!selection.isCollapsed()) {
+					editor.getDoc().execCommand('Delete', false, null);
+				}
+
+				parentNode = selection.getNode();
+
+				// Parse the fragment within the context of the parent node
+				var parserArgs = {context: parentNode.nodeName.toLowerCase()};
+				fragment = parser.parse(value, parserArgs);
+
+				// Move the caret to a more suitable location
+				node = fragment.lastChild;
+				if (node.attr('id') == 'mce_marker') {
+					marker = node;
+
+					for (node = node.prev; node; node = node.walk(true)) {
+						if (node.type == 3 || !dom.isBlock(node.name)) {
+							node.parent.insert(marker, node, node.name === 'br');
+							break;
+						}
+					}
+				}
+
+				// If parser says valid we can insert the contents into that parent
+				if (!parserArgs.invalid) {
+					// Check if parent is empty or only has one BR element then set the innerHTML of that parent
+					node = parentNode.firstChild;
+					node2 = parentNode.lastChild;
+					if (!node || (node === node2 && node.nodeName === 'BR')) {
+						dom.setHTML(parentNode, value);
+					} else {
+						selection.setContent(value);
+					}
+				} else {
+					// If the fragment was invalid within that context then we need
+					// to parse and process the parent it's inserted into
+
+					// Insert bookmark node and get the parent
+					selection.setContent(bookmarkHtml);
+					parentNode = selection.getNode();
+					rootNode = editor.getBody();
+
+					// Opera will return the document node when selection is in root
+					if (parentNode.nodeType == 9) {
+						parentNode = node = rootNode;
+					} else {
+						node = parentNode;
+					}
+
+					// Find the ancestor just before the root element
+					while (node !== rootNode) {
+						parentNode = node;
+						node = node.parentNode;
+					}
+
+					// Get the outer/inner HTML depending on if we are in the root and parser and serialize that
+					value = parentNode == rootNode ? rootNode.innerHTML : dom.getOuterHTML(parentNode);
+
 					// Set the inner/outer HTML depending on if we are in the root or not
 					if (parentNode == rootNode) {
 						dom.setHTML(rootNode, value);
@@ -18055,36 +18309,7 @@ define("tinymce/EditorCommands", [
 
 				// Dispatch after event and add any visual elements needed
 				editor.fire('SetContent', args);
-				editor.addVisual();
-			},
-
-			// life 修改
-			mceInsertRawHTML: function(command, ui, value) {
-				selection.setContent('tiny_mce_marker');
-				
-				// start----------
-				// 为了定位到粘贴后
-				var bookmarkHtml = '<span id="mce_marker" data-mce-type="bookmark">&#xFEFF;</span>';
-				if (value.indexOf('{$caret}') == -1) {
-					value += '{$caret}';
-				}
-				// Replace the caret marker with a span bookmark element
-				value = value.replace(/\{\$caret\}/, bookmarkHtml);
-				
-				editor.setContent(
-					editor.getContent().replace(/tiny_mce_marker/g, function() {
-						return value;
-					})
-				);
-				var marker = dom.get('mce_marker');
-				var rng = dom.createRng();
-				rng.setStartBefore(marker);
-				rng.setEndBefore(marker);
-	
-				// Remove the marker node and set the new range
-				dom.remove(marker);
-				selection.setRng(rng);
-				//--------end 
+				editor.addVisual()
 			},
 
 			mceToggleFormat: function(command, ui, value) {
@@ -21908,7 +22133,7 @@ define("tinymce/ui/DragHelper", [
 			if (e.button !== downButton) {
 				return stop(e);
 			}
-	
+
 			e.deltaX = e.screenX - startX;
 			e.deltaY = e.screenY - startY;
 
@@ -24994,7 +25219,7 @@ define("tinymce/util/Observable", [
 	var bindingsName = "__bindings";
 	var nativeEvents = Tools.makeMap(
 		"focusin focusout click dblclick mousedown mouseup mousemove mouseover beforepaste paste cut copy selectionchange" +
-		" mouseout mouseenter mouseleave keydown keypress keyup contextmenu dragstart dragend dragover draggesture dragdrop drop drag", ' '
+		" mouseout mouseenter mouseleave keydown keypress keyup contextmenu dragend dragover draggesture dragdrop drop drag", ' '
 	);
 
 	function returnFalse() {
@@ -26721,7 +26946,9 @@ define("tinymce/Editor", [
 			var self = this, state = 0, cmdItem;
 
 			if (!/^(mceAddUndoLevel|mceEndUndoLevel|mceBeginUndoLevel|mceRepaint)$/.test(cmd) && (!args || !args.skip_focus)) {
-				self.focus();
+				// life ace
+				if(cmd != "toggleCode")
+					self.focus();
 			}
 
 			args = extend({}, args);
@@ -27021,6 +27248,18 @@ define("tinymce/Editor", [
 		setContent: function(content, args) {
 			var self = this, body = self.getBody(), forcedRootBlockName;
 
+			/**
+			 * life ace
+			 */
+			// 先destroy之前的ace
+			if(LeaAce && LeaAce.canAce) { // 有些地方不用, 比如单页面
+				var everContent = $(self.getBody());
+				if(everContent) {
+					LeaAce.destroyAceFromContent(everContent);
+				}
+			}
+			// end
+
 			// Setup args object
 			args = args || {};
 			args.format = args.format || 'html';
@@ -27063,6 +27302,7 @@ define("tinymce/Editor", [
 				self.fire('SetContent', args);
 			} else {
 				// Parse and serialize the html
+				var a = (self.parser.parse(content, {isRootContent: true}));
 				if (args.format !== 'raw') {
 					content = new Serializer({}, self.schema).serialize(
 						self.parser.parse(content, {isRootContent: true})
@@ -27084,6 +27324,23 @@ define("tinymce/Editor", [
 					self.selection.normalize();
 				}*/
 			}
+
+			/**
+			 * life ace
+			 */
+			if(LeaAce && LeaAce.canAce) {
+				if(LeaAce.canAce() && LeaAce.isAce) {
+					try {
+						LeaAce.initAceFromContent(self);
+					} catch(e) {
+						log(e);
+					}
+				} else {
+					// 为了在firefox下有正常的显示
+					$("#editorContent pre").removeClass("ace-tomorrow ace_editor");
+				}
+			}
+			// end
 
 			return args.content;
 		},
@@ -32705,6 +32962,31 @@ define("tinymce/ui/ListBox", [
 			});
 		},
 
+
+		/**
+		 * disable/enable 某一list的item
+		 * leanote ace life ace
+		 * value = convert, state = true | false
+		 */
+		diableValue: function(value, state) {
+			var self = this;
+			var menu = self.settings.menu;
+			if (self.menu) {
+				self.menu.items().each(function(ctrl) {// menuitem
+					if(ctrl.value() === value) {
+						ctrl.disabled(state);
+						return;
+					}
+				});
+			} else {
+				for (var i = 0; i < menu.length; i++) {
+					if(menu[i].value == value) {
+						menu[i].disabled = state;
+						return;
+					}
+				}
+			}
+		},
 		/**
 		 * Getter/setter function for the control value.
 		 *
@@ -32716,7 +32998,7 @@ define("tinymce/ui/ListBox", [
 			var self = this, active, selectedText, menu, i;
 
 			function activateByValue(menu, value) {
-				menu.items().each(function(ctrl) {
+				menu.items().each(function(ctrl) {// menuitem
 					active = ctrl.value() === value;
 
 					if (active) {
@@ -32749,7 +33031,6 @@ define("tinymce/ui/ListBox", [
 
 				self.text(selectedText || this.settings.text);
 			}
-
 			return self._super(value);
 		}
 	});

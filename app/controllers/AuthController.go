@@ -91,18 +91,19 @@ func (c Auth) Demo() revel.Result {
 
 //--------
 // 注册
-func (c Auth) Register(from string) revel.Result {
+func (c Auth) Register(from, iu string) revel.Result {
 	if !configService.IsOpenRegister() {
 		return c.Redirect("/index")
 	}
 	c.SetLocale()
 	c.RenderArgs["from"] = from
+	c.RenderArgs["iu"] = iu
 	
 	c.RenderArgs["title"] = c.Message("register")
 	c.RenderArgs["subTitle"] = c.Message("register")
 	return c.RenderTemplate("home/register.html")
 }
-func (c Auth) DoRegister(email, pwd string) revel.Result {
+func (c Auth) DoRegister(email, pwd, iu string) revel.Result {
 	if !configService.IsOpenRegister() {
 		return c.Redirect("/index")
 	}
@@ -117,7 +118,7 @@ func (c Auth) DoRegister(email, pwd string) revel.Result {
 	}
 	
 	// 注册
-	re.Ok, re.Msg = authService.Register(email, pwd)
+	re.Ok, re.Msg = authService.Register(email, pwd, iu)
 	
 	// 注册成功, 则立即登录之
 	if re.Ok {

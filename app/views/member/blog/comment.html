@@ -22,7 +22,7 @@
 									<input type="radio"
 										name="commentType"
 										value="default"
-										{{if or (not .userBlog.CommentType) (eq .userBlog.CommentType "default")}}checked="checked"{{end}} > Default
+										{{if or (not .userBlog.CommentType) (eq .userBlog.CommentType "default")}}checked="checked"{{end}} > {{msg $ "defaultComment"}}
 								</label>
 									
 								<label>

@@ -1,0 +1,1 @@
+ace.define("ace/snippets/haxe",["require","exports","module"],function(e,p,i){p.snippetText="",p.scope="haxe"});

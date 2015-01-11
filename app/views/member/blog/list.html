@@ -1,5 +1,5 @@
 {{template "member/top.html" .}}
-<div class="m-b-md"><h3 class="m-b-none">文章列表</h3></div>
+<div class="m-b-md"><h3 class="m-b-none">{{msg . "postList"}}</h3></div>
 <style>
 .url-title {
 	width: 260px;
@@ -13,7 +13,7 @@
 		</div>
 		<div class="col-sm-3">
 			<div class="input-group search-group">
-				<input type="text" class="input-sm form-control" placeholder="Title" id="keywords" value="{{.keywords}}" />
+				<input type="text" class="input-sm form-control" placeholder="{{msg . "title"}}" id="keywords" value="{{.keywords}}" />
 				<span class="input-group-btn">
 					<button class="btn btn-sm btn-default" type="button" data-url="/member/blog/index">Search</button>
 				</span>
@@ -40,7 +40,7 @@
 					style="width: 300px"
 					{{sorterTh $url "urlTitle" .sorter}}
 					>
-						固定链接
+						{{msg $ "permanentLink"}}
 						<span class="th-sort">
 							<i class="fa fa-sort-down"></i>
 							<i class="fa fa-sort-up"></i>
@@ -50,7 +50,7 @@
 					<th
 					{{sorterTh $url "publicTime" .sorter}}
 					>
-						发布日期
+						{{msg . "publicTime"}}
 						<span class="th-sort">
 							<i class="fa fa-sort-down"></i>
 							<i class="fa fa-sort-up"></i>
@@ -61,7 +61,7 @@
 					<th
 					{{sorterTh $url "updatedTime" .sorter}}
 					>
-						更新日期
+						{{msg . "updatedTime"}}
 						<span class="th-sort">
 							<i class="fa fa-sort-down"></i>
 							<i class="fa fa-sort-up"></i>
@@ -71,7 +71,7 @@
 					<th
 					{{sorterTh $url "createdTime" .sorter}}
 					>
-						创建日期
+						{{msg . "createdTime"}}
 						<span class="th-sort">
 							<i class="fa fa-sort-down"></i>
 							<i class="fa fa-sort-up"></i>
@@ -114,13 +114,13 @@
 						
 						<a 
 						{{if .HasSelfDefined}}
-							title="已设置"
+							title="{{msg $ "hasSelfDefined"}}"
 							class="btn btn-sm btn-success"
 						{{else}}
-							title="未设置"
+							title="{{msg $ "noSelfDefined"}}"
 							class="btn btn-sm btn-default"
 						{{end}}
-						href="/member/blog/updateBlogAbstract?noteId={{.NoteId.Hex}}">摘要设置</a>
+						href="/member/blog/updateBlogAbstract?noteId={{.NoteId.Hex}}">{{msg $ "setAbstract"}}</a>
 					</td>
 				</tr>
 				{{end}}
