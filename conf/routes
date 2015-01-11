@@ -1,0 +1,117 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+module:testrunner
+
+# Home is My Blog
+Get 	/											Index.Default
+GET     /note   	                                Note.Index
+# leanote home
+GET     /index   	                                Index.Index
+
+GET     /login                                     	Auth.Login
+POST     /doLogin                                   Auth.DoLogin
+GET     /logout                                     Auth.Logout
+Get     /demo                                   	Auth.Demo
+
+Get 	 /register									Auth.Register
+POST     /doRegister                                Auth.DoRegister
+
+GET 	/findPassword/:token						Auth.FindPassword2
+GET 	/findPassword								Auth.FindPassword
+POST 	/doFindPassword								Auth.DoFindPassword
+POST	/findPasswordUpdate							Auth.FindPasswordUpdate
+
+
+# blog
+
+GET		/blog/getLikesAndComments			Blog.GetLikesAndComments
+GET		/blog/getLikes						Blog.GetLikes
+*		/blog/incReadNum					Blog.IncReadNum
+*		/blog/likePost					Blog.LikePost
+*		/blog/likeComment				Blog.LikeComment
+*		/blog/deleteComment				Blog.DeleteComment
+GET		/blog/getComments					Blog.GetComments
+*		/blog/commentPost					Blog.CommentPost
+GET		/blog/getPostStat					Blog.GetPostStat
+
+
+GET		/blog/tags/:userIdOrEmail	Blog.Tags
+GET		/blog/tags	Blog.Tags
+
+GET		/blog/tag/:userIdOrEmail/:tag	Blog.Tag
+GET		/blog/tag/:tag	Blog.Tag
+
+GET		/blog/search/:userIdOrEmail	Blog.Search
+GET		/blog/search	Blog.Search
+
+GET		/blog/archives/:userIdOrEmail	Blog.Archives
+GET		/blog/archives	Blog.Archives
+
+GET		/blog/post/:noteId			Blog.Post
+GET		/blog/post/:userIdOrEmail/:noteId			Blog.Post
+GET		/blog/view/:noteId			Blog.Post
+
+GET		/blog/single/:userIdOrEmail/:singleId			Blog.Single
+GET		/blog/single/:singleId			Blog.Single
+
+GET		/blog/cate/:notebookId		Blog.Cate
+GET		/blog/cate/:userIdOrEmail/:notebookId		Blog.Cate
+
+GET		/blog/listCateLatest/:notebookId	Blog.ListCateLatest
+GET		/blog/:userIdOrEmail		Blog.Index
+GET		/blog						Blog.Index
+GET		/blog/*						Blog.E()
+
+
+#---------------
+# preview
+GET		/preview/tags/:userIdOrEmail	Preview.Tags
+GET		/preview/tags	Preview.Tags
+
+GET		/preview/tag/:userIdOrEmail/:tag	Preview.Tag
+GET		/preview/tag/:tag	Preview.Tag
+
+GET		/preview/search/:userIdOrEmail	Preview.Search
+GET		/preview/search	Preview.Search
+
+GET		/preview/archives/:userIdOrEmail	Preview.Archives
+GET		/preview/archives	Preview.Archives
+
+GET		/preview/view/:noteId			Preview.Post
+
+GET		/preview/post/:noteId			Preview.Post
+GET		/preview/post/:userIdOrEmail/:noteId			Preview.Post
+
+GET		/preview/single/:userIdOrEmail/:singleId			Preview.Single
+GET		/preview/single/:singleId			Preview.Single
+
+GET		/preview/cate/:notebookId		Preview.Cate
+GET		/preview/cate/:userIdOrEmail/:notebookId		Preview.Cate
+
+GET		/preview/:userIdOrEmail		Preview.Index
+GET		/preview						Preview.Index
+
+# Map static resources from the /app/public folder to the /public path
+GET     /favicon.ico                            Static.Serve("public/images/favicon.ico")
+GET     /public/*filepath                       Static.Serve("public")
+GET     /js/*filepath                       Static.Serve("public/js")
+GET     /images/*filepath                       Static.Serve("public/images")
+GET     /img/*filepath                       Static.Serve("public/img")
+GET     /css/*filepath                       Static.Serve("public/css")
+GET     /fonts/*filepath                       Static.Serve("public/fonts")
+GET     /tinymce/*filepath                       Static.Serve("public/tinymce")
+#GET     /plugins/*filepath                       Static.Serve("public/tinymce/plugins")
+GET     /upload/*filepath                       Static.Serve("public/upload")
+
+# member
+# the prefix of member's controllername is "Member"
+*       /member               	MemberIndex.Index
+*       /member/index           MemberIndex.Index
+
+GET		/share/note/:noteId						Share.ShowShareNote
+# common
+*       /:controller/:action                    :controller.:action
+*       /api/:controller/:action                :controller.:action
+*       /member/:controller/:action             :controller.:action
