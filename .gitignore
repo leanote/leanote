@@ -8,8 +8,6 @@ bin/release
 bin/tmp
 bin/test
 bin/src
-conf/app.conf
-conf/routes
 public/upload
 app/routes/routes.go
 app/tmp/main.go
