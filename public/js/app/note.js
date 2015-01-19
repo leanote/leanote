@@ -609,7 +609,7 @@ Note.renderChangedNote = function(changedNote) {
 	// 找到左侧相应的note
 	var $leftNoteNav = $(tt('[noteId="?"]', changedNote.NoteId));
 	if(changedNote.Title) {
-		$leftNoteNav.find(".item-title").html(changedNote.Title);
+		$leftNoteNav.find(".item-title").text(changedNote.Title);
 	}
 	if(changedNote.Desc) {
 		$leftNoteNav.find(".desc").html(changedNote.Desc);
@@ -774,6 +774,11 @@ Note.renderNotes = function(notes, forNewNote, isShared) {
 			})(i), i*2000);
 	}
 }
+
+Note._toHtmlEntity = function(html){
+	return (html + '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+};
+
 Note._renderNotes = function(notes, forNewNote, isShared, tang) { // 第几趟
 	var baseClasses = "item-my";
 	if(isShared) {
@@ -789,9 +794,9 @@ Note._renderNotes = function(notes, forNewNote, isShared, tang) { // 第几趟
 		var note = notes[i];
 		var tmp;
 		if(note.ImgSrc) {
-			tmp = tt(Note.itemTpl, classes, note.NoteId, note.ImgSrc, note.Title, Notebook.getNotebookTitle(note.NotebookId), goNowToDatetime(note.UpdatedTime), note.Desc);
+			tmp = tt(Note.itemTpl, classes, note.NoteId, note.ImgSrc, Note._toHtmlEntity(note.Title), Notebook.getNotebookTitle(note.NotebookId), goNowToDatetime(note.UpdatedTime), note.Desc);
 		} else {
-			tmp = tt(Note.itemTplNoImg, classes, note.NoteId, note.Title, Notebook.getNotebookTitle(note.NotebookId), goNowToDatetime(note.UpdatedTime), note.Desc);
+			tmp = tt(Note.itemTplNoImg, classes, note.NoteId, Note._toHtmlEntity(note.Title), Notebook.getNotebookTitle(note.NotebookId), goNowToDatetime(note.UpdatedTime), note.Desc);
 		}
 		if(!note.IsBlog) {
 			tmp = $(tmp);
@@ -849,12 +854,12 @@ Note.newNote = function(notebookId, isShare, fromUserId, isMarkdown) {
 	}
 	
 	var notebook = Notebook.getNotebook(notebookId);
-	var notebookTitle = notebook ? notebook.Title : "";
+	var notebookTitle = notebook ? Note._toHtmlEntity(notebook.Title) : "";
 	var curDate = getCurDate();
 	if(isShare) {
-		newItem = tt(Note.newItemTpl, baseClasses, fromUserId, note.NoteId, note.Title, notebookTitle, curDate, "");
+		newItem = tt(Note.newItemTpl, baseClasses, fromUserId, note.NoteId, Note._toHtmlEntity(note.Title), notebookTitle, curDate, "");
 	} else {
-		newItem = tt(Note.newItemTpl, baseClasses, "", note.NoteId, note.Title, notebookTitle, curDate, "");
+		newItem = tt(Note.newItemTpl, baseClasses, "", note.NoteId, Note._toHtmlEntity(note.Title), notebookTitle, curDate, "");
 	}
 	
 	// notebook是否是Blog
@@ -1118,7 +1123,7 @@ Note.hideReadOnly = function() {
 // read only
 Note.renderNoteReadOnly = function(note) {
 	Note.showReadOnly();
-	$("#noteReadTitle").html(note.Title);
+	$("#noteReadTitle").text(note.Title);
 	
 	Tag.renderReadOnlyTags(note.Tags);
 	
