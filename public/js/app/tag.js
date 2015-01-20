@@ -108,7 +108,7 @@ Tag.renderReadOnlyTags = function(tags) {
 		if(!classes) {
 			classes = getNextDefaultClasses();
 		}
-		tag = tt('<span class="?">?</span>', classes, text);
+		tag = tt('<span class="?">?</span>', classes, Note._toHtmlEntity(text));
 
 		$("#noteReadTags").append(tag);
 	}

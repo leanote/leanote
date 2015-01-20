@@ -477,7 +477,7 @@ Notebook.renderShareNotebooks = function(sharedUserInfos, shareNotebooks) {
 
 		userNotebooks.ShareNotebooks = [{NotebookId: "-2", Title: "默认共享"}].concat(userNotebooks.ShareNotebooks)
 
-		var username = userInfo.Username || userInfo.Email;
+		var username = Note._toHtmlEntity(userInfo.Username || userInfo.Email);
 		var header = tt('<div class="folderNote closed"><div class="folderHeader"><a><h1 title="? 的共享"><i class="fa fa-angle-right"></i>?</h1></a></div>', username, username);
 		var body = '<ul class="folderBody">';
 		for(var j in userNotebooks.ShareNotebooks) {

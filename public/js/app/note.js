@@ -776,7 +776,7 @@ Note.renderNotes = function(notes, forNewNote, isShared) {
 }
 
 Note._toHtmlEntity = function(html){
-	return (html + '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+	return (html + '').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 };
 
 Note._renderNotes = function(notes, forNewNote, isShared, tang) { // 第几趟
