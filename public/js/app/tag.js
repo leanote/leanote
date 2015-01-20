@@ -50,7 +50,7 @@ Tag.clearTags = function() {
 // 设置tags
 // called by Note
 Tag.renderTags = function(tags) {
-	Tag.t.html("");
+	Tag.clearTags();
 	if(isEmpty(tags)) {
 		return;
 	}
@@ -88,6 +88,7 @@ Tag.renderReadOnlyTags = function(tags) {
 	$("#noteReadTags").html("");
 	if(isEmpty(tags)) {
 		$("#noteReadTags").html(getMsg("noTag"));
+		return;
 	}
 
 	var i = true;
@@ -101,17 +102,20 @@ Tag.renderReadOnlyTags = function(tags) {
 		}
 	}
 
-	for(var i in tags) {
-		var text = tags[i];
-		text = Tag.mapEn2Cn[text] || text;
-		var classes = Tag.classes[text];
-		if(!classes) {
-			classes = getNextDefaultClasses();
-		}
-		tag = tt('<span class="?">?</span>', classes, Note._toHtmlEntity(text));
+	var html = [], text;
 
-		$("#noteReadTags").append(tag);
+	for(var i = 0, j = tags.length; i<j; i++) {
+		text = tags[i];
+		text = Tag.mapEn2Cn[text] || text;
+		text = text.replace(/[\r\n]/g, '');
+
+		html.push(tt('<span class="?">?</span>',
+			Tag.classes[text] || getNextDefaultClasses(),
+			Note._toHtmlEntity(text)
+		));
 	}
+
+	$("#noteReadTags").append(html.join(''));
 }
 
 // 添加tag
@@ -144,6 +148,7 @@ Tag.appendTag = function(tag) {
 	if(LEA.locale == "zh") {
 		text = Tag.mapEn2Cn[text] || text;
 	}
+	text = text.replace(/[\r\n]/g, '');
 	tag = tt('<span class="?">?<i title="' + getMsg("delete") + '">X</i></span>', classes, Note._toHtmlEntity(text));
 
 	// 避免重复
@@ -193,6 +198,7 @@ Tag.renderTagNav = function(tags) {
 			continue;
 		}
 		var text = Note._toHtmlEntity(Tag.mapEn2Cn[tag] || tag);
+		text = text.replace(/[\r\n]/g, '');
 		var classes = Tag.classes[tag] || "label label-default";
 		$("#tagNav").append(tt('<li data-tag="?"><a> <span class="?">?</span></li>', text, classes, text));
 	}
