@@ -89,7 +89,7 @@ Tag.renderReadOnlyTags = function(tags) {
 	if(isEmpty(tags)) {
 		$("#noteReadTags").html(getMsg("noTag"));
 	}
-	
+
 	var i = true;
 	function getNextDefaultClasses() {
 		if (i) {
@@ -100,7 +100,7 @@ Tag.renderReadOnlyTags = function(tags) {
 			return "label label-info";
 		}
 	}
-	
+
 	for(var i in tags) {
 		var text = tags[i];
 		text = Tag.mapEn2Cn[text] || text;
@@ -108,8 +108,8 @@ Tag.renderReadOnlyTags = function(tags) {
 		if(!classes) {
 			classes = getNextDefaultClasses();
 		}
-		tag = tt('<span class="?">?</span>', classes, text);
-		
+		tag = tt('<span class="?">?</span>', classes, Note._toHtmlEntity(text));
+
 		$("#noteReadTags").append(tag);
 	}
 }
@@ -120,7 +120,7 @@ Tag.renderReadOnlyTags = function(tags) {
 Tag.appendTag = function(tag) {
 	var isColor = false;
 	var classes, text;
-	
+
 	if (typeof tag == "object") {
 		classes = tag.classes;
 		text = tag.text;
@@ -140,11 +140,11 @@ Tag.appendTag = function(tag) {
 			classes = "label label-default";
 		}
 	}
-	
+
 	if(LEA.locale == "zh") {
 		text = Tag.mapEn2Cn[text] || text;
 	}
-	tag = tt('<span class="?">?<i title="' + getMsg("delete") + '">X</i></span>', classes, text);
+	tag = tt('<span class="?">?<i title="' + getMsg("delete") + '">X</i></span>', classes, Note._toHtmlEntity(text));
 
 	// 避免重复
 	$("#tags").children().each(function() {
@@ -192,7 +192,7 @@ Tag.renderTagNav = function(tags) {
 		if(tag == "red" || tag == "blue" || tag == "yellow" || tag == "green") {
 			continue;
 		}
-		var text = Tag.mapEn2Cn[tag] || tag;
+		var text = Note._toHtmlEntity(Tag.mapEn2Cn[tag] || tag);
 		var classes = Tag.classes[tag] || "label label-default";
 		$("#tagNav").append(tt('<li data-tag="?"><a> <span class="?">?</span></li>', text, classes, text));
 	}
@@ -206,11 +206,11 @@ $(function() {
 		$(this).hide();
 		$("#addTagInput").show().focus().val("");
 	});
-	
+
 	$("#addTagInput").click(function(event) {
 		showTagList(event);
 	});
-	
+
 	$("#addTagInput").blur(function() {
 		var val = $(this).val();
 		if(val) {
@@ -258,27 +258,27 @@ $(function() {
 		// event.stopPropagation();
 	});
 	*/
-	
+
 	$("#tags").on("click", "i", function() {
 		$(this).parent().remove();
 		reRenderTags();
 	});
-	
+
 	//-------------
 	// nav 标签搜索
 	function searchTag() {
 		var tag = $.trim($(this).data("tag"));
 		// tag = Tag.mapCn2En[tag] || tag;
-		
+
 		// 学习changeNotebook
-		
+
 		// 1
 		Note.curChangedSaveIt();
-		
+
 		// 2 先清空所有
 		// 也会把curNoteId清空
 		Note.clearAll();
-		
+
 		$("#tagSearch").html($(this).html()).show();
 		showLoading();
 		ajaxGet("/note/searchNoteByTags", {tags: [tag]}, function(notes) {
@@ -287,7 +287,7 @@ $(function() {
 				// 和note搜索一样
 				// 设空, 防止发生上述情况
 				// Note.curNoteId = "";
-				
+
 				Note.renderNotes(notes);
 				if(!isEmpty(notes)) {
 					Note.changeNote(notes[0].NoteId);
