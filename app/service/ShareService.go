@@ -8,6 +8,8 @@ import (
 	"time"
 	"sort"
 	"math/rand"
+	"regexp"
+	"strings"
 )
 
 // 共享Notebook, Note服务
@@ -797,13 +799,42 @@ func (this *ShareService) QuerySharePass(noteId string) int {
 	return note.SharePass
 }
 
-func (this *ShareService) Verify4ShareNote(noteId string, sharePass int) (bool, *info.Note) {
-	note := &info.Note{}
-	db.Get(db.Notes, noteId, note)
+func (this *ShareService) Verify4ShareNote(noteId string, sharePass int) (flag bool, note info.Note, noteContent info.NoteContent) {
+	note = info.Note{}
+	db.Get(db.Notes, noteId, &note)
 	if note.SharePass == sharePass {
-		return true, note
+		note = noteService.GetNoteById(noteId)
+		noteContent = noteService.GetNoteContent(noteId, note.UserId.Hex())
+		flag = true
 	} else {
-		note := &info.Note{}
-		return false, note
+		note = info.Note{}
+		noteContent = info.NoteContent{}
+		flag = false
 	}
+	return
 }
+
+//把笔记中含有attachID的url后加上token，返回笔记中含有的attachids
+func (this *ShareService) AppendToken4URL(token, content string) (c string, attachIds map[string]bool) {
+	re := regexp.MustCompile(`href=\"(.*?attachId.*?)\".*?data-mce-href=\"(.*?attachId.*?)\"`)
+	re2 := regexp.MustCompile(`\"(.*?attachId.*?)\"`)
+	
+	attachIds = map[string]bool{}
+	s := re.ReplaceAllStringFunc(content, func(m string) string {
+		idx := strings.Index(m, "attachId=") + len("attachId=")
+		var ss []byte = []byte(m)
+		attachId := string(ss[idx: idx + 24])
+		attachIds[attachId] = true
+		return re2.ReplaceAllString(m, `"${1}&token=` + token + `"`)
+	})
+	
+	re3 := regexp.MustCompile(`<img\s+src=\"(.*?fileId.*?)\".*?data-mce-src=\"(.*?fileId.*?)\"`)
+	re4 := regexp.MustCompile(`\"(.*?fileId.*?)\"`)
+	
+	c = re3.ReplaceAllStringFunc(s, func(m string) string {
+		return re4.ReplaceAllString(m, `"${1}&token=` + token + `"`)
+	})
+	return
+}
+
+

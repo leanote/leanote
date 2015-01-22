@@ -9,6 +9,7 @@ import (
 	"time"
 	"os"
 	"strings"
+//	"fmt"
 )
 
 const DEFAULT_ALBUM_ID = "52d3e8ac99c37b7f0d000001"
@@ -118,7 +119,8 @@ func (this *FileService) UpdateImage(userId, fileId, title string) bool {
 // 获取文件路径
 // 要判断是否具有权限
 // userId是否具有fileId的访问权限
-func (this *FileService) GetFile(userId, fileId string) string {
+
+func (this *FileService) GetFile(userId, fileId , sessionId , token string) string {
 	if fileId == "" {
 		return ""
 	}
@@ -131,7 +133,8 @@ func (this *FileService) GetFile(userId, fileId string) string {
 	}
 	
 	// 1. 判断权限
-	
+	//未登录用户，判断token
+	noteIds := noteImageService.GetNoteIds(fileId)
 	// 是否是我的文件
 	if userId != "" && file.UserId.Hex() == userId {
 		return path
@@ -141,11 +144,28 @@ func (this *FileService) GetFile(userId, fileId string) string {
 	// 这些笔记是否有public的, 若有则ok
 	// 这些笔记(笔记本)是否有共享给我的, 若有则ok
 	
-	noteIds := noteImageService.GetNoteIds(fileId)
+	
 	if noteIds != nil && len(noteIds) > 0 {
 		// 这些笔记是否有public的
 		if db.Has(db.Notes, bson.M{"_id": bson.M{"$in": noteIds}, "IsBlog": true}) {
 			return path
+		}
+		
+		//分享给未注册用户
+		if userId == "" && sessionId != "" {
+			if token != "" {
+				realToken := sessionService.GetToken(sessionId)
+				if token == realToken {
+					Log("image token is equal!")
+					return path
+				} else {
+					Log("image token is different!")
+					return ""
+				}	
+			} else {
+				return ""
+			}
+							
 		}
 		
 		// 2014/12/28 修复, 如果是分享给用户组, 那就不行, 这里可以实现
@@ -155,6 +175,7 @@ func (this *FileService) GetFile(userId, fileId string) string {
 				return path;
 			}
 		}
+		
 		/*
 		// 若有共享给我的笔记?
 		// 对该笔记可读?
@@ -190,6 +211,7 @@ func (this *FileService) GetFile(userId, fileId string) string {
 	
 	return ""
 }
+
 
 // 复制图片
 func (this *FileService) CopyImage(userId, fileId, toUserId string) (bool, string) {

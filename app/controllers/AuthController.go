@@ -5,6 +5,7 @@ import (
 	"github.com/leanote/leanote/app/info"
 	. "github.com/leanote/leanote/app/lea"
 //	"strconv"
+	"fmt"
 )
 
 // 用户登录/注销/找回密码
@@ -40,7 +41,7 @@ func (c Auth) Login(email, from string) revel.Result {
 func (c Auth) doLogin(email, pwd string) revel.Result {
 	sessionId := c.Session.Id()
 	var msg = ""
-	
+	fmt.Println(sessionId)
 	userInfo := authService.Login(email, pwd)
 	if userInfo.Email != "" {
 		c.SetSession(userInfo)
@@ -55,8 +56,8 @@ func (c Auth) doLogin(email, pwd string) revel.Result {
 }
 func (c Auth) DoLogin(email, pwd string, captcha string) revel.Result {
 	sessionId := c.Session.Id()
-	var msg = ""
 	
+	var msg = ""
 	// > 5次需要验证码, 直到登录成功
 	if sessionService.LoginTimesIsOver(sessionId) && sessionService.GetCaptcha(sessionId) != captcha {
 		msg = "captchaError"

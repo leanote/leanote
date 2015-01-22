@@ -16,6 +16,8 @@ type Share struct {
 	BaseController
 }
 
+const AttachToken = 2
+
 // 添加共享note
 func (c Share) AddShareNote(noteId string, emails []string, perm int) revel.Result {
 	status := make(map[string]info.Re, len(emails))
@@ -205,7 +207,7 @@ func (c Share) QuerySharePass(noteId string) revel.Result {
 
 //展示分享笔记
 func (c Share) ShowShareNote(noteId string) revel.Result {
-	note := noteService.GetNote(noteId, c.GetUserId())
+	note := noteService.GetNoteById(noteId)
 //	
 	c.RenderArgs["noteId"] = noteId
 	username := userService.GetUsernameById(note.UserId)
@@ -219,11 +221,33 @@ func (c Share) ShowShareNote(noteId string) revel.Result {
 
 //验证分享密码
 func (c Share) Verify4ShareNote(noteId string, sharePass int) revel.Result {
-	ok, note := shareService.Verify4ShareNote(noteId, sharePass);
+	ok, note, noteContent := shareService.Verify4ShareNote(noteId, sharePass)
+	
 	attaches := []info.Attach{}
-	if (ok == true && note.AttachNum > 0) {
-		attaches = attachService.ListAttachs(noteId, c.GetUserId())
+	if ok && note.AttachNum > 0 {
+		attaches = attachService.ListAttachs(noteId, "")
 	}
-	re := info.Re{Ok : ok, Item: note, List: attaches}
+	
+	
+	token := tokenService.NewToken(noteId, noteId, AttachToken)
+	
+	//插入笔记作为链接中的附件
+	noteAttachIds := map[string]bool{}
+	noteContent.Content, noteAttachIds = shareService.AppendToken4URL(token, noteContent.Content)
+	//过滤掉插入笔记的附件
+	filteredAttaches := []info.Attach{}
+	if len(noteAttachIds) > 0 && len(attaches) > 0 {
+		for _, attach := range attaches {
+			if !noteAttachIds[attach.AttachId.Hex()] {
+				filteredAttaches = append(filteredAttaches, attach)
+			}
+		}
+	} else {
+		filteredAttaches = attaches
+	}
+	
+	sessionId := c.Session.Id()
+	sessionService.SetToken(sessionId, token)
+	re := info.Re{Ok : ok, Item: note, List: filteredAttaches, Id: token, Msg: noteContent.Content}
 	return c.RenderJson(re)
 }

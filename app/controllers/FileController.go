@@ -9,9 +9,9 @@ import (
 	"github.com/leanote/leanote/app/info"
 	"io/ioutil"
 	"os"
-	"fmt"
 //	"strconv"
 	"strings"
+	"fmt"
 )
 
 // 首页
@@ -208,8 +208,9 @@ func (c File) DeleteImage(fileId string) revel.Result {
 
 // 输出image
 // 权限判断
-func (c File) OutputImage(noteId, fileId string) revel.Result {
-	path := fileService.GetFile(c.GetUserId(), fileId); // 得到路径
+func (c File) OutputImage(noteId, fileId , token string) revel.Result {
+	sessionId := c.Session.Id()
+	path := fileService.GetFile(c.GetUserId(), fileId, sessionId, token); // 得到路径
 	if path == "" {
 		return c.RenderText("")
 	}

@@ -128,6 +128,7 @@ GET     /upload/*filepath                       Static.Serve("public/upload")
 *       /member               	MemberIndex.Index
 *       /member/index           MemberIndex.Index
 
+GET		/share/note/:noteId						Share.ShowShareNote
 # common
 *       /:controller/:action                    :controller.:action
 *       /api/:controller/:action                :controller.:action

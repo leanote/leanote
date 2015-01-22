@@ -540,21 +540,27 @@ func (c Blog) Index(userIdOrEmail string) (re revel.Result) {
 	}
 	userId, userInfo := c.userIdOrEmail(hasDomain, userBlog, userIdOrEmail)
 	var ok = false
+	fmt.Println("before test...");
 	if ok, userBlog = c.blogCommon(userId, userBlog, userInfo); !ok {
+		fmt.Println("404 occur");
 		return c.e404(userBlog.ThemePath) // 404 TODO 使用用户的404
 	}
-
+	fmt.Println("after test0...");
 	// 分页的话, 需要分页信息, totalPage, curPage
 	page := c.GetPage()
+	
 	pageInfo, blogs := blogService.ListBlogs(userId, "", page, userBlog.PerPageSize, userBlog.SortField, userBlog.IsAsc)
+	
 	blogs2 := blogService.FixBlogs(blogs)
+	
 	c.RenderArgs["posts"] = blogs2
 
 	c.setPaging(pageInfo)
 	c.RenderArgs["pagingBaseUrl"] = c.RenderArgs["indexUrl"]
 
 	c.RenderArgs["curIsIndex"] = true
-
+	
+	
 	return c.render("index.html", userBlog.ThemePath)
 }
 

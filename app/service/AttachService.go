@@ -46,8 +46,8 @@ func (this *AttachService) updateNoteAttachNum(noteId bson.ObjectId, addNum int)
 // list attachs
 func (this *AttachService) ListAttachs(noteId, userId string) []info.Attach {
 	attachs := []info.Attach{}
-	// 判断是否有权限为笔记添加附件
-	if !shareService.HasUpdateNotePerm(noteId, userId) {
+	// 判断是否有权限为笔记添加附件, userId为空时表示是分享笔记的附件
+	if userId != "" && !shareService.HasUpdateNotePerm(noteId, userId) {
 		return attachs
 	}
 	
@@ -55,6 +55,7 @@ func (this *AttachService) ListAttachs(noteId, userId string) []info.Attach {
 	
 	return attachs
 }
+
 
 func (this *AttachService) UpdateImageTitle(userId, fileId, title string) bool {
 	return db.UpdateByIdAndUserIdField(db.Files, fileId, userId, "Title", title)
@@ -105,7 +106,7 @@ func (this *AttachService) DeleteAttach(attachId, userId string) (bool, string) 
 // 获取文件路径
 // 要判断是否具有权限
 // userId是否具有attach的访问权限
-func (this *AttachService) GetAttach(attachId, userId string) (attach info.Attach) {
+func (this *AttachService) GetAttach(attachId, userId, token, sessionId string) (attach info.Attach) {
 	if attachId == "" {
 		return 
 	}
@@ -134,6 +135,17 @@ func (this *AttachService) GetAttach(attachId, userId string) (attach info.Attac
 	// 我是否有权限查看或协作
 	if shareService.HasReadNotePerm(attach.NoteId.Hex(), userId) {
 		return 
+	}
+	
+	//userId为空则是分享笔记的附件
+	if userId == "" && sessionId != "" {
+		if token != "" {
+			realToken := sessionService.GetToken(sessionId)
+			if token == realToken {
+				Log("attach token is equal!")
+				return 
+			}
+		} 
 	}
 	
 	attach = info.Attach{}

@@ -17,6 +17,13 @@ func (this *SessionService) Update(sessionId, key string, value interface{}) boo
 	return db.UpdateByQMap(db.Sessions, bson.M{"SessionId": sessionId}, 
 		bson.M{key: value, "UpdatedTime": time.Now()})
 }
+
+func (this *SessionService) UpdateToken(sessionId, key string, value interface{}) bool {
+	return db.UpdateByQMap(db.Sessions, bson.M{"SessionId": sessionId}, 
+		bson.M{key: value, "UpdatedTime": time.Now(), "TokenTime": time.Now()})
+}
+
+
 // 注销时清空session
 func (this *SessionService) Clear(sessionId string) bool {
 	return db.Delete(db.Sessions, bson.M{"SessionId": sessionId})
@@ -66,6 +73,22 @@ func (this *SessionService) SetCaptcha(sessionId, captcha string) bool {
 	Log(sessionId)
 	Log(captcha)
 	ok := this.Update(sessionId, "Captcha", captcha)
+	Log(ok)
+	return ok
+}
+
+
+// 附件token
+func (this *SessionService) GetToken(sessionId string) string {
+	session := this.Get(sessionId)
+	return session.Token
+}
+
+func (this *SessionService) SetToken(sessionId, token string) bool {
+	this.Get(sessionId)
+	Log(sessionId)
+	Log(token)
+	ok := this.UpdateToken(sessionId, "Token", token)
 	Log(ok)
 	return ok
 }

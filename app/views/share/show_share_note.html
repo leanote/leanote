@@ -13,7 +13,9 @@
 	<span id="showMsg"></span>
 </div>
 
-<div id="noteContainer"></div>
+<div id="noteContainer" style="display:none">
+	
+</div>
 
 
 {{template "home/footer.html"}}
@@ -47,7 +49,7 @@ var getHost = function(url) {
     if(typeof match != "undefined"
                     && null != match)
             host = match[1];
-    return host;
+    return "http://" + host;
 }
 
 $(function() {
@@ -62,23 +64,21 @@ $(function() {
 			if(reIsOk(re)) {
 				$("#queryNote").css("display", "none");
 				var title = re.Item.Title;
-				var desc = re.Item.Desc;
+				var content = re.Msg;
 				var imgSrc = re.Item.ImgSrc;
 				var htmlContent = "<div><h1 height='50px'>{0}</h1></div><hr/><div style='vertical-align:center'><p height='auto'>{1}<br>{2}</p>";
-				
-				if (re.Item.ImgSrc != "") {
-					htmlContent += "<img src=" + imgSrc + "></img>";
-				}
 				
 				var attaches = re.List;
 				var attachesHtml = "";
 				if (attaches.length > 0) {
+					var token = re.Id;
 					for (var i=0; i<attaches.length; i++) {
-						var linkUrl = getHost() + "/attach/download?attachId=" + attaches[i].AttachId;
-						attachesHtml += "<a href='{0}' target='_blank' data-mce-href='{1}' >附件{2}</a><br/>".format(linkUrl, linkUrl, i+1);
+						var linkUrl = "{0}/attach/download?attachId={1}&token={2}".format(getHost(), attaches[i].AttachId, token);
+						attachesHtml += "<p><a href='{0}' target='_blank' data-mce-href='{1}' >附件{2}</a></p><br/>".format(linkUrl, linkUrl, i+1);
 					}
 				} 
-				htmlContent = htmlContent.format(title, desc, attachesHtml) + "</div>";
+				
+				htmlContent = htmlContent.format(title, content, attachesHtml) + "</div>";
 				
 				
 				/* if (isMarkDown) {

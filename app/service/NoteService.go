@@ -17,6 +17,17 @@ func (this *NoteService) GetNote(noteId, userId string) (note info.Note) {
 	db.GetByIdAndUserId(db.Notes, noteId, userId, &note)
 	return
 }
+
+//通过附件id得到note
+func (this *NoteService) GetNoteByAttachId(attachId string) (note info.Note) {
+	attach := info.Attach{}
+	db.Get(db.Attachs, attachId, &attach)
+	note = info.Note{}
+	noteId := attach.NoteId
+	db.Get(db.Notes, noteId.Hex(), &note)
+	return
+}
+
 // fileService调用
 func (this *NoteService) GetNoteById(noteId string) (note info.Note) {
 	note = info.Note{}

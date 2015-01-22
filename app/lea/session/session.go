@@ -51,6 +51,7 @@ func init() {
 // Id retrieves from the cookie or creates a time-based UUID identifying this
 // session.
 func (s Session) Id() string {
+	
 	if sessionIdStr, ok := s[SESSION_ID_KEY]; ok {
 		return sessionIdStr
 	}
@@ -131,7 +132,7 @@ func getSessionFromCookie(cookie *http.Cookie) Session {
 		return session
 	}
 	sig, data := cookie.Value[:hyphen], cookie.Value[hyphen+1:]
-
+	
 	// Verify the signature.
 	if !revel.Verify(data, sig) {
 		revel.INFO.Println("Session cookie signature failed")
@@ -145,7 +146,7 @@ func getSessionFromCookie(cookie *http.Cookie) Session {
 	if sessionTimeoutExpiredOrMissing(session) {
 		session = make(Session)
 	}
-
+	
 	return session
 }
 
@@ -157,6 +158,7 @@ func SessionFilter(c *revel.Controller, fc []revel.Filter) {
 	// c.Session, 重新生成一个revel.Session给controller!!!
 //	Log("sessoin--------")
 //	LogJ(session)
+
 	revelSession := revel.Session(session) // 强制转换 还是同一个对象, 但有个问题, 这样Session.Id()方法是用revel的了
 	c.Session = revelSession
 	// 生成sessionId

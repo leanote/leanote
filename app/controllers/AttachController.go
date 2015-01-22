@@ -129,9 +129,18 @@ func (c Attach) GetAttachs(noteId string) revel.Result {
 
 // 下载附件
 // 权限判断
-func (c Attach) Download(attachId string) revel.Result {
-	attach := attachService.GetAttach(attachId, c.GetUserId()); // 得到路径
+func (c Attach) Download(attachId, token string) revel.Result {
+	if c.GetUserId() == "" && token == "" {
+		return c.RenderText("你需要从分享页面下载附件！")
+	}
+	
+	sessionId := c.Session.Id()
+	attach := attachService.GetAttach(attachId, c.GetUserId(), token, sessionId); // 得到路径
 	path := attach.Path
+	
+	if token != "" && attach.Path == "" {
+		return c.RenderText("该下载链接已经失效，请重新刷新原分享笔记页面下载")
+	}
 	if path == "" {
 		return c.RenderText("")
 	}
