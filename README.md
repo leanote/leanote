@@ -31,7 +31,7 @@ More information about how to install leanote please see:
 Leanote V1.0.3-beta has been released. Binaries:
 
 * Linux: [leanote-linux-x86_64.v1.0-beta.3.bin.tar.gz](https://github.com/leanote/leanote/releases/download/1.0-beta.3/leanote-linux-x86_64.v1.0-beta.3.bin.tar.gz)
-* MacOS X: [leanote-mac-x86_64.v1.0-beta.3.bin.tar.gz](https://github.com/leanote/leanote/releases/download/1.0-beta/leanote-mac-x86_64.v1.0-beta.3.bin.tar.gz)
+* MacOS X: [leanote-mac-x86_64.v1.0-beta.3.bin.tar.gz](https://github.com/leanote/leanote/releases/download/1.0-beta.3/leanote-mac-x86_64.v1.0-beta.3.bin.tar.gz)
 
 Or you can clone [Leanote bin repository](https://github.com/leanote/leanote-bin) (Recommend)
 
