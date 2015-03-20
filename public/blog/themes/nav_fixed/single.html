@@ -13,7 +13,7 @@
 			<!-- 仅为移动端 -->
 			<div class="mobile-created-time">
 			{{ if $.blogInfo.UserLogo}}
-				<img src="{{$.blogInfo.UserLogo}}" id="userLogo">
+				<img src="{{$.siteUrl}}/{{$.blogInfo.UserLogo}}" id="userLogo">
 			{{else}}
 				<img src="{{$.siteUrl}}/images/blog/default_avatar.png" id="userLogo">
 			{{end}}
