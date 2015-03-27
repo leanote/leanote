@@ -759,7 +759,7 @@ function post(url, param, func, btnId) {
 
 // 是否是正确的email
 function isEmail(email) {
-	var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[0-9a-zA-Z]{2,3}$/;
+	var myreg = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]+$/;
 	return myreg.test(email);
 }
 
