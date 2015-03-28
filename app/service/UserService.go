@@ -98,6 +98,7 @@ func (this *UserService) GetUserInfo(userId string) info.User {
 func (this *UserService) GetUserInfoByEmail(email string) info.User {
 	user := info.User{}
 	db.GetByQ(db.Users, bson.M{"Email": email}, &user)
+	this.setUserLogo(&user)
 	return user
 }
 // 得到用户信息 username
@@ -105,12 +106,14 @@ func (this *UserService) GetUserInfoByUsername(username string) info.User {
 	user := info.User{}
 	username = strings.ToLower(username)
 	db.GetByQ(db.Users, bson.M{"Username": username}, &user)
+	this.setUserLogo(&user)
 	return user
 }
 
 func (this *UserService) GetUserInfoByThirdUserId(thirdUserId string) info.User {
 	user := info.User{}
 	db.GetByQ(db.Users, bson.M{"ThirdUserId": thirdUserId}, &user)
+	this.setUserLogo(&user)
 	return user
 }
 func (this *UserService) ListUserInfosByUserIds(userIds []bson.ObjectId) []info.User {
@@ -223,7 +226,7 @@ func (this *UserService) LoginGetUserInfo(emailOrUsername, md5Pwd string) info.U
 	} else {
 		db.GetByQ(db.Users, bson.M{"Username": emailOrUsername, "Pwd": md5Pwd}, &user)
 	}
-	
+	this.setUserLogo(&user)
 	return user
 }
 
