@@ -230,7 +230,7 @@ func (this *UserService) LoginGetUserInfo(emailOrUsername, md5Pwd string) info.U
 	} else {
 		db.GetByQ(db.Users, bson.M{"Username": emailOrUsername, "Pwd": md5Pwd}, &user)
 	}
-
+	this.setUserLogo(&user)
 	return user
 }
 
