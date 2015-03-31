@@ -64,7 +64,9 @@ h3 {
 .wmd-input,
 #noteReadContent,
 #attachList,
-#tags {
+#tags,
+.editor-content,
+.preview-container {
   -webkit-overflow-scrolling: touch !important;
 }
 .ios7-a {
@@ -415,7 +417,7 @@ h3 {
   padding-bottom: 3px;
 }
 #myTag .folderBody li {
-  float: left;
+  margin-left: 10px;
   padding: 3px;
   line-height: normal;
 }
@@ -1046,6 +1048,9 @@ h3 {
   font: 12px / normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
   color: #4D4D4C;
 }
+#editorContent .ace_searchbtn_close {
+  margin: 0px;
+}
 #editorContent .ace-tomorrow {
   padding: 0;
   padding-left: 44px;
@@ -1074,6 +1079,21 @@ h3 {
 }
 .close:focus {
   outline: none;
+}
+#tagNav i,
+#tagNav em {
+  font-style: normal;
+}
+#tagNav .tag-delete {
+  display: none;
+  margin-left: 3px;
+  font-size: 12px;
+}
+#tagNav li:hover .tag-delete {
+  display: inline-block;
+}
+#tagNav a:hover {
+  background: none !important;
 }
 ::selection {
   background: #000000;

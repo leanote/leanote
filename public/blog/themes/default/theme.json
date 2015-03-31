@@ -19,7 +19,10 @@
 */
 {
     "Name": "Leanote default theme",
+<<<<<<< HEAD
     "Desc": "",
+=======
+>>>>>>> dev-life
     "Version": "1.0",
     "Author": "leanote.com",
     "AuthorUrl": "http://leanote.com",

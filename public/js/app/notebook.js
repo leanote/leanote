@@ -21,6 +21,10 @@ Notebook.getCurNotebookId = function() {
 	return Notebook.curNotebookId;
 };
 
+Notebook.getCurNotebook = function() {
+	return Notebook.cache[Notebook.curNotebookId];
+};
+
 // 笔记本的笔记数量更新
 Notebook._updateNotebookNumberNotes = function(notebookId, n) {
 	var self = this;
@@ -248,7 +252,17 @@ Notebook.renderNotebooks = function(notebooks) {
 	if(!notebooks || typeof notebooks != "object" || notebooks.length < 0) {
 		notebooks = [];
 	}
+<<<<<<< HEAD
 
+=======
+	
+	// title可能有<script>
+	for(var i = 0, len = notebooks.length; i < len; ++i) {
+		var notebook = notebooks[i];
+		notebook.Title = trimTitle(notebook.Title);
+	}
+	
+>>>>>>> dev-life
 	notebooks = [{NotebookId: Notebook.allNotebookId, Title: getMsg("all"), drop:false, drag: false}].concat(notebooks);
 	notebooks.push({NotebookId: Notebook.trashNotebookId, Title: getMsg("trash"), drop:false, drag: false});
 	Notebook.notebooks = notebooks; // 缓存之
@@ -579,6 +593,7 @@ Notebook.curActiveNotebookIsAll = function() {
 // 2. ajax得到该notebook下的所有note
 // 3. 使用Note.RederNotes()
 // callback Pjax, 当popstate时调用
+Notebook.changeNotebookSeq = 1;
 Notebook.changeNotebook = function(notebookId, callback) {
 	var me = this;
 	Notebook.changeNotebookNav(notebookId);
@@ -602,29 +617,38 @@ Notebook.changeNotebook = function(notebookId, callback) {
 		param = {};
 		// 得到全部的...
 		cacheNotes = Note.getNotesByNotebookId();
-		if(!isEmpty(cacheNotes)) { // 万一真的是没有呢?
+		// 数量一致
+		if(!isEmpty(cacheNotes)) { 
 			if(callback) {
 				callback(cacheNotes);
 			} else {
 				Note.renderNotesAndFirstOneContent(cacheNotes);
 			}
 			return;
-		}
+		} 
 	} else {
 		cacheNotes = Note.getNotesByNotebookId(notebookId);
-		if(!isEmpty(cacheNotes)) { // 万一真的是没有呢? 执行后面的ajax
+		var notebook = Notebook.cache[notebookId];
+		var len = cacheNotes ? cacheNotes.length : 0;
+		// alert( notebook.NumberNotes + " " + len);
+		if(len == notebook.NumberNotes) { 
 			if(callback) {
 				callback(cacheNotes);
 			} else {
 				Note.renderNotesAndFirstOneContent(cacheNotes);
 			}
 			return;
+		} else {
+			Note.clearCacheByNotebookId(notebookId);
+			log('数量不一致');
 		}
 	}
 
 	// 2 得到笔记本
 	// 这里可以缓存起来, note按notebookId缓存
+	// 这里可能点击过快导致前面点击的后来才返回
 	me.showNoteAndEditorLoading();
+<<<<<<< HEAD
 	ajaxGet(url, param, function(cacheNotes) {
 		if(callback) {
 			callback(cacheNotes);
@@ -633,6 +657,25 @@ Notebook.changeNotebook = function(notebookId, callback) {
 		}
 		me.hideNoteAndEditorLoading();
 	});
+=======
+	me.changeNotebookSeq++;
+	(function(seq) {
+		ajaxGet(url, param, function(cacheNotes) { 
+			// 后面点击过快, 之前的结果不要了
+			if(seq != me.changeNotebookSeq) {
+				log("notebook changed too fast!");
+				log(cacheNotes);
+				return;
+			}
+			if(callback) {
+				callback(cacheNotes);
+			} else {
+				Note.renderNotesAndFirstOneContent(cacheNotes);
+			}
+			me.hideNoteAndEditorLoading();
+		});
+	})(me.changeNotebookSeq);
+>>>>>>> dev-life
 }
 
 // 笔记列表与编辑器的mask loading

@@ -209,4 +209,8 @@
 	writeScripts();
 })(this);
 
+<<<<<<< HEAD
 // $hash: 21077dff9f3a381aae5264038edd67d3
+=======
+// $hash: c7c1f3d9261e2b8bbf291b977dfec921
+>>>>>>> dev-life

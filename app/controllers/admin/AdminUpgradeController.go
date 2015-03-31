@@ -22,3 +22,9 @@ func (c AdminUpgrade) UpgradeBetaToBeta2() revel.Result {
 	re.Ok, re.Msg = upgradeService.UpgradeBetaToBeta2(c.GetUserId())
 	return c.RenderJson(re)
 }
+
+func (c AdminUpgrade) UpgradeBeta3ToBeta4() revel.Result {
+	re := info.NewRe()
+	re.Ok, re.Msg = upgradeService.Api(c.GetUserId())
+	return c.RenderJson(re)
+}

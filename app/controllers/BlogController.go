@@ -196,29 +196,77 @@ func (c Blog) getCates(userBlog info.UserBlog) {
 	}
 
 	var i = 0
-	cates := make([]map[string]string, len(notebooks))
+	cates := make([]*info.Cate, len(notebooks))
 
 	// 先要保证已有的是正确的排序
 	cateIds := userBlog.CateIds
 	has := map[string]bool{} // cateIds中有的
+	cateMap := map[string]*info.Cate{}
 	if cateIds != nil && len(cateIds) > 0 {
 		for _, cateId := range cateIds {
 			if n, ok := notebooksMap[cateId]; ok {
-				cates[i] = map[string]string{"Title": n.Title, "UrlTitle": c.getCateUrlTitle(&n), "CateId": n.NotebookId.Hex()}
+				parentNotebookId := ""
+				if n.ParentNotebookId != "" {
+					parentNotebookId = n.ParentNotebookId.Hex()
+				}
+				cates[i] = &info.Cate{Title: n.Title, UrlTitle: c.getCateUrlTitle(&n), CateId: n.NotebookId.Hex(), ParentCateId: parentNotebookId}
+				cateMap[cates[i].CateId] = cates[i]
 				i++
 				has[cateId] = true
 			}
 		}
 	}
-	// 之后
+	
+	// 之后添加没有排序的
 	for _, n := range notebooks {
 		id := n.NotebookId.Hex()
 		if !has[id] {
-			cates[i] = map[string]string{"Title": n.Title, "UrlTitle": c.getCateUrlTitle(&n), "CateId": id}
+			parentNotebookId := ""
+			if n.ParentNotebookId != "" {
+				parentNotebookId = n.ParentNotebookId.Hex()
+			}
+			cates[i] = &info.Cate{Title: n.Title, UrlTitle: c.getCateUrlTitle(&n), CateId: id, ParentCateId: parentNotebookId}
+			cateMap[cates[i].CateId] = cates[i]
 			i++
 		}
 	}
+	
+//	LogJ(">>")
+//	LogJ(cates)
+	
+	// 建立层级
+	hasParent := map[string]bool{} // 有父的cate
+	for _, cate := range cates {
+		parentCateId := cate.ParentCateId
+		if parentCateId != "" {
+			if parentCate, ok := cateMap[parentCateId]; ok {
+//				Log("________")
+//				LogJ(parentCate)
+//				LogJ(cate)
+				if parentCate.Children == nil {
+					parentCate.Children = []*info.Cate{cate}
+				} else {
+					parentCate.Children = append(parentCate.Children, cate)
+				}
+				hasParent[cate.CateId] = true
+			}
+		}
+	}
+	
+	// 得到没有父的cate, 作为第一级cate
+	catesTree := []*info.Cate{}
+	for _, cate := range cates {
+		if !hasParent[cate.CateId] {
+			catesTree = append(catesTree, cate)
+		}
+	}
+	
+	Log("cates")
+	LogJ(cates)
+	LogJ(catesTree);
+	
 	c.RenderArgs["cates"] = cates
+	c.RenderArgs["catesTree"] = catesTree
 }
 
 // 单页

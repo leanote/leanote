@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 { "indexes" : [ { "v" : 1, "key" : { "_id" : 1 }, "ns" : "leanote_beta2.tags", "name" : "_id_" }, { "v" : 1, "key" : { "UserId" : 1 }, "ns" : "leanote_beta2.tags", "name" : "UserId_1" } ] }
+=======
+{ "indexes" : [ { "v" : 1, "key" : { "_id" : 1 }, "name" : "_id_", "ns" : "leanote6.tags" }, { "v" : 1, "key" : { "UserId" : 1 }, "name" : "UserId_1", "ns" : "leanote6.tags" } ] }
+>>>>>>> dev-life

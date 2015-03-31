@@ -51,6 +51,7 @@ func (this *AuthService) Register(email, pwd, fromUserId string) (bool, string) 
 func (this *AuthService) register(user info.User) (bool, string) {
 	if userService.AddUser(user) {
 		// 添加笔记本, 生活, 学习, 工作
+		userId := user.UserId.Hex();
 		notebook := info.Notebook{
 			Seq: -1,
 			UserId: user.UserId}
@@ -62,8 +63,6 @@ func (this *AuthService) register(user info.User) (bool, string) {
 			notebookService.AddNotebook(notebook);
 		}
 		
-		email := user.Email
-		
 		// 添加leanote -> 该用户的共享
 		registerSharedUserId := configService.GetGlobalStringConfig("registerSharedUserId")
 		if(registerSharedUserId != "") {
@@ -74,20 +73,23 @@ func (this *AuthService) register(user info.User) (bool, string) {
 			// 添加共享笔记本
 			for _, notebook := range registerSharedNotebooks {
 				perm, _ := strconv.Atoi(notebook["perm"])
-				shareService.AddShareNotebook(notebook["notebookId"], perm, registerSharedUserId, email);
+				shareService.AddShareNotebookToUserId(notebook["notebookId"], perm, registerSharedUserId, userId);
 			}
 			
 			// 添加共享笔记
 			for _, note := range registerSharedNotes {
 				perm, _ := strconv.Atoi(note["perm"])
-				shareService.AddShareNote(note["noteId"], perm, registerSharedUserId, email);
+				shareService.AddShareNoteToUserId(note["noteId"], perm, registerSharedUserId, userId);
 			}
 			
 			// 复制笔记
 			for _, noteId := range registerCopyNoteIds {
 				note := noteService.CopySharedNote(noteId, title2Id["life"].Hex(), registerSharedUserId, user.UserId.Hex());
-				noteUpdate := bson.M{"IsBlog": true}
-				noteService.UpdateNote(user.UserId.Hex(), user.UserId.Hex(), note.NoteId.Hex(), noteUpdate)
+//				Log(noteId)
+//				Log("Copy")
+//				LogJ(note)
+				noteUpdate := bson.M{"IsBlog": false} // 不要是博客
+				noteService.UpdateNote(user.UserId.Hex(), note.NoteId.Hex(), noteUpdate, -1)
 			}
 		}
 		
@@ -95,7 +97,7 @@ func (this *AuthService) register(user info.User) (bool, string) {
 		// 添加一条userBlog
 		blogService.UpdateUserBlog(info.UserBlog{UserId: user.UserId, 
 			Title: user.Username + " 's Blog", 
-			SubTitle: "love leanote!",
+			SubTitle: "Love Leanote!",
 			AboutMe: "Hello, I am (^_^)",
 			CanComment: true,
 			})
