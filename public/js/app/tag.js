@@ -33,8 +33,8 @@ Tag.t = $("#tags");
 Tag.getTags = function() {
 	var tags = [];
 	Tag.t.children().each(function(){
-		var text = $(this).text();
-		text = text.substring(0, text.length - 1); // 把X去掉
+		var text = $(this).data('tag');
+		// text = text.substring(0, text.length - 1); // 把X去掉
 		text = Tag.mapCn2En[text] || text;
 		tags.push(text);
 	});
@@ -117,7 +117,7 @@ Tag.renderReadOnlyTags = function(tags) {
 // 添加tag
 // tag = {classes:"label label-red", text:"红色"}
 // tag = life
-Tag.appendTag = function(tag) {
+Tag.appendTag = function(tag, save) {
 	var isColor = false;
 	var classes, text;
 	
@@ -140,21 +140,25 @@ Tag.appendTag = function(tag) {
 			classes = "label label-default";
 		}
 	}
-	
+	var rawText = text;
 	if(LEA.locale == "zh") {
 		text = Tag.mapEn2Cn[text] || text;
+		rawText = Tag.mapCn2En[rawText] || rawText;
 	}
-	tag = tt('<span class="?">?<i title="' + getMsg("delete") + '">X</i></span>', classes, text);
+	tag = tt('<span class="?" data-tag="?">?<i title="' + getMsg("delete") + '">X</i></span>', classes, text, text);
 
 	// 避免重复
+	var isExists = false;
 	$("#tags").children().each(function() {
 		if (isColor) {
 			var tagHtml = $("<div></div>").append($(this).clone()).html();
 			if (tagHtml == tag) {
 				$(this).remove();
+				isExists = true;
 			}
 		} else if (text + "X" == $(this).text()) {
 			$(this).remove();
+			isExists = true;
 		}
 	});
 
@@ -164,6 +168,22 @@ Tag.appendTag = function(tag) {
 
 	if (!isColor) {
 		reRenderTags();
+	}
+	
+	// 笔记已污染
+	if(save) {
+		Note.curNoteIsDirtied();
+		
+		// 如果之前不存, 则添加之
+		if(!isExists) {
+			Note.curChangedSaveIt(true, function() {
+				ajaxPost("/tag/updateTag", {tag: rawText}, function(ret) {
+					if(reIsOk(ret)) {
+						Tag.addTagNav(ret.Item);
+					}
+				});	
+			});
+		}
 	}
 }
 
@@ -181,23 +201,59 @@ function reRenderTags() {
 				i++;
 			}
 		});
-}
+};
+
+// 删除tag
+Tag.removeTag = function($target) {
+	var tag = $target.data('tag');
+	$target.remove();
+	reRenderTags();
+	if(LEA.locale == "zh") {
+		tag = Tag.mapCn2En[tag] || tag;
+	}
+	Note.curChangedSaveIt(true, function() {
+		ajaxPost("/tag/updateTag", {tag: tag}, function(ret) {
+			if(reIsOk(ret)) {
+				Tag.addTagNav(ret.Item);
+			}
+		});
+	});
+}; 
 
 //-----------
 // 左侧nav en -> cn
+Tag.tags = [];
 Tag.renderTagNav = function(tags) {
+	var me = this;
 	tags = tags || [];
+	Tag.tags = tags;
+	$("#tagNav").html('');
 	for(var i in tags) {
-		var tag = tags[i];
-		if(tag == "red" || tag == "blue" || tag == "yellow" || tag == "green") {
-			continue;
+		var noteTag = tags[i];
+		var tag = noteTag.Tag;
+		var text = tag;
+		if(LEA.locale == "zh") {
+			var text = Tag.mapEn2Cn[tag] || text;
 		}
-		var text = Tag.mapEn2Cn[tag] || tag;
 		var classes = Tag.classes[tag] || "label label-default";
-		$("#tagNav").append(tt('<li data-tag="?"><a> <span class="?">?</span></li>', text, classes, text));
+		$("#tagNav").append(tt('<li data-tag="?"><a> <span class="?">?</span> <span class="tag-delete">X</span></li>', tag, classes, text));
 	}
-}
+};
 
+// 添加的标签重新render到左边, 放在第一个位置
+// 重新render
+Tag.addTagNav = function(newTag) {
+	var me = this;
+	for(var i in me.tags) {
+		var noteTag = me.tags[i];
+		if(noteTag.Tag == newTag.Tag) {
+			me.tags.splice(i, 1);
+			break;
+		}
+	}
+	me.tags.unshift(newTag);
+	me.renderTagNav(me.tags);
+};
 
 // 事件
 $(function() {
@@ -245,7 +301,7 @@ $(function() {
 		Tag.appendTag({
 			classes : a.attr("class"),
 			text : a.text()
-		});
+		}, true);
 	});
 	// 这是个问题, 为什么? 捕获不了事件?, input的blur造成
 	/*
@@ -260,14 +316,29 @@ $(function() {
 	*/
 	
 	$("#tags").on("click", "i", function() {
-		$(this).parent().remove();
-		reRenderTags();
+		Tag.removeTag($(this).parent());
 	});
+	//----------
+	//
+	function deleteTag() {
+		$li = $(this).closest('li');
+		var tag = $.trim($li.data("tag"));
+		if(confirm("Are you sure ?")) {
+			ajaxPost("/tag/deleteTag", {tag: tag}, function(re) {
+				if(reIsOk(re)) {
+					var item = re.Item; // 被删除的
+					Note.deleteNoteTag(item, tag);
+					$li.remove();
+				}
+			});
+		};
+	}
 	
 	//-------------
 	// nav 标签搜索
 	function searchTag() {
-		var tag = $.trim($(this).data("tag"));
+		var $li = $(this).closest('li');
+		var tag = $.trim($li.data("tag"));
 		// tag = Tag.mapCn2En[tag] || tag;
 		
 		// 学习changeNotebook
@@ -279,7 +350,9 @@ $(function() {
 		// 也会把curNoteId清空
 		Note.clearAll();
 		
-		$("#tagSearch").html($(this).html()).show();
+		$("#tagSearch").html($li.html()).show();
+		$("#tagSearch .tag-delete").remove();
+		
 		showLoading();
 		ajaxGet("/note/searchNoteByTags", {tags: [tag]}, function(notes) {
 			hideLoading();
@@ -295,6 +368,8 @@ $(function() {
 			}
 		});
 	}
-	$("#myTag .folderBody").on("click", "li", searchTag);
-	$("#minTagNav").on("click", "li", searchTag);
+	$("#myTag .folderBody").on("click", "li .label", searchTag);
+	// $("#minTagNav").on("click", "li", searchTag);
+	
+	$("#myTag .folderBody").on("click", "li .tag-delete", deleteTag);
 });

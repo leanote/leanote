@@ -203,6 +203,7 @@ ul.dropdown-menu {
 }
 #footer {
   padding-bottom: 10px;
+  width: 700px;
 }
 .navbar-brand {
   display: none;
@@ -439,6 +440,7 @@ a:hover {
     text-align: left;
     width: 100%;
     border-bottom: 2px dashed #ebeff2;
+    
   }
   #headerAndNav #headerContainer {
     width: 100%;

@@ -1,23 +1,22 @@
 <!-- 赞 -->
 <div class="entry-controls clearfix">
 	<div class="vote-section-wrapper clearfix">
-		<button class="btn btn-default btn-zan" id="likeBtn"><i class="fa fa-thumbs-o-up"></i> <span id="likeNum">{{$.post.LikeNum}}</span> 赞</button>
-		<span class="control-item read-counts"><i class="fa fa-eye"></i> {{if $.post.ReadNum}}{{$.post.ReadNum}}{{else}}1{{end}} 人读过</span>
+		<button class="btn btn-default btn-zan" id="likeBtn"><i class="fa fa-thumbs-o-up"></i> <span id="likeNum">{{$.post.LikeNum}}</span> likes</button>
+		<span class="control-item read-counts"><i class="fa fa-eye"></i> {{if $.post.ReadNum}}{{$.post.ReadNum}}{{else}}1{{end}}</span>
 	</div>
 	<div class="right-section">
 		<div id="weixinQRCode"></div>
-		<button class="btn btn-share btn-default btn-weibo"><i class="fa fa-weibo"></i> 新浪微博</button>
-		<button class="btn btn-share btn-default btn-weixin"><i class="fa fa-wechat"></i> 微信</button>
-		<div class="dropdown" style="display: inline-block; cursor: pointer; padding: 5px 10px;">
-			<!-- open -->
+		<button class="btn btn-share btn-default btn-weibo"><i class="fa fa-weibo"></i> Weibo</button>
+		<button class="btn btn-share btn-default btn-weixin"><i class="fa fa-wechat"></i> Wechat</button>
+		<div class="dropdown" style="display: inline-block; cursor: pointer; padding: 5px 10px; padding-right: 30px">
+			
 			<div class="dropdown-toggle" data-hover="dropdown" data-toggle="dropdown">
-				<i class="fa fa-share-square-o"></i>
-				更多分享
+				<i class="fa fa-ellipsis-h"></i>
 			</div>
 			<ul class="dropdown-menu" role="menu">
-				<li><a href="#" class="btn-share tencent-weibo"><i class="fa fa-tencent-weibo"></i> 腾讯微博</a></li>
-				<li><a href="#" class="btn-share qq"><i class="fa fa-qq"></i> QQ空间</a></li>
-				<li><a href="#" class="btn-share renren"><i class="fa fa-renren"></i> 人人网</a></li>
+				<li><a href="#" class="btn-share tencent-weibo"><i class="fa fa-tencent-weibo"></i> Tencent Weibo</a></li>
+				<li><a href="#" class="btn-share qq"><i class="fa fa-qq"></i> QQ Zone</a></li>
+				<li><a href="#" class="btn-share renren"><i class="fa fa-renren"></i> RenRen</a></li>
 			</ul>
 		</div>
 	</div>
@@ -50,39 +49,39 @@
 			<div class="comment-hd">
 				<a href="[[:UserInfo.BlogUrl]]" target="_blank" >[[:UserInfo.Username]]</a>
 				[[if IsAuthorComment]]
-				<span>(作者)</span>
+				<span>(Author)</span>
 				[[/if]]
 				
 				<!-- 回复其它人 -->
 				[[if ToUserInfo]]
 					<span class="in-reply-to">
-			        回复
+			        reply to
 			        <a href="[[:ToUserInfo.BlogUrl]]">[[:ToUserInfo.Username]]</a>
 					</span>
 					[[if ToUserIsAuthor]]
-					<span>(作者)</span>
+					<span>(Author)</span>
 					[[/if]]
 				[[/if]]
 			</div>
-			<div class="comment-content ng-binding" ng-bind-html="comment.content">
+			<div class="comment-content">
 				[[html:Content]]
 			</div>
 			<div class="comment-ft clearfix" data-comment-id="[[:CommentId]]" >
 				<span title="" ui-time="" class="date">[[:PublishDate]] </span>
-				<span class="like-num [[if !LikeNum]]hide[[/if]]" title="[[:LikeNum]] 赞"><span class="like-num-i">[[:LikeNum]]</span> 赞</span></span>
+				<span class="like-num [[if !LikeNum]]hide[[/if]]" title="[[:LikeNum]] likes"><span class="like-num-i">[[:LikeNum]]</span> likes</span></span>
 				
 				[[if ~root.visitUserInfo.UserId]]
 					[[if IsMyNote && !IsMyComment]]
-						<a href="javascript:;" class="comment-trash op-link "><i class="fa fa-trash"></i> 删除</a>
+						<a href="javascript:;" class="comment-trash op-link "><i class="fa fa-trash"></i> Delete</a>
 					[[/if]]
 					[[if !IsMyComment]]
 					<a href="javascript:;" class="comment-reply op-link ">
 						<i class="fa fa-reply"></i>
-						回复
+						Reply
 					</a>
-					<a href="javascript:;" class="comment-like op-link"><i class="fa fa-thumbs-o-up"></i> <span class="like-text">[[if IsILikeIt]]取消赞[[else]]赞[[/if]]</span></a>
+					<a href="javascript:;" class="comment-like op-link"><i class="fa fa-thumbs-o-up"></i> <span class="like-text">[[if IsILikeIt]]Unlike[[else]]Like[[/if]]</span></a>
 					[[else]]
-					<a href="javascript:;" class="comment-trash op-link "><i class="fa fa-trash"></i> 删除</a>
+					<a href="javascript:;" class="comment-trash op-link "><i class="fa fa-trash"></i> Delete</a>
 					[[/if]]
 				[[/if]]
 			</div>
@@ -95,13 +94,13 @@
 						<img class="avatar" src="[[:~root.visitUserInfo.Logo]]">
 					</div>
 					<div class="editor-wrap">
-						<textarea class="editable" id="commentContent" name="commentContent" placeholder="回复"></textarea>
+						<textarea class="editable" id="commentContent" name="commentContent" placeholder="Reply"></textarea>
 					</div>
 				</div>
 				
 				<div class="command clearfix" style="display: block;">
-					<button class="reply-comment-btn save btn btn-primary" data-comment-id="[[:CommentId]]">提交评论</button>
-					<a class="cancel reply-cancel btn-link">取消</a>
+					<button class="reply-comment-btn save btn btn-primary" data-comment-id="[[:CommentId]]">Submit</button>
+					<a class="cancel reply-cancel btn-link">Cancel</a>
 				</div>
 			</form>
 			[[/if]]
@@ -118,21 +117,21 @@
 				<img class="avatar" id="visitUserLogo">
 			</div>
 			<div class="editor-wrap">
-				<textarea class="editable" id="commentContent" name="commentContent" placeholder="评论" style="height: 100px;"></textarea>
+				<textarea class="editable" id="commentContent" name="commentContent" placeholder="Your comment here" style="height: 100px;"></textarea>
 			</div>
 		</div>
 		<div class="command clearfix" style="display: block;">
-			<button id="commentBtn" class="reply-comment-btn save btn btn-primary">提交评论</button>
+			<button id="commentBtn" class="reply-comment-btn save btn btn-primary">Submit</button>
 		</div>
 	</form>
 	<div class="needLogin hide" id="noLoginContainer">
-		<a onclick="goLogin()">立即登录</a>, 发表评论.
+		<a onclick="goLogin()">Sign in</a> to leave a comment.
 		<br />
-		没有帐号? <a onclick="goRegister()">立即注册</a>
+		No Leanote account? <a onclick="goRegister()">Sign up now.</a>
 	</div>
 	<div class="box-header">
 	    <span class="counter">
-	      <i class="icon icon-comment"></i><span id="commentNum">{{$.post.CommentNum}}</span> 条评论
+	      <i class="icon icon-comment"></i><span id="commentNum">{{$.post.CommentNum}}</span> comments
 	    </span>
     </div>
     <!-- 评论列表 -->

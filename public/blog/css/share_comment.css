@@ -253,6 +253,7 @@
 }
 #comments form {
   display: none;
+  margin-top: 5px;
 }
 @media screen and (max-width: 600px) {
   .comment-form {

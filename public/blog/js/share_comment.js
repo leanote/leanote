@@ -26,13 +26,10 @@ var C = {
 		}
 		self.initEvent();
 		self.incReadNum();
-		
-		// 
 	},
 	
 	// 博客的统计信息
 	getPostStat: function() {
-		
 	},
 	// 增加阅读量
 	incReadNum: function() {
@@ -292,7 +289,7 @@ var C = {
 			var commentId = $(this).parent().data("comment-id");
 			var t = this;
 			try {
-				BootstrapDialog.confirm("确定删除该评论?", function(yes) {
+				BootstrapDialog.confirm("Are you sure?", function(yes) {
 					if(yes) {
 						deleteComment(noteId, commentId, function(ret) {
 							if(ret.Ok) {
@@ -325,19 +322,22 @@ var C = {
 						$(t).parent().find(".like-num-i").text(ret.Num)
 					}
 					if(ret.IsILikeIt) {
-						$(t).find(".like-text").text("取消赞");
+						var ever = $(t).find(".like-text").text();
+						if(ever == "赞") {
+							$(t).find(".like-text").text("取消赞");
+						} else {
+							$(t).find(".like-text").text("Unlike");
+						}
 					} else {
-						$(t).find(".like-text").text("赞");
+						var ever = $(t).find(".like-text").text();
+						if(ever == "取消赞") {
+							$(t).find(".like-text").text("赞");
+						} else {
+							$(t).find(".like-text").text("Like");
+						}
 					}
 				}
 			});
-		});
-		$(".comment-box").on("click", ".comment-report", function() {
-			if(needLogin()) {
-				return;
-			}
-			var commentId = $(this).parent().data("comment-id");
-			report(commentId, self.noteId, "举报评论?");
 		});
 		self.initShare();
 	},
@@ -349,7 +349,7 @@ var C = {
 				self.weixinQRCodeO.qrcode(location.href);
 			}
 			BootstrapDialog.show({
-	            title: "打开微信扫一扫二维码",
+	            title: "Open Wechat to scan the code",
 	            message: self.weixinQRCodeO
 	        });
 		});

@@ -1,0 +1,37 @@
+{{range $.posts}}
+	<div class="each-post">
+		<div class="title">
+			<a href="{{$.postUrl}}/{{.UrlTitle}}" title="{{.Title}}">
+			    {{if .Title}}
+			        {{.Title}}
+			    {{else}}
+			        Untitled
+				{{end}}
+			</a>
+		</div>
+		<div class="created-time">
+		    {{if .Tags}} 
+			<i class="fa fa-bookmark-o"></i>
+				{{blogTags $ .Tags}}
+				&nbsp;&nbsp;
+			{{end}}
+			<i class="fa fa-clock-o"></i> {{.PublicTime | datetime}} 
+			&nbsp;&nbsp;
+			<span class="fa fa-eye"></span> {{.ReadNum}}
+			&nbsp;&nbsp;
+			<span class="fa fa-thumbs-o-up"></span> {{.LikeNum}}
+			&nbsp;&nbsp;
+			<span class="fa fa-comments-o"></span> {{.CommentNum}}
+		</div>
+		<div class="desc">
+			{{.Abstract | raw}}
+		</div>
+		<div id="moreContainer">
+		    <a class="more" href="{{$.postUrl}}/{{.UrlTitle}}" title="{{.Title}}">More</a>
+        </div>	
+	</div>
+{{else}}
+<div class="each-post">
+No Post
+</div>
+{{end}}

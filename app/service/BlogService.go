@@ -69,9 +69,14 @@ func (this *BlogService) GetBlogItem(note info.Note) (blog info.BlogItem) {
 }
 
 // 得到用户共享的notebooks
+// 3/19 博客不是deleted
 func (this *BlogService) ListBlogNotebooks(userId string) []info.Notebook {
 	notebooks := []info.Notebook{}
-	db.ListByQ(db.Notebooks, bson.M{"UserId": bson.ObjectIdHex(userId), "IsBlog": true}, &notebooks)
+	orQ := []bson.M{
+		bson.M{"IsDeleted": false},
+		bson.M{"IsDeleted": bson.M{"$exists": false}},
+	}
+	db.ListByQ(db.Notebooks, bson.M{"UserId": bson.ObjectIdHex(userId), "IsBlog": true, "$or": orQ}, &notebooks)
 	return notebooks
 }
 
@@ -1094,13 +1099,15 @@ func (this *BlogService) SortSingles(userId string, singleIds []string) (ok bool
 
 // 得到用户的博客url
 func (this *BlogService) GetUserBlogUrl(userBlog *info.UserBlog, username string) string {
-	if userBlog.Domain != "" && configService.AllowCustomDomain() {
-		return configService.GetUserUrl(userBlog.Domain)
-	} else if userBlog.SubDomain != "" {
-		return configService.GetUserSubUrl(userBlog.SubDomain)
-	}
-	if username == "" {
-		username = userBlog.UserId.Hex()
+	if userBlog != nil {
+		if userBlog.Domain != "" && configService.AllowCustomDomain() {
+			return configService.GetUserUrl(userBlog.Domain)
+		} else if userBlog.SubDomain != "" {
+			return configService.GetUserSubUrl(userBlog.SubDomain)
+		}
+		if username == "" {
+			username = userBlog.UserId.Hex()
+		}
 	}
 	return configService.GetBlogUrl() + "/" + username
 }

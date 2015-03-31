@@ -2,30 +2,37 @@
 
 <div id="postsContainer">
 	<div class="container">
-	    <h2>归档 {{if $.curCateTitle}} - {{$.curCateTitle}}{{end}}</h2>
+	    <h2>Archives {{if $.curCateTitle}} - {{$.curCateTitle}}{{end}}</h2>
 	</div>
 	<div id="posts">
 		
 		<div class="each-post">
 		    <ul>
 		        {{range $.archives}}
-		        <li><span class="archive-year">{{.Year}}</span>
-        		    <ul>
+		        {{$year := .Year}}
+		       
     		            {{range .MonthAchives}}
-        		        <li>
-        		            <span class="archive-month">{{.Month}}</span>
-        		            <ul>
+        		        
+        		          <span class="archive-month">{{$year}}-{{.Month}}</span>
+        		          <ul>
         		                {{range .Posts}}
         		                <li>
-        		                    {{dateFormat .PublicTime "2006-01-02"}} <a href="{{$.postUrl}}/{{.UrlTitle}}">{{.Title}}</a>
+        		                    {{dateFormat .PublicTime "2006-01-02"}} <a href="{{$.postUrl}}/{{.UrlTitle}}">
+        		                    
+        		                    {{if .Title}}
+        		                        {{.Title}}
+        		                    {{else}}
+        		                        Untitled
+        		                    {{end}} 
+        		                    </a>
         		                </li>
         		                {{end}}
-        		            </ul>
+        		           </ul>
         		            
-        		        </li>
+        		        
         		        {{end}}
-        		    </ul>
-    		    </li>
+        		    
+    		    
     		    {{end}}
 		    </ul>
 		</div>

@@ -759,7 +759,7 @@ function post(url, param, func, btnId) {
 
 // 是否是正确的email
 function isEmail(email) {
-	var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[0-9a-zA-Z]{2,3}$/;
+	var myreg = /^([a-zA-Z0-9]+[_|\_|\.|\-]?)*[a-zA-Z0-9\-]+@([a-zA-Z0-9\-]+[_|\_|\.|\-]?)*[a-zA-Z0-9\-]+\.[0-9a-zA-Z]{2,3}$/;
 	return myreg.test(email);
 }
 
@@ -967,8 +967,9 @@ var vd = {
 	    return result;
 	},
 	isEmail: function(emailValue){
-	    var emailPattern=/^[^@.]+@([^@.]+\.)+[^@.]+$/; //邮箱的正则表达式
+	    var emailPattern=/^([a-zA-Z0-9]+[_|\_|\.|\-]?)*[a-zA-Z0-9\-]+@([a-zA-Z0-9\-]+[_|\_|\.|\-]?)*[a-zA-Z0-9\-]+\.[0-9a-zA-Z]{2,3}$/; //邮箱的正则表达式
 	    result=emailPattern.test(emailValue);
+	   
 	    return result;
 	},
 	isBlank: function(o) { 
@@ -1024,7 +1025,7 @@ var vd = {
 				if(val === "" && !is_required(target)) {
 					return true;
 				}
-				return isEmail(val);
+				return vd.isEmail(val);
 			},
 			noSpecialChars: function(target) {
 				var val = get_val(target);
@@ -1276,3 +1277,7 @@ function setHash(key, value) {
 	}
 	location.href = "#" + str;
 }
+
+var trimTitle = function(title) {
+	return title.replace(/<.*?script.*?>/g, '');
+};

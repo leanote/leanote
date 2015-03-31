@@ -122,9 +122,44 @@ func ReplaceAll(oldStr, pattern, newStr string) string {
 	return string(s)
 }
 
+// 获取纯文本
+func SubStringHTMLToRaw(param string, length int) (result string) {
+	if param == "" {
+		return ""
+	}
+	result = ""
+	n := 0
+	var temp rune // 中文问题, 用rune来解决
+	rStr := []rune(param)
+	isCode := false
+	for i := 0; i < len(rStr); i++ {
+		temp = rStr[i]
+		if temp == '<' {
+			isCode = true
+			continue
+		} else if temp == '>' {
+			isCode = false
+			result += " "; // 空格
+			continue
+		}
+		if !isCode {
+			result += string(temp)
+			n++
+			if n >= length {
+				break
+			}
+		}
+	}
+	return 
+}
+
+// 获取摘要, HTML
 func SubStringHTML(param string, length int, end string) string {
-	// 先取出<pre></pre>占位..
+	if param == "" {
+		return ""
+	}
 	
+	// 先取出<pre></pre>占位..
 	result := ""
 
 	// 1
@@ -196,6 +231,7 @@ func SubStringHTML(param string, length int, end string) string {
 	
 	return result
 }
+
 // 是否是合格的密码
 func IsGoodPwd(pwd string) (bool, string) {
 	if pwd == "" {
@@ -212,7 +248,7 @@ func IsEmail(email string) bool {
 	if email == "" {
 		return false;
 	}
-	ok, _ := regexp.MatchString(`^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[0-9a-zA-Z]{2,3}$`, email)
+	ok, _ := regexp.MatchString(`^([a-zA-Z0-9]+[_|\_|\.|\-]?)*[a-z\-A-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.|\-]?)*[a-zA-Z0-9\-]+\.[0-9a-zA-Z]{2,3}$`, email)
 	return ok
 }
 

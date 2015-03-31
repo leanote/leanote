@@ -179,8 +179,6 @@ func RenderTemplate(name string, args map[string]interface{}, basePath string, i
 
 		// 将该basePath下的所有文件提出
 		files := ListDir(basePath)
-		Log(basePath)
-		LogJ(files);
 		for _, t := range files {
 			if !strings.Contains(t, ".html") {
 				continue;
@@ -215,7 +213,8 @@ func RenderTemplate(name string, args map[string]interface{}, basePath string, i
 
 
 ////////////////////
-// 错误显示
+//
+
 
 type ErrorResult struct {
 	RenderArgs map[string]interface{}
@@ -290,13 +289,12 @@ func (r ErrorResult) Apply(req *revel.Request, resp *revel.Response) {
 	r.RenderArgs["Router"] = revel.MainRouter
 
 	// 不是preview就不要显示错误了
-	LogJ(revelError)
-//	if r.IsPreview {
+	if r.IsPreview {
 		var b bytes.Buffer
 		out := io.Writer(resp.Out)
 		//	out = ioutil.Discard
 		err = tmpl.Execute(&b, r.RenderArgs)
 		resp.WriteHeader(http.StatusOK, "text/html; charset=utf-8")
 		b.WriteTo(out)
-//	}
+	}
 }

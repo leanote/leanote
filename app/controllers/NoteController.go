@@ -7,6 +7,7 @@ import (
 	. "github.com/leanote/leanote/app/lea"
 	"github.com/leanote/leanote/app/info"
 	"os/exec"
+	"strings"
 //	"time"
 //	"github.com/leanote/leanote/app/types"
 //	"io/ioutil"
@@ -124,9 +125,7 @@ func (c Note) Index(noteId string) revel.Result {
 	
 	c.RenderArgs["globalConfigs"] = configService.GetGlobalConfigForUser()
 	
-	
-//	return c.RenderTemplate("note/note.html")
-	
+//		return c.RenderTemplate("note/note.html")
 	if isDev, _ := revel.Config.Bool("mode.dev"); isDev {
 		return c.RenderTemplate("note/note-dev.html")
 	} else {
@@ -169,7 +168,7 @@ type NoteOrContent struct {
 	Title string
 	Desc string
 	ImgSrc string
-	Tags []string
+	Tags string
 	Content string
 	Abstract string
 	IsNew bool
@@ -192,7 +191,7 @@ func (c Note) UpdateNoteOrContent(noteOrContent NoteOrContent) revel.Result {
 			NoteId: bson.ObjectIdHex(noteOrContent.NoteId), 
 			NotebookId: bson.ObjectIdHex(noteOrContent.NotebookId), 
 			Title: noteOrContent.Title, 
-			Tags: noteOrContent.Tags,
+			Tags: strings.Split(noteOrContent.Tags, ","),
 			Desc: noteOrContent.Desc,
 			ImgSrc: noteOrContent.ImgSrc,
 			IsBlog: noteOrContent.IsBlog,
@@ -225,22 +224,31 @@ func (c Note) UpdateNoteOrContent(noteOrContent NoteOrContent) revel.Result {
 		noteUpdate["Title"] = noteOrContent.Title;
 	}
 	
-	if c.Has("Tags[]") {
+	if c.Has("Tags") {
 		needUpdateNote = true
-		noteUpdate["Tags"] = noteOrContent.Tags;
+		noteUpdate["Tags"] = strings.Split(noteOrContent.Tags, ",");
 	}
 	
+	// web端不控制
 	if needUpdateNote { 
-		noteService.UpdateNote(noteOrContent.UserId, c.GetUserId(), 
-			noteOrContent.NoteId, noteUpdate)
+		noteService.UpdateNote(c.GetUserId(), 
+			noteOrContent.NoteId, noteUpdate, -1)
 	}
 	
 	//-------------
-	
+	afterContentUsn := 0
+	contentOk := false
+	contentMsg := ""
 	if c.Has("Content") {
-		noteService.UpdateNoteContent(noteOrContent.UserId, c.GetUserId(), 
-			noteOrContent.NoteId, noteOrContent.Content, noteOrContent.Abstract)
+//		noteService.UpdateNoteContent(noteOrContent.UserId, c.GetUserId(), 
+//			noteOrContent.NoteId, noteOrContent.Content, noteOrContent.Abstract)
+		contentOk, contentMsg, afterContentUsn = noteService.UpdateNoteContent(c.GetUserId(),
+			noteOrContent.NoteId, noteOrContent.Content, noteOrContent.Abstract, needUpdateNote, -1)
 	}
+	
+	Log(afterContentUsn)
+	Log(contentOk)
+	Log(contentMsg)
 	
 	return c.RenderJson(true)
 }
@@ -291,10 +299,12 @@ func (c Note) SearchNoteByTags(tags []string) revel.Result {
 // 这是脚本调用, 没有cookie, 不执行权限控制, 通过传来的appKey判断
 func (c Note) ToImage(noteId, appKey string) revel.Result {
 	// 虽然传了cookie但是这里还是不能得到userId, 所以还是通过appKey来验证之
+	/*
 	appKeyTrue, _ := revel.Config.String("app.secret")
 	if appKeyTrue != appKey {
 		 return c.RenderText("")
 	}
+	*/
 	note := noteService.GetNoteById(noteId)
 	if note.NoteId == "" {
 		return c.RenderText("")
@@ -411,6 +421,75 @@ func (c Note) Html2Image(noteId string) revel.Result {
     }
 	*/
 	
+}
+
+// 导出成PDF
+func (c Note) ExportPdf(noteId string) revel.Result {
+	re := info.NewRe()
+	userId := c.GetUserId()
+	note := noteService.GetNoteById(noteId)
+	if note.NoteId == "" {
+		re.Msg = "No Note"
+		return c.RenderJson(re)
+	}
+	
+	noteUserId := note.UserId.Hex()
+	// 是否有权限
+	if noteUserId != userId {
+		// 是否是有权限协作的
+		if !note.IsBlog && !shareService.HasReadPerm(noteUserId, userId, noteId) {
+			re.Msg = "No Perm"
+			return c.RenderJson(re)
+		}
+	}
+
+	// path 判断是否需要重新生成之
+	fileUrlPath := "upload/" + noteUserId + "/images/weibo"
+	dir := revel.BasePath + "/public/" + fileUrlPath
+	if !ClearDir(dir) {
+		re.Msg = "No Dir"
+		return c.RenderJson(re)
+	}
+	filename := note.Title + ".pdf";
+	if note.Title == "" {
+		filename = "Untitled.pdf";
+	}
+	path := dir + "/" + filename
+	
+	// cookie
+	cookieName := revel.CookiePrefix + "_SESSION"
+	cookie, err := c.Request.Cookie(cookieName)
+	cookieStr := cookie.String()
+	cookieValue := ""
+	if err == nil && len(cookieStr) > len(cookieName) {
+		cookieValue = cookieStr[len(cookieName)+1:]
+	}
+	Log(cookieValue)
+	
+	appKey, _ := revel.Config.String("app.secret")
+//	cookieDomain, _ := revel.Config.String("cookie.domain")
+	// 生成之
+	url := configService.GetSiteUrl() + "/note/toImage?noteId=" + noteId + "&appKey=" + appKey;
+	// /Users/life/Documents/bin/phantomjs/bin/phantomjs /Users/life/Desktop/test/b.js
+	binPath := "/usr/local/bin/wkhtmltopdf" // configService.GetGlobalStringConfig("toImageBinPath")
+	if binPath == "" {
+		return c.RenderJson(re);
+	}
+//	cc := binPath + " \"" + url + "\"  \"" + path + "\" \"" + cookieDomain + "\" \"" + cookieName + "\" \"" + cookieValue + "\""
+	cc := binPath + " \"" + url + "\"  \"" + path + "\"" //  \"" + cookieDomain + "\" \"" + cookieName + "\" \"" + cookieValue + "\""
+	cmd := exec.Command("/bin/sh", "-c", cc)
+	Log(cc);
+	b, err := cmd.Output()
+    if err == nil {
+    	re.Ok = true
+		re.Id = fileUrlPath + "/" + filename
+    } else {
+    	re.Msg = string(b)
+    	Log("error:......")
+    	Log(string(b))
+    }
+    
+	return c.RenderJson(re)
 }
 
 // 设置/取消Blog; 置顶

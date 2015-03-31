@@ -1,0 +1,46 @@
+{{template "admin/top.html" .}}
+<div class="m-b-md"> <h3 class="m-b-none">Upgrade v1.0-beta.2/3 to v1.0-beta.4</h3></div>
+
+<div class="row">
+
+<div class="col-sm-6">
+	<form id="add_user_form">
+		<section class="panel panel-default">
+			<div class="panel-body">
+				Current Version: <span class="label label-success">leanote v{{.version}}</span>
+				<ul>
+					<li>Api support (Enable Leanote Desktop App to connect server))</li>
+					<li>Update tags</li>
+				</ul>
+			</div>
+			<footer class="panel-footer text-right bg-light lter">
+				<button type="submit" id="submit" class="btn btn-success btn-s-xs">Upgrade to v1.0-beta.4</button>
+			</footer>
+		</section>
+	</form>
+</div>
+
+</div>
+
+{{template "admin/footer.html" .}}
+<script>
+$(function() {
+$("#submit").click(function(e) {
+	e.preventDefault();
+	var t = this;
+	art.confirm("Are you sure to upgrade to v1.0-beta.4 ? Please don't try to upgrade twice.", function() {
+		$(t).button('loading');
+		ajaxPost("/adminUpgrade/UpgradeBeta3ToBeta4", {}, function(ret){
+			$(t).button('reset')
+			if(!ret.Ok) {
+				art.alert(ret.Msg)
+			} else {
+				art.tips("Success");
+			}
+		});
+	});
+});
+});
+</script>
+
+{{template "admin/end.html" .}}

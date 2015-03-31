@@ -17,15 +17,15 @@
 
 */
 {
-    "Name": "leanote default theme",
+    "Name": "Leanote default theme",
     "Version": "1.0",
     "Author": "leanote.com",
     "AuthorUrl": "http://leanote.com",
     "FriendLinks": [
-        {"Title": "我的笔记", "Url": "http://leanote.com/note"},
-        {"Title": "leanote home", "Url": "http://leanote.com"},
-        {"Title": "leanote 社区", "Url": "http://bbs.leanote.com"},
+        {"Title": "My Note", "Url": "http://leanote.com/note"},
+        {"Title": "Leanote Home", "Url": "http://leanote.com"},
+        {"Title": "Leanote Comunity", "Url": "https://groups.google.com/forum/?fromgroups#!forum/leanote"},
         {"Title": "lea++", "Url": "http://lea.leanote.com"},
-        {"Title": "leanote github", "Url": "https://github.com/leanote/leanote"}
+        {"Title": "Leanote Github", "Url": "https://github.com/leanote/leanote"}
     ]
 }
