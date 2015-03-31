@@ -775,10 +775,6 @@ Note.renderNotes = function(notes, forNewNote, isShared) {
 	}
 }
 
-Note._toHtmlEntity = function(html){
-	return (html + '').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-};
-
 Note._renderNotes = function(notes, forNewNote, isShared, tang) { // 第几趟
 	var baseClasses = "item-my";
 	if(isShared) {
@@ -794,9 +790,9 @@ Note._renderNotes = function(notes, forNewNote, isShared, tang) { // 第几趟
 		var note = notes[i];
 		var tmp;
 		if(note.ImgSrc) {
-			tmp = tt(Note.itemTpl, classes, note.NoteId, note.ImgSrc, Note._toHtmlEntity(note.Title), Notebook.getNotebookTitle(note.NotebookId), goNowToDatetime(note.UpdatedTime), note.Desc);
+			tmp = tt(Note.itemTpl, classes, note.NoteId, note.ImgSrc, toHtmlEntity(note.Title), Notebook.getNotebookTitle(note.NotebookId), goNowToDatetime(note.UpdatedTime), note.Desc);
 		} else {
-			tmp = tt(Note.itemTplNoImg, classes, note.NoteId, Note._toHtmlEntity(note.Title), Notebook.getNotebookTitle(note.NotebookId), goNowToDatetime(note.UpdatedTime), note.Desc);
+			tmp = tt(Note.itemTplNoImg, classes, note.NoteId, toHtmlEntity(note.Title), Notebook.getNotebookTitle(note.NotebookId), goNowToDatetime(note.UpdatedTime), note.Desc);
 		}
 		if(!note.IsBlog) {
 			tmp = $(tmp);
@@ -854,12 +850,12 @@ Note.newNote = function(notebookId, isShare, fromUserId, isMarkdown) {
 	}
 
 	var notebook = Notebook.getNotebook(notebookId);
-	var notebookTitle = notebook ? Note._toHtmlEntity(notebook.Title) : "";
+	var notebookTitle = notebook ? toHtmlEntity(notebook.Title) : "";
 	var curDate = getCurDate();
 	if(isShare) {
-		newItem = tt(Note.newItemTpl, baseClasses, fromUserId, note.NoteId, Note._toHtmlEntity(note.Title), notebookTitle, curDate, "");
+		newItem = tt(Note.newItemTpl, baseClasses, fromUserId, note.NoteId, toHtmlEntity(note.Title), notebookTitle, curDate, "");
 	} else {
-		newItem = tt(Note.newItemTpl, baseClasses, "", note.NoteId, Note._toHtmlEntity(note.Title), notebookTitle, curDate, "");
+		newItem = tt(Note.newItemTpl, baseClasses, "", note.NoteId, toHtmlEntity(note.Title), notebookTitle, curDate, "");
 	}
 
 	// notebook是否是Blog
@@ -1595,7 +1591,7 @@ var Attach = {
 		for(var i = 0; i < attachNum; ++i) {
 			var each = attachs[i];
 			html += '<li class="clearfix" data-id="' + each.AttachId + '">' +
-						'<div class="attach-title">' + Note._toHtmlEntity(each.Title) + '</div>' +
+						'<div class="attach-title">' + toHtmlEntity(each.Title) + '</div>' +
 						'<div class="attach-process"> ' +
 						'	  <button class="btn btn-sm btn-warning delete-attach" data-loading-text="..."><i class="fa fa-trash-o"></i></button> ' +
 						'	  <button type="button" class="btn btn-sm btn-primary download-attach"><i class="fa fa-download"></i></button> ' +

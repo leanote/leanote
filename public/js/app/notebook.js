@@ -58,7 +58,7 @@ Notebook.getNotebook = function(notebookId) {
 Notebook.getNotebookTitle = function(notebookId) {
 	var notebook = Notebook.cache[notebookId];
 	if(notebook) {
-		return Note._toHtmlEntity(notebook.Title);
+		return toHtmlEntity(notebook.Title);
 	} else {
 		return "未知";
 	}
@@ -409,7 +409,7 @@ Notebook.getChangedNotebooks = function(notebooks) {
 		if(!isEmpty(notebook.Subs)) {
 			classes = "dropdown-submenu";
 		}
-		var eachForNew = tt('<li role="presentation" class="clearfix ?"><div class="new-note-left pull-left" title="为该笔记本新建笔记" href="#" notebookId="?">?</div><div title="为该笔记本新建markdown笔记" class="new-note-right pull-left" notebookId="?">M</div>', classes, notebook.NotebookId, Note._toHtmlEntity(notebook.Title), notebook.NotebookId);
+		var eachForNew = tt('<li role="presentation" class="clearfix ?"><div class="new-note-left pull-left" title="为该笔记本新建笔记" href="#" notebookId="?">?</div><div title="为该笔记本新建markdown笔记" class="new-note-right pull-left" notebookId="?">M</div>', classes, notebook.NotebookId, toHtmlEntity(notebook.Title), notebook.NotebookId);
 
 		if(!isEmpty(notebook.Subs)) {
 			eachForNew  += "<ul class='dropdown-menu'>";
@@ -487,12 +487,12 @@ Notebook.renderShareNotebooks = function(sharedUserInfos, shareNotebooks) {
 
 		userNotebooks.ShareNotebooks = [{NotebookId: "-2", Title: "默认共享"}].concat(userNotebooks.ShareNotebooks)
 
-		var username = Note._toHtmlEntity(userInfo.Username || userInfo.Email);
+		var username = toHtmlEntity(userInfo.Username || userInfo.Email);
 		var header = tt('<div class="folderNote closed"><div class="folderHeader"><a><h1 title="? 的共享"><i class="fa fa-angle-right"></i>?</h1></a></div>', username, username);
 		var body = '<ul class="folderBody">';
 		for(var j in userNotebooks.ShareNotebooks) {
 			var notebook = userNotebooks.ShareNotebooks[j];
-			body += tt('<li><a notebookId="?">?</a></li>', notebook.NotebookId, Note._toHtmlEntity(notebook.Title))
+			body += tt('<li><a notebookId="?">?</a></li>', notebook.NotebookId, toHtmlEntity(notebook.Title))
 		}
 		body += "</ul>";
 

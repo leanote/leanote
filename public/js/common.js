@@ -1278,6 +1278,10 @@ function setHash(key, value) {
 	location.href = "#" + str;
 }
 
-var trimTitle = function(title) {
+// 防止js注入
+function trimTitle(title) {
 	return title.replace(/<.*?script.*?>/g, '');
+};
+function toHtmlEntity(html) {
+	return (html + '').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 };

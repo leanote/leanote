@@ -110,7 +110,7 @@ Tag.renderReadOnlyTags = function(tags) {
 		if(!classes) {
 			classes = getNextDefaultClasses();
 		}
-		tag = tt('<span class="?">?</span>', classes, Note._toHtmlEntity(text));
+		tag = tt('<span class="?">?</span>', classes, toHtmlEntity(text));
 		
 		$("#noteReadTags").append(tag);
 	}
@@ -149,7 +149,7 @@ Tag.appendTag = function(tag, save) {
 	}
 	text = text.replace(/[\r\n]/g, '');
 	
-	tag = tt('<span class="?" data-tag="?">?<i title="' + getMsg("delete") + '">X</i></span>', classes, text, Note._toHtmlEntity(text););
+	tag = tt('<span class="?" data-tag="?">?<i title="' + getMsg("delete") + '">X</i></span>', classes, text, toHtmlEntity(text));
 
 	// 避免重复
 	var isExists = false;
@@ -241,7 +241,7 @@ Tag.renderTagNav = function(tags) {
 		}
 		text = text.replace(/[\r\n]/g, '');
 		var classes = Tag.classes[tag] || "label label-default";
-		$("#tagNav").append(tt('<li data-tag="?"><a> <span class="?">?</span> <span class="tag-delete">X</span></li>', tag, classes, Note._toHtmlEntity(text)));
+		$("#tagNav").append(tt('<li data-tag="?"><a> <span class="?">?</span> <span class="tag-delete">X</span></li>', tag, classes, toHtmlEntity(text)));
 	}
 };
 
