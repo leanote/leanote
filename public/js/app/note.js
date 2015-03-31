@@ -392,7 +392,7 @@ Note.getImgSrc = function(content) {
 // 定时保存传false
 Note.saveInProcess = {}; // noteId => bool, true表示该note正在保存到服务器, 服务器未响应
 Note.savePool = {}; // 保存池, 以后的保存先放在pool中, id => note
-Note.curChangedSaveIt = function(force) {
+Note.curChangedSaveIt = function(force, callback) {
 	var me = this;
 	// 如果当前没有笔记, 不保存
 	if(!Note.curNoteId || Note.isReadOnly) {
@@ -448,7 +448,7 @@ Note.curChangedSaveIt = function(force) {
 		return hasChanged;
 	}
 	return false;
-}
+};
 
 // 更新池里的笔记
 Note.updatePoolNote = function() {
@@ -1410,7 +1410,7 @@ Note.copyNote = function(target, data, isShared) {
 
 	// 增加数量
 	Notebook.incrNotebookNumberNotes(notebookId)
-}
+};
 
 // 删除笔记标签
 // item = {noteId => usn}
