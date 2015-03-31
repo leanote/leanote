@@ -39,10 +39,6 @@ POST	/findPasswordUpdate							Auth.FindPasswordUpdate
 * /note/searchNoteByTags Note.SearchNoteByTags
 * /note/toImage Note.ToImage
 * /note/html2Image Note.Html2Image
-<<<<<<< HEAD:conf/routes
-=======
-* /note/exportPdf Note.ExportPDF
->>>>>>> dev-life:conf/routes
 * /note/setNote2Blog Note.SetNote2Blog
 # pjax
 GET     /note/:noteId   	                        Note.Index

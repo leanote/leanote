@@ -119,10 +119,7 @@ func (this *UserService) GetUserInfo(userId string) info.User {
 func (this *UserService) GetUserInfoByEmail(email string) info.User {
 	user := info.User{}
 	db.GetByQ(db.Users, bson.M{"Email": email}, &user)
-<<<<<<< HEAD
-=======
 	// Logo路径问题, 有些有http: 有些没有
->>>>>>> dev-life
 	this.setUserLogo(&user)
 	return user
 }
@@ -131,10 +128,7 @@ func (this *UserService) GetUserInfoByUsername(username string) info.User {
 	user := info.User{}
 	username = strings.ToLower(username)
 	db.GetByQ(db.Users, bson.M{"Username": username}, &user)
-<<<<<<< HEAD
-=======
 	// Logo路径问题, 有些有http: 有些没有
->>>>>>> dev-life
 	this.setUserLogo(&user)
 	return user
 }

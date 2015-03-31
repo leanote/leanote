@@ -252,17 +252,13 @@ Notebook.renderNotebooks = function(notebooks) {
 	if(!notebooks || typeof notebooks != "object" || notebooks.length < 0) {
 		notebooks = [];
 	}
-<<<<<<< HEAD
-
-=======
 	
 	// title可能有<script>
 	for(var i = 0, len = notebooks.length; i < len; ++i) {
 		var notebook = notebooks[i];
 		notebook.Title = trimTitle(notebook.Title);
 	}
-	
->>>>>>> dev-life
+
 	notebooks = [{NotebookId: Notebook.allNotebookId, Title: getMsg("all"), drop:false, drag: false}].concat(notebooks);
 	notebooks.push({NotebookId: Notebook.trashNotebookId, Title: getMsg("trash"), drop:false, drag: false});
 	Notebook.notebooks = notebooks; // 缓存之
@@ -648,16 +644,7 @@ Notebook.changeNotebook = function(notebookId, callback) {
 	// 这里可以缓存起来, note按notebookId缓存
 	// 这里可能点击过快导致前面点击的后来才返回
 	me.showNoteAndEditorLoading();
-<<<<<<< HEAD
-	ajaxGet(url, param, function(cacheNotes) {
-		if(callback) {
-			callback(cacheNotes);
-		} else {
-			Note.renderNotesAndFirstOneContent(cacheNotes);
-		}
-		me.hideNoteAndEditorLoading();
-	});
-=======
+
 	me.changeNotebookSeq++;
 	(function(seq) {
 		ajaxGet(url, param, function(cacheNotes) { 
@@ -675,7 +662,6 @@ Notebook.changeNotebook = function(notebookId, callback) {
 			me.hideNoteAndEditorLoading();
 		});
 	})(me.changeNotebookSeq);
->>>>>>> dev-life
 }
 
 // 笔记列表与编辑器的mask loading

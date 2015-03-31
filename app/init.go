@@ -374,12 +374,6 @@ func init() {
 		admin.InitService()
 		member.InitService()
 		service.ConfigS.InitGlobalConfigs()
-<<<<<<< HEAD
-	});
-}
-=======
 		api.InitService()
 	})
-	
 }
->>>>>>> dev-life

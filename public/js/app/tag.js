@@ -50,7 +50,7 @@ Tag.clearTags = function() {
 // 设置tags
 // called by Note
 Tag.renderTags = function(tags) {
-	Tag.clearTags();
+	Tag.t.html("");
 	if(isEmpty(tags)) {
 		return;
 	}
@@ -88,9 +88,8 @@ Tag.renderReadOnlyTags = function(tags) {
 	$("#noteReadTags").html("");
 	if(isEmpty(tags)) {
 		$("#noteReadTags").html(getMsg("noTag"));
-		return;
 	}
-
+	
 	var i = true;
 	function getNextDefaultClasses() {
 		if (i) {
@@ -101,21 +100,20 @@ Tag.renderReadOnlyTags = function(tags) {
 			return "label label-info";
 		}
 	}
-
-	var html = [], text;
-
-	for(var i = 0, j = tags.length; i<j; i++) {
-		text = tags[i];
+	
+	for(var i in tags) {
+		var text = tags[i];
 		text = Tag.mapEn2Cn[text] || text;
 		text = text.replace(/[\r\n]/g, '');
-
-		html.push(tt('<span class="?">?</span>',
-			Tag.classes[text] || getNextDefaultClasses(),
-			Note._toHtmlEntity(text)
-		));
+		
+		var classes = Tag.classes[text];
+		if(!classes) {
+			classes = getNextDefaultClasses();
+		}
+		tag = tt('<span class="?">?</span>', classes, Note._toHtmlEntity(text));
+		
+		$("#noteReadTags").append(tag);
 	}
-
-	$("#noteReadTags").append(html.join(''));
 }
 
 // 添加tag
@@ -124,7 +122,7 @@ Tag.renderReadOnlyTags = function(tags) {
 Tag.appendTag = function(tag, save) {
 	var isColor = false;
 	var classes, text;
-
+	
 	if (typeof tag == "object") {
 		classes = tag.classes;
 		text = tag.text;
@@ -144,21 +142,14 @@ Tag.appendTag = function(tag, save) {
 			classes = "label label-default";
 		}
 	}
-<<<<<<< HEAD
-
-=======
 	var rawText = text;
->>>>>>> dev-life
 	if(LEA.locale == "zh") {
 		text = Tag.mapEn2Cn[text] || text;
 		rawText = Tag.mapCn2En[rawText] || rawText;
 	}
-<<<<<<< HEAD
 	text = text.replace(/[\r\n]/g, '');
-	tag = tt('<span class="?">?<i title="' + getMsg("delete") + '">X</i></span>', classes, Note._toHtmlEntity(text));
-=======
-	tag = tt('<span class="?" data-tag="?">?<i title="' + getMsg("delete") + '">X</i></span>', classes, text, text);
->>>>>>> dev-life
+	
+	tag = tt('<span class="?" data-tag="?">?<i title="' + getMsg("delete") + '">X</i></span>', classes, text, Note._toHtmlEntity(text););
 
 	// 避免重复
 	var isExists = false;
@@ -248,15 +239,9 @@ Tag.renderTagNav = function(tags) {
 		if(LEA.locale == "zh") {
 			var text = Tag.mapEn2Cn[tag] || text;
 		}
-<<<<<<< HEAD
-		var text = Note._toHtmlEntity(Tag.mapEn2Cn[tag] || tag);
 		text = text.replace(/[\r\n]/g, '');
 		var classes = Tag.classes[tag] || "label label-default";
-		$("#tagNav").append(tt('<li data-tag="?"><a> <span class="?">?</span></li>', text, classes, text));
-=======
-		var classes = Tag.classes[tag] || "label label-default";
-		$("#tagNav").append(tt('<li data-tag="?"><a> <span class="?">?</span> <span class="tag-delete">X</span></li>', tag, classes, text));
->>>>>>> dev-life
+		$("#tagNav").append(tt('<li data-tag="?"><a> <span class="?">?</span> <span class="tag-delete">X</span></li>', tag, classes, Note._toHtmlEntity(text)));
 	}
 };
 
@@ -282,11 +267,11 @@ $(function() {
 		$(this).hide();
 		$("#addTagInput").show().focus().val("");
 	});
-
+	
 	$("#addTagInput").click(function(event) {
 		showTagList(event);
 	});
-
+	
 	$("#addTagInput").blur(function() {
 		var val = $(this).val();
 		if(val) {
@@ -334,13 +319,10 @@ $(function() {
 		// event.stopPropagation();
 	});
 	*/
-
+	
 	$("#tags").on("click", "i", function() {
 		Tag.removeTag($(this).parent());
 	});
-<<<<<<< HEAD
-
-=======
 	//----------
 	//
 	function deleteTag() {
@@ -357,31 +339,25 @@ $(function() {
 		};
 	}
 	
->>>>>>> dev-life
 	//-------------
 	// nav 标签搜索
 	function searchTag() {
 		var $li = $(this).closest('li');
 		var tag = $.trim($li.data("tag"));
 		// tag = Tag.mapCn2En[tag] || tag;
-
+		
 		// 学习changeNotebook
-
+		
 		// 1
 		Note.curChangedSaveIt();
-
+		
 		// 2 先清空所有
 		// 也会把curNoteId清空
 		Note.clearAll();
-<<<<<<< HEAD
-
-		$("#tagSearch").html($(this).html()).show();
-=======
 		
 		$("#tagSearch").html($li.html()).show();
 		$("#tagSearch .tag-delete").remove();
 		
->>>>>>> dev-life
 		showLoading();
 		ajaxGet("/note/searchNoteByTags", {tags: [tag]}, function(notes) {
 			hideLoading();
@@ -389,7 +365,7 @@ $(function() {
 				// 和note搜索一样
 				// 设空, 防止发生上述情况
 				// Note.curNoteId = "";
-
+				
 				Note.renderNotes(notes);
 				if(!isEmpty(notes)) {
 					Note.changeNote(notes[0].NoteId);
