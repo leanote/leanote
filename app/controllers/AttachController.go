@@ -100,7 +100,7 @@ func (c Attach) uploadAttach(noteId string) (re info.Re) {
 	id := bson.NewObjectId();
 	fileInfo.AttachId = id
 	fileId = id.Hex()
-	Ok, resultMsg = attachService.AddAttach(fileInfo)
+	Ok, resultMsg = attachService.AddAttach(fileInfo, false)
 	if resultMsg != "" {
 		resultMsg = c.Message(resultMsg)
 	}

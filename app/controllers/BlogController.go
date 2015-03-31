@@ -57,9 +57,9 @@ func (c Blog) render(templateName string, themePath string) revel.Result {
 		isPreview = true
 		themePath = themePath2.(string)
 		c.setPreviewUrl()
-
+		
 		// 因为common的themeInfo是从UserBlog.ThemeId来取的, 所以这里要fugai下
-		c.RenderArgs["themeInfo"] = c.RenderArgs["themeInfoPreview"]
+		c.RenderArgs["themeInfo"] = c.RenderArgs["themeInfoPreview"];
 	}
 	return blog.RenderTemplate(templateName, c.RenderArgs, revel.BasePath+"/"+themePath, isPreview)
 }
@@ -119,9 +119,9 @@ func (c Blog) setPreviewUrl() {
 	indexUrl = blogUrl + "/" + userIdOrEmail
 	cateUrl = blogUrl + "/cate/" + userIdOrEmail // /notebookId
 
-	postUrl = blogUrl + "/post/" + userIdOrEmail        // /xxxxx
+	postUrl = blogUrl + "/post/" + userIdOrEmail                         // /xxxxx
 	searchUrl = blogUrl + "/search/" + userIdOrEmail    // blog.leanote.com/search/userId
-	singleUrl = blogUrl + "/single/" + userIdOrEmail    // blog.leanote.com/single/singleId
+	singleUrl = blogUrl + "/single/" + userIdOrEmail                     // blog.leanote.com/single/singleId
 	archiveUrl = blogUrl + "/archives/" + userIdOrEmail // blog.leanote.com/archive/userId
 	tagsUrl = blogUrl + "/tags/" + userIdOrEmail        // blog.leanote.com/archive/userId
 
@@ -143,6 +143,10 @@ func (c Blog) setPreviewUrl() {
 // 各种地址设置
 func (c Blog) setUrl(userBlog info.UserBlog, userInfo info.User) {
 	// 主页 http://leanote.com/blog/life or http://blog.leanote.com/life or http:// xxxx.leanote.com or aa.com
+	host := c.Request.Request.Host
+	var staticUrl = configService.GetUserUrl(strings.Split(host, ":")[0])
+	// staticUrl == host, 为保证同源!!! 只有host, http://leanote.com, http://blog/leanote.com
+	// life.leanote.com, lealife.com
 	siteUrl := configService.GetSiteUrl()
 	blogUrls := blogService.GetBlogUrls(&userBlog, &userInfo)
 	// 分类
@@ -174,7 +178,7 @@ func (c Blog) setUrl(userBlog info.UserBlog, userInfo info.User) {
 	c.RenderArgs["shareCommentCssUrl"] = siteUrl + "/public/blog/css/share_comment.css"
 	c.RenderArgs["shareCommentJsUrl"] = siteUrl + "/public/blog/js/share_comment.js"
 
-	c.RenderArgs["fontAwesomeUrl"] = siteUrl + "/css/font-awesome-4.2.0/css/font-awesome.css"
+	c.RenderArgs["fontAwesomeUrl"] = staticUrl + "/css/font-awesome-4.2.0/css/font-awesome.css"
 
 	c.RenderArgs["bootstrapCssUrl"] = siteUrl + "/css/bootstrap.css"
 	c.RenderArgs["bootstrapJsUrl"] = siteUrl + "/js/bootstrap-min.js"
@@ -196,29 +200,77 @@ func (c Blog) getCates(userBlog info.UserBlog) {
 	}
 
 	var i = 0
-	cates := make([]map[string]string, len(notebooks))
+	cates := make([]*info.Cate, len(notebooks))
 
 	// 先要保证已有的是正确的排序
 	cateIds := userBlog.CateIds
 	has := map[string]bool{} // cateIds中有的
+	cateMap := map[string]*info.Cate{}
 	if cateIds != nil && len(cateIds) > 0 {
 		for _, cateId := range cateIds {
 			if n, ok := notebooksMap[cateId]; ok {
-				cates[i] = map[string]string{"Title": n.Title, "UrlTitle": c.getCateUrlTitle(&n), "CateId": n.NotebookId.Hex()}
+				parentNotebookId := ""
+				if n.ParentNotebookId != "" {
+					parentNotebookId = n.ParentNotebookId.Hex()
+				}
+				cates[i] = &info.Cate{Title: n.Title, UrlTitle: c.getCateUrlTitle(&n), CateId: n.NotebookId.Hex(), ParentCateId: parentNotebookId}
+				cateMap[cates[i].CateId] = cates[i]
 				i++
 				has[cateId] = true
 			}
 		}
 	}
-	// 之后
+	
+	// 之后添加没有排序的
 	for _, n := range notebooks {
 		id := n.NotebookId.Hex()
 		if !has[id] {
-			cates[i] = map[string]string{"Title": n.Title, "UrlTitle": c.getCateUrlTitle(&n), "CateId": id}
+			parentNotebookId := ""
+			if n.ParentNotebookId != "" {
+				parentNotebookId = n.ParentNotebookId.Hex()
+			}
+			cates[i] = &info.Cate{Title: n.Title, UrlTitle: c.getCateUrlTitle(&n), CateId: id, ParentCateId: parentNotebookId}
+			cateMap[cates[i].CateId] = cates[i]
 			i++
 		}
 	}
+	
+//	LogJ(">>")
+//	LogJ(cates)
+	
+	// 建立层级
+	hasParent := map[string]bool{} // 有父的cate
+	for _, cate := range cates {
+		parentCateId := cate.ParentCateId
+		if parentCateId != "" {
+			if parentCate, ok := cateMap[parentCateId]; ok {
+//				Log("________")
+//				LogJ(parentCate)
+//				LogJ(cate)
+				if parentCate.Children == nil {
+					parentCate.Children = []*info.Cate{cate}
+				} else {
+					parentCate.Children = append(parentCate.Children, cate)
+				}
+				hasParent[cate.CateId] = true
+			}
+		}
+	}
+	
+	// 得到没有父的cate, 作为第一级cate
+	catesTree := []*info.Cate{}
+	for _, cate := range cates {
+		if !hasParent[cate.CateId] {
+			catesTree = append(catesTree, cate)
+		}
+	}
+	
+	Log("cates")
+	LogJ(cates)
+	LogJ(catesTree);
+	
 	c.RenderArgs["cates"] = cates
+	c.RenderArgs["catesTree"] = catesTree
 }
 
 // 单页
@@ -458,7 +510,6 @@ func (c Blog) Archives(userIdOrEmail string, cateId string, year, month int) (re
 // 进入某个用户的博客
 var blogPageSize = 5
 var searchBlogPageSize = 30
-
 // 分类 /cate/xxxxxxxx?notebookId=1212
 func (c Blog) Cate(userIdOrEmail string, notebookId string) (re revel.Result) {
 	// 自定义域名

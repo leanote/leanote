@@ -12,6 +12,27 @@ import (
 type UserService struct {
 }
 
+// 自增Usn
+// 每次notebook,note添加, 修改, 删除, 都要修改
+func (this *UserService) IncrUsn(userId string) int {
+	user := info.User{}
+	query := bson.M{"_id": bson.ObjectIdHex(userId)}
+	db.GetByQWithFields(db.Users, query, []string{"Usn"}, &user)
+	usn := user.Usn
+	usn += 1
+	Log("inc Usn")
+	db.UpdateByQField(db.Users, query, "Usn", usn)
+	return usn
+//	return db.Update(db.Notes, bson.M{"_id": bson.ObjectIdHex(noteId)}, bson.M{"$inc": bson.M{"ReadNum": 1}})
+}
+
+func (this *UserService) GetUsn(userId string) int {
+	user := info.User{}
+	query := bson.M{"_id": bson.ObjectIdHex(userId)}
+	db.GetByQWithFields(db.Users, query, []string{"Usn"}, &user)
+	return user.Usn
+}
+
 // 添加用户
 func (this *UserService) AddUser(user info.User) bool {
 	if user.UserId == "" {
@@ -98,6 +119,7 @@ func (this *UserService) GetUserInfo(userId string) info.User {
 func (this *UserService) GetUserInfoByEmail(email string) info.User {
 	user := info.User{}
 	db.GetByQ(db.Users, bson.M{"Email": email}, &user)
+	// Logo路径问题, 有些有http: 有些没有
 	this.setUserLogo(&user)
 	return user
 }
@@ -106,6 +128,7 @@ func (this *UserService) GetUserInfoByUsername(username string) info.User {
 	user := info.User{}
 	username = strings.ToLower(username)
 	db.GetByQ(db.Users, bson.M{"Username": username}, &user)
+	// Logo路径问题, 有些有http: 有些没有
 	this.setUserLogo(&user)
 	return user
 }

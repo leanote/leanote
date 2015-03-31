@@ -36,22 +36,26 @@ type User struct {
 	ThirdType     int    `ThirdType`     // 第三方类型
 
 	// 用户的帐户类型
-	
-	ImageNum         int       `bson:"ImageNum" json:"-"`        // 图片数量
-	ImageSize        int       `bson:"ImageSize" json:"-"`        // 图片大小
-	AttachNum        int       `bson:"AttachNum" json:"-"`        // 附件数量
-	AttachSize       int       `bson:"AttachSize" json:"-"`       // 附件大小
-	FromUserId bson.ObjectId `FromUserId,omitempty` // 邀请的用户
+
+	ImageNum   int           `bson:"ImageNum" json:"-"`   // 图片数量
+	ImageSize  int           `bson:"ImageSize" json:"-"`  // 图片大小
+	AttachNum  int           `bson:"AttachNum" json:"-"`  // 附件数量
+	AttachSize int           `bson:"AttachSize" json:"-"` // 附件大小
+	FromUserId bson.ObjectId `FromUserId,omitempty`       // 邀请的用户
 
 	AccountType      string    `bson:"AccountType" json:"-"`      // normal(为空), premium
 	AccountStartTime time.Time `bson:"AccountStartTime" json:"-"` // 开始日期
 	AccountEndTime   time.Time `bson:"AccountEndTime" json:"-"`   // 结束日期
 	// 阈值
-	MaxImageNum         int       `bson:"MaxImageNums" json:"-"`        // 图片数量
-	MaxImageSize        int       `bson:"MaxImageSize" json:"-"`        // 图片大小
-	MaxAttachNum        int       `bson:"MaxAttachNum" json:"-"`        // 图片数量
-	MaxAttachSize       int       `bson:"MaxAttachSize" json:"-"`       // 图片大小
-	MaxPerAttachSize    int       `bson:"MaxPerAttachSize" json:"-"`    // 单个附件大小
+	MaxImageNum      int `bson:"MaxImageNums" json:"-"`     // 图片数量
+	MaxImageSize     int `bson:"MaxImageSize" json:"-"`     // 图片大小
+	MaxAttachNum     int `bson:"MaxAttachNum" json:"-"`     // 图片数量
+	MaxAttachSize    int `bson:"MaxAttachSize" json:"-"`    // 图片大小
+	MaxPerAttachSize int `bson:"MaxPerAttachSize" json:"-"` // 单个附件大小
+
+	// 2015/1/15, 更新序号
+	Usn            int       `Usn`                   // UpdateSequenceNum , 全局的
+	FullSyncBefore time.Time `bson:"FullSyncBefore"` // 需要全量同步的时间, 如果 > 客户端的LastSyncTime, 则需要全量更新
 }
 
 type UserAccount struct {
@@ -59,11 +63,11 @@ type UserAccount struct {
 	AccountStartTime time.Time `bson:"AccountStartTime" json:"-"` // 开始日期
 	AccountEndTime   time.Time `bson:"AccountEndTime" json:"-"`   // 结束日期
 	// 阈值
-	MaxImageNum         int       `bson:"MaxImageNums" json:"-"`        // 图片数量
-	MaxImageSize        int       `bson:"MaxImageSize" json:"-"`        // 图片大小
-	MaxAttachNum        int       `bson:"MaxAttachNum" json:"-"`        // 图片数量
-	MaxAttachSize       int       `bson:"MaxAttachSize" json:"-"`       // 图片大小
-	MaxPerAttachSize    int       `bson:"MaxPerAttachSize" json:"-"`    // 单个附件大小
+	MaxImageNum      int `bson:"MaxImageNums" json:"-"`     // 图片数量
+	MaxImageSize     int `bson:"MaxImageSize" json:"-"`     // 图片大小
+	MaxAttachNum     int `bson:"MaxAttachNum" json:"-"`     // 图片数量
+	MaxAttachSize    int `bson:"MaxAttachSize" json:"-"`    // 图片大小
+	MaxPerAttachSize int `bson:"MaxPerAttachSize" json:"-"` // 单个附件大小
 }
 
 // 用户与博客信息结合, 公开
@@ -75,6 +79,6 @@ type UserAndBlog struct {
 	BlogTitle string        `BlogTitle` // 博客标题
 	BlogLogo  string        `BlogLogo`  // 博客Logo
 	BlogUrl   string        `BlogUrl`   // 博客链接, 主页
-	
+
 	BlogUrls // 各个页面
 }

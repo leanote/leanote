@@ -1831,7 +1831,7 @@ define("tinymce/tableplugin/Plugin", [
 		function insertTable(cols, rows) {
 			var y, x, html;
 
-			html = '<table><tbody>';
+			html = '<table style="width: 100%"><tbody>';
 
 			for (y = 0; y < rows; y++) {
 				html += '<tr>';

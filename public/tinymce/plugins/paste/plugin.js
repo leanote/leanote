@@ -630,7 +630,7 @@ define("tinymce/pasteplugin/Clipboard", [
 
 					if (html == pasteBinDefaultContent) {
 						if (!isKeyBoardPaste) {
-							editor.windowManager.alert('Please use Ctrl+V/Cmd+V keyboard shortcuts to paste contents.');
+							// editor.windowManager.alert('Please use Ctrl+V/Cmd+V keyboard shortcuts to paste contents.');
 						}
 
 						return;

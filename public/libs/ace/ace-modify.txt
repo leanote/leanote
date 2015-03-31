@@ -1,0 +1,13 @@
+ace 修改
+
+Cannot disable showInvisibles when init Ace
+
+https://github.com/ajaxorg/ace/issues/2402
+
+return self.showInvisibles
+                    ? "<span class='ace_invisible ace_invisible_space ace_invalid'>" + self.SPACE_CHAR + "</span>" :
+                    lang.stringRepeat("\u00a0", c.length);
+                    
+                    
+2. copy时
+s = s.replace(/\xA0/g, " ");

@@ -47,3 +47,11 @@ type Archive struct {
 	MonthAchives []ArchiveMonth
 	Posts []*Post
 }
+
+type Cate struct {
+	CateId string
+	ParentCateId string
+	Title string
+	UrlTitle string
+	Children []*Cate
+}

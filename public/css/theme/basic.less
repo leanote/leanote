@@ -65,7 +65,9 @@ h1, h2, h3 {
 .wmd-input,
 #noteReadContent,
 #attachList,
-#tags
+#tags,
+.editor-content,
+.preview-container
 {
 	-webkit-overflow-scrolling: touch !important; // for iphone
 }
@@ -453,7 +455,7 @@ h1, h2, h3 {
 	padding-bottom: 3px;
 }
 #myTag .folderBody li {
-	float: left;
+	margin-left: 10px;
 	padding: 3px;
 	line-height: normal;
 }
@@ -1148,6 +1150,9 @@ top: 4px;
 		color: #4D4D4C;
 		// padding: 5px;
 	}
+	.ace_searchbtn_close {
+		margin: 0px;
+	}
 	.ace-tomorrow  {
 		padding: 0;
 		padding-left: 44px;
@@ -1182,4 +1187,24 @@ top: 4px;
 
 .close:focus {
 	outline: none;
+}
+
+#tagNav {
+	i, em {
+		font-style: normal;
+	}
+
+	.tag-delete {
+		display: none;
+		margin-left: 3px;
+		font-size: 12px;
+	}
+	li:hover {
+		.tag-delete {
+			display: inline-block;
+		}
+	}
+	a:hover {
+		background: none !important;
+	}
 }
