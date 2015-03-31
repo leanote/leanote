@@ -23,6 +23,26 @@ GET 	/findPassword								Auth.FindPassword
 POST 	/doFindPassword								Auth.DoFindPassword
 POST	/findPasswordUpdate							Auth.FindPasswordUpdate
 
+#####
+# 这么多列表, 只是为了最后一句pjax
+# note
+* /note/listNotes Note.ListNotes
+* /note/listTrashNotes Note.ListTrashNotes
+* /note/getNoteAndContent Note.GetNoteAndContent
+* /note/getNoteContent Note.GetNoteContent
+* /note/updateNoteOrContent Note.UpdateNoteOrContent
+* /note/deleteNote Note.DeleteNote
+* /note/deleteTrash Note.DeleteTrash
+* /note/moveNote Note.MoveNote
+* /note/copyNote Note.CopyNote
+* /note/copySharedNote Note.CopySharedNote
+* /note/searchNoteByTags Note.SearchNoteByTags
+* /note/toImage Note.ToImage
+* /note/html2Image Note.Html2Image
+* /note/exportPdf Note.ExportPDF
+* /note/setNote2Blog Note.SetNote2Blog
+# pjax
+GET     /note/:noteId   	                        Note.Index
 
 # blog
 
