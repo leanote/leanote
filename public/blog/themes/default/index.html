@@ -1,0 +1,15 @@
+{{template "header.html" .}}
+
+<div id="postsContainer">
+
+	<div id="posts">
+	    {{template "post_abstract.html" $}}
+	    <!-- paging -->
+		{{template "paging.html" $}}
+	</div>
+</div>
+{{template "footer.html" $}}
+{{template "highlight.html" $}}
+
+</body>
+</html>
