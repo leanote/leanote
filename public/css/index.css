@@ -367,17 +367,78 @@ input,
   border-radius: 2px;
   border-radius: 3px;
 }
-.btn-github {
+.third-account {
+  text-align: center;
+}
+.third-account .btn {
+  width: 105px;
   padding-left: 12px;
   padding-right: 12px;
+}
+.third-account .btn-qq {
+  color: #fff !important;
+  background-color: #0873CE;
+  border-color: #0873CE;
+}
+.third-account .btn-qq:hover {
+  color: #fff !important;
+  background-color: #4C96D5;
+  border-color: #0873CE;
+}
+.third-account .btn-github {
+  color: #fff !important;
+  background-color: #000;
+  border-color: #000;
+}
+.third-account .btn-github:hover {
+  color: #fff !important;
+  background-color: #333;
+  border-color: #000;
+}
+.third-account .btn-google {
+  padding-left: 12px;
+  padding-right: 12px;
+  color: #fff !important;
+  background-color: #357ae8;
+  border-color: #2f5bb7;
+}
+.third-account .btn-google:hover {
+  color: #fff !important;
+  background-color: #4d90fe;
+  border-color: #2f5bb7;
+}
+.third-account .btn-weibo {
+  color: #fff !important;
+  background-color: #D04341;
+  border-color: #D04341;
+}
+.third-account .btn-weibo:hover {
+  color: #fff !important;
+  background-color: #cb3432;
+  border-color: #cb3432;
+}
+.third-account .btn-facebook {
   color: #fff !important;
   background-color: #335397;
   border-color: #335397;
 }
-.btn-github:hover {
+.third-account .btn-facebook:hover {
   color: #fff !important;
   background-color: #2d4984;
   border-color: #294279;
+}
+.third-account .btn-twitter {
+  color: #fff !important;
+  background-color: #00c7f7;
+  border-color: #00c7f7;
+}
+.third-account .btn-twitter:hover {
+  color: #fff !important;
+  background-color: #00b2de;
+  border-color: #00a6ce;
+}
+.third-account .third-split {
+  height: 3px;
 }
 .btn > i.pull-left,
 .btn > i.pull-right {

@@ -996,7 +996,7 @@ LeaAce = {
 		aceEditor.setOption("wrap", "free");
 		aceEditor.setShowInvisibles(false);
 		aceEditor.setAutoScrollEditorIntoView(true);
-		aceEditor.setOption("maxLines", 100);
+		aceEditor.setOption("maxLines", 10000);
 		aceEditor.commands.addCommand({
 		    name: "undo",
 		    bindKey: {win: "Ctrl-z", mac: "Command-z"},

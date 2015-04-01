@@ -183,6 +183,7 @@ a:hover {
   font-size: 14px;
   font-weight: 100;
   line-height: 24px;
+  word-wrap: break-word;
 }
 .article .article-info {
   margin-top: 5px;
@@ -200,25 +201,26 @@ a:hover {
   right: 1px;
   width: 32px;
   height: 32px;
-  overflow: hidden;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   border-radius: 50%;
+  overflow: hidden;
 }
 .avatar img {
-  max-height: 32px;
-  border: 2px solid white;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
+  width: 32px;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  -webkit-transition: border-color 0.3s !important;
-  -moz-transition: border-color 0.3s !important;
-  -ms-transition: border-color 0.3s !important;
-  -o-transition: border-color 0.3s !important;
-  transition: border-color 0.3s !important;
+  /*
+		-webkit-border-radius: 50%;
+		-moz-border-radius: 50%;
+		border-radius: 50%;
+		-webkit-transition: border-color 0.3s !important;
+		-moz-transition: border-color 0.3s !important;
+		-ms-transition: border-color 0.3s !important;
+		-o-transition: border-color 0.3s !important;
+		transition: border-color 0.3s !important;
+		*/
 }
 #pagination {
   text-align: center;

@@ -1,7 +1,7 @@
 Notebook.curNotebookId = "";
 Notebook.cache = {}; // notebookId => {};
 Notebook.notebooks = []; // 按次序
-// <li role="presentation"><a role="menuitem" tabindex="-1" href="#">CSS</a></li>	
+// <li role="presentation"><a role="menuitem" tabindex="-1" href="#">CSS</a></li>
 Notebook.notebookNavForListNote = ""; // html 为了note list上面和新建时的ul
 Notebook.notebookNavForNewNote = ""; // html 为了note list上面和新建时的ul
 
@@ -19,6 +19,10 @@ Notebook.setCache = function(notebook) {
 
 Notebook.getCurNotebookId = function() {
 	return Notebook.curNotebookId;
+};
+
+Notebook.getCurNotebook = function() {
+	return Notebook.cache[Notebook.curNotebookId];
 };
 
 // 笔记本的笔记数量更新
@@ -54,7 +58,7 @@ Notebook.getNotebook = function(notebookId) {
 Notebook.getNotebookTitle = function(notebookId) {
 	var notebook = Notebook.cache[notebookId];
 	if(notebook) {
-		return notebook.Title;
+		return toHtmlEntity(notebook.Title);
 	} else {
 		return "未知";
 	}
@@ -68,10 +72,10 @@ Notebook.getNotebookTitle = function(notebookId) {
 	<li><a>August 13, 2013</a></li>
 </ul>
  */
- 
-Notebook.getTreeSetting = function(isSearch, isShare){ 
+
+Notebook.getTreeSetting = function(isSearch, isShare){
 	var noSearch = !isSearch;
-	
+
 	var self = this;
 	// 添加自定义dom
 	function addDiyDom(treeId, treeNode) {
@@ -116,15 +120,15 @@ Notebook.getTreeSetting = function(isSearch, isShare){
 		var parentNode;
 		var treeObj = self.tree;
 		var ajaxData = {curNotebookId: treeNode.NotebookId};
-		
+
 		// 成为子节点, 那么只需要得到targetNode下所有的子结点即可
 		if(moveType == "inner") {
 			parentNode = targetNode;
 		} else {
 			parentNode = targetNode.getParentNode();
 		}
-		
-		// 在targetNode之前或之后, 
+
+		// 在targetNode之前或之后,
 		// 那么: 1) 需要将该parentNode下所有的node重新排序即可; 2) treeNodes[0]为parentNode的子
 		if(!parentNode) {
 			var nodes = treeObj.getNodes(); // 得到所有nodes
@@ -136,7 +140,7 @@ Notebook.getTreeSetting = function(isSearch, isShare){
 			}
 			var nodes = treeObj.getNodesByFilter(filter, false, parentNode);
 		}
-		
+
 		ajaxData.siblings = [];
 		for(var i in nodes) {
 			var notebookId = nodes[i].NotebookId;
@@ -144,15 +148,15 @@ Notebook.getTreeSetting = function(isSearch, isShare){
 				ajaxData.siblings.push(notebookId);
 			}
 		}
-		
+
 		ajaxPost("/notebook/dragNotebooks", {data: JSON.stringify(ajaxData)});
-		
+
 		// 这里慢!
 		setTimeout(function() {
 			Notebook.changeNav();
 		}, 100);
 	}
-	
+
 	if(!isShare) {
 		var onClick =  function(e, treeId, treeNode) {
 			var notebookId = treeNode.NotebookId;
@@ -172,7 +176,7 @@ Notebook.getTreeSetting = function(isSearch, isShare){
 		};
 		var onDblClick = null;
 	}
-	
+
 	var setting = {
 		view: {
 			showLine: false,
@@ -216,12 +220,12 @@ Notebook.getTreeSetting = function(isSearch, isShare){
 				if(treeNode.Title == newName) {
 					return true;
 				}
-				
+
 				// 如果是新添加的
 				if(treeNode.IsNew) {
 					var parentNode = treeNode.getParentNode();
 					var parentNotebookId = parentNode ? parentNode.NotebookId : "";
-					
+
 					self.doAddNotebook(treeNode.NotebookId, newName, parentNotebookId);
 				} else {
 					self.doUpdateNotebookTitle(treeNode.NotebookId, newName);
@@ -230,11 +234,11 @@ Notebook.getTreeSetting = function(isSearch, isShare){
 			}
 		}
 	};
-	
+
 	// 搜索不能拖拽
 	if(isSearch) {
 	}
-	
+
 	return setting;
 }
 Notebook.allNotebookId = "0";
@@ -249,12 +253,18 @@ Notebook.renderNotebooks = function(notebooks) {
 		notebooks = [];
 	}
 	
+	// title可能有<script>
+	for(var i = 0, len = notebooks.length; i < len; ++i) {
+		var notebook = notebooks[i];
+		notebook.Title = trimTitle(notebook.Title);
+	}
+
 	notebooks = [{NotebookId: Notebook.allNotebookId, Title: getMsg("all"), drop:false, drag: false}].concat(notebooks);
 	notebooks.push({NotebookId: Notebook.trashNotebookId, Title: getMsg("trash"), drop:false, drag: false});
 	Notebook.notebooks = notebooks; // 缓存之
-	
+
 	self.tree = $.fn.zTree.init($("#notebookList"), self.getTreeSetting(), notebooks);
-	
+
 	// 展开/折叠图标
 	var $notebookList = $("#notebookList");
 	$notebookList.hover(function () {
@@ -264,16 +274,16 @@ Notebook.renderNotebooks = function(notebooks) {
 	}, function() {
 		$(this).removeClass("showIcon");
 	});
-			
+
 	// 缓存所有notebooks信息
 	if(!isEmpty(notebooks)) {
 		Notebook.curNotebookId = notebooks[0].NotebookId;
 		self.cacheAllNotebooks(notebooks);
 	}
-	
+
 	// 渲染nav
 	Notebook.renderNav();
-	
+
 	// 渲染第一个notebook作为当前
 	Notebook.changeNotebookNavForNewNote(notebooks[0].NotebookId);
 }
@@ -294,7 +304,7 @@ Notebook.expandNotebookTo = function(notebookId, userId) {
 	var me = this;
 	var selected = false;
 	var tree = me.tree;
-	
+
 	// 共享的
 	if(userId) {
 		tree = Share.trees[userId];
@@ -325,7 +335,7 @@ Notebook.expandNotebookTo = function(notebookId, userId) {
 }
 
 
-// RenderNotebooks调用, 
+// RenderNotebooks调用,
 // nav 为了新建, 快速选择, 移动笔记
 // 这些在添加,修改,删除notebooks都要变动!!!
 Notebook.renderNav = function(nav) {
@@ -365,7 +375,7 @@ Notebook.searchNotebookForList = function(key) {
 	if(key) {
 		$search.show();
 		$notebookList.hide();
-		
+
 		var notebooks = self.tree.getNodesByParamFuzzy("Title", key);
 		log('search');
 		log(notebooks);
@@ -390,25 +400,25 @@ Notebook.searchNotebookForList = function(key) {
 Notebook.getChangedNotebooks = function(notebooks) {
 	var self = this;
 	var navForNewNote = "";
-	
+
 	var len = notebooks.length;
 	for(var i = 0; i < len; ++i) {
 		var notebook = notebooks[i];
-		
+
 		var classes = "";
 		if(!isEmpty(notebook.Subs)) {
 			classes = "dropdown-submenu";
 		}
-		var eachForNew = tt('<li role="presentation" class="clearfix ?"><div class="new-note-left pull-left" title="为该笔记本新建笔记" href="#" notebookId="?">?</div><div title="为该笔记本新建markdown笔记" class="new-note-right pull-left" notebookId="?">M</div>', classes, notebook.NotebookId, notebook.Title, notebook.NotebookId);
-		
+		var eachForNew = tt('<li role="presentation" class="clearfix ?"><div class="new-note-left pull-left" title="为该笔记本新建笔记" href="#" notebookId="?">?</div><div title="为该笔记本新建markdown笔记" class="new-note-right pull-left" notebookId="?">M</div>', classes, notebook.NotebookId, toHtmlEntity(notebook.Title), notebook.NotebookId);
+
 		if(!isEmpty(notebook.Subs)) {
 			eachForNew  += "<ul class='dropdown-menu'>";
 			eachForNew  += self.getChangedNotebooks(notebook.Subs);
 			eachForNew  += "</ul>";
 		}
-		
+
 		eachForNew  += '</li>';
-		
+
 		navForNewNote += eachForNew;
 	}
 	return navForNewNote;
@@ -421,12 +431,12 @@ Notebook.changeNav = function() {
 	var notebooks = Notebook.tree.getNodes();
 	var pureNotebooks = notebooks.slice(1, -1); // 不含新和垃圾
 	var html = self.getChangedNotebooks(pureNotebooks);
-	
+
 	self.everNavForNewNote = html;
 	self.everNotebooks = pureNotebooks;
-	
+
 	$("#notebookNavForNewNote").html(html);
-	
+
 	// 移动, 复制重新来, 因为nav变了, 移动至-----的notebook导航也变了
 	// 这里速度很慢
 	var t1 = (new Date()).getTime();
@@ -437,13 +447,13 @@ Notebook.changeNav = function() {
 }
 
 /**
- * 我的共享notebooks	    
+ * 我的共享notebooks
  <div id="shareNotebooks">
 	 <div class="folderNote closed">
       <div class="folderHeader">
         <a>
           <h1>
-            <i class="fa fa-angle-right"></i> 
+            <i class="fa fa-angle-right"></i>
             Life's</h1>
         </a>
       </div>
@@ -460,11 +470,11 @@ Notebook.renderShareNotebooks = function(sharedUserInfos, shareNotebooks) {
 	if(isEmpty(sharedUserInfos)) {
 		return;
 	}
-	
+
 	if(!shareNotebooks || typeof shareNotebooks != "object" || shareNotebooks.length < 0) {
 		return;
 	}
-	
+
 	var $shareNotebooks = $("#shareNotebooks");
 	var user2ShareNotebooks = {};
 	for(var i in shareNotebooks) {
@@ -474,18 +484,18 @@ Notebook.renderShareNotebooks = function(sharedUserInfos, shareNotebooks) {
 	for(var i in sharedUserInfos) {
 		var userInfo = sharedUserInfos[i];
 		var userNotebooks = user2ShareNotebooks[userInfo.UserId] || {ShareNotebooks:[]};
-		
+
 		userNotebooks.ShareNotebooks = [{NotebookId: "-2", Title: "默认共享"}].concat(userNotebooks.ShareNotebooks)
 
-		var username = userInfo.Username || userInfo.Email;
+		var username = toHtmlEntity(userInfo.Username || userInfo.Email);
 		var header = tt('<div class="folderNote closed"><div class="folderHeader"><a><h1 title="? 的共享"><i class="fa fa-angle-right"></i>?</h1></a></div>', username, username);
 		var body = '<ul class="folderBody">';
 		for(var j in userNotebooks.ShareNotebooks) {
 			var notebook = userNotebooks.ShareNotebooks[j];
-			body += tt('<li><a notebookId="?">?</a></li>', notebook.NotebookId, notebook.Title)
+			body += tt('<li><a notebookId="?">?</a></li>', notebook.NotebookId, toHtmlEntity(notebook.Title))
 		}
 		body += "</ul>";
-		
+
 		$shareNotebooks.append(header + body + "</div>")
 	}
 }
@@ -509,9 +519,9 @@ Notebook.changeNotebookNavForNewNote = function(notebookId, title) {
 		var notebook = Notebook.cache[0];
 		title = notebook.Title;
 	}
-	
+
 	if(!Notebook.isAllNotebookId(notebookId) && !Notebook.isTrashNotebookId(notebookId)) {
-		$("#curNotebookForNewNote").html(title).attr("notebookId", notebookId);
+		$("#curNotebookForNewNote").text(title).attr("notebookId", notebookId);
 	} else if(!$("#curNotebookForNewNote").attr("notebookId")) {
 		// 但又没有一个笔记, 默认选第一个吧
 		// 这里很可能会死循环, 万一用户没有其它笔记呢?
@@ -527,36 +537,36 @@ Notebook.changeNotebookNavForNewNote = function(notebookId, title) {
 
 // 改变导航, 两处
 // 单击左侧, 单击新建下拉时调用
-// 1 选中左侧导航, 
+// 1 选中左侧导航,
 // 2 notelist上面 >
 // 3 新建笔记 - js >
 // 转成我的nav <-> 共享
 Notebook.toggleToMyNav = function(userId, notebookId) {
 	$("#sharedNotebookNavForListNav").hide();
 	$("#myNotebookNavForListNav").show();
-	
+
 	$("#newMyNote").show();
 	$("#newSharedNote").hide();
-	
+
 	// 搜索tag隐藏
 	$("#tagSearch").hide();
 }
 Notebook.changeNotebookNav = function(notebookId) {
 	Notebook.curNotebookId = notebookId;
 	Notebook.toggleToMyNav();
-	
+
 	// 1 改变当前的notebook
 	Notebook.selectNotebook($(tt('#notebook [notebookId="?"]', notebookId)));
-	
+
 	var notebook = Notebook.cache[notebookId];
-	
+
 	if(!notebook) {
 		return;
 	}
-	
+
 	// 2
-	$("#curNotebookForListNote").html(notebook.Title);
-	
+	$("#curNotebookForListNote").text(notebook.Title);
+
 	// 3
 	Notebook.changeNotebookNavForNewNote(notebookId, notebook.Title);
 }
@@ -579,21 +589,22 @@ Notebook.curActiveNotebookIsAll = function() {
 // 2. ajax得到该notebook下的所有note
 // 3. 使用Note.RederNotes()
 // callback Pjax, 当popstate时调用
+Notebook.changeNotebookSeq = 1;
 Notebook.changeNotebook = function(notebookId, callback) {
 	var me = this;
 	Notebook.changeNotebookNav(notebookId);
-	
+
 	Notebook.curNotebookId = notebookId;
-		
+
 	// 1
 	Note.curChangedSaveIt();
-	
+
 	// 2 先清空所有
 	Note.clearAll();
-	
+
 	var url = "/note/listNotes/";
 	var param = {notebookId: notebookId};
-	
+
 	// 废纸篓
 	if(Notebook.isTrashNotebookId(notebookId)) {
 		url = "/note/listTrashNotes";
@@ -602,37 +613,55 @@ Notebook.changeNotebook = function(notebookId, callback) {
 		param = {};
 		// 得到全部的...
 		cacheNotes = Note.getNotesByNotebookId();
-		if(!isEmpty(cacheNotes)) { // 万一真的是没有呢?
+		// 数量一致
+		if(!isEmpty(cacheNotes)) { 
 			if(callback) {
 				callback(cacheNotes);
 			} else {
 				Note.renderNotesAndFirstOneContent(cacheNotes);
 			}
 			return;
-		}
+		} 
 	} else {
 		cacheNotes = Note.getNotesByNotebookId(notebookId);
-		if(!isEmpty(cacheNotes)) { // 万一真的是没有呢? 执行后面的ajax
+		var notebook = Notebook.cache[notebookId];
+		var len = cacheNotes ? cacheNotes.length : 0;
+		// alert( notebook.NumberNotes + " " + len);
+		if(len == notebook.NumberNotes) { 
 			if(callback) {
 				callback(cacheNotes);
 			} else {
 				Note.renderNotesAndFirstOneContent(cacheNotes);
 			}
 			return;
+		} else {
+			Note.clearCacheByNotebookId(notebookId);
+			log('数量不一致');
 		}
 	}
-	
+
 	// 2 得到笔记本
 	// 这里可以缓存起来, note按notebookId缓存
+	// 这里可能点击过快导致前面点击的后来才返回
 	me.showNoteAndEditorLoading();
-	ajaxGet(url, param, function(cacheNotes) { 
-		if(callback) {
-			callback(cacheNotes);
-		} else {
-			Note.renderNotesAndFirstOneContent(cacheNotes);
-		}
-		me.hideNoteAndEditorLoading();
-	});
+
+	me.changeNotebookSeq++;
+	(function(seq) {
+		ajaxGet(url, param, function(cacheNotes) { 
+			// 后面点击过快, 之前的结果不要了
+			if(seq != me.changeNotebookSeq) {
+				log("notebook changed too fast!");
+				log(cacheNotes);
+				return;
+			}
+			if(callback) {
+				callback(cacheNotes);
+			} else {
+				Note.renderNotesAndFirstOneContent(cacheNotes);
+			}
+			me.hideNoteAndEditorLoading();
+		});
+	})(me.changeNotebookSeq);
 }
 
 // 笔记列表与编辑器的mask loading
@@ -657,13 +686,13 @@ Notebook.changeNotebookForNewNote = function(notebookId) {
 	if(Notebook.isTrashNotebookId(notebookId) || Notebook.isAllNotebookId(notebookId)) {
 		return;
 	}
-	
+
 	Notebook.changeNotebookNav(notebookId, true);
 	Notebook.curNotebookId = notebookId;
-	
+
 	var url = "/note/listNotes/";
 	var param = {notebookId: notebookId};
-		
+
 	// 2 得到笔记本
 	// 这里可以缓存起来, note按notebookId缓存
 	ajaxGet(url, param, function(ret) {
@@ -686,7 +715,7 @@ Notebook.shareNotebooks= function(target) {
 		$("#friendsEmail").focus();
 	}, 500);
 	var notebookId = $(target).attr("notebookId");
-	
+
 	shareNoteOrNotebook(notebookId, false);
 }
 
@@ -699,7 +728,7 @@ Notebook.setNotebook2Blog = function(target) {
 	if(notebook.IsBlog != undefined) {
 		isBlog = !notebook.IsBlog;
 	}
-	
+
 	// 那么, 如果当前是该notebook下, 重新渲染之
 	if(Notebook.curNotebookId == notebookId) {
 		if(isBlog) {
@@ -707,7 +736,7 @@ Notebook.setNotebook2Blog = function(target) {
 		} else {
 			$("#noteList .item-blog").hide();
 		}
-		
+
 	// 如果当前在所有笔记本下
 	} else if(Notebook.curNotebookId == Notebook.allNotebookId){
 		$("#noteItemList .item").each(function(){
@@ -734,7 +763,7 @@ Notebook.setNotebook2Blog = function(target) {
 Notebook.updateNotebookTitle = function(target) {
 	var self = Notebook;
 	var notebookId = $(target).attr("notebookId");
-	
+
 	if(self.tree2) {
 		self.tree2.editName(self.tree2.getNodeByTId(notebookId));
 	} else {
@@ -748,7 +777,7 @@ Notebook.doUpdateNotebookTitle = function(notebookId, newTitle) {
 		Notebook.cache[notebookId].Title = newTitle;
 		// 改变nav
 		Notebook.changeNav();
-		
+
 		// 同步
 		if(self.tree2) {
 			var notebook = self.tree.getNodeByTId(notebookId);
@@ -768,7 +797,7 @@ Notebook.addNotebook = function() {
 	if($("#myNotebooks").hasClass("closed")) {
 		$("#myNotebooks .folderHeader").trigger("click");
 	}
-	
+
 	// 添加并修改
 	self.tree.addNodes(null, {Title: "", NotebookId: getObjectId(), IsNew: true}, true, true);
 }
@@ -782,10 +811,10 @@ Notebook.doAddNotebook = function(notebookId, title, parentNotebookId) {
 			var notebook = self.tree.getNodeByTId(notebookId);
 			$.extend(notebook, ret);
 			notebook.IsNew = false;
-			
+
 			// 选中之
 			Notebook.changeNotebook(notebookId);
-			
+
 			// 改变nav
 			Notebook.changeNav();
 		}
@@ -799,9 +828,9 @@ Notebook.addChildNotebook = function(target) {
 	if($("#myNotebooks").hasClass("closed")) {
 		$("#myNotebooks .folderHeader").trigger("click");
 	}
-	
+
 	var notebookId = $(target).attr("notebookId");
-	
+
 	// 添加并修改
 	self.tree.addNodes(self.tree.getNodeByTId(notebookId), {Title: "", NotebookId: getObjectId(), IsNew: true}, false, true);
 }
@@ -810,12 +839,12 @@ Notebook.addChildNotebook = function(target) {
 // 删除
 Notebook.deleteNotebook = function(target) {
 	var self = Notebook;
-	
+
 	var notebookId = $(target).attr("notebookId");
 	if(!notebookId) {
 		return;
 	}
-	
+
 	ajaxGet("/notebook/deleteNotebook", {notebookId: notebookId}, function(ret) {
 		if(ret.Ok) {
 			/*
@@ -826,7 +855,7 @@ Notebook.deleteNotebook = function(target) {
 				self.tree2.removeNode(self.tree2.getNodeByTId(notebookId));
 			}
 			delete Notebook.cache[notebookId];
-			
+
 			// 改变nav
 			Notebook.changeNav();
 		} else {
@@ -849,17 +878,17 @@ $(function() {
 		var notebookId = $(this).find("a").attr("notebookId");
 		Notebook.changeNotebook(notebookId);
 	});
-	
+
 	// 修改笔记本标题, blur后修改标题之
 	/*
 	enterBlur("#notebookList", "input#editNotebookTitle");
 	$("#notebookList").on("blur", "input#editNotebookTitle", Notebook.doUpdateNotebookTitle);
 	*/
-	
+
 	//-------------------
 	// 右键菜单
 	var notebookListMenu = {
-		width: 180, 
+		width: 180,
 		items: [
 			{ text: getMsg("shareToFriends"), alias: 'shareToFriends', icon: "", faIcon: "fa-share-square-o", action: Notebook.listNotebookShareUserInfo},
 			{ type: "splitLine" },
@@ -875,10 +904,10 @@ $(function() {
     	parent: "#notebookList ",
     	children: "li a"
 	}
-	
+
 	// for search
 	var notebookListMenu2 = {
-		width: 180, 
+		width: 180,
 		items: [
 			{ text: getMsg("shareToFriends"), alias: 'shareToFriends', icon: "", faIcon: "fa-share-square-o", action: Notebook.listNotebookShareUserInfo},
 			{ type: "splitLine" },
@@ -893,7 +922,7 @@ $(function() {
     	parent: "#notebookListForSearch ",
     	children: "li a"
 	}
-	
+
 	function applyrule(menu) {
 		var notebookId = $(this).attr("notebookId");
 		var notebook = Notebook.cache[notebookId];
@@ -923,17 +952,17 @@ $(function() {
 		var notebookId = $(this).attr("notebookId");
 		return !Notebook.isTrashNotebookId(notebookId) && !Notebook.isAllNotebookId(notebookId);
 	}
-	
+
 	Notebook.contextmenu = $("#notebookList li a").contextmenu(notebookListMenu);
-	
+
 	Notebook.contextmenuSearch = $("#notebookListForSearch li a").contextmenu(notebookListMenu2);
-	
+
 	// 添加笔记本
 	$("#addNotebookPlus").click(function(e) {
 		e.stopPropagation();
 		Notebook.addNotebook();
 	});
-	
+
 	// notebook setting
 	$("#notebookList").on("click", ".notebook-setting", function(e) {
 		e.preventDefault();

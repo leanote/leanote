@@ -294,7 +294,11 @@ func (this *ShareService) AddShareNotebook(notebookId string, perm int, userId, 
 	if toUserId == "" {
 		return false, "无该用户", ""
 	}
+	return this.AddShareNotebookToUserId(notebookId, perm, userId, toUserId)
+}
 		
+// 第三方注册时没有email
+func (this *ShareService) AddShareNotebookToUserId(notebookId string, perm int, userId, toUserId string) (bool, string, string) {
 	// 添加一条记录说明两者存在关系
 	this.AddHasShareNote(userId, toUserId);
 	
@@ -327,7 +331,11 @@ func (this *ShareService) AddShareNote(noteId string, perm int, userId, email st
 	if toUserId == "" {
 		return false, "无该用户", ""
 	}
-		
+	return this.AddShareNoteToUserId(noteId, perm, userId, toUserId)
+}
+
+// 第三方测试没有userId		
+func (this *ShareService) AddShareNoteToUserId(noteId string, perm int, userId, toUserId string) (bool, string, string) {
 	// 添加一条记录说明两者存在关系
 	this.AddHasShareNote(userId, toUserId);
 	

@@ -37,7 +37,8 @@ func (c Notebook) AddNotebook(notebookId, title, parentNotebookId string) revel.
 	if(parentNotebookId != "") {
 		notebook.ParentNotebookId = bson.ObjectIdHex(parentNotebookId)
 	}
-	re := notebookService.AddNotebook(notebook)
+
+	re, notebook := notebookService.AddNotebook(notebook)
 	
 	if(re) {
 		return c.RenderJson(notebook)

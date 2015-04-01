@@ -1,16 +1,16 @@
 package lea
 
 import (
+	"fmt"
+	"regexp"
 	"crypto/md5"
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/hex"
-	"fmt"
-	"gopkg.in/mgo.v2/bson"
 	"io"
-	math_rand "math/rand"
-	"regexp"
+	"gopkg.in/mgo.v2/bson"
 	"time"
+	math_rand "math/rand" 
 )
 
 // 字符串
@@ -58,7 +58,7 @@ func Substr(str string, start, length int) string {
 func substr(str string, start, length int, isRune bool) string {
 	rs := []rune(str)
 	rs2 := []byte(str)
-
+	
 	rl := len(rs)
 	if !isRune {
 		rl = len(rs2)
@@ -122,14 +122,49 @@ func ReplaceAll(oldStr, pattern, newStr string) string {
 	return string(s)
 }
 
-func SubStringHTML(param string, length int, end string) string {
-	// 先取出<pre></pre>占位..
+// 获取纯文本
+func SubStringHTMLToRaw(param string, length int) (result string) {
+	if param == "" {
+		return ""
+	}
+	result = ""
+	n := 0
+	var temp rune // 中文问题, 用rune来解决
+	rStr := []rune(param)
+	isCode := false
+	for i := 0; i < len(rStr); i++ {
+		temp = rStr[i]
+		if temp == '<' {
+			isCode = true
+			continue
+		} else if temp == '>' {
+			isCode = false
+			result += " "; // 空格
+			continue
+		}
+		if !isCode {
+			result += string(temp)
+			n++
+			if n >= length {
+				break
+			}
+		}
+	}
+	return 
+}
 
+// 获取摘要, HTML
+func SubStringHTML(param string, length int, end string) string {
+	if param == "" {
+		return ""
+	}
+	
+	// 先取出<pre></pre>占位..
 	result := ""
 
 	// 1
 	n := 0
-	var temp rune   // 中文问题, 用rune来解决
+	var temp rune // 中文问题, 用rune来解决
 	isCode := false //是不是HTML代码
 	isHTML := false //是不是HTML特殊字符,如&nbsp;
 	rStr := []rune(param)
@@ -154,7 +189,7 @@ func SubStringHTML(param string, length int, end string) string {
 		}
 	}
 	result += end
-
+	
 	// 取出所有标签
 	tempResult := ReplaceAll(result, "(>)[^<>]*(<?)", "$1$2") // 把标签中间的所有内容都去掉了
 
@@ -163,13 +198,13 @@ func SubStringHTML(param string, length int, end string) string {
 
 	// 把<div class=xxx的class=xxx去掉
 	tempResult = ReplaceAll(tempResult, "<(/?[a-zA-Z]+)[^<>]*>", "<$1>")
-
+	
 	// 3 只能用正则,+stack来去有结束的
 	// golang的正则暂不支持back reference, 以后可以用它来去掉重复的标签
 	p, _ := regexp.Compile("<(/?[a-zA-Z]+)[^<>]*>") // 得到所有的<div>, </div>...
 	strs := p.FindAllString(tempResult, -1)
 
-	//	fmt.Println(strs)
+//	fmt.Println(strs)
 	stack := make([]string, len(strs))
 	stackP := -1
 	for _, each := range strs {
@@ -186,14 +221,14 @@ func SubStringHTML(param string, length int, end string) string {
 	// 补全tag
 	if stackP != -1 {
 		fmt.Println(stack[0 : stackP+1])
-
+		
 		for _, each := range stack[0 : stackP+1] {
 			if each[1] != '/' {
 				result += "</" + each[1:]
 			}
 		}
 	}
-
+	
 	return result
 }
 
@@ -211,16 +246,16 @@ func IsGoodPwd(pwd string) (bool, string) {
 // 是否是email
 func IsEmail(email string) bool {
 	if email == "" {
-		return false
+		return false;
 	}
-	ok, _ := regexp.MatchString(`^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]+$`, email)
+	ok, _ := regexp.MatchString(`^([a-zA-Z0-9]+[_|\_|\.|\-]?)*[a-z\-A-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.|\-]?)*[a-zA-Z0-9\-]+\.[0-9a-zA-Z]{2,3}$`, email)
 	return ok
 }
 
 // 是否只包含数字, 字母 -, _
 func IsUsername(username string) bool {
 	if username == "" {
-		return false
+		return false;
 	}
 	ok, _ := regexp.MatchString(`[^0-9a-zA-Z_\-]`, username)
 	return !ok
@@ -257,15 +292,15 @@ func RandomPwd(num int) string {
 		chars[j] = byte(i)
 		j++
 	}
-	j--
-
+	j--;
+	
 	str := ""
 	math_rand.Seed(time.Now().UnixNano())
 	for i := 0; i < num; i++ {
 		x := math_rand.Intn(j)
 		str += string(chars[x])
 	}
-
+	
 	return str
 }
 

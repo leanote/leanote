@@ -28,7 +28,7 @@ func (this *TrashService) DeleteNote(noteId, userId string) bool {
 	// 首先删除其共享
 	if shareService.DeleteShareNoteAll(noteId, userId) {
 		// 更新note isTrash = true
-		if db.UpdateByIdAndUserId(db.Notes, noteId, userId, bson.M{"$set": bson.M{"IsTrash": true}}) {
+		if db.UpdateByIdAndUserId(db.Notes, noteId, userId, bson.M{"$set": bson.M{"IsTrash": true, "Usn": userService.IncrUsn(userId)}}) {
 			// recount notebooks' notes number
 			notebookIdO := noteService.GetNotebookId(noteId)
 			notebookId := notebookIdO.Hex()
@@ -44,7 +44,7 @@ func (this *TrashService) DeleteNote(noteId, userId string) bool {
 func (this *TrashService) DeleteSharedNote(noteId, userId, myUserId string) bool {
 	note := noteService.GetNote(noteId, userId)
 	if shareService.HasUpdatePerm(userId, myUserId, noteId) && note.CreatedUserId.Hex() == myUserId {
-		return db.UpdateByIdAndUserId(db.Notes, noteId, userId, bson.M{"$set": bson.M{"IsTrash": true}})
+		return db.UpdateByIdAndUserId(db.Notes, noteId, userId, bson.M{"$set": bson.M{"IsTrash": true, "Usn": userService.IncrUsn(userId)}})
 	}
 	return false
 }
@@ -53,21 +53,61 @@ func (this *TrashService) DeleteSharedNote(noteId, userId, myUserId string) bool
 func (this *TrashService) recoverNote(noteId, notebookId, userId string) bool {
 	re := db.UpdateByIdAndUserId(db.Notes, noteId, userId, 
 		bson.M{"$set": bson.M{"IsTrash": false, 
+			"Usn": userService.IncrUsn(userId),
 			"NotebookId": bson.ObjectIdHex(notebookId)}})
 	return re;
 }
 
 // 删除trash
 func (this *TrashService) DeleteTrash(noteId, userId string) bool {
+	note := noteService.GetNote(noteId, userId);
+	if note.NoteId == "" {
+		return false
+	}
 	// delete note's attachs
 	ok := attachService.DeleteAllAttachs(noteId, userId)
-	
+
+	// 设置删除位
+	ok = db.UpdateByIdAndUserIdMap(db.Notes, noteId, userId, 
+		bson.M{"IsDeleted": true, 
+			"Usn": userService.IncrUsn(userId)})
 	// delete note
-	ok = db.DeleteByIdAndUserId(db.Notes, noteId, userId)
+//	ok = db.DeleteByIdAndUserId(db.Notes, noteId, userId)
+	
 	// delete content
 	ok = db.DeleteByIdAndUserId(db.NoteContents, noteId, userId)
 	
+	// 重新统计tag's count
+	// TODO 这里会改变tag's Usn
+	tagService.reCountTagCount(userId, note.Tags)
+	
 	return ok
+}
+
+func (this *TrashService) DeleteTrashApi(noteId, userId string, usn int) (bool, string, int) {
+	note := noteService.GetNote(noteId, userId)
+	
+	if note.NoteId == "" || note.IsDeleted {
+		return false, "notExists", 0
+	}
+	
+	if note.Usn != usn {
+		return false, "conflict", 0
+	}
+	
+	// delete note's attachs
+	ok := attachService.DeleteAllAttachs(noteId, userId)
+
+	// 设置删除位
+	afterUsn := userService.IncrUsn(userId)
+	ok = db.UpdateByIdAndUserIdMap(db.Notes, noteId, userId, 
+		bson.M{"IsDeleted": true, 
+			"Usn": afterUsn})
+	
+	// delete content
+	ok = db.DeleteByIdAndUserId(db.NoteContents, noteId, userId)
+	
+	return ok, "", afterUsn
 }
 
 // 列出note, 排序规则, 还有分页

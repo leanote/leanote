@@ -243,5 +243,9 @@ func (this *FileService) CopyImage(userId, fileId, toUserId string) (bool, strin
 
 // 是否是我的文件
 func (this *FileService) IsMyFile(userId, fileId string) bool {
+	// 如果有问题会panic
+	if !bson.IsObjectIdHex(fileId) || !bson.IsObjectIdHex(userId) {
+		return false;
+	}
 	return db.Has(db.Files, bson.M{"UserId": bson.ObjectIdHex(userId), "_id": bson.ObjectIdHex(fileId)})
 }

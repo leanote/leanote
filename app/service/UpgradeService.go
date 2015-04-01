@@ -5,7 +5,7 @@ import (
 	. "github.com/leanote/leanote/app/lea"
 	"github.com/leanote/leanote/app/db"
 	"gopkg.in/mgo.v2/bson"
-//	"time"
+	"time"
 )
 
 
@@ -38,7 +38,7 @@ func (this *UpgradeService) UpgradeBlog() bool {
 */
 func (this *UpgradeService) UpgradeBetaToBeta2(userId string) (ok bool, msg string) {
 	if configService.GetGlobalStringConfig("UpgradeBetaToBeta2") != "" {
-		return false, "已升级"
+		return false, "Leanote have been upgraded"
 	}
 	
 	// 1. aboutMe -> page
@@ -101,4 +101,82 @@ func (this *UpgradeService) UpgradeBetaToBeta2(userId string) (ok bool, msg stri
 	configService.UpdateGlobalStringConfig(userId, "UpgradeBetaToBeta2", "1")
 	
 	return
+}
+
+// Usn设置
+// 客户端 api
+
+func (this *UpgradeService) moveTag() {
+	usnI := 1
+	tags := []info.Tag{}
+	db.ListByQ(db.Tags, bson.M{}, &tags)
+	for _, eachTag := range tags {
+		tagTitles := eachTag.Tags
+		now := time.Now()
+		if tagTitles != nil && len(tagTitles) > 0 {
+			for _, tagTitle := range tagTitles {
+				noteTag := info.NoteTag{}
+				noteTag.TagId = bson.NewObjectId()
+				noteTag.Count = 1
+				noteTag.Tag = tagTitle
+				noteTag.UserId = eachTag.UserId
+				noteTag.CreatedTime = now
+				noteTag.UpdatedTime = now
+				noteTag.Usn = usnI
+				noteTag.IsDeleted = false
+				db.Insert(db.NoteTags, noteTag)
+				usnI++
+			}
+		}
+	}
+}
+
+func (this *UpgradeService) setNotebookUsn() {
+	usnI := 1
+	notebooks := []info.Notebook{}
+	db.ListByQWithFields(db.Notebooks, bson.M{}, []string{"UserId"},  &notebooks)
+	
+	for _, notebook := range notebooks {
+		db.UpdateByQField(db.Notebooks, bson.M{"_id": notebook.NotebookId}, "Usn", usnI)
+		usnI++
+	}
+}
+
+func (this *UpgradeService) setNoteUsn() {
+	usnI := 1
+	notes := []info.Note{}
+	db.ListByQWithFields(db.Notes, bson.M{}, []string{"UserId"},  &notes)
+	
+	for _, note := range notes {
+		db.UpdateByQField(db.Notes, bson.M{"_id": note.NoteId}, "Usn", usnI)
+		usnI++
+	}
+}
+
+// 升级为Api, beta.4
+func (this *UpgradeService) Api(userId string) (ok bool, msg string) {
+	if configService.GetGlobalStringConfig("UpgradeBetaToBeta4") != "" {
+		return false, "Leanote have been upgraded"
+	}
+	
+	// user
+	db.UpdateByQField(db.Users, bson.M{}, "Usn", 200000)
+
+	// notebook
+	db.UpdateByQField(db.Notebooks, bson.M{}, "IsDeleted", false)
+	this.setNotebookUsn();
+	
+	// note
+	// 1-N
+	db.UpdateByQField(db.Notes, bson.M{}, "IsDeleted", false)
+	this.setNoteUsn();
+	
+	// tag
+	// 1-N
+	/// tag, 要重新插入, 将之前的Tag表迁移到NoteTag中
+	this.moveTag();
+	
+	configService.UpdateGlobalStringConfig(userId, "UpgradeBetaToBeta4", "1")
+	
+	return true, ""
 }
