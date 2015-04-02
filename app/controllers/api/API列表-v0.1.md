@@ -387,6 +387,7 @@ Notebook {
 	Seq              int // 排序
 	Title            string 
 	IsBlog           bool  
+	IsDeleted	 bool
 	CreatedTime      time.Time   
 	UpdatedTime      time.Time 
 	
