@@ -305,7 +305,7 @@ func (this *ConfigService) Backup(remark string) (ok bool, msg string) {
 	username, _ := revel.Config.String("db.username")
 	password, _ := revel.Config.String("db.password")
 	// mongodump -h localhost -d leanote -o /root/mongodb_backup/leanote-9-22/ -u leanote -p nKFAkxKnWkEQy8Vv2LlM
-	binPath = binPath + " -h " + host + " -d " + dbname + " -port " + port
+	binPath = binPath + " -h " + host + " -d " + dbname + " --port " + port
 	if username != "" {
 		binPath += " -u " + username + " -p " + password
 	}
@@ -361,7 +361,7 @@ func (this *ConfigService) Restore(createdTime string) (ok bool, msg string) {
 	username, _ := revel.Config.String("db.username")
 	password, _ := revel.Config.String("db.password")
 	// mongorestore -h localhost -d leanote -o /root/mongodb_backup/leanote-9-22/ -u leanote -p nKFAkxKnWkEQy8Vv2LlM
-	binPath = binPath + " --drop -h " + host + " -d " + dbname + " -port " + port
+	binPath = binPath + " --drop -h " + host + " -d " + dbname + " --port " + port
 	if username != "" {
 		binPath += " -u " + username + " -p " + password
 	}
@@ -372,7 +372,7 @@ func (this *ConfigService) Restore(createdTime string) (ok bool, msg string) {
 		return false, path + " Is Not Exists"
 	}
 	
-	binPath += " --directoryperdb " + path
+	binPath += " " + path
 	
 	cmd := exec.Command("/bin/sh", "-c", binPath)
 	Log(binPath);
