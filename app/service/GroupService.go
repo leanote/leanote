@@ -61,6 +61,32 @@ func (this *GroupService) GetGroups(userId string) ([]info.Group) {
 	db.ListByQ(db.Groups, bson.M{"UserId": bson.ObjectIdHex(userId)}, &groups)
 	return groups
 }
+
+
+// 获取包含此用户的组对象数组
+func (this *GroupService) GetGroupsContainOf(userId string) []info.Group {
+	groupIds := this.GetGroupIdsContainOf(userId)
+	groups := []info.Group{}
+	db.ListByQ(db.Groups, bson.M{"_id": bson.M{"$in": groupIds}}, &groups)
+	return groups
+}
+
+// 获取包含此用户的组Id数组
+func (this *GroupService) GetGroupIdsContainOf(userId string) []bson.ObjectId {
+	groupUsers := []info.GroupUser{}
+	db.ListByQWithFields(db.GroupUsers, bson.M{"UserId": bson.ObjectIdHex(userId)}, []string{"GroupId"}, &groupUsers)
+	if len(groupUsers) == 0 {
+		return nil
+	}
+
+	groupIds := make([]bson.ObjectId, len(groupUsers))
+	for i, each := range groupUsers {
+		groupIds[i] = each.GroupId
+	}
+
+	return groupIds
+}
+
 // 得到分组, shareService用
 func (this *GroupService) GetGroup(userId, groupId string) (info.Group) {
 	// 得到分组s
@@ -130,4 +156,9 @@ func (this *GroupService) DeleteUser(ownUserId, groupId, userId string) (ok bool
 		return false, "forbidden"
 	}
 	return db.Delete(db.GroupUsers, bson.M{"GroupId": bson.ObjectIdHex(groupId), "UserId": bson.ObjectIdHex(userId)}), ""
+}
+
+// 判断组中是否包含指定用户
+func (this *GroupService) IsExistsGroupUser(userId, groupId string) (ok bool) {
+	return db.Has(db.GroupUsers, bson.M{"UserId": bson.ObjectIdHex(userId), "GroupId": bson.ObjectIdHex(groupId)})
 }
