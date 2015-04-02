@@ -173,10 +173,10 @@ func (c Blog) setUrl(userBlog info.UserBlog, userInfo info.User) {
 	c.RenderArgs["prettifyJsUrl"] = siteUrl + "/js/google-code-prettify/prettify.js"
 	c.RenderArgs["prettifyCssUrl"] = siteUrl + "/js/google-code-prettify/prettify.css"
 
-	c.RenderArgs["blogCommonJsUrl"] = siteUrl + "/public/blog/js/common.js"
+	c.RenderArgs["blogCommonJsUrl"] = siteUrl + "/blog/js/common.js"
 
-	c.RenderArgs["shareCommentCssUrl"] = siteUrl + "/public/blog/css/share_comment.css"
-	c.RenderArgs["shareCommentJsUrl"] = siteUrl + "/public/blog/js/share_comment.js"
+	c.RenderArgs["shareCommentCssUrl"] = siteUrl + "/blog/css/share_comment.css"
+	c.RenderArgs["shareCommentJsUrl"] = siteUrl + "/blog/js/share_comment.js"
 
 	c.RenderArgs["fontAwesomeUrl"] = staticUrl + "/css/font-awesome-4.2.0/css/font-awesome.css"
 

@@ -253,7 +253,6 @@ http://leanote.com/api/file/getImage?fileId=xx
 http://leanote.com/api/file/getAttach?fileId=xx 
 所有附件:
 http://leanote.com/api/file/getAllAttachs?noteId=xxx 
-```
 
 **注意:**
 addNote时必须要把Files, 和相关的图片/附件一起传到服务器中
@@ -272,7 +271,9 @@ addNote时必须要把Files, 和相关的图片/附件一起传到服务器中
 http://leanote.com 不绝对, 因为用户可以自建服务, 所以在开发时需要可配置
 
 ### /note/updateNote 更新笔记
+
 当更新了笔记某个属性时, 只要传某个属性就行, 其它不用传, 比如把笔记拉入了trash, 那么就传IsTrash: true
+
 ```
 参数: (注意首字大写)
 	NoteId string 必传

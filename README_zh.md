@@ -1,67 +1,67 @@
 
-# Leanote²úÆ·
+# Leanoteäº§å“
 
-## 1. ½éÉÜ
+## 1. ä»‹ç»
 
-Leanote, ²»Ö»ÊÇ±Ê¼Ç!
+Leanote, ä¸åªæ˜¯ç¬”è®°!
 ![leanote.png](leanote.png "")
 
-**ÌØĞÔ**
+**ç‰¹æ€§**
 
-* ÖªÊ¶¹ÜÀí: Í¨¹ıleanoteÀ´¹ÜÀíÖªÊ¶, leanoteÓĞÒ×²Ù×÷µÄ½çÃæ, °üº¬Á½¿î±à¼­Æ÷tinymceºÍmarkdown. ÔÚleanote, Äã¿ÉÒÔ¾¡ÇéÏíÊÜĞ´×÷.
-* ·ÖÏí: ÄãÒ²¿ÉÒÔÍ¨¹ı·ÖÏíÖªÊ¶¸øºÃÓÑ, ÈÃºÃÓÑÓµÓĞÄãµÄÖªÊ¶.
-* Ğ­×÷: ÔÚ·ÖÏíµÄÍ¬Ê±Ò²¿ÉÒÔÓëºÃÓÑÒ»ÆğĞ­×÷ÖªÊ¶.
-* ²©¿Í: leanoteÒ²¿ÉÒÔ×÷ÎªÄãµÄ²©¿Í, ½«ÖªÊ¶¹«¿ª³É²©¿Í, ÈÃleanote°ÑÄãµÄÖªÊ¶´«²¥µÄ¸üÔ¶!
+* çŸ¥è¯†ç®¡ç†: é€šè¿‡leanoteæ¥ç®¡ç†çŸ¥è¯†, leanoteæœ‰æ˜“æ“ä½œçš„ç•Œé¢, åŒ…å«ä¸¤æ¬¾ç¼–è¾‘å™¨tinymceå’Œmarkdown. åœ¨leanote, ä½ å¯ä»¥å°½æƒ…äº«å—å†™ä½œ.
+* åˆ†äº«: ä½ ä¹Ÿå¯ä»¥é€šè¿‡åˆ†äº«çŸ¥è¯†ç»™å¥½å‹, è®©å¥½å‹æ‹¥æœ‰ä½ çš„çŸ¥è¯†.
+* åä½œ: åœ¨åˆ†äº«çš„åŒæ—¶ä¹Ÿå¯ä»¥ä¸å¥½å‹ä¸€èµ·åä½œçŸ¥è¯†.
+* åšå®¢: leanoteä¹Ÿå¯ä»¥ä½œä¸ºä½ çš„åšå®¢, å°†çŸ¥è¯†å…¬å¼€æˆåšå®¢, è®©leanoteæŠŠä½ çš„çŸ¥è¯†ä¼ æ’­çš„æ›´è¿œ!
 
-## 2. ÎªÊ²Ã´ÎÒÃÇÒª´´½¨leanote?
-ËµÊµ»°, ÎÒÃÇÔøÊÇevernoteµÄÖÒÊµ·ÛË¿, µ«ÊÇÎÒÃÇÒ²·¢ÏÖevernoteµÄ²»×ã:
-* evernoteµÄ±à¼­Æ÷²»ÄÜÂú×ãÎÒÃÇµÄĞèÇó, ²»ÄÜÌù´úÂë(¸ñÊ½»áÂÒµô, ×÷Îª³ÌĞòÔ±, ´úÂëÊÇÎÒÃÇµÄ»ù±¾ĞèÇó°¡), Í¼Æ¬²»ÄÜËõ·Å.
-* ÎÒÃÇÊÇmarkdownµÄ°®ºÃÕß, ¿ÉÊÇevernote¾¹È»Ã»ÓĞ.
-* ÎÒÃÇÒ²Ïë½«ÖªÊ¶¹«¿ª, ËùÒÔÎÒÃÇÓĞ×Ô¼ºµÄ²©¿Í, Èçwordpress, µ«ÎªÊ²Ã´ÕâÁ½Õß²»ÄÜºÏ¶şÎªÒ»ÄØ?
-* »¹ÓĞ...
+## 2. ä¸ºä»€ä¹ˆæˆ‘ä»¬è¦åˆ›å»ºleanote?
+è¯´å®è¯, æˆ‘ä»¬æ›¾æ˜¯evernoteçš„å¿ å®ç²‰ä¸, ä½†æ˜¯æˆ‘ä»¬ä¹Ÿå‘ç°evernoteçš„ä¸è¶³:
+* evernoteçš„ç¼–è¾‘å™¨ä¸èƒ½æ»¡è¶³æˆ‘ä»¬çš„éœ€æ±‚, ä¸èƒ½è´´ä»£ç (æ ¼å¼ä¼šä¹±æ‰, ä½œä¸ºç¨‹åºå‘˜, ä»£ç æ˜¯æˆ‘ä»¬çš„åŸºæœ¬éœ€æ±‚å•Š), å›¾ç‰‡ä¸èƒ½ç¼©æ”¾.
+* æˆ‘ä»¬æ˜¯markdownçš„çˆ±å¥½è€…, å¯æ˜¯evernoteç«Ÿç„¶æ²¡æœ‰.
+* æˆ‘ä»¬ä¹Ÿæƒ³å°†çŸ¥è¯†å…¬å¼€, æ‰€ä»¥æˆ‘ä»¬æœ‰è‡ªå·±çš„åšå®¢, å¦‚wordpress, ä½†ä¸ºä»€ä¹ˆè¿™ä¸¤è€…ä¸èƒ½åˆäºŒä¸ºä¸€å‘¢?
+* è¿˜æœ‰...
 
-## 3.°²×°leanote
-leanoteÊÇÒ»¿îË½ÓĞÔÆ±Ê¼Ç, Äã¿ÉÒÔÏÂÔØËü°²×°ÔÚ×Ô¼ºµÄ·şÎñÆ÷ÉÏ, µ±È»Ò²¿ÉÒÔÔÚ http://leanote.com ÉÏ×¢²á.
+## 3.å®‰è£…leanote
+leanoteæ˜¯ä¸€æ¬¾ç§æœ‰äº‘ç¬”è®°, ä½ å¯ä»¥ä¸‹è½½å®ƒå®‰è£…åœ¨è‡ªå·±çš„æœåŠ¡å™¨ä¸Š, å½“ç„¶ä¹Ÿå¯ä»¥åœ¨ http://leanote.com ä¸Šæ³¨å†Œ.
 
-ÕâÀïÏêÏ¸ÕûÀíÁËleanote¶ş½ø°æºÍleanote¿ª·¢°æµÄ°²×°½Ì³Ì, ÇëÒÆ²½ÖÁ:
-* [leanote¶ş½øÖÆÏêÏ¸°²×°½Ì³Ì](https://github.com/leanote/leanote/wiki/leanote%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
-* [leanote¿ª·¢°æÏêÏ¸°²×°½Ì³Ì](https://github.com/leanote/leanote/wiki/leanote%E5%BC%80%E5%8F%91%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
+è¿™é‡Œè¯¦ç»†æ•´ç†äº†leanoteäºŒè¿›ç‰ˆå’Œleanoteå¼€å‘ç‰ˆçš„å®‰è£…æ•™ç¨‹, è¯·ç§»æ­¥è‡³:
+* [leanoteäºŒè¿›åˆ¶è¯¦ç»†å®‰è£…æ•™ç¨‹](https://github.com/leanote/leanote/wiki/leanote%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
+* [leanoteå¼€å‘ç‰ˆè¯¦ç»†å®‰è£…æ•™ç¨‹](https://github.com/leanote/leanote/wiki/leanote%E5%BC%80%E5%8F%91%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
 
-### 3.1. ÏÂÔØleanote
+### 3.1. ä¸‹è½½leanote
 
-Leanote V1.0-beta.2 ÒÑ·¢²¼, ¶ş½øÖÆÎÄ¼ş(ÔİÊ±Ã»ÓĞwindows°æµÄ):
+Leanote V1.0-beta.3 å·²å‘å¸ƒ, äºŒè¿›åˆ¶æ–‡ä»¶(æš‚æ—¶æ²¡æœ‰windowsç‰ˆçš„):
 
-* Linux: [leanote-linux-x86_64.v1.0-beta.2.bin.tar.gz](https://github.com/leanote/leanote/releases/download/1.0-beta/leanote-linux-x86_64.v1.0-beta.2.bin.tar.gz)
-* MacOS X: [leanote-mac-x86_64.v1.0-beta.2.bin.tar.gz](https://github.com/leanote/leanote/releases/download/1.0-beta/leanote-mac-x86_64.v1.0-beta.2.bin.tar.gz)
+* Linux: [leanote-linux-x86_64.v1.0-beta.3.bin.tar.gz](https://github.com/leanote/leanote/releases/download/1.0-beta.3/leanote-linux-x86_64.v1.0-beta.3.bin.tar.gz)
+* MacOS X: [leanote-mac-x86_64.v1.0-beta.3.bin.tar.gz](https://github.com/leanote/leanote/releases/download/1.0-beta.3/leanote-mac-x86_64.v1.0-beta.3.bin.tar.gz)
 
-»òÕßÖ±½Ó¼ì³ö[Leanote bin repository](https://github.com/leanote/leanote-bin) (ÍÆ¼ö, ÒòÎªÎª×îĞÂ°æ±¾)
+æˆ–è€…ç›´æ¥æ£€å‡º[Leanote bin repository](https://github.com/leanote/leanote-bin) (æ¨è, å› ä¸ºä¸ºæœ€æ–°ç‰ˆæœ¬)
 
-### 3.2. °²×° MongodbDB
+### 3.2. å®‰è£… MongodbDB
 
-LeanoteÊÇÓÉgolang(Ê¹ÓÃ[revel](https://revel.github.io/)¿ò¼Ü ºÍ [MongoDB](https://www.mongodb.org)Êı¾İ¿â), ÄãĞèÒªÏÈ°²×°Mongodb.
+Leanoteæ˜¯ç”±golang(ä½¿ç”¨[revel](https://revel.github.io/)æ¡†æ¶ å’Œ [MongoDB](https://www.mongodb.org)æ•°æ®åº“), ä½ éœ€è¦å…ˆå®‰è£…Mongodb.
 
-°²×°MongodbDB, µ¼ÈëÊı¾İ¸ü¶àÏ¸½ÚÇë²é¿´: [wiki](https://github.com/leanote/leanote/wiki/Install-Mongodb)
+å®‰è£…MongodbDB, å¯¼å…¥æ•°æ®æ›´å¤šç»†èŠ‚è¯·æŸ¥çœ‹: [wiki](https://github.com/leanote/leanote/wiki/Install-Mongodb)
 
-### 3.3. µ¼Èë³õÊ¼Êı¾İ
+### 3.3. å¯¼å…¥åˆå§‹æ•°æ®
 
-MongodbDB³õÊ¼Êı¾İÔÚ `[PATH_TO_LEANOTE]/mongodb_backup/leanote_install_data`
+MongodbDBåˆå§‹æ•°æ®åœ¨ `[PATH_TO_LEANOTE]/mongodb_backup/leanote_install_data`
 
 ```
 $> mongorestore -h localhost -d leanote --directoryperdb PATH_TO_LEANOTE/mongodb_backup/leanote_install_data
 ```
 
-³õÊ¼Êı¾İ°üº¬Á½¸öÓÃ»§:
+åˆå§‹æ•°æ®åŒ…å«ä¸¤ä¸ªç”¨æˆ·:
 
 ```
-user2 username: admin, password: abc123 (¹ÜÀíÔ±, ÖØÒª!)
-user3 username: demo@leanote.com, password: demo@leanote.com (ÎªÌåÑéÊ¹ÓÃ)
+user2 username: admin, password: abc123 (ç®¡ç†å‘˜, é‡è¦!)
+user3 username: demo@leanote.com, password: demo@leanote.com (ä¸ºä½“éªŒä½¿ç”¨)
 ```
 
-### 3.4. ÅäÖÃ
+### 3.4. é…ç½®
 
-ĞŞ¸Ä `[PATH_TO_LEANOTE]/conf/app.conf`. ÓĞÒÔÏÂÑ¡Ïî:
+ä¿®æ”¹ `[PATH_TO_LEANOTE]/conf/app.conf`. æœ‰ä»¥ä¸‹é€‰é¡¹:
 
-``mongodb``  **±ØĞëÅäÖÃ!**
+``mongodb``  **å¿…é¡»é…ç½®!**
 
 ```Shell
 db.host=localhost
@@ -71,42 +71,42 @@ db.username=
 db.password=
 ```
 
-``app.secret`` **ÖØÒª**
-ÇëËæÒâĞŞ¸ÄÒ»¸ö, appµÄÃÜÔ¿, ²»ÄÜÊ¹ÓÃÄ¬ÈÏµÄ, ²»È»»áÓĞ°²È«ÎÊÌâ
+``app.secret`` **é‡è¦**
+è¯·éšæ„ä¿®æ”¹ä¸€ä¸ª, appçš„å¯†é’¥, ä¸èƒ½ä½¿ç”¨é»˜è®¤çš„, ä¸ç„¶ä¼šæœ‰å®‰å…¨é—®é¢˜
 
-¸ü¶àÅäÖÃÇë²é¿´ `app/app.conf` ºÍ [revel ÊÖ²á](https://revel.github.io/)
+æ›´å¤šé…ç½®è¯·æŸ¥çœ‹ `app/app.conf` å’Œ [revel æ‰‹å†Œ](https://revel.github.io/)
 
-### 3.5. ÔËĞĞleanote
+### 3.5. è¿è¡Œleanote
 
 ```
 $> cd PATH_TO_LEANOTE/bin
 $> sudo sh run.sh
 ```
 
-## 4. ÈçºÎ¶Ôleanote½øĞĞ¶ş´Î¿ª·¢
+## 4. å¦‚ä½•å¯¹leanoteè¿›è¡ŒäºŒæ¬¡å¼€å‘
 
-Çë²é¿´ [How-to-develop-leanote](https://github.com/leanote/leanote/wiki/How-to-develop-leanote-%E5%A6%82%E4%BD%95%E5%BC%80%E5%8F%91leanote)
+è¯·æŸ¥çœ‹ [How-to-develop-leanote](https://github.com/leanote/leanote/wiki/How-to-develop-leanote-%E5%A6%82%E4%BD%95%E5%BC%80%E5%8F%91leanote)
 
-## 5. ¹±Ï×Õß
-¶àĞ» [¹±Ï×Õß](https://github.com/leanote/leanote/graphs/contributors) µÄ¹±Ï×, leanoteÒòÓĞÄãÃÇ¶ø¸üÍêÃÀ!
+## 5. è´¡çŒ®è€…
+å¤šè°¢ [è´¡çŒ®è€…](https://github.com/leanote/leanote/graphs/contributors) çš„è´¡çŒ®, leanoteå› æœ‰ä½ ä»¬è€Œæ›´å®Œç¾!
 
-## 6. ¼ÓÈëÎÒÃÇ
+## 6. åŠ å…¥æˆ‘ä»¬
 
-»¶Ó­Ìá½»[pull requests](https://github.com/leanote/leanote/pulls) µ½leanote.
+æ¬¢è¿æäº¤[pull requests](https://github.com/leanote/leanote/pulls) åˆ°leanote.
 
-leanote»¹ÓĞºÜ¶àÎÊÌâ, Èç¹ûÄãÏ²»¶Ëü, »¶Ó­¼ÓÈëÎÒÃÇÒ»ÆğÍêÉÆleanote.
+leanoteè¿˜æœ‰å¾ˆå¤šé—®é¢˜, å¦‚æœä½ å–œæ¬¢å®ƒ, æ¬¢è¿åŠ å…¥æˆ‘ä»¬ä¸€èµ·å®Œå–„leanote.
 
-## Ïà¹ØÎÄµµ
-* [leanote¶ş½øÖÆ°æÏêÏ¸°²×°½Ì³Ì](https://github.com/leanote/leanote/wiki/leanote%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
-* [leanote¿ª·¢°æÏêÏ¸°²×°½Ì³Ì](https://github.com/leanote/leanote/wiki/leanote%E5%BC%80%E5%8F%91%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
-* [Leanote source leanoteÔ´Âëµ¼¶Á](https://github.com/leanote/leanote/wiki/Leanote-source-leanoteÔ´Âëµ¼¶Á)
-* [leanote blog theme api(ÖĞÎÄ°æ)](https://github.com/leanote/leanote/wiki/leanote-blog-theme-api)
-* [How to develop leanote ÈçºÎ¿ª·¢leanote](https://github.com/leanote/leanote/wiki/How-to-develop-leanote-ÈçºÎ¿ª·¢leanote)
+## ç›¸å…³æ–‡æ¡£
+* [leanoteäºŒè¿›åˆ¶ç‰ˆè¯¦ç»†å®‰è£…æ•™ç¨‹](https://github.com/leanote/leanote/wiki/leanote%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
+* [leanoteå¼€å‘ç‰ˆè¯¦ç»†å®‰è£…æ•™ç¨‹](https://github.com/leanote/leanote/wiki/leanote%E5%BC%80%E5%8F%91%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
+* [Leanote source leanoteæºç å¯¼è¯»](https://github.com/leanote/leanote/wiki/Leanote-source-leanoteæºç å¯¼è¯»)
+* [leanote blog theme api(ä¸­æ–‡ç‰ˆ)](https://github.com/leanote/leanote/wiki/leanote-blog-theme-api)
+* [How to develop leanote å¦‚ä½•å¼€å‘leanote](https://github.com/leanote/leanote/wiki/How-to-develop-leanote-å¦‚ä½•å¼€å‘leanote)
 
 
-## ÌÖÂÛ
-* [leanote ÉçÇø](http://bbs.leanote.com)
-* QQÈº: 158716820
+## è®¨è®º
+* [leanote ç¤¾åŒº](http://bbs.leanote.com)
+* QQç¾¤: 158716820
 * [leanote google group](https://groups.google.com/forum/#!forum/leanote)
 
 ----------------------------------------------------------------
