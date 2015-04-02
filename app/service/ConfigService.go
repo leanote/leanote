@@ -372,7 +372,7 @@ func (this *ConfigService) Restore(createdTime string) (ok bool, msg string) {
 		return false, path + " Is Not Exists"
 	}
 	
-	binPath += " --directoryperdb " + path
+	binPath += " " + path
 	
 	cmd := exec.Command("/bin/sh", "-c", binPath)
 	Log(binPath);
