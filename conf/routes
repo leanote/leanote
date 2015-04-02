@@ -37,8 +37,6 @@ POST	/findPasswordUpdate							Auth.FindPasswordUpdate
 * /note/copyNote Note.CopyNote
 * /note/copySharedNote Note.CopySharedNote
 * /note/searchNoteByTags Note.SearchNoteByTags
-* /note/toImage Note.ToImage
-* /note/html2Image Note.Html2Image
 * /note/setNote2Blog Note.SetNote2Blog
 # pjax
 GET     /note/:noteId   	                        Note.Index
