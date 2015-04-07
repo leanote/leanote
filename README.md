@@ -27,62 +27,7 @@ More information about how to install leanote please see:
 * [leanote develop distribution installation tutorial](https://github.com/leanote/leanote/wiki/leanote-develop-distribution-installation-tutorial)
 
 ### 3.1. Download leanote
-
-Leanote V1.0.3-beta has been released. Binaries:
-
-* Linux: [leanote-linux-x86_64.v1.0-beta.3.bin.tar.gz](https://github.com/leanote/leanote/releases/download/1.0-beta.3/leanote-linux-x86_64.v1.0-beta.3.bin.tar.gz)
-* MacOS X: [leanote-mac-x86_64.v1.0-beta.3.bin.tar.gz](https://github.com/leanote/leanote/releases/download/1.0-beta.3/leanote-mac-x86_64.v1.0-beta.3.bin.tar.gz)
-
-Or you can clone [Leanote bin repository](https://github.com/leanote/leanote-bin) (Recommend)
-
-### 3.2. Install MongoDB
-
-Leanote is written in go using [revel](https://revel.github.io/) and [MongoDB](https://www.mongodb.org). Thus, you need to first install MongoDB.
-
-For more tips please have a look at [our wiki](https://github.com/leanote/leanote/wiki/Install-Mongodb)
-
-### 3.3. Import initial MongoDB data
-
-The mongodb data is in `[PATH_TO_LEANOTE]/mongodb_backup/leanote_install_data`
-
-```
-$> mongorestore -h localhost -d leanote --directoryperdb PATH_TO_LEANOTE/mongodb_backup/leanote_install_data
-```
-
-The initial database contains two users:
-
-```
-user2 username: admin, password: abc123 (administrator)
-user3 username: demo, password: demo@leanote.com (this user is for demo)
-```
-
-### 3.4. Configuration
-
-Modify `[PATH_TO_LEANOTE]/conf/app.conf`. Available configuration options are:
-
-``mongodb``  **required**
-
-```Shell
-db.host=localhost
-db.port=27017
-db.dbname=leanote
-db.username=
-db.password=
-```
-
-``app.secret`` **required** **important**
-The secret key used for cryptographic operations (revel.Sign).
-
-FOR SECURITY, YOU MUST CHANGE IT!!
-
-For more infomation please see `app/app.conf` and the [revel manuals](https://revel.github.io/)
-
-### 3.5. Run leanote
-
-```
-$> cd PATH_TO_LEANOTE/bin
-$> sudo sh run.sh
-```
+Please see [leanote binary distribution installation tutorial](https://github.com/leanote/leanote/wiki/leanote-binary-distribution-installation-tutorial)
 
 ## 4. How to develop leanote
 
