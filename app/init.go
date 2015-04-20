@@ -10,8 +10,8 @@ import (
 	"github.com/leanote/leanote/app/controllers/admin"
 	"github.com/leanote/leanote/app/controllers/member"
 	_ "github.com/leanote/leanote/app/lea/binder"
-	"github.com/leanote/leanote/app/lea/session"
-	"github.com/leanote/leanote/app/lea/memcache"
+//	"github.com/leanote/leanote/app/lea/session"
+//	"github.com/leanote/leanote/app/lea/memcache"
 	"github.com/leanote/leanote/app/lea/route"
 	"reflect"
 	"fmt"
@@ -33,11 +33,11 @@ func init() {
 		// AuthFilter,						// Invoke the action.
 		revel.FilterConfiguringFilter, // A hook for adding or removing per-Action filters.
 		revel.ParamsFilter,            // Parse parameters into Controller.Params.
-		// revel.SessionFilter,           // Restore and write the session cookie.
+		revel.SessionFilter,           // Restore and write the session cookie.
 		
 		// 使用SessionFilter标准版从cookie中得到sessionID, 然后通过MssessionFilter从Memcache中得到
 		// session, 之后MSessionFilter将session只存sessionID然后返回给SessionFilter返回到web
-		session.SessionFilter,         // leanote session 
+		// session.SessionFilter,         // leanote session 
 		// session.MSessionFilter,         // leanote memcache session 
 		
 		revel.FlashFilter,             // Restore and write the flash cookie.
@@ -367,7 +367,7 @@ func init() {
 		// email配置
 		InitEmail()
 		InitVd()
-		memcache.InitMemcache() // session服务
+		// memcache.InitMemcache() // session服务
 		// 其它service
 		service.InitService()
 		controllers.InitService()

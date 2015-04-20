@@ -7,17 +7,16 @@ path="$SCRIPTPATH/src/github.com/leanote"
 if [ ! -d "$path" ]; then
 	mkdir -p "$path"
 fi
+rm -rf $SCRIPTPATH/src/github.com/leanote/leanote # 先删除
 ln -s ../../../../ $SCRIPTPATH/src/github.com/leanote/leanote
 
 # set GOPATH
 export GOPATH=$GOPATH:$SCRIPTPATH
 
 # run
-osName=`uname`
-if [ $osName == "Darwin" ]; then
-	chmod 777 "$SCRIPTPATH/leanote-mac"
-	"$SCRIPTPATH/leanote-mac" -importPath github.com/leanote/leanote
-else
-	chmod 777 "$SCRIPTPATH/leanote-linux"
-	"$SCRIPTPATH/leanote-linux" -importPath github.com/leanote/leanote
-fi
+osName=`uname` # Darwin or Linux
+osName=`tr '[A-Z]' '[a-z]' <<<"$osName"` # toLowerCase
+bit=`getconf LONG_BIT` # 32, 64
+script="$SCRIPTPATH/leanote-$osName-$bit"
+chmod 777 $script
+$script -importPath github.com/leanote/leanote
