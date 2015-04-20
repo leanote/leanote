@@ -75,6 +75,10 @@ cp -r ./app/views $tmp/leanote/app
 # conf
 cp ./conf/app.conf $tmp/leanote/conf/app.conf
 cp ./conf/routes $tmp/leanote/conf/routes
+# 处理app.conf, 还原配置
+cat $tmp/leanote/conf/app.conf | sed 's/db.dbname=leanote.*#/db.dbname=leanote #/' > $tmp/leanote/conf/app.conf2 # 不能直接覆盖
+rm $tmp/leanote/conf/app.conf
+mv $tmp/leanote/conf/app.conf2 $tmp/leanote/conf/app.conf
 
 # others
 cp -r ./messages ./public ./mongodb_backup $tmp/leanote/

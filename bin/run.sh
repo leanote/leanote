@@ -17,6 +17,13 @@ export GOPATH=$GOPATH:$SCRIPTPATH
 osName=`uname` # Darwin or Linux
 osName=`tr '[A-Z]' '[a-z]' <<<"$osName"` # toLowerCase
 bit=`getconf LONG_BIT` # 32, 64
+if [ $bit = "64" ]
+then
+	bit="amd64"
+else
+	bit="386"
+fi
+
 script="$SCRIPTPATH/leanote-$osName-$bit"
 chmod 777 $script
 $script -importPath github.com/leanote/leanote
