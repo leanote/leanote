@@ -3,7 +3,7 @@
 
 ## 1. Introduction
 
-Leanote, not just a notebook!
+Leanote, not just a notepad!
 ![leanote.png](leanote.png "")
 
 **Some Features**
