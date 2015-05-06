@@ -465,7 +465,7 @@ function initEditor() {
 	// 初始化编辑器
 	tinymce.init({
 		inline: true,
-		theme: 'leanote',
+		// theme: 'leanote',
 		valid_children: "+pre[div|#text|p|span|textarea|i|b|strong]", // ace
 		/*
 		protect: [

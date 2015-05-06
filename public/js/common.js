@@ -1280,8 +1280,14 @@ function setHash(key, value) {
 
 // 防止js注入
 function trimTitle(title) {
+	if(!title) {
+		return '';
+	}
 	return title.replace(/<.*?script.*?>/g, '');
 };
 function toHtmlEntity(html) {
+	if(!html) {
+		return '';
+	}
 	return (html + '').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 };
