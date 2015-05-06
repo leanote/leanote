@@ -203,7 +203,6 @@ ul.dropdown-menu {
 }
 #footer {
   padding-bottom: 10px;
-  width: 700px;
 }
 .navbar-brand {
   display: none;
@@ -541,4 +540,7 @@ table tr:nth-child(2n) {
 	border: 1px solid #ddd;
 	border-collapse: collapse;
 	padding: 6px 13px;
+}
+.desc *, #content * {
+    word-wrap: break-word;
 }

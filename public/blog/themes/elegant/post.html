@@ -107,35 +107,17 @@ var commentNum = +"{{$.post.CommentNum}}";
 <!-- 
 markdown 
 调用markdown来解析得到html
--->
-
-{{if $.post.IsMarkdown }}
-<script src="/public/mdeditor/editor/pagedown/Markdown.Converter.js"></script>
-<script src="/public/mdeditor/editor/pagedown/Markdown.Sanitizer.js"></script>
-<script src="/public/mdeditor/editor/pagedown/Markdown.Editor.js"></script>
-<script src="/public/mdeditor/editor/pagedown/local/Markdown.local.zh.js"></script>
-<script src="/public/mdeditor/editor/Markdown.Extra.js"></script>
-
-<!--mathjax-->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ["\\(","\\)"]], processEscapes: true },  messageStyle: "none"});
-</script>
-<script src="/public/mdeditor/editor/mathJax.js"></script>
-<script src="/public/libs/MathJax/MathJax.js?config=TeX-AMS_HTML"></script>
+-->{{if $.post.IsMarkdown }}
+<script src="/public/libs/md2html/md2html.js"></script>
 <script>
 var content = $.trim($("#markdownContent textarea").val());
-var converter = Markdown.getSanitizingConverter();
-Markdown.Extra.init(converter, {extensions: ["tables", "fenced_code_gfm", "def_list"]});
-var html = converter.makeHtml(content);
-$("#content").html(html);
-$("pre").addClass("prettyprint linenums");
-prettyPrint();
-MathJax.Hub.Queue(["Typeset",MathJax.Hub,"wmd-preview"]);
-
-initNav();
-weixin();
+md2Html(content, $("#content"), function(html) {
+    $("pre").addClass("prettyprint linenums");
+    prettyPrint();
+    initNav();
+    weixin();
+});
 </script>
-
 <!-- 不是markdown -->
 {{else}}
 <script>

@@ -9,17 +9,15 @@
 
 请在此解析所有配置
 * Name 主题名
-* Desc 主题描述, 可以写一些安装或配置信息
 * Version 主题版本
 * Author 主题的作者
 * AuthorUrl 作者的博客链接或相关链接
 
-* FriendLinks 友情链接 
+* FriendLinks 友情链接
 
 */
 {
     "Name": "Leanote nav fixed",
-    "Desc": "",
     "Version": "1.0",
     "Author": "leanote.com",
     "AuthorUrl": "http://leanote.com",
