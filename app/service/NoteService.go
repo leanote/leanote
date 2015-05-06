@@ -18,9 +18,10 @@ func (this *NoteService) GetNote(noteId, userId string) (note info.Note) {
 	return
 }
 // fileService调用
+// 不能是已经删除了的, life bug, 客户端删除后, 竟然还能在web上打开
 func (this *NoteService) GetNoteById(noteId string) (note info.Note) {
 	note = info.Note{}
-	db.Get(db.Notes, noteId, &note)
+	db.GetByQ(db.Notes, bson.M{"_id": bson.ObjectIdHex(noteId), "IsDeleted": false}, &note)
 	return
 }
 // 得到blog, blogService用
@@ -238,7 +239,6 @@ func (this *NoteService) AddNote(note info.Note, fromApi bool) info.Note {
 	
 	// api会传IsBlog, web不会传
 	if !fromApi {
-		note.PublicTime = note.UpdatedTime
 		// 设为blog
 		note.IsBlog = notebookService.IsBlog(notebookId)
 	}
