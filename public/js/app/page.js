@@ -465,6 +465,7 @@ function initEditor() {
 	// 初始化编辑器
 	tinymce.init({
 		inline: true,
+		theme: 'leanote',
 		valid_children: "+pre[div|#text|p|span|textarea|i|b|strong]", // ace
 		/*
 		protect: [
@@ -480,7 +481,8 @@ function initEditor() {
 			
 			// 为了把下拉菜单关闭
 	        ed.on("click", function(e) {
-	          $("body").trigger("click");
+	          // $("body").trigger("click");
+	          // console.log(tinymce.activeEditor.selection.getNode());
 	        });
 		},
 		
@@ -972,61 +974,91 @@ LeaAce = {
 		if(!force && !me.canAndIsAce()) {
 			return;
 		}
-		me.disableAddHistory();
 		var $pre = $('#' + id);
-		$pre.find('.toggle-raw').remove();
-		var preHtml = $pre.html();
-
-		$pre.removeClass('ace-to-pre');
-		$pre.attr("contenteditable", false); // ? 避免tinymce编辑
-		var aceEditor = ace.edit(id);
-		aceEditor.setTheme("ace/theme/tomorrow");
-
-		var brush = me.getPreBrush($pre);
-		var b = "";
-		if(brush) {
-			try {
-				b = brush.split(':')[1];
-			} catch(e) {}
+		if($pre.length == 0) {
+			return;
 		}
-		b = b || "javascript";
-		aceEditor.session.setMode("ace/mode/" + b);
-		aceEditor.getSession().setUseWorker(false); // 不用语法检查
-		aceEditor.setOption("showInvisibles", false); // 不显示空格, 没用
-		aceEditor.setOption("wrap", "free");
-		aceEditor.setShowInvisibles(false);
-		aceEditor.setAutoScrollEditorIntoView(true);
-		aceEditor.setOption("maxLines", 10000);
-		aceEditor.commands.addCommand({
-		    name: "undo",
-		    bindKey: {win: "Ctrl-z", mac: "Command-z"},
-		    exec: function(editor) {
-		    	var undoManager = editor.getSession().getUndoManager();
-		    	if(undoManager.hasUndo()){ 
-		    		undoManager.undo();
-		    	} else {
-		    		undoManager.reset();
-		    		tinymce.activeEditor.undoManager.undo();
-		    	}
-		    }
-		});
-		this._aceEditors[id] = aceEditor;
-		if(val) {
-			aceEditor.setValue(val);
-			// 不要选择代码
-			// TODO
-		} else {
-			// 防止 <pre><div>xx</div></pre> 这里的<div>消失
-			// preHtml = preHtml.replace('/&nbsp;/g', ' '); // 以前是把' ' 全换成了&nbsp;
-			// aceEditor.setValue(preHtml);
-			// 全不选
-			// aceEditor.selection.clearSelection();
+		var rawCode = $pre.html(); // 原生code
+		try {
+			me.disableAddHistory();
+			
+			// 本身就有格式的, 防止之前有格式的显示为<span>(ace下)
+			if($pre.attr('style') || $pre.html().indexOf('style') != -1) {
+				$pre.html($pre.text());
+				// return;
+			}
+			$pre.find('.toggle-raw').remove();
+			var preHtml = $pre.html();
+
+			$pre.removeClass('ace-to-pre');
+			$pre.attr("contenteditable", false); // ? 避免tinymce编辑
+			var aceEditor = ace.edit(id);
+
+			aceEditor.setTheme("ace/theme/tomorrow");
+
+			var brush = me.getPreBrush($pre);
+			var b = "";
+			if(brush) {
+				try {
+					b = brush.split(':')[1];
+				} catch(e) {}
+			}
+			b = b || "javascript";
+			aceEditor.session.setMode("ace/mode/" + b);
+			aceEditor.session.setOption("useWorker", false); // 不用语法检查
+			// retina
+			if(window.devicePixelRatio == 2) {
+				aceEditor.setFontSize("12px");
+			}
+			else {
+				aceEditor.setFontSize("14px");
+			}
+			aceEditor.getSession().setUseWorker(false); // 不用语法检查
+			aceEditor.setOption("showInvisibles", false); // 不显示空格, 没用
+			aceEditor.setShowInvisibles(false); // OK 不显示空格
+			aceEditor.setOption("wrap", "free");
+			aceEditor.setShowInvisibles(false);
+			aceEditor.setAutoScrollEditorIntoView(true);
+			aceEditor.setOption("maxLines", 10000);
+			aceEditor.commands.addCommand({
+			    name: "undo",
+			    bindKey: {win: "Ctrl-z", mac: "Command-z"},
+			    exec: function(editor) {
+			    	var undoManager = editor.getSession().getUndoManager();
+			    	if(undoManager.hasUndo()){ 
+			    		undoManager.undo();
+			    	} else {
+			    		undoManager.reset();
+			    		tinymce.activeEditor.undoManager.undo();
+			    	}
+			    }
+			});
+			this._aceEditors[id] = aceEditor;
+			if(val) {
+				aceEditor.setValue(val);
+				// 不要选择代码
+				// TODO
+			} else {
+				// 防止 <pre><div>xx</div></pre> 这里的<div>消失
+				// preHtml = preHtml.replace('/&nbsp;/g', ' '); // 以前是把' ' 全换成了&nbsp;
+				// aceEditor.setValue(preHtml);
+				// 全不选
+				// aceEditor.selection.clearSelection();
+			}
+
+			// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+			// "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+			me.resetAddHistory();
+			return aceEditor;
+		} catch(e) {
+			// 当有错误时, 会有XXXXX的形式, 此时不要ace, 直接原生的!!!
+			console.error('ace error!!!!');
+			console.error(e);
+			$pre.attr("contenteditable", true);
+			$pre.removeClass('ace-tomorrow ace_editor ace-tm');
+			$pre.html(rawCode);
+			me.resetAddHistory();
 		}
-
-		// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-		me.resetAddHistory();
-		return aceEditor;
 	},
 	clearIntervalForInitAce: null,
 	initAceFromContent: function(editor) {
