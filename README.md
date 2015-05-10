@@ -31,21 +31,33 @@ More information about how to install leanote please see:
 Please see [How-to-develop-leanote](https://github.com/leanote/leanote/wiki/How-to-develop-leanote-%E5%A6%82%E4%BD%95%E5%BC%80%E5%8F%91leanote)
 
 
-## 5. Contributors
-Thank you to all the [contributors](https://github.com/leanote/leanote/graphs/contributors) on
-this project. Your help is much appreciated.
-
-## 6. Contributing
-
-Please fork this repository and contribute back using [pull requests](https://github.com/leanote/leanote/pulls).
-
-## Docs
+## 5. Docs
 * [leanote binary distribution installation tutorial](https://github.com/leanote/leanote/wiki/leanote-binary-distribution-installation-tutorial)
 * [leanote develop distribution installation tutorial](https://github.com/leanote/leanote/wiki/leanote-develop-distribution-installation-tutorial)
 * [leanote blog theme api](https://github.com/leanote/leanote/wiki/leanote-blog-theme-api_en)
 
+## 6. Contributors
+Thank you to all the [contributors](https://github.com/leanote/leanote/graphs/contributors) on
+this project. Your help is much appreciated.
 
-## Discussion
+## 7.Join us
+Please fork this repository and contribute back using [pull requests](https://github.com/leanote/leanote/pulls).
+
+If you find some problems or has some good ideas, please submit [issues](https://github.com/leanote/leanote/issues).
+
+You are always welcomed!
+
+## 8. Donation
+Support us, [donate us](http://leanote.org/#donate). And thanks [donators](http://leanote.leanote.com/post/leanote-donation-list)
+
+## 9. Related projects
+* [Leanote Desktop App](https://github.com/leanote/desktop-app), [Download](http://app.leanote.com)
+* [Leanote IOS](https://github.com/leanote/leanote-ios), development phase
+* [Leanote Android](https://github.com/Dminter/leanote-android-client), development phase
+
+And also, you are welcome to join us.
+
+## 9. Discussion
 * [leanote bbs](http://bbs.leanote.com)
 * [leanote google group](https://groups.google.com/forum/#!forum/leanote)
 * QQ Group: 158716820
