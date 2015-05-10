@@ -36,6 +36,8 @@ Please see [How-to-develop-leanote](https://github.com/leanote/leanote/wiki/How-
 * [leanote develop distribution installation tutorial](https://github.com/leanote/leanote/wiki/leanote-develop-distribution-installation-tutorial)
 * [leanote blog theme api](https://github.com/leanote/leanote/wiki/leanote-blog-theme-api_en)
 
+More docs please see [wiki](https://github.com/leanote/leanote/wiki).
+
 ## 6. Contributors
 Thank you to all the [contributors](https://github.com/leanote/leanote/graphs/contributors) on
 this project. Your help is much appreciated.
@@ -48,7 +50,7 @@ If you find some problems or has some good ideas, please submit [issues](https:/
 You are always welcomed!
 
 ## 8. Donation
-Support us, [donate us](http://leanote.org/#donate). And thanks [donators](http://leanote.leanote.com/post/leanote-donation-list)
+Support us, [donate us](http://leanote.org/#donate). And thanks [donators](http://leanote.leanote.com/post/leanote-donation-list).
 
 ## 9. Related projects
 * [Leanote Desktop App](https://github.com/leanote/desktop-app), [Download](http://app.leanote.com)

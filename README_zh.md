@@ -38,6 +38,8 @@ leanote是一款私有云笔记, 你可以下载它安装在自己的服务器�
 * [leanote blog theme api(中文版)](https://github.com/leanote/leanote/wiki/leanote-blog-theme-api)
 * [How to develop leanote 如何开发leanote](https://github.com/leanote/leanote/wiki/How-to-develop-leanote-如何开发leanote)
 
+更多文档请查看 [wiki](https://github.com/leanote/leanote/wiki).
+
 ## 6. 贡献者
 多谢 [贡献者](https://github.com/leanote/leanote/graphs/contributors) 的贡献, leanote因有你们而更完美!
 
@@ -45,7 +47,7 @@ leanote是一款私有云笔记, 你可以下载它安装在自己的服务器�
 
 欢迎提交[pull requests](https://github.com/leanote/leanote/pulls) 到leanote.
 
-有任何问题或建议, 欢迎提交[issue](https://github.com/leanote/leanote/issues)
+有任何问题或建议, 欢迎提交[issue](https://github.com/leanote/leanote/issues).
 
 Leanote还有很多问题, 如果你喜欢它, 欢迎加入我们一起完善leanote.
 
