@@ -455,12 +455,15 @@ var port string
 
 func init() {
 	revel.OnAppStart(func() {
+		/*
+		不用配置的, 因为最终通过命令可以改, 而且有的使用nginx代理
 		port  = strconv.Itoa(revel.HttpPort)
 		if port != "80" {
 			port = ":" + port
 		} else {
 			port = "";
 		}
+		*/
 		
 		siteUrl, _ := revel.Config.String("site.url") // 已包含:9000, http, 去掉成 leanote.com
 		if strings.HasPrefix(siteUrl, "http://") {
@@ -468,6 +471,17 @@ func init() {
 		} else if strings.HasPrefix(siteUrl, "https://") {
 			defaultDomain = siteUrl[len("https://"):]
 			schema = "https://"
+		}
+		
+		// port localhost:9000
+		ports := strings.Split(defaultDomain, ":")
+		if len(ports) == 2 {
+			port = ports[1]
+		}
+		if port == "80" {
+			port = ""
+		} else {
+			port = ":" + port
 		}
 	})
 }
