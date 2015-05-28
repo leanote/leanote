@@ -1,340 +1,339 @@
 # leanote
 app=leanote
-moto=Not Just A Notebook!
-moto2=Knowledge, Blog, Sharing, Cooperation... all in leanote
-moto3=Brief But Not Simple
-fork github=Fork leanote on Github
+moto=Plus qu'un simple bloc-notes!
+moto2=Connaissance, Blog, Partage, Coopération... tout est dans Leanote
+moto3=Bref mais pas simple
+fork github=Fork leanote sur Github
 
 # 首页
-forgetPassword = Forget password?
-or=or
-try=Try it
-3th=Third-party accounts
-usernameOrEmail=Username or email
-password=Password
-home=Home
-aboutLeanote=About leanote
+forgetPassword = Mot de passe oublié?
+or=ou
+try=Essayer
+3th=Comptes tiers
+usernameOrEmail=Nom d'utilisateur ou courriel
+password=Mot de passe
+home=Mon bloc-note
+aboutLeanote=A propos de leanote
 suggestions=Suggestions
 yourSuggestions=Suggestions
 leanoteBlog=Blog
-knowledge=Knowledge
-knowledgeInfo=Use leanote as a note, manage your knowledge in leanote.
-share=Share
-shareInfo=Share your knowledge to your friends in leanote.
-cooperation=Cooperation
-cooperationInfo=Collaborate with friends to improve your knowledge.
+knowledge=Connaissances
+knowledgeInfo=Utiliser leanote comme une note, gérer ses connaissances dans leanote.
+share=Partager
+shareInfo=Partagez vos connaissances avec vos amis dans leanote.
+cooperation=Coopération
+cooperationInfo=Collaborez avec vos amis pour augmenter vos connaissances.
 blog=Blog
-blogInfo=You can public your knowledge and leanote is your blog!
-suggestionsInfo=help us to improve our service.
-yourContact=Your contact
-emailOrOthers=Email or other contact way
+blogInfo=Vous pouvez publier vos connaissances et leanote et votre blog!
+suggestionsInfo=Aidez-nous à améliorer leanote.
+yourContact=Vos contacts
+emailOrOthers=Courriel ou autre méthode de contact
 captcha=Captcha
-reloadCaptcha=Reload Captcha
-captchaError=Captcha Do Not Match
-inputCaptcha=Captcha is required
+reloadCaptcha=Recharger Captcha
+captchaError=Le Captcha ne correspond pas
+inputCaptcha=Le Captcha est requis 
 
-hi=Hi
-welcomeUseLeanote=Welcome!
-myNote=My note
-curUser=Email
+hi=Coucou
+welcomeUseLeanote=Bienvenue!
+myNote=Ma note
+curUser=Courriel
 
 # form
-submit=submit
-register=Sign up
-login=Sign in
-password2=Confirm your password
-email=Email
-inputUsername=Username(email) is required
-inputEmail=Email is required
-wrongEmail=Wrong email
-wrongUsernameOrPassword=Wrong username or password
-inputPassword=Password is required
-wrongPassword=Wrong password
-logining=Sign in
-loginSuccess=login success
-ing=processing
-use = Use
-hadAcount = Already have an account?
-hasAcount = Do not have an account?
+submit=Soumettre
+register=S'inscrire
+login=S'identifier
+password2=Confirmer votre mot de passe
+email=Courriel
+inputUsername=Le nom d'utilisateur(courriel) est requis
+inputEmail=Le courriel est requis
+wrongUsernameOrPassword=Mauvais nom d'utilisateur ou mot de passe
+inputPassword=Le mot de passe est requis
+wrongPassword=Mauvais mot de passe
+logining=S'identifier
+loginSuccess=Identification réussie!
+ing=En cours
+use = Utiliser
+hadAcount = Déjà inscrit?
+hasAcount = Pas encore inscrit?
 
 # 注册
-registerSuccessAndRdirectToNote=Register success, redirecting...
-userHasBeenRegistered=%s has been registered
+registerSuccessAndRdirectToNote=inscription réussie, redirection...
+userHasBeenRegistered=%s a été inscrit
 
 # 找回密码
-passwordTips=The length is at least 6
-findPassword=Find password
-findPasswordSendEmailOver=We have already send the find password link to your email, please check out your email
-checkEmai=Check email
-findPasswordTimeout=time out
-reFindPassword=find password again
-updatePassword=Update password
-updatePasswordSuccessRedirectToLogin=update password success and redirect to login page...
-inputPassword2=Please input your password again
-confirmPassword=Please confirm your password
-notGoodPassword=Tt's not a good password, the length is at least 6
+passwordTips=Doit comporter au moins 6 caractères
+findPassword=Demander le mot de passe
+findPasswordSendEmailOver=Nous avons déjà envoyer le lien pour demander un mot de passe sur votre adresse de courriel, veuillez consulter votre boite de réception.
+checkEmai=Vérifier le courriel
+findPasswordTimeout=Temps imparti écoulé
+reFindPassword=Re-demander le mot de passe
+updatePassword=Mettre à jour le mot de passe
+updatePasswordSuccessRedirectToLogin=Mise à jour du mot de passe réussie, redirection vers la page d'identification...
+inputPassword2=Veuillez taper votre mot de passe à nouveau
+confirmPassword=Veuillez confirmer votre mot de passe
+notGoodPassword=Le mot de passe est incorrect, il doit comporter au moins 6 caractères.
 
 # 笔记主页
 myBlog=Blog
-history=Histories
-save=Save
-editorTips=Tips
-editorTipsInfo=<h4>1. Short cuts</h4>ctrl+shift+c Toggle code<h4>2. shift+enter Get out of current block</h4> eg. <img src="/images/outofcode.png" style="width: 90px"/> in this situation you can use shift+enter to get out of current code block.
-newNote=New note
-newMarkdownNote=New Markdown Note
-noNoteNewNoteTips=The notebook is empty, why not...
-canntNewNoteTips=Sorry, cannot new note in here, please choose a notebook at first.
-new=New
-newMarkdown=New markdown note
-clickAddTag=Click to add Tag
-notebook=Notebook
+history=Historique
+save=Sauvegarder
+editorTips=Astuces
+editorTipsInfo=<h4>1. Raccourcis</h4>ctrl+maj+c Active/désactive le code<h4>2. maj+entrée Sortir du bloc courant</h4> ex. <img src="/images/outofcode.png" style="width: 90px"/> dans cette situation vous pouvez utiliser maj+entrée pour sortir du bloc de code courant.
+newNote=Nouvelle note
+newMarkdownNote=Nouvelle Note Markdown
+noNoteNewNoteTips=Le bloc-note est vide, pourquoi pas...
+canntNewNoteTips=Désolé, impossible de créer une nouvelle note ici, veuillez d'abord choisir un bloc-note.
+new=Nouveau
+newMarkdown=Nouvelle note markdown
+clickAddTag=Cliquez pour ajouter une étiquette
+notebook=Bloc-note
 note=Note
-myNotebook=My notebook
-addNotebook=Add notebook
-search=Search
-clearSearch=Clear Search
-all=Newest
-trash=Trash
-delete=Delete
-unTitled=UnTitled
-defaultShare=Default sharing
-leftHidden=Hidden slide bar
-leftShow=Show slide bar
-nav=Note nav
-writingMode=Writing Mode
-normalMode=Normal Mode
-saving=Saving
-saveSuccess=Save success
+myNotebook=Mon bloc-note
+addNotebook=Ajouter un bloc-note
+search=Chercher
+clearSearch=Nettoyer la recherche
+all=Le plus récent
+trash=Corbeille
+delete=Effacer
+unTitled=Sans titre
+defaultShare=Partage par défaut
+leftHidden=Cacher la barre latérale
+leftShow=Montrer la barre latérale
+nav=Naviguer parmi les notes
+writingMode=Mode écriture
+normalMode=Mode normal
+saving=Sauvegarde
+saveSuccess=Sauvegarde réussie
 
-update=Update
-create=Create
+update=Mettre à jour
+create=Créer
 
-demoRegister=<a href="/register">Sign up</a>
+demoRegister=<a href="/register">S'inscrire</a>
 
-close=Close
-cancel=Cancel
-send=Send
+close=Fermer
+cancel=Annuler
+send=Envoyer
 
 # 标签
-tag=Tag
-myTag=My tag
-red=red
-yellow=yellow
-blue=blue
-green=green
+tag=Etiquette
+myTag=Mes étiquettes
+red=rouge
+yellow=jaune
+blue=bleu
+green=vert
 
 # 设置
-accountSetting=Account
-themeSetting=Theme
+accountSetting=Compte
+themeSetting=Thème
 setAvatar=Avatar
-logout=Logout
-basicInfo=Basic
-basicInfoSet=Blog Basic Setting
-updateEmail=Update email
-usernameSetting=Update username
-username=Username
+logout=Déconnexion
+basicInfo=Basique
+basicInfoSet=Réglages de base du blog
+updateEmail=Mettre à jour le courriel
+usernameSetting=Mettre à jour le nom d'utilisateur
+username=Nom d'utilisateur
 avatar=Avatar
-chooseImage=Choose Image
-oldPassword=Old password
-newPassword=New password
-admin=Admin
+chooseImage=Choisir une image
+oldPassword=Ancien mot de passe
+newPassword=Nouveau mot de passe
+admin=Administrateur
 
-default=Default
+default=Par défaut
 simple=Simple
 
 # tinymce
-uploadImage=Upload image
+uploadImage=Téléverser une image
 
 # blog
-aboutMe=About me
-blogSet=Blog Settings
+aboutMe=A propos de moi
+blogSet=Réglages du blog
 
 # index
 discussion=Discussion
-download=Download
-howToInstallLeanote=How to install leanote
+download=Téléchargement
+howToInstallLeanote=Comment installer leanote
 
 # 
-attachments = Attachments
-donate = Donate
+attachments = Pièces-jointes
+donate = Faire un don
 
 # contextmenu
-shareToFriends=Share to friends
-publicAsBlog=Public as blog
-cancelPublic=Cancel public
-move=Move
-copy=Copy
-rename=Rename
-addChildNotebook=Add child notebook
-deleteAllShared=Delete shared user
-deleteSharedNotebook=Delete shared notebook
-copyToMyNotebook=Copy to my notebook
+shareToFriends=Partage avec ses amis
+publicAsBlog=Publier en tant que blog
+cancelPublic=Annuler la publication
+move=Déplacer
+copy=Copier
+rename=Renommer
+addChildNotebook=Ajouer un bloc-note enfant
+deleteAllShared=Effacer l'utilisateur partagé
+deleteSharedNotebook=Effacer le bloc-notes partagé
+copyToMyNotebook=Copier vers mon bloc-notes
 
 ####note-dev
-emailInSending=In sending to 
-checkEmail=Check email
-setUsername=Set username
-setUsernameTips=Your current email is: <code>%s</code>. You can set a unique username. <br />Username' length is at least 4 and cannot contains special characters.
-currentEmail=Your current email is: <code>%s</code> 
-updateEmail=Update email
-updateEmailTips=You must verify the email after you update the email. The verified email will be your new account.
-sendVerifiedEmail=Send verification email
-verified=Verified
-unVerified=Unverfied
-verifiedNow=Verify now
-resendVerifiedEmail=Resend verification email
+emailInSending=Envoi vers 
+checkEmail=Vérifier courriel
+setUsername=Paramétrer le nom d'utilisateur
+setUsernameTips=Votre courriel actuel est: <code>%s</code>. Vous pouvez définir un nom d'utilisateur unique. <br />Nom d'utilisateur' Au moins 4 caractères et sans caractères spéciaux.
+currentEmail=Votre courriel actuel est: <code>%s</code> 
+updateEmail=Mettre à jour le courriel
+updateEmailTips=Vous devez confirmer votre courriel après la mise-à-jour. Le courriel confirmé sera le nouveau compte.
+sendVerifiedEmail=Envoyer le courriel de confirmation
+verified=Confirmé
+unVerified=Non confirmé
+verifiedNow=Confirmer maintenant
+resendVerifiedEmail=Renvoyer le courriel de confirmation
 
 # 分享
-defaulthhare=Default
-addShare=Add Friend
-friendEmail=Friend email
-permission=Permission
-readOnly=Read only
-writable=Writable
-inputFriendEmail=Friend email is required
-clickToChangePermission=Click to change permission
-sendInviteEmailToYourFriend=Send invite email to your friend
-copySuccess=Copy success
-copyFailed=Copy failed
-friendNotExits=Your friend hasn't %s's account, invite register link: %s
-emailBodyRequired=Email body is required
-clickToCopy=Click to copy
-sendSuccess=success
-inviteEmailBody=Hi,I am %s, %s is awesome, come on!
+defaulthhare=Par défaut
+addShare=Ajouter un ami
+friendEmail=Courriel de l'ami
+permission=Autorisation
+readOnly=Lecture seule
+writable=Editable
+inputFriendEmail=Le courriel de votre ami est requis/
+clickToChangePermission=Cliquez pour changer l'autorisation.
+sendInviteEmailToYourFriend=Envoyer un courriel d'invitation à votre ami.
+copySuccess=Copie réussie
+copyFailed=Copie échouée
+friendNotExits=Votre ami n'a pas de compte %s, lien d'invitation à s'enregistrer: %s
+emailBodyRequired=Corps du message requis
+clickToCopy=Cliquer pour copier
+sendSuccess=succès
+inviteEmailBody=Coucou, je suis %s, %s est génial, viens!
 
 # 历史记录
-historiesNum=We have saved at most <b>10</b> latest histories with each note
-noHistories=No histories
-fold=Fold
-unfold=Unfold
-datetime=Datetime
-restoreFromThisVersion=Restore from this version
-confirmBackup=Are you sure to restore from this version? We will backup the current note.
-createAccount=Create account
-createAccountSuccess=Account create success
-createAccountFailed=Account create failed
-thirdCreateAcountTips=You are using the 3th account to login %(app)s, you can create a %(app)s account too. <br />After you create %(app)s account, you can use the account and the 3th account to login %(app)s.
+historiesNum=Nous avons enregistré au maximum <b>10</b> historiques récents de chaque note.
+noHistories=Pas d'historique.
+fold=Plier
+unfold=Déplier
+datetime=Date & Heure
+restoreFromThisVersion=Restaurer depuis cette version
+confirmBackup=Êtes-vous sûr de vouloir restaurer depuis cette version? Nous allons réaliser une copie de sauvegarde de la note actuelle.
+createAccount=Créer un compte
+createAccountSuccess=Compte créé avec succès
+createAccountFailed=Echec de la création du compte
+thirdCreateAcountTips=Vous utilisez un compte tiers pour connecter %(app)s, vous pouvrz créer un compte %(app) également. <br />Après avoir créé le compte %(app), vous pouvez utiliser ce compte et le compte tiers pour connecter %(app)s.
 
 ## valid msg
-inputUsername=input username
-updateUsernameSuccess=Update username success
-usernameIsExisted=Username is already exists
-noSpecialChars=username cannot contains special chars
-minLength=The length is at least %s
-errorEmail=Please input the right email
-verifiedEmaiHasSent=The verification email has been sent, please check your email.
-emailSendFailed=Email send failed
-inputPassword=Password is required
-inputNewPassword=The new password is required
-inputPassword2=Please input the new password again
-errorPassword=The passowd's length is at least 6 and be sure as complex as possible
-oldPasswordError=The old password not match
-confirmPassword=Password not matched
-updatePasswordSuccess=Update password success
-errorDomain=The custom domain is invalid, eg. www.myblog.com
-domainExisted=Custom domain is already existed
-errorSubDomain=Please input the valid sub domain, the length is at least 4 and no special chars
-subDomainExisted=Sub domain is already existed
-domainNotPointToLeanote=The custom domin hasn't pointed to d.leanote.com
-errorPerPageSize=Page size is error
-errorSortField=Sort Field is error
-themeValidHasRoundInclude=WARNING: Templates have circular references!
+inputUsername=Entrer le nom d'utilisateur
+updateUsernameSuccess=Mise à jour du nom d'utilisateur réussie
+usernameIsExisted=Le nom d'utilisateur existe déjà.
+noSpecialChars=le nom d'utilisateur ne peut pas contenir de caractères spéciaux
+minLength=La longueur doit être d'au moins %s
+errorEmail=Veuillez renseigner le courriel correct
+verifiedEmaiHasSent=Le courriel de confirmation a été envoyé, veuillez surveiller votre boite de réception.
+emailSendFailed=Envoi du courriel échoué.
+inputPassword=Mot de passe requis
+inputNewPassword=Le nouveau mot de passe est requis.
+inputPassword2=Veuillez rentrer le nouveau mot de passe à nouveau.
+errorPassword=La taille du mot de passe est d'au moins 6 caractères et aussi complexe que possible.
+oldPasswordError=L'ancien mot de passe ne correspond pas.
+confirmPassword=Le mot de passe ne correspond pas.
+updatePasswordSuccess=Mises à jour du mot de passe réussie.
+errorDomain=Le domaine personnalisé n'est pas valide, ex. www.myblog.com
+domainExisted=Le domaine personnalisé existe déjà.
+errorSubDomain=Veuillez entrer un sous domaine valide, au moins 4 caractères (non spéciaux)
+subDomainExisted=Le sous-domaine existe déjà.
+domainNotPointToLeanote=Le domaine personnalisé ne pointe pas vers d.leanote.com
+errorPerPageSize=Erreur dans la taille de la page
+errorSortField=Erreur dans le tri du champs
+themeValidHasRoundInclude=WARNING: Les modèles ont des références circulaires!
 
 # lea++
-leaDesc=leanote blog platform
-recommend=Recommend
-latest=Latest
+leaDesc=platerforme de blog leanote
+recommend=Recommandé
+latest=Plus récent.
 
 # 用户中心
-memberCenter=Member Center
-userNotExists=The user is not exists
-hasUsers=The user already exists
+memberCenter=Centre de Membre
+userNotExists=L'utilisateur n'existe pas
+hasUsers=L'utilisateur existe déjà
 
 # yu
 service=Service
-imageSizeOver=Sorry, you have no image opacity, please <a href="/service">upgrade your account</a>.
-attachSizeOver=Sorry, you have no attachment opacity, please <a href="/service">upgrade your account</a>.
+imageSizeOver=Désolé, l'image est trop volumineuse, veuillez <a href="/service">mettre votre compte à niveau</a>.
+attachSizeOver=Désolé, la pièce-jointe est trop volumineuse, veuillez <a href="/service">mettre votre compte à niveau.</a>.
 
 
 #memeber
-welcomeToLeanote=Welcome
-accountInfo=Account Info
-accountType=Account Type
+welcomeToLeanote=Bienvenue
+accountInfo=Info sur le Compte
+accountType=Type de Compte
 premiumAccountType=Premium
 normalAccountType=Normal
-imageSize=Image Opacity
-attachSize=Attachment Opacity
-upgrade=Upgrade My Account
-leanoteEvents=Leanote News
-addLeanoteAccount=New Leanote Account
-defaultComment=Default leanote comment system
-upgradeAccountTips=I want to using a custom domain for my blog, <a class="btn btn-default" href="/service">Upgrade My Account</a>
-cateIsPublicNotebook=Category is the published notebooks
-dragAndSort=Drag it to sort
-permanentLink=Permanent Link
-cate=Category
-noCates=No Category
-single=Single Page
-singleTips=You can add many single pages
-addSingle=New single page
-updateSingle=Update single page
-inputSingleTitle=Single page title is required
-saveSort=Save sequencing
-pagingAndSort=Paging And Sort Settings
-perPageSize=Per page size
-sortField=Sorter field
-sortType=Sorter type
-publicTime=Published time
-createdTime=Created time
-updatedTime=Updated time
+imageSize=Taille de l'image
+attachSize=Taille de la pièce-jointe
+upgrade=Mettre mon compte à niveau
+leanoteEvents=Nouvelles de Leanote
+addLeanoteAccount=Nouveau compte Leanote
+defaultComment=Système de commentaires Leanote par défaut
+upgradeAccountTips=Je veux utiliser un domaine personnalisé pour mon blog, <a class="btn btn-default" href="/service">mettre mon compte à niveau.</a>
+cateIsPublicNotebook=La catégorie est le bloc-note publié
+dragAndSort=Faire glisser pour trier
+permanentLink=Lien Permanent
+cate=Catégorie
+noCates=Sans catégorie
+single=Page simple
+singleTips=Vous pouvez ajouter beaucoup de pages simples
+addSingle=Nouvelle page simple
+updateSingle=Metter à jour une page simple
+inputSingleTitle=Le titre de la page simple est requis
+saveSort=Séquençage de la sauvegarde
+pagingAndSort=Réglages du tri et de la mise en page
+perPageSize=Taille par page
+sortField=Champ de tri
+sortType=Type de tri
+publicTime=Heure de publication
+createdTime=Heure de création
+updatedTime=Heure de mise à jour
 desc=Desc
 asc=Asc
-postList=Post List
-hasSelfDefined=Has defined
-noSelfDefined=Not defined
-setAbstract=Abstract settings
-title=Title
-content=Content
+postList=Afficher la liste
+hasSelfDefined=Défini
+noSelfDefined=Non défini
+setAbstract=Réglages abstraits
+title=Titre
+content=Contenu
 
-addTheme=New theme
-importTheme=Import theme
-exportTheme=Export theme
-export=Export
-preview=Preview
-edit=Edit
-use=Use
-install=Install
-currentTheme=Current theme
-myOtherThemes=My other themes
-leanoteThemeMarket=Leanote theme market
-updateTheme=Update Theme
-tplStyleScript=template, style, script
-newFile=New file
+addTheme=Nouveau thème
+importTheme=Importer thème
+exportTheme=Exporter thème
+export=Exporter
+preview=Aperçu
+edit=Editer
+use=Utiliser
+install=Installer
+currentTheme=Thème actuel
+myOtherThemes=Mes autres thèmes
+leanoteThemeMarket=Marché aux thèmes Leanote
+updateTheme=Mettre à jour le thème
+tplStyleScript=modèle, style, script
+newFile=Nouveau fichier
 image=Image
-currentFile=Current file
-tpl=Template
+currentFile=Fichier actuel
+tpl=Modèle
 style=Style
 script=Script
-header=Header
-footer=Footer
-index=Home
-cate=Category
-search=Search
-single=Single Page
+header=En-tête
+footer=Pied de page
+index=Accueil
+cate=Catégorie
+search=Chercher
+single=Page simple
 archive=Archive
-post=Post
-tags=Tags
-tag_posts=Tag's posts
-share_comment=Comments
-themeJson=Theme settings
-paging=Paging
-highlight=Code highlight
+post=Poster
+tags=Etiquettes
+tag_posts=Etiquettes des publications
+share_comment=Commenter
+themeJson=Réglages du thème
+paging=Mise en page
+highlight=Surlignage du code
 
-group=Group
-newGroup=New group
-deleteGroup=Delete group
-addMemberTips=Input username or email to add member
-deleteMember=Delete member
+group=Groupe
+newGroup=Nouveau groupe
+deleteGroup=Effacer groupe
+addMemberTips=Rentrer le nom d'utilisateur et le courriel pour ajouter un membre
+deleteMember=Effacer membre
 
 # error 
-notFound=This page cann't found.
+notFound=Page introuvable.
