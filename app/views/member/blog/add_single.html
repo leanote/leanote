@@ -40,23 +40,32 @@
 </div>
 
 </div>
+<style>
+.mce-btn.mce-active, .mce-btn.mce-active:hover {
+  background-color: #FFFFFF;
+}
+.mce-btn {
+  background-color: #FFFFFF;
+}
+</style>
 {{template "member/footer.html" .}}
 <script type="text/javascript" src="/tinymce/tinymce.js"></script>
 <script>
 var urlPrefix = "{{.siteUrl}}";
+var LeaAce = {nowIsInAce: function() {return false;}};
 $(function() {
 	tinymce.init({
 		selector : "#content1",
-		content_css : [ "/css/bootstrap.css", "/css/editor/editor.css" ],
-		skin : "custom",
+		content_css : ["/css/editor/editor.css" ],
+		theme : "leanote",
 		language : "{{.locale}}",
 		height : 300,
 		width : "100%",
-		skin : "custom",
+		// skin : "custom",
 		plugins : [
-				"advlist autolink link leanote_image lists charmap hr ",
+				"advlist autolink link lists charmap hr ",
 				"searchreplace visualblocks visualchars tabfocus",
-				"table contextmenu directionality textcolor paste fullpage textcolor"],
+				"table contextmenu directionality textcolor fullpage textcolor"],
 		toolbar1 : "formatselect |fontselect fontsizeselect| forecolor backcolor | bold italic underline strikethrough | bullist numlist |",
 		menubar : false,
 		statusbar : false,

@@ -14,7 +14,9 @@
  *
  * @class tinymce.util.Tools
  */
-define("tinymce/util/Tools", [], function() {
+define("tinymce/util/Tools", [
+	"tinymce/Env"
+], function(Env) {
 	/**
 	 * Removes whitespace from the beginning and end of a string.
 	 *
@@ -23,9 +25,10 @@ define("tinymce/util/Tools", [], function() {
 	 * @return {String} New string with removed whitespace.
 	 */
 	var whiteSpaceRegExp = /^\s*|\s*$/g;
-	var trim = function(str) {
+
+	function trim(str) {
 		return (str === null || str === undefined) ? '' : ("" + str).replace(whiteSpaceRegExp, '');
-	};
+	}
 
 	/**
 	 * Returns true/false if the object is an array or not.
@@ -42,20 +45,20 @@ define("tinymce/util/Tools", [], function() {
 	 * Checks if a object is of a specific type for example an array.
 	 *
 	 * @method is
-	 * @param {Object} o Object to check type of.
-	 * @param {string} t Optional type to check for.
+	 * @param {Object} obj Object to check type of.
+	 * @param {string} type Optional type to check for.
 	 * @return {Boolean} true/false if the object is of the specified type.
 	 */
-	function is(o, t) {
-		if (!t) {
-			return o !== undefined;
+	function is(obj, type) {
+		if (!type) {
+			return obj !== undefined;
 		}
 
-		if (t == 'array' && isArray(o)) {
+		if (type == 'array' && isArray(obj)) {
 			return true;
 		}
 
-		return typeof(o) == t;
+		return typeof obj == type;
 	}
 
 	/**
@@ -66,10 +69,13 @@ define("tinymce/util/Tools", [], function() {
 	 * @return {Array} Array object based in input.
 	 */
 	function toArray(obj) {
-		var array = [], i, l;
+		var array = obj, i, l;
 
-		for (i = 0, l = obj.length; i < l; i++) {
-			array[i] = obj[i];
+		if (!isArray(obj)) {
+			array = [];
+			for (i = 0, l = obj.length; i < l; i++) {
+				array[i] = obj[i];
+			}
 		}
 
 		return array;
@@ -90,7 +96,7 @@ define("tinymce/util/Tools", [], function() {
 		items = items || [];
 		delim = delim || ',';
 
-		if (typeof(items) == "string") {
+		if (typeof items == "string") {
 			items = items.split(delim);
 		}
 
@@ -135,7 +141,7 @@ define("tinymce/util/Tools", [], function() {
 
 		if (o.length !== undefined) {
 			// Indexed arrays, needed for Safari
-			for (n=0, l = o.length; n < l; n++) {
+			for (n = 0, l = o.length; n < l; n++) {
 				if (cb.call(s, o[n], n, o) === false) {
 					return 0;
 				}
@@ -159,18 +165,18 @@ define("tinymce/util/Tools", [], function() {
 	 * one array list into another.
 	 *
 	 * @method map
-	 * @param {Array} a Array of items to iterate.
-	 * @param {function} f Function to call for each item. It's return value will be the new value.
+	 * @param {Array} array Array of items to iterate.
+	 * @param {function} callback Function to call for each item. It's return value will be the new value.
 	 * @return {Array} Array with new values based on function return values.
 	 */
-	function map(a, f) {
-		var o = [];
+	function map(array, callback) {
+		var out = [];
 
-		each(a, function(v) {
-			o.push(f(v));
+		each(array, function(item) {
+			out.push(callback(item));
 		});
 
-		return o;
+		return out;
 	}
 
 	/**
@@ -244,14 +250,14 @@ define("tinymce/util/Tools", [], function() {
 	 * });
 	 */
 	function create(s, p, root) {
-		var t = this, sp, ns, cn, scn, c, de = 0;
+		var self = this, sp, ns, cn, scn, c, de = 0;
 
 		// Parse : <prefix> <class>:<super class>
 		s = /^((static) )?([\w.]+)(:([\w.]+))?/.exec(s);
 		cn = s[3].match(/(^|\.)(\w+)$/i)[2]; // Class name
 
 		// Create namespace for new class
-		ns = t.createNS(s[3].replace(/\.\w+$/, ''), root);
+		ns = self.createNS(s[3].replace(/\.\w+$/, ''), root);
 
 		// Class already exists
 		if (ns[cn]) {
@@ -277,11 +283,11 @@ define("tinymce/util/Tools", [], function() {
 
 		// Add constructor and methods
 		ns[cn] = p[cn];
-		t.extend(ns[cn].prototype, p);
+		self.extend(ns[cn].prototype, p);
 
 		// Extend
 		if (s[5]) {
-			sp = t.resolve(s[5]).prototype;
+			sp = self.resolve(s[5]).prototype;
 			scn = s[5].match(/\.(\w+)$/i)[1]; // Class name
 
 			// Extend constructor
@@ -301,12 +307,12 @@ define("tinymce/util/Tools", [], function() {
 			ns[cn].prototype[cn] = ns[cn];
 
 			// Add super methods
-			t.each(sp, function(f, n) {
+			self.each(sp, function(f, n) {
 				ns[cn].prototype[n] = sp[n];
 			});
 
 			// Add overridden methods
-			t.each(p, function(f, n) {
+			self.each(p, function(f, n) {
 				// Extend methods if needed
 				if (sp[n]) {
 					ns[cn].prototype[n] = function() {
@@ -323,7 +329,8 @@ define("tinymce/util/Tools", [], function() {
 
 		// Add static methods
 		/*jshint sub:true*/
-		t.each(p['static'], function(f, n) {
+		/*eslint dot-notation:0*/
+		self.each(p['static'], function(f, n) {
 			ns[cn][n] = f;
 		});
 	}
@@ -423,7 +430,7 @@ define("tinymce/util/Tools", [], function() {
 		o = o || window;
 
 		n = n.split('.');
-		for (i=0; i<n.length; i++) {
+		for (i = 0; i < n.length; i++) {
 			v = n[i];
 
 			if (!o[v]) {
@@ -482,6 +489,16 @@ define("tinymce/util/Tools", [], function() {
 		return map(s.split(d || ','), trim);
 	}
 
+	function _addCacheSuffix(url) {
+		var cacheSuffix = Env.cacheSuffix;
+
+		if (cacheSuffix) {
+			url += (url.indexOf('?') === -1 ? '?' : '&') + cacheSuffix;
+		}
+
+		return url;
+	}
+
 	return {
 		trim: trim,
 		isArray: isArray,
@@ -497,6 +514,7 @@ define("tinymce/util/Tools", [], function() {
 		walk: walk,
 		createNS: createNS,
 		resolve: resolve,
-		explode: explode
+		explode: explode,
+		_addCacheSuffix: _addCacheSuffix
 	};
 });

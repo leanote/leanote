@@ -14,7 +14,7 @@ type Theme struct {
 	Version   string                 `Version`
 	Author    string                 `Author`
 	AuthorUrl string                 `AuthorUrl`
-	Path      string                 `Path`     // 文件夹路径
+	Path      string                 `Path`     // 文件夹路径, public/upload/54d7620d99c37b030600002c/themes/54d867c799c37b533e000001
 	Info      map[string]interface{} `Info`     // 所有信息
 	IsActive  bool                   `IsActive` // 是否在用
 

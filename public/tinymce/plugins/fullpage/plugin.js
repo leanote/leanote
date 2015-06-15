@@ -91,11 +91,13 @@ tinymce.PluginManager.add('fullpage', function(editor) {
 			data.langcode = getAttr(elm, 'lang') || getAttr(elm, 'xml:lang');
 		}
 
-		// Parse stylesheet
-		elm = headerFragment.getAll('link')[0];
-		if (elm && elm.attr('rel') == 'stylesheet') {
-			data.stylesheet = elm.attr('href');
-		}
+		// Parse stylesheets
+		data.stylesheets = [];
+		tinymce.each(headerFragment.getAll('link'), function(link) {
+			if (link.attr('rel') == 'stylesheet') {
+				data.stylesheets.push(link.attr('href'));
+			}
+		});
 
 		// Parse body parts
 		elm = headerFragment.getAll('body')[0];
@@ -176,14 +178,14 @@ tinymce.PluginManager.add('fullpage', function(editor) {
 		}
 
 		// Add meta encoding
-		if (data.docencoding) {
-			elm = null;
-			each(headerFragment.getAll('meta'), function(meta) {
-				if (meta.attr('http-equiv') == 'Content-Type') {
-					elm = meta;
-				}
-			});
+		elm = null;
+		each(headerFragment.getAll('meta'), function(meta) {
+			if (meta.attr('http-equiv') == 'Content-Type') {
+				elm = meta;
+			}
+		});
 
+		if (data.docencoding) {
 			if (!elm) {
 				elm = new Node('meta', 1);
 				elm.attr('http-equiv', 'Content-Type');
@@ -192,6 +194,8 @@ tinymce.PluginManager.add('fullpage', function(editor) {
 			}
 
 			elm.attr('content', 'text/html; charset=' + data.docencoding);
+		} else if (elm) {
+			elm.remove();
 		}
 
 		// Add/update/remove title
@@ -199,9 +203,12 @@ tinymce.PluginManager.add('fullpage', function(editor) {
 		if (data.title) {
 			if (!elm) {
 				elm = new Node('title', 1);
-				elm.append(new Node('#text', 3)).value = data.title;
 				addHeadNode(elm);
+			} else {
+				elm.empty();
 			}
+
+			elm.append(new Node('#text', 3)).value = data.title;
 		} else if (elm) {
 			elm.remove();
 		}
@@ -234,25 +241,33 @@ tinymce.PluginManager.add('fullpage', function(editor) {
 			}
 		});
 
-		// Add/update/delete link
-		elm = headerFragment.getAll('link')[0];
-		if (elm && elm.attr('rel') == 'stylesheet') {
-			if (data.stylesheet) {
-				elm.attr('href', data.stylesheet);
-			} else {
-				elm.remove();
+		var currentStyleSheetsMap = {};
+		tinymce.each(headerFragment.getAll('link'), function(stylesheet) {
+			if (stylesheet.attr('rel') == 'stylesheet') {
+				currentStyleSheetsMap[stylesheet.attr('href')] = stylesheet;
 			}
-		} else if (data.stylesheet) {
-			elm = new Node('link', 1);
-			elm.attr({
-				rel : 'stylesheet',
-				text : 'text/css',
-				href : data.stylesheet
-			});
-			elm.shortEnded = true;
+		});
 
-			addHeadNode(elm);
-		}
+		// Add new
+		tinymce.each(data.stylesheets, function(stylesheet) {
+			if (!currentStyleSheetsMap[stylesheet]) {
+				elm = new Node('link', 1);
+				elm.attr({
+					rel: 'stylesheet',
+					text: 'text/css',
+					href: stylesheet
+				});
+				elm.shortEnded = true;
+				addHeadNode(elm);
+			}
+
+			delete currentStyleSheetsMap[stylesheet];
+		});
+
+		// Delete old
+		tinymce.each(currentStyleSheetsMap, function(stylesheet) {
+			stylesheet.remove();
+		});
 
 		// Update body attributes
 		elm = headerFragment.getAll('body')[0];
@@ -265,11 +280,11 @@ tinymce.PluginManager.add('fullpage', function(editor) {
 
 			// Update iframe body as well
 			dom.setAttribs(editor.getBody(), {
-				style : data.style,
-				dir : data.dir,
-				vLink : data.visited_color,
-				link : data.link_color,
-				aLink : data.active_color
+				style: data.style,
+				dir: data.dir,
+				vLink: data.visited_color,
+				link: data.link_color,
+				aLink: data.active_color
 			});
 		}
 
@@ -289,7 +304,7 @@ tinymce.PluginManager.add('fullpage', function(editor) {
 		html = new tinymce.html.Serializer({
 			validate: false,
 			indent: true,
-			apply_source_formatting : true,
+			apply_source_formatting: true,
 			indent_before: 'head,html,body,meta,title,script,link,style',
 			indent_after: 'head,html,body,meta,title,script,link,style'
 		}).serialize(headerFragment);
@@ -305,10 +320,10 @@ tinymce.PluginManager.add('fullpage', function(editor) {
 		}).parse(head);
 	}
 
-	function setContent(o) {
-		var startPos, endPos, content = o.content, headerFragment, styles = '', dom = editor.dom, elm;
+	function setContent(evt) {
+		var startPos, endPos, content = evt.content, headerFragment, styles = '', dom = editor.dom, elm;
 
-		if (o.selection) {
+		if (evt.selection) {
 			return;
 		}
 
@@ -319,12 +334,17 @@ tinymce.PluginManager.add('fullpage', function(editor) {
 		}
 
 		// Ignore raw updated if we already have a head, this will fix issues with undo/redo keeping the head/foot separate
-		if (o.format == 'raw' && head) {
+		if (evt.format == 'raw' && head) {
 			return;
 		}
 
-		if (o.source_view && editor.getParam('fullpage_hide_in_source_view')) {
+		if (evt.source_view && editor.getParam('fullpage_hide_in_source_view')) {
 			return;
+		}
+
+		// Fixed so new document/setContent('') doesn't remove existing header/footer except when it's in source code view
+		if (content.length === 0 && !evt.source_view) {
+			content = tinymce.trim(head) + '\n' + tinymce.trim(content) + '\n' + tinymce.trim(foot);
 		}
 
 		// Parse out head, body and footer
@@ -340,7 +360,7 @@ tinymce.PluginManager.add('fullpage', function(editor) {
 				endPos = content.length;
 			}
 
-			o.content = content.substring(startPos + 1, endPos);
+			evt.content = content.substring(startPos + 1, endPos);
 			foot = low(content.substring(endPos));
 		} else {
 			head = getDefaultHeader();
@@ -368,9 +388,11 @@ tinymce.PluginManager.add('fullpage', function(editor) {
 
 		dom.remove('fullpage_styles');
 
+		var headElm = editor.getDoc().getElementsByTagName('head')[0];
+
 		if (styles) {
-			dom.add(editor.getDoc().getElementsByTagName('head')[0], 'style', {
-				id : 'fullpage_styles'
+			dom.add(headElm, 'style', {
+				id: 'fullpage_styles'
 			}, styles);
 
 			// Needed for IE 6/7
@@ -379,6 +401,34 @@ tinymce.PluginManager.add('fullpage', function(editor) {
 				elm.styleSheet.cssText = styles;
 			}
 		}
+
+		var currentStyleSheetsMap = {};
+		tinymce.each(headElm.getElementsByTagName('link'), function(stylesheet) {
+			if (stylesheet.rel == 'stylesheet' && stylesheet.getAttribute('data-mce-fullpage')) {
+				currentStyleSheetsMap[stylesheet.href] = stylesheet;
+			}
+		});
+
+		// Add new
+		tinymce.each(headerFragment.getAll('link'), function(stylesheet) {
+			var href = stylesheet.attr('href');
+
+			if (!currentStyleSheetsMap[href] && stylesheet.attr('rel') == 'stylesheet') {
+				dom.add(headElm, 'link', {
+					rel: 'stylesheet',
+					text: 'text/css',
+					href: href,
+					'data-mce-fullpage': '1'
+				});
+			}
+
+			delete currentStyleSheetsMap[href];
+		});
+
+		// Delete old
+		tinymce.each(currentStyleSheetsMap, function(stylesheet) {
+			stylesheet.parentNode.removeChild(stylesheet);
+		});
 	}
 
 	function getDefaultHeader() {
@@ -416,9 +466,9 @@ tinymce.PluginManager.add('fullpage', function(editor) {
 		return header;
 	}
 
-	function getContent(o) {
-		if (!o.selection && (!o.source_view || !editor.getParam('fullpage_hide_in_source_view'))) {
-			o.content = tinymce.trim(head) + '\n' + tinymce.trim(o.content) + '\n' + tinymce.trim(foot);
+	function getContent(evt) {
+		if (!evt.selection && (!evt.source_view || !editor.getParam('fullpage_hide_in_source_view'))) {
+			evt.content = tinymce.trim(head) + '\n' + tinymce.trim(evt.content) + '\n' + tinymce.trim(foot);
 		}
 	}
 
@@ -426,12 +476,12 @@ tinymce.PluginManager.add('fullpage', function(editor) {
 
 	editor.addButton('fullpage', {
 		title: 'Document properties',
-		cmd : 'mceFullPageProperties'
+		cmd: 'mceFullPageProperties'
 	});
 
 	editor.addMenuItem('fullpage', {
 		text: 'Document properties',
-		cmd : 'mceFullPageProperties',
+		cmd: 'mceFullPageProperties',
 		context: 'file'
 	});
 

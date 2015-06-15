@@ -13,12 +13,13 @@
  *
  * @-x-less MenuItem.less
  * @class tinymce.ui.MenuItem
- * @extends tinymce.ui.Control
+ * @extends tinymce.ui.Widget
  */
 define("tinymce/ui/MenuItem", [
 	"tinymce/ui/Widget",
-	"tinymce/ui/Factory"
-], function(Widget, Factory) {
+	"tinymce/ui/Factory",
+	"tinymce/Env"
+], function(Widget, Factory, Env) {
 	"use strict";
 
 	return Widget.extend({
@@ -58,13 +59,11 @@ define("tinymce/ui/MenuItem", [
 			if (self._text === '-' || self._text === '|') {
 				self.addClass('menu-item-sep');
 				self.aria('role', 'separator');
-				self.canFocus = false;
 				self._text = '-';
 			}
 
 			if (settings.selectable) {
 				self.aria('role', 'menuitemcheckbox');
-				self.aria('checked', true);
 				self.addClass('menu-item-checkbox');
 				settings.icon = 'selected';
 			}
@@ -77,25 +76,7 @@ define("tinymce/ui/MenuItem", [
 				e.preventDefault();
 			});
 
-			self.on('mouseenter click', function(e) {
-				if (e.control === self) {
-					if (!settings.menu && e.type === 'click') {
-						self.parent().hideAll();
-						self.fire('cancel');
-						self.fire('select');
-					} else {
-						self.showMenu();
-
-						if (e.keyboard) {
-							setTimeout(function() {
-								self.menu.items()[0].focus();
-							}, 0);
-						}
-					}
-				}
-			});
-
-			if (settings.menu) {
+			if (settings.menu && !settings.ariaHideMenu) {
 				self.aria('haspopup', true);
 			}
 		},
@@ -144,18 +125,26 @@ define("tinymce/ui/MenuItem", [
 						menu.itemDefaults = parent.settings.itemDefaults;
 					}
 
-					menu = self.menu = Factory.create(menu).parent(self).renderTo(self.getContainerElm());
+					menu = self.menu = Factory.create(menu).parent(self).renderTo();
 					menu.reflow();
-					menu.fire('show');
-					menu.on('cancel', function() {
+					menu.on('cancel', function(e) {
+						e.stopPropagation();
 						self.focus();
+						menu.hide();
 					});
+					menu.on('show hide', function(e) {
+						e.control.items().each(function(ctrl) {
+							ctrl.active(ctrl.settings.selected);
+						});
+					}).fire('show');
 
 					menu.on('hide', function(e) {
 						if (e.control === menu) {
 							self.removeClass('selected');
 						}
 					});
+
+					menu.submenu = true;
 				} else {
 					menu.show();
 				}
@@ -212,7 +201,37 @@ define("tinymce/ui/MenuItem", [
 		 */
 		renderHtml: function() {
 			var self = this, id = self._id, settings = self.settings, prefix = self.classPrefix, text = self.encode(self._text);
-			var icon = self.settings.icon, image = '';
+			var icon = self.settings.icon, image = '', shortcut = settings.shortcut;
+
+			// Converts shortcut format to Mac/PC variants
+			function convertShortcut(shortcut) {
+				var i, value, replace = {};
+
+				if (Env.mac) {
+					replace = {
+						alt: '&#x2325;',
+						ctrl: '&#x2318;',
+						shift: '&#x21E7;',
+						meta: '&#x2318;'
+					};
+				} else {
+					replace = {
+						meta: 'Ctrl'
+					};
+				}
+
+				shortcut = shortcut.split('+');
+
+				for (i = 0; i < shortcut.length; i++) {
+					value = replace[shortcut[i].toLowerCase()];
+
+					if (value) {
+						shortcut[i] = value;
+					}
+				}
+
+				return shortcut.join('+');
+			}
 
 			if (icon) {
 				self.parent().addClass('menu-has-icons');
@@ -223,14 +242,17 @@ define("tinymce/ui/MenuItem", [
 				image = ' style="background-image: url(\'' + settings.image + '\')"';
 			}
 
+			if (shortcut) {
+				shortcut = convertShortcut(shortcut);
+			}
+
 			icon = prefix + 'ico ' + prefix + 'i-' + (self.settings.icon || 'none');
 
 			return (
 				'<div id="' + id + '" class="' + self.classes() + '" tabindex="-1">' +
-					(text !== '-' ? '<i class="' + icon + '"' + image + '></i>&nbsp;' : '') +
+					(text !== '-' ? '<i class="' + icon + '"' + image + '></i>\u00a0' : '') +
 					(text !== '-' ? '<span id="' + id + '-text" class="' + prefix + 'text">' + text + '</span>' : '') +
-					(settings.shortcut ? '<div id="' + id + '-shortcut" class="' + prefix + 'menu-shortcut">' +
-						settings.shortcut + '</div>' : '') +
+					(shortcut ? '<div id="' + id + '-shortcut" class="' + prefix + 'menu-shortcut">' + shortcut + '</div>' : '') +
 					(settings.menu ? '<div class="' + prefix + 'caret"></div>' : '') +
 				'</div>'
 			);
@@ -245,7 +267,7 @@ define("tinymce/ui/MenuItem", [
 			var self = this, settings = self.settings;
 
 			var textStyle = settings.textStyle;
-			if (typeof(textStyle) == "function") {
+			if (typeof textStyle == "function") {
 				textStyle = textStyle.call(this);
 			}
 
@@ -256,7 +278,32 @@ define("tinymce/ui/MenuItem", [
 				}
 			}
 
-			return self._super();
+			self.on('mouseenter click', function(e) {
+				if (e.control === self) {
+					if (!settings.menu && e.type === 'click') {
+						self.fire('select');
+						self.parent().hideAll();
+					} else {
+						self.showMenu();
+
+						if (e.aria) {
+							self.menu.focus(true);
+						}
+					}
+				}
+			});
+
+			self._super();
+
+			return self;
+		},
+
+		active: function(state) {
+			if (typeof state != "undefined") {
+				this.aria('checked', state);
+			}
+
+			return this._super(state);
 		},
 
 		/**

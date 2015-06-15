@@ -1155,3 +1155,32 @@ body {
 #editorContent .ace-tomorrow {
   background-color: #fbfcf7;
 }
+
+#wmd-input > .editor-content {
+	padding-top: 20px;
+}
+
+#editorContent {
+	padding-top: 10px;
+}
+
+// tool-bar
+#editor {
+	#mceToolbar {
+	  height: 40px;
+	}
+		
+	#editorContent {
+		top: 40px;
+	}
+	
+	// 所有都展开
+	&.all-tool {
+	  #mceToolbar {
+		height: 80px;
+		}
+		#editorContent {
+			top: 80px;
+		}
+	}
+}

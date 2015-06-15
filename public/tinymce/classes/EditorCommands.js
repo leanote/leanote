@@ -17,21 +17,29 @@
 define("tinymce/EditorCommands", [
 	"tinymce/html/Serializer",
 	"tinymce/Env",
-	"tinymce/util/Tools"
-], function(Serializer, Env, Tools) {
+	"tinymce/util/Tools",
+	"tinymce/dom/ElementUtils",
+	"tinymce/dom/RangeUtils",
+	"tinymce/dom/TreeWalker"
+], function(Serializer, Env, Tools, ElementUtils, RangeUtils, TreeWalker) {
 	// Added for compression purposes
 	var each = Tools.each, extend = Tools.extend;
 	var map = Tools.map, inArray = Tools.inArray, explode = Tools.explode;
-	var isGecko = Env.gecko, isIE = Env.ie;
+	var isGecko = Env.gecko, isIE = Env.ie, isOldIE = Env.ie && Env.ie < 11;
 	var TRUE = true, FALSE = false;
 
 	return function(editor) {
-		var dom = editor.dom,
-			selection = editor.selection,
+		var dom, selection, formatter,
 			commands = {state: {}, exec: {}, value: {}},
 			settings = editor.settings,
-			formatter = editor.formatter,
 			bookmark;
+
+		editor.on('PreInit', function() {
+			dom = editor.dom;
+			selection = editor.selection;
+			settings = editor.settings;
+			formatter = editor.formatter;
+		});
 
 		/**
 		 * Executes the specified command.
@@ -42,16 +50,60 @@ define("tinymce/EditorCommands", [
 		 * @param {Object} value Optional value for command.
 		 * @return {Boolean} true/false if the command was found or not.
 		 */
-		function execCommand(command, ui, value) {
-			var func;
+		function execCommand(command, ui, value, args) {
+			var func, customCommand, state = 0;
 
-			command = command.toLowerCase();
-			if ((func = commands.exec[command])) {
-				func(command, ui, value);
-				return TRUE;
+			if (!/^(mceAddUndoLevel|mceEndUndoLevel|mceBeginUndoLevel|mceRepaint)$/.test(command) && (!args || !args.skip_focus)) {
+				// life ace
+				if(command != "toggleCode")
+					editor.focus();
 			}
 
-			return FALSE;
+			args = extend({}, args);
+			args = editor.fire('BeforeExecCommand', {command: command, ui: ui, value: value});
+			if (args.isDefaultPrevented()) {
+				return false;
+			}
+
+			customCommand = command.toLowerCase();
+			if ((func = commands.exec[customCommand])) {
+				func(customCommand, ui, value);
+				editor.fire('ExecCommand', {command: command, ui: ui, value: value});
+				return true;
+			}
+
+			// Plugin commands
+			each(editor.plugins, function(p) {
+				if (p.execCommand && p.execCommand(command, ui, value)) {
+					editor.fire('ExecCommand', {command: command, ui: ui, value: value});
+					state = true;
+					return false;
+				}
+			});
+
+			if (state) {
+				return state;
+			}
+
+			// Theme commands
+			if (editor.theme && editor.theme.execCommand && editor.theme.execCommand(command, ui, value)) {
+				editor.fire('ExecCommand', {command: command, ui: ui, value: value});
+				return true;
+			}
+
+			// Browser commands
+			try {
+				state = editor.getDoc().execCommand(command, ui, value);
+			} catch (ex) {
+				// Ignore old IE errors
+			}
+
+			if (state) {
+				editor.fire('ExecCommand', {command: command, ui: ui, value: value});
+				return true;
+			}
+
+			return false;
 		}
 
 		/**
@@ -64,12 +116,24 @@ define("tinymce/EditorCommands", [
 		function queryCommandState(command) {
 			var func;
 
+			// Is hidden then return undefined
+			if (editor._isHidden()) {
+				return;
+			}
+
 			command = command.toLowerCase();
 			if ((func = commands.state[command])) {
 				return func(command);
 			}
 
-			return -1;
+			// Browser commands
+			try {
+				return editor.getDoc().queryCommandState(command);
+			} catch (ex) {
+				// Fails sometimes see bug: 1896577
+			}
+
+			return false;
 		}
 
 		/**
@@ -82,12 +146,22 @@ define("tinymce/EditorCommands", [
 		function queryCommandValue(command) {
 			var func;
 
+			// Is hidden then return undefined
+			if (editor._isHidden()) {
+				return;
+			}
+
 			command = command.toLowerCase();
 			if ((func = commands.value[command])) {
 				return func(command);
 			}
 
-			return FALSE;
+			// Browser commands
+			try {
+				return editor.getDoc().queryCommandValue(command);
+			} catch (ex) {
+				// Fails sometimes see bug: 1896577
+			}
 		}
 
 		/**
@@ -107,12 +181,67 @@ define("tinymce/EditorCommands", [
 			});
 		}
 
+		function addCommand(command, callback, scope) {
+			command = command.toLowerCase();
+			commands.exec[command] = function(command, ui, value, args) {
+				return callback.call(scope || editor, ui, value, args);
+			};
+		}
+
+		/**
+		 * Returns true/false if the command is supported or not.
+		 *
+		 * @method queryCommandSupported
+		 * @param {String} cmd Command that we check support for.
+		 * @return {Boolean} true/false if the command is supported or not.
+		 */
+		function queryCommandSupported(command) {
+			command = command.toLowerCase();
+
+			if (commands.exec[command]) {
+				return true;
+			}
+
+			// Browser commands
+			try {
+				return editor.getDoc().queryCommandSupported(command);
+			} catch (ex) {
+				// Fails sometimes see bug: 1896577
+			}
+
+			return false;
+		}
+
+		function addQueryStateHandler(command, callback, scope) {
+			command = command.toLowerCase();
+			commands.state[command] = function() {
+				return callback.call(scope || editor);
+			};
+		}
+
+		function addQueryValueHandler(command, callback, scope) {
+			command = command.toLowerCase();
+			commands.value[command] = function() {
+				return callback.call(scope || editor);
+			};
+		}
+
+		function hasCustomCommand(command) {
+			command = command.toLowerCase();
+			return !!commands.exec[command];
+		}
+
 		// Expose public methods
 		extend(this, {
 			execCommand: execCommand,
 			queryCommandState: queryCommandState,
 			queryCommandValue: queryCommandValue,
-			addCommands: addCommands
+			queryCommandSupported: queryCommandSupported,
+			addCommands: addCommands,
+			addCommand: addCommand,
+			addQueryStateHandler: addQueryStateHandler,
+			addQueryValueHandler: addQueryValueHandler,
+			hasCustomCommand: hasCustomCommand
 		});
 
 		// Private methods
@@ -169,21 +298,31 @@ define("tinymce/EditorCommands", [
 
 				// Present alert message about clipboard access not being available
 				if (failed || !doc.queryCommandSupported(command)) {
-					editor.windowManager.alert(
+					var msg = editor.translate(
 						"Your browser doesn't support direct access to the clipboard. " +
 						"Please use the Ctrl+X/C/V keyboard shortcuts instead."
 					);
+
+					if (Env.mac) {
+						msg = msg.replace(/Ctrl\+/g, '\u2318+');
+					}
+
+					editor.windowManager.alert(msg);
 				}
 			},
 
 			// Override unlink command
-			unlink: function(command) {
+			unlink: function() {
 				if (selection.isCollapsed()) {
-					selection.select(selection.getNode());
+					var elm = selection.getNode();
+					if (elm.tagName == 'A') {
+						editor.dom.remove(elm, true);
+					}
+
+					return;
 				}
 
-				execNativeCommand(command);
-				selection.collapse(FALSE);
+				formatter.remove("link");
 			},
 
 			// Override justify commands to use the text formatter engine
@@ -301,10 +440,10 @@ define("tinymce/EditorCommands", [
 				selection.select(value);
 			},
 
-			// 插入内容
 			mceInsertContent: function(command, ui, value) {
 				var parser, serializer, parentNode, rootNode, fragment, args;
-				var marker, rng, node, node2, bookmarkHtml;
+				var marker, rng, node, node2, bookmarkHtml, merge;
+				var textInlineElements = editor.schema.getTextInlineElements();
 
 				function trimOrPaddLeftRight(html) {
 					var rng, container, offset;
@@ -334,6 +473,62 @@ define("tinymce/EditorCommands", [
 					return html;
 				}
 
+				// Removes &nbsp; from a [b] c -> a &nbsp;c -> a c
+				function trimNbspAfterDeleteAndPaddValue() {
+					var rng, container, offset;
+
+					rng = selection.getRng(true);
+					container = rng.startContainer;
+					offset = rng.startOffset;
+
+					if (container.nodeType == 3 && rng.collapsed) {
+						if (container.data[offset] === '\u00a0') {
+							container.deleteData(offset, 1);
+
+							if (!/[\u00a0| ]$/.test(value)) {
+								value += ' ';
+							}
+						} else if (container.data[offset - 1] === '\u00a0') {
+							container.deleteData(offset - 1, 1);
+
+							if (!/[\u00a0| ]$/.test(value)) {
+								value = ' ' + value;
+							}
+						}
+					}
+				}
+
+				function markInlineFormatElements(fragment) {
+					if (merge) {
+						for (node = fragment.firstChild; node; node = node.walk(true)) {
+							if (textInlineElements[node.name]) {
+								node.attr('data-mce-new', "true");
+							}
+						}
+					}
+				}
+
+				function reduceInlineTextElements() {
+					if (merge) {
+						var root = editor.getBody(), elementUtils = new ElementUtils(dom);
+
+						each(dom.select('*[data-mce-new]'), function(node) {
+							node.removeAttribute('data-mce-new');
+
+							for (var testNode = node.parentNode; testNode && testNode != root; testNode = testNode.parentNode) {
+								if (elementUtils.compare(testNode, node)) {
+									dom.remove(node, true);
+								}
+							}
+						});
+					}
+				}
+
+				if (typeof value != 'string') {
+					merge = value.merge;
+					value = value.content;
+				}
+
 				// Check for whitespace before/after value
 				if (/^ | $/.test(value)) {
 					value = trimOrPaddLeftRight(value);
@@ -341,9 +536,8 @@ define("tinymce/EditorCommands", [
 
 				// Setup parser and serializer
 				parser = editor.parser;
-
 				serializer = new Serializer({}, editor.schema);
-				bookmarkHtml = '<span id="mce_marker" data-mce-type="bookmark">&#xFEFF;</span>';
+				bookmarkHtml = '<span id="mce_marker" data-mce-type="bookmark">&#xFEFF;&#x200B;</span>';
 
 				// Run beforeSetContent handlers on the HTML to be inserted
 				args = {content: value, format: 'html', selection: true};
@@ -359,16 +553,22 @@ define("tinymce/EditorCommands", [
 				value = value.replace(/\{\$caret\}/, bookmarkHtml);
 
 				// If selection is at <body>|<p></p> then move it into <body><p>|</p>
+				rng = selection.getRng();
+				var caretElement = rng.startContainer || (rng.parentElement ? rng.parentElement() : null);
 				var body = editor.getBody();
-				if (dom.isBlock(body.firstChild) && dom.isEmpty(body.firstChild)) {
-					body.firstChild.appendChild(dom.doc.createTextNode('\u00a0'));
-					selection.select(body.firstChild, true);
-					dom.remove(body.firstChild.lastChild);
+				if (caretElement === body && selection.isCollapsed()) {
+					if (dom.isBlock(body.firstChild) && dom.isEmpty(body.firstChild)) {
+						rng = dom.createRng();
+						rng.setStart(body.firstChild, 0);
+						rng.setEnd(body.firstChild, 0);
+						selection.setRng(rng);
+					}
 				}
 
 				// Insert node maker where we will insert the new HTML and get it's parent
 				if (!selection.isCollapsed()) {
 					editor.getDoc().execCommand('Delete', false, null);
+					trimNbspAfterDeleteAndPaddValue();
 				}
 
 				parentNode = selection.getNode();
@@ -377,6 +577,8 @@ define("tinymce/EditorCommands", [
 				var parserArgs = {context: parentNode.nodeName.toLowerCase()};
 				fragment = parser.parse(value, parserArgs);
 
+				markInlineFormatElements(fragment);
+
 				// Move the caret to a more suitable location
 				node = fragment.lastChild;
 				if (node.attr('id') == 'mce_marker') {
@@ -384,7 +586,9 @@ define("tinymce/EditorCommands", [
 
 					for (node = node.prev; node; node = node.walk(true)) {
 						if (node.type == 3 || !dom.isBlock(node.name)) {
-							node.parent.insert(marker, node, node.name === 'br');
+							if (editor.schema.isValidChild(node.parent.name, 'span')) {
+								node.parent.insert(marker, node, node.name === 'br');
+							}
 							break;
 						}
 					}
@@ -438,11 +642,26 @@ define("tinymce/EditorCommands", [
 					// life ace
 					// 插入的时候把<pre>内的标签全清掉
 					// life 把<pre></pre>间的代码拿出, 去掉标签<span>之类的
+					// console.log(value);
+					// <p> </p><pre>xxx<span id="mce_marker" data-mce-type="bookmark">﻿​</span></pre>
+					// <p> </p><pre >xxx﻿​</pre>
+					// console.log('life');
+					// console.log(value);
 					value = value.replace(/<pre([^>]*?)>([\s\S]*?)<\/pre>/g, function(v, v1, v2) {
 						// v == "<pre>a, b, c</pre>"
+						var hasBookmark = false;
+						var b = '<span id="mce_marker" data-mce-type="bookmark">﻿​</span>';
+						if(v2.indexOf('id="mce_marker') != -1) { // mini后不是b了
+							hasBookmark = true;
+						}
+
 						v2 = v2.replace(/(<([^>]+)>)/gi, '').replace(/\s+$/, ''); // 把最后一个换行去掉
+						if(hasBookmark) {
+							v2 += b;
+						}
 						return "<pre " + v1 + ">" + v2 + "</pre>";
 					});
+					// console.log(value);
 
 					// Set the inner/outer HTML depending on if we are in the root or not
 					if (parentNode == rootNode) {
@@ -452,45 +671,43 @@ define("tinymce/EditorCommands", [
 					}
 				}
 
+				reduceInlineTextElements();
+
 				marker = dom.get('mce_marker');
 				selection.scrollIntoView(marker);
 
 				// Move selection before marker and remove it
 				rng = dom.createRng();
-				try {
+
 				// If previous sibling is a text node set the selection to the end of that node
-				// if(marker) {
-					node = marker.previousSibling;
-					if (node && node.nodeType == 3) {
-						rng.setStart(node, node.nodeValue.length);
+				node = marker.previousSibling;
+				if (node && node.nodeType == 3) {
+					rng.setStart(node, node.nodeValue.length);
 
-						// TODO: Why can't we normalize on IE
-						if (!isIE) {
-							node2 = marker.nextSibling;
-							if (node2 && node2.nodeType == 3) {
-								node.appendData(node2.data);
-								node2.parentNode.removeChild(node2);
-							}
+					// TODO: Why can't we normalize on IE
+					if (!isIE) {
+						node2 = marker.nextSibling;
+						if (node2 && node2.nodeType == 3) {
+							node.appendData(node2.data);
+							node2.parentNode.removeChild(node2);
 						}
-					} else {
-						// If the previous sibling isn't a text node or doesn't exist set the selection before the marker node
-						rng.setStartBefore(marker);
-						rng.setEndBefore(marker);
 					}
-
-					// Remove the marker node and set the new range
-					dom.remove(marker);
-					selection.setRng(rng);
-
-					// Dispatch after event and add any visual elements needed
-					editor.fire('SetContent', args);
-					editor.addVisual();
-				// }
-				} catch(e) {
-
+				} else {
+					// If the previous sibling isn't a text node or doesn't exist set the selection before the marker node
+					rng.setStartBefore(marker);
+					rng.setEndBefore(marker);
 				}
+
+				// Remove the marker node and set the new range
+				dom.remove(marker);
+				selection.setRng(rng);
+
+				// Dispatch after event and add any visual elements needed
+				editor.fire('SetContent', args);
+				editor.addVisual();
 			},
 
+			// life ace
 			// life 修改
 			// 之前不是这个版本, 为什么要改, 因为考虑到在pre下粘贴后全部内容会修改(ace不友好)
 			// 这里不是改全部的内容, 对ace好
@@ -625,6 +842,17 @@ define("tinymce/EditorCommands", [
 				editor.addVisual()
 			},
 
+			/* life
+			mceInsertRawHTML: function(command, ui, value) {
+				selection.setContent('tiny_mce_marker');
+				editor.setContent(
+					editor.getContent().replace(/tiny_mce_marker/g, function() {
+						return value;
+					})
+				);
+			},
+			*/
+
 			mceToggleFormat: function(command, ui, value) {
 				toggleFormat(value);
 			},
@@ -648,10 +876,10 @@ define("tinymce/EditorCommands", [
 					}
 
 					each(selection.getSelectedBlocks(), function(element) {
-						var indentStyleName;
-
 						if (element.nodeName != "LI") {
-							indentStyleName = dom.getStyle(element, 'direction', true) == 'rtl' ? 'paddingRight' : 'paddingLeft';
+							var indentStyleName = editor.getParam('indent_use_margin', false) ? 'margin' : 'padding';
+
+							indentStyleName += dom.getStyle(element, 'direction', true) == 'rtl' ? 'Right' : 'Left';
 
 							if (command == 'outdent') {
 								value = Math.max(0, parseInt(element.style[indentStyleName] || 0, 10) - intentValue);
@@ -700,7 +928,7 @@ define("tinymce/EditorCommands", [
 			mceInsertLink: function(command, ui, value) {
 				var anchor;
 
-				if (typeof(value) == 'string') {
+				if (typeof value == 'string') {
 					value = {href: value};
 				}
 
@@ -721,21 +949,134 @@ define("tinymce/EditorCommands", [
 			},
 
 			selectAll: function() {
-				var root = dom.getRoot(), rng = dom.createRng();
+				var root = dom.getRoot(), rng;
 
-				// Old IE does a better job with selectall than new versions
 				if (selection.getRng().setStart) {
+					rng = dom.createRng();
 					rng.setStart(root, 0);
 					rng.setEnd(root, root.childNodes.length);
-
 					selection.setRng(rng);
 				} else {
-					execNativeCommand('SelectAll');
+					// IE will render it's own root level block elements and sometimes
+					// even put font elements in them when the user starts typing. So we need to
+					// move the selection to a more suitable element from this:
+					// <body>|<p></p></body> to this: <body><p>|</p></body>
+					rng = selection.getRng();
+					if (!rng.item) {
+						rng.moveToElementText(root);
+						rng.select();
+					}
+				}
+			},
+
+			"delete": function() {
+				execNativeCommand("Delete");
+
+				// Check if body is empty after the delete call if so then set the contents
+				// to an empty string and move the caret to any block produced by that operation
+				// this fixes the issue with root blocks not being properly produced after a delete call on IE
+				var body = editor.getBody();
+
+				if (dom.isEmpty(body)) {
+					editor.setContent('');
+
+					if (body.firstChild && dom.isBlock(body.firstChild)) {
+						editor.selection.setCursorLocation(body.firstChild, 0);
+					} else {
+						editor.selection.setCursorLocation(body, 0);
+					}
 				}
 			},
 
 			mceNewDocument: function() {
 				editor.setContent('');
+			},
+
+			InsertLineBreak: function(command, ui, value) {
+				// We load the current event in from EnterKey.js when appropriate to heed
+				// certain event-specific variations such as ctrl-enter in a list
+				var evt = value;
+				var brElm, extraBr, marker;
+				var rng = selection.getRng(true);
+				new RangeUtils(dom).normalize(rng);
+
+				var offset = rng.startOffset;
+				var container = rng.startContainer;
+
+				// Resolve node index
+				if (container.nodeType == 1 && container.hasChildNodes()) {
+					var isAfterLastNodeInContainer = offset > container.childNodes.length - 1;
+
+					container = container.childNodes[Math.min(offset, container.childNodes.length - 1)] || container;
+					if (isAfterLastNodeInContainer && container.nodeType == 3) {
+						offset = container.nodeValue.length;
+					} else {
+						offset = 0;
+					}
+				}
+
+				var parentBlock = dom.getParent(container, dom.isBlock);
+				var parentBlockName = parentBlock ? parentBlock.nodeName.toUpperCase() : ''; // IE < 9 & HTML5
+				var containerBlock = parentBlock ? dom.getParent(parentBlock.parentNode, dom.isBlock) : null;
+				var containerBlockName = containerBlock ? containerBlock.nodeName.toUpperCase() : ''; // IE < 9 & HTML5
+
+				// Enter inside block contained within a LI then split or insert before/after LI
+				var isControlKey = evt && evt.ctrlKey;
+				if (containerBlockName == 'LI' && !isControlKey) {
+					parentBlock = containerBlock;
+					parentBlockName = containerBlockName;
+				}
+
+				// Walks the parent block to the right and look for BR elements
+				function hasRightSideContent() {
+					var walker = new TreeWalker(container, parentBlock), node;
+					var nonEmptyElementsMap = editor.schema.getNonEmptyElements();
+
+					while ((node = walker.next())) {
+						if (nonEmptyElementsMap[node.nodeName.toLowerCase()] || node.length > 0) {
+							return true;
+						}
+					}
+				}
+
+				if (container && container.nodeType == 3 && offset >= container.nodeValue.length) {
+					// Insert extra BR element at the end block elements
+					if (!isOldIE && !hasRightSideContent()) {
+						brElm = dom.create('br');
+						rng.insertNode(brElm);
+						rng.setStartAfter(brElm);
+						rng.setEndAfter(brElm);
+						extraBr = true;
+					}
+				}
+
+				brElm = dom.create('br');
+				rng.insertNode(brElm);
+
+				// Rendering modes below IE8 doesn't display BR elements in PRE unless we have a \n before it
+				var documentMode = dom.doc.documentMode;
+				if (isOldIE && parentBlockName == 'PRE' && (!documentMode || documentMode < 8)) {
+					brElm.parentNode.insertBefore(dom.doc.createTextNode('\r'), brElm);
+				}
+
+				// Insert temp marker and scroll to that
+				marker = dom.create('span', {}, '&nbsp;');
+				brElm.parentNode.insertBefore(marker, brElm);
+				selection.scrollIntoView(marker);
+				dom.remove(marker);
+
+				if (!extraBr) {
+					rng.setStartAfter(brElm);
+					rng.setEndAfter(brElm);
+				} else {
+					rng.setStartBefore(brElm);
+					rng.setEndBefore(brElm);
+				}
+
+				selection.setRng(rng);
+				editor.undoManager.add();
+
+				return TRUE;
 			}
 		});
 

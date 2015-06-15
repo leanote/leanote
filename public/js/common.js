@@ -343,7 +343,7 @@ function switchEditor(isMarkdown) {
 // 可能是tinymce还没有渲染成功
 var previewToken = "<div style='display: none'>FORTOKEN</div>"
 var clearIntervalForSetContent;
-function setEditorContent(content, isMarkdown, preview) {
+function setEditorContent(content, isMarkdown, preview, callback) {
 	if(!content) {
 		content = "";
 	}
@@ -366,6 +366,7 @@ function setEditorContent(content, isMarkdown, preview) {
 		if(typeof tinymce != "undefined" && tinymce.activeEditor) {
 			var editor = tinymce.activeEditor;
 			editor.setContent(content);
+			callback && callback();
 			/*
 			if(LeaAce.canAce() && LeaAce.isAce) {
 				try {
@@ -382,7 +383,7 @@ function setEditorContent(content, isMarkdown, preview) {
 		} else {
 			// 等下再设置
 			clearIntervalForSetContent = setTimeout(function() {
-				setEditorContent(content, false);
+				setEditorContent(content, false, false, callback);
 			}, 100);
 		}
 	} else {
@@ -409,9 +410,10 @@ function setEditorContent(content, isMarkdown, preview) {
 	*/
 		if(MD) {
 			MD.setContent(content);
+			callback && callback();
 		} else {
 			clearIntervalForSetContent = setTimeout(function() {
-				setEditorContent(content, true);
+				setEditorContent(content, true, false, callback);
 			}, 100);
 		}
 	}
@@ -425,6 +427,14 @@ function previewIsEmpty(preview) {
 	return false;
 }
 
+// ace的值有误?
+function isAceError(val) {
+	if(!val) {
+		return false;
+	}
+	return val.indexOf('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX') != -1;
+}
+
 // 有tinymce得到的content有<html>包围
 function getEditorContent(isMarkdown) {
 	if(!isMarkdown) {
@@ -434,17 +444,24 @@ function getEditorContent(isMarkdown) {
 			// 删除toggle raw 
 			content.find('.toggle-raw').remove();
 
-			// 替换掉ace editor
-			var pres = content.find('pre');
-			for(var i = 0 ; i < pres.length; ++i) {
-				var pre = pres.eq(i);
-				var id = pre.attr('id');
-				var aceEditor = LeaAce.getAce(id);
-				if(aceEditor) {
-					var val = aceEditor.getValue();
-					val = val.replace(/</g, '&lt').replace(/>/g, '&gt');
-					pre.removeAttr('style', '').removeAttr('contenteditable').removeClass('ace_editor');
-					pre.html(val);
+			// single页面没有LeaAce
+			if(window.LeaAce && LeaAce.getAce) {
+				// 替换掉ace editor
+				var pres = content.find('pre');
+				for(var i = 0 ; i < pres.length; ++i) {
+					var pre = pres.eq(i);
+					var id = pre.attr('id');
+					var aceEditor = LeaAce.getAce(id);
+					if(aceEditor) {
+						var val = aceEditor.getValue();
+						// 表示有错
+						if(isAceError(val)) {
+							val = pre.html();
+						}
+						val = val.replace(/</g, '&lt').replace(/>/g, '&gt');
+						pre.removeAttr('style', '').removeAttr('contenteditable').removeClass('ace_editor');
+						pre.html(val);
+					}
 				}
 			}
 			
@@ -674,6 +691,8 @@ function getObjectId() {
 
 //-----------------------------------------
 function resizeEditor(second) {
+	return;
+	
 	var ifrParent = $("#editorContent_ifr").parent();
     ifrParent.css("overflow", "auto");
     var height = $("#editorContent").height();
@@ -683,7 +702,7 @@ function resizeEditor(second) {
 
     // life 12.9
     // inline editor
-    $("#editorContent").css("top", $("#mceToolbar").height());
+    // $("#editorContent").css("top", $("#mceToolbar").height());
     
     /*
     // 第一次时可能会被改变
@@ -1278,16 +1297,6 @@ function setHash(key, value) {
 	location.href = "#" + str;
 }
 
-// 防止js注入
-function trimTitle(title) {
-	if(!title) {
-		return '';
-	}
+var trimTitle = function(title) {
 	return title.replace(/<.*?script.*?>/g, '');
-};
-function toHtmlEntity(html) {
-	if(!html) {
-		return '';
-	}
-	return (html + '').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 };

@@ -22,21 +22,22 @@ define("tinymce/dom/ControlSelection", [
 ], function(VK, Tools, Env) {
 	return function(selection, editor) {
 		var dom = editor.dom, each = Tools.each;
-		var selectedElm, selectedElmGhost, resizeHandles, selectedHandle, lastMouseDownEvent;
+		var selectedElm, selectedElmGhost, resizeHelper, resizeHandles, selectedHandle, lastMouseDownEvent;
 		var startX, startY, selectedElmX, selectedElmY, startW, startH, ratio, resizeStarted;
 		var width, height, editableDoc = editor.getDoc(), rootDocument = document, isIE = Env.ie && Env.ie < 11;
+		var abs = Math.abs, round = Math.round, rootElement = editor.getBody(), startScrollWidth, startScrollHeight;
 
 		// Details about each resize handle how to scale etc
 		resizeHandles = {
 			// Name: x multiplier, y multiplier, delta size x, delta size y
-			n:  [0.5,   0,     0,   -1],
-			e:  [1,    0.5,    1,    0],
-			s:  [0.5,   1,     0,    1],
-			w:  [0,    0.5,   -1,    0],
-			nw: [0,     0,    -1,   -1],
-			ne: [1,     0,     1,   -1],
-			se: [1,     1,     1,    1],
-			sw: [0,     1,    -1,    1]
+			n: [0.5, 0, 0, -1],
+			e: [1, 0.5, 1, 0],
+			s: [0.5, 1, 0, 1],
+			w: [0, 0.5, -1, 0],
+			nw: [0, 0, -1, -1],
+			ne: [1, 0, 1, -1],
+			se: [1, 1, 1, 1],
+			sw: [0, 1, -1, 1]
 		};
 
 		// Add CSS for resize handles, cloned element and selected
@@ -63,27 +64,46 @@ define("tinymce/dom/ControlSelection", [
 				'opacity: .5;' +
 				'filter: alpha(opacity=50);' +
 				'z-index: 10000' +
+			'}' +
+			rootClass + ' .mce-resize-helper {' +
+				'background: #555;' +
+				'background: rgba(0,0,0,0.75);' +
+				'border-radius: 3px;' +
+				'border: 1px;' +
+				'color: white;' +
+				'display: none;' +
+				'font-family: sans-serif;' +
+				'font-size: 12px;' +
+				'white-space: nowrap;' +
+				'line-height: 14px;' +
+				'margin: 5px 10px;' +
+				'padding: 5px;' +
+				'position: absolute;' +
+				'z-index: 10001' +
 			'}'
 		);
 
 		function isResizable(elm) {
-			if (editor.settings.object_resizing === false) {
+			var selector = editor.settings.object_resizing;
+
+			if (selector === false || Env.iOS) {
 				return false;
 			}
 
-			if (!/TABLE|IMG|DIV/.test(elm.nodeName)) {
-				return false;
+			if (typeof selector != 'string') {
+				selector = 'table,img,div';
 			}
 
 			if (elm.getAttribute('data-mce-resize') === 'false') {
 				return false;
 			}
 
-			return true;
+			return editor.dom.is(elm, selector);
 		}
 
 		function resizeGhostElement(e) {
-			var deltaX, deltaY;
+			var deltaX, deltaY, proportional;
+			var resizeHelperX, resizeHelperY;
 
 			// Calc new width/height
 			deltaX = e.screenX - startX;
@@ -97,10 +117,21 @@ define("tinymce/dom/ControlSelection", [
 			width = width < 5 ? 5 : width;
 			height = height < 5 ? 5 : height;
 
-			// Constrain proportions when modifier key is pressed or if the nw, ne, sw, se corners are moved on an image
-			if (VK.modifierPressed(e) || (selectedElm.nodeName == "IMG" && selectedHandle[2] * selectedHandle[3] !== 0)) {
-				width = Math.round(height / ratio);
-				height = Math.round(width * ratio);
+			if (selectedElm.nodeName == "IMG" && editor.settings.resize_img_proportional !== false) {
+				proportional = !VK.modifierPressed(e);
+			} else {
+				proportional = VK.modifierPressed(e) || (selectedElm.nodeName == "IMG" && selectedHandle[2] * selectedHandle[3] !== 0);
+			}
+
+			// Constrain proportions
+			if (proportional) {
+				if (abs(deltaX) > abs(deltaY)) {
+					height = round(width * ratio);
+					width = round(height / ratio);
+				} else {
+					width = round(height / ratio);
+					height = round(width * ratio);
+				}
 			}
 
 			// Update ghost size
@@ -108,6 +139,20 @@ define("tinymce/dom/ControlSelection", [
 				width: width,
 				height: height
 			});
+
+			// Update resize helper position
+			resizeHelperX = selectedHandle.startPos.x + deltaX;
+			resizeHelperY = selectedHandle.startPos.y + deltaY;
+			resizeHelperX = resizeHelperX > 0 ? resizeHelperX : 0;
+			resizeHelperY = resizeHelperY > 0 ? resizeHelperY : 0;
+
+			dom.setStyles(resizeHelper, {
+				left: resizeHelperX,
+				top: resizeHelperY,
+				display: 'block'
+			});
+
+			resizeHelper.innerHTML = width + ' &times; ' + height;
 
 			// Update ghost X position if needed
 			if (selectedHandle[2] < 0 && selectedElmGhost.clientWidth <= width) {
@@ -117,6 +162,18 @@ define("tinymce/dom/ControlSelection", [
 			// Update ghost Y position if needed
 			if (selectedHandle[3] < 0 && selectedElmGhost.clientHeight <= height) {
 				dom.setStyle(selectedElmGhost, 'top', selectedElmY + (startH - height));
+			}
+
+			// Calculate how must overflow we got
+			deltaX = rootElement.scrollWidth - startScrollWidth;
+			deltaY = rootElement.scrollHeight - startScrollHeight;
+
+			// Re-position the resize helper based on the overflow
+			if (deltaX + deltaY !== 0) {
+				dom.setStyles(resizeHelper, {
+					left: resizeHelperX - deltaX,
+					top: resizeHelperY - deltaY
+				});
 			}
 
 			if (!resizeStarted) {
@@ -151,22 +208,26 @@ define("tinymce/dom/ControlSelection", [
 				dom.unbind(rootDocument, 'mouseup', endGhostResize);
 			}
 
-			// Remove ghost and update resize handle positions
+			// Remove ghost/helper and update resize handle positions
 			dom.remove(selectedElmGhost);
+			dom.remove(resizeHelper);
 
 			if (!isIE || selectedElm.nodeName == "TABLE") {
 				showResizeRect(selectedElm);
 			}
 
 			editor.fire('ObjectResized', {target: selectedElm, width: width, height: height});
+			dom.setAttrib(selectedElm, 'style', dom.getAttrib(selectedElm, 'style'));
 			editor.nodeChanged();
 		}
 
 		function showResizeRect(targetElm, mouseDownHandleName, mouseDownEvent) {
-			var position, targetWidth, targetHeight, e, rect, offsetParent = editor.getBody();
+			var position, targetWidth, targetHeight, e, rect;
+
+			unbindResizeHandleEvents();
 
 			// Get position and size of target
-			position = dom.getPos(targetElm, offsetParent);
+			position = dom.getPos(targetElm, rootElement);
 			selectedElmX = position.x;
 			selectedElmY = position.y;
 			rect = targetElm.getBoundingClientRect(); // Fix for Gecko offsetHeight for table with caption
@@ -188,8 +249,6 @@ define("tinymce/dom/ControlSelection", [
 					var handleElm, handlerContainerElm;
 
 					function startDrag(e) {
-						resizeStarted = true;
-
 						startX = e.screenX;
 						startY = e.screenY;
 						startW = selectedElm.clientWidth;
@@ -197,8 +256,17 @@ define("tinymce/dom/ControlSelection", [
 						ratio = startH / startW;
 						selectedHandle = handle;
 
+						handle.startPos = {
+							x: targetWidth * handle[0] + selectedElmX,
+							y: targetHeight * handle[1] + selectedElmY
+						};
+
+						startScrollWidth = rootElement.scrollWidth;
+						startScrollHeight = rootElement.scrollHeight;
+
 						selectedElmGhost = selectedElm.cloneNode(true);
 						dom.addClass(selectedElmGhost, 'mce-clonedresizable');
+						dom.setAttrib(selectedElmGhost, 'data-mce-bogus', 'all');
 						selectedElmGhost.contentEditable = false; // Hides IE move layer cursor
 						selectedElmGhost.unSelectabe = true;
 						dom.setStyles(selectedElmGhost, {
@@ -208,7 +276,7 @@ define("tinymce/dom/ControlSelection", [
 						});
 
 						selectedElmGhost.removeAttribute('data-mce-selected');
-						editor.getBody().appendChild(selectedElmGhost);
+						rootElement.appendChild(selectedElmGhost);
 
 						dom.bind(editableDoc, 'mousemove', resizeGhostElement);
 						dom.bind(editableDoc, 'mouseup', endGhostResize);
@@ -217,6 +285,11 @@ define("tinymce/dom/ControlSelection", [
 							dom.bind(rootDocument, 'mousemove', resizeGhostElement);
 							dom.bind(rootDocument, 'mouseup', endGhostResize);
 						}
+
+						resizeHelper = dom.add(rootElement, 'div', {
+							'class': 'mce-resize-helper',
+							'data-mce-bogus': 'all'
+						}, startW + ' &times; ' + startH);
 					}
 
 					if (mouseDownHandleName) {
@@ -231,35 +304,34 @@ define("tinymce/dom/ControlSelection", [
 					// Get existing or render resize handle
 					handleElm = dom.get('mceResizeHandle' + name);
 					if (!handleElm) {
-						handlerContainerElm = editor.getBody();
+						handlerContainerElm = rootElement;
 
 						handleElm = dom.add(handlerContainerElm, 'div', {
 							id: 'mceResizeHandle' + name,
-							'data-mce-bogus': true,
+							'data-mce-bogus': 'all',
 							'class': 'mce-resizehandle',
-							contentEditable: false, // Hides IE move layer cursor
-							unSelectabe: true,
+							unselectable: true,
 							style: 'cursor:' + name + '-resize; margin:0; padding:0'
 						});
 
-						dom.bind(handleElm, 'mousedown', function(e) {
-							e.preventDefault();
-							startDrag(e);
-						});
+						// Hides IE move layer cursor
+						// If we set it on Chrome we get this wounderful bug: #6725
+						if (Env.ie) {
+							handleElm.contentEditable = false;
+						}
 					} else {
 						dom.show(handleElm);
 					}
 
-					/*
-					var halfHandleW = handleElm.offsetWidth / 2;
-					var halfHandleH = handleElm.offsetHeight / 2;
+					if (!handle.elm) {
+						dom.bind(handleElm, 'mousedown', function(e) {
+							e.stopImmediatePropagation();
+							e.preventDefault();
+							startDrag(e);
+						});
 
-					// Position element
-					dom.setStyles(handleElm, {
-						left: Math.floor((targetWidth * handle[0] + selectedElmX) - halfHandleW + (handle[2] * halfHandleW)),
-						top: Math.floor((targetHeight * handle[1] + selectedElmY) - halfHandleH + (handle[3] * halfHandleH))
-					});
-					*/
+						handle.elm = handleElm;
+					}
 
 					// Position element
 					dom.setStyles(handleElm, {
@@ -277,6 +349,8 @@ define("tinymce/dom/ControlSelection", [
 		function hideResizeRect() {
 			var name, handleElm;
 
+			unbindResizeHandleEvents();
+
 			if (selectedElm) {
 				selectedElm.removeAttribute('data-mce-selected');
 			}
@@ -291,14 +365,21 @@ define("tinymce/dom/ControlSelection", [
 		}
 
 		function updateResizeRect(e) {
-			var controlElm;
+			var startElm, controlElm;
 
 			function isChildOrEqual(node, parent) {
-				do {
-					if (node === parent) {
-						return true;
-					}
-				} while ((node = node.parentNode));
+				if (node) {
+					do {
+						if (node === parent) {
+							return true;
+						}
+					} while ((node = node.parentNode));
+				}
+			}
+
+			// Ignore all events while resizing
+			if (resizeStarted) {
+				return;
 			}
 
 			// Remove data-mce-selected from all elements since they might have been copied using Ctrl+c/v
@@ -307,13 +388,14 @@ define("tinymce/dom/ControlSelection", [
 			});
 
 			controlElm = e.type == 'mousedown' ? e.target : selection.getNode();
-			controlElm = dom.getParent(controlElm, isIE ? 'table' : 'table,img,hr');
+			controlElm = dom.$(controlElm).closest(isIE ? 'table' : 'table,img,hr')[0];
 
-			if (controlElm) {
+			if (isChildOrEqual(controlElm, rootElement)) {
 				disableGeckoResize();
+				startElm = selection.getStart(true);
 
-				if (isChildOrEqual(selection.getStart(), controlElm) && isChildOrEqual(selection.getEnd(), controlElm)) {
-					if (!isIE || (controlElm != selection.getStart() && selection.getStart().nodeName !== 'IMG')) {
+				if (isChildOrEqual(startElm, controlElm) && isChildOrEqual(selection.getEnd(true), controlElm)) {
+					if (!isIE || (controlElm != startElm && startElm.nodeName !== 'IMG')) {
 						showResizeRect(controlElm);
 						return;
 					}
@@ -349,7 +431,7 @@ define("tinymce/dom/ControlSelection", [
 				cornerX = target.offsetWidth * corner[0];
 				cornerY = target.offsetHeight * corner[1];
 
-				if (Math.abs(cornerX - relativeX) < 8 && Math.abs(cornerY - relativeY) < 8) {
+				if (abs(cornerX - relativeX) < 8 && abs(cornerY - relativeY) < 8) {
 					selectedHandle = corner;
 					break;
 				}
@@ -357,6 +439,11 @@ define("tinymce/dom/ControlSelection", [
 
 			// Remove native selection and let the magic begin
 			resizeStarted = true;
+			editor.fire('ObjectResizeStart', {
+				target: selectedElm,
+				width: selectedElm.clientWidth,
+				height: selectedElm.clientHeight
+			});
 			editor.getDoc().selection.empty();
 			showResizeRect(target, name, lastMouseDownEvent);
 		}
@@ -365,6 +452,7 @@ define("tinymce/dom/ControlSelection", [
 			var target = e.srcElement;
 
 			if (target != selectedElm) {
+				editor.fire('ObjectSelected', {target: target});
 				detachResizeStartListener();
 
 				if (target.id.indexOf('mceResizeHandle') === 0) {
@@ -382,6 +470,17 @@ define("tinymce/dom/ControlSelection", [
 
 		function detachResizeStartListener() {
 			detachEvent(selectedElm, 'resizestart', resizeNativeStart);
+		}
+
+		function unbindResizeHandleEvents() {
+			for (var name in resizeHandles) {
+				var handle = resizeHandles[name];
+
+				if (handle.elm) {
+					dom.unbind(handle.elm);
+					delete handle.elm;
+				}
+			}
 		}
 
 		function disableGeckoResize() {
@@ -421,7 +520,7 @@ define("tinymce/dom/ControlSelection", [
 					}
 				});
 
-				attachEvent(editor.getBody(), 'controlselect', nativeControlSelect);
+				attachEvent(rootElement, 'controlselect', nativeControlSelect);
 
 				editor.on('mousedown', function(e) {
 					lastMouseDownEvent = e;
@@ -434,21 +533,29 @@ define("tinymce/dom/ControlSelection", [
 					editor.on('mouseup', function(e) {
 						var nodeName = e.target.nodeName;
 
-						if (/^(TABLE|IMG|HR)$/.test(nodeName)) {
+						if (!resizeStarted && /^(TABLE|IMG|HR)$/.test(nodeName)) {
 							editor.selection.select(e.target, nodeName == 'TABLE');
 							editor.nodeChanged();
 						}
 					});
 
-					editor.dom.bind(editor.getBody(), 'mscontrolselect', function(e) {
+					editor.dom.bind(rootElement, 'mscontrolselect', function(e) {
 						if (/^(TABLE|IMG|HR)$/.test(e.target.nodeName)) {
 							e.preventDefault();
+
+							// This moves the selection from being a control selection to a text like selection like in WebKit #6753
+							// TODO: Fix this the day IE works like other browsers without this nasty native ugly control selections.
+							if (e.target.tagName == 'IMG') {
+								window.setTimeout(function() {
+									editor.selection.select(e.target);
+								}, 0);
+							}
 						}
 					});
 				}
 			}
 
-			editor.on('nodechange mousedown mouseup ResizeEditor', updateResizeRect);
+			editor.on('nodechange ResizeEditor', updateResizeRect);
 
 			// Update resize rect while typing in a table
 			editor.on('keydown keyup', function(e) {
@@ -457,20 +564,28 @@ define("tinymce/dom/ControlSelection", [
 				}
 			});
 
+			editor.on('hide', hideResizeRect);
+
 			// Hide rect on focusout since it would float on top of windows otherwise
 			//editor.on('focusout', hideResizeRect);
 		});
+
+		editor.on('remove', unbindResizeHandleEvents);
 
 		function destroy() {
 			selectedElm = selectedElmGhost = null;
 
 			if (isIE) {
 				detachResizeStartListener();
-				detachEvent(editor.getBody(), 'controlselect', nativeControlSelect);
+				detachEvent(rootElement, 'controlselect', nativeControlSelect);
 			}
 		}
 
 		return {
+			isResizable: isResizable,
+			showResizeRect: showResizeRect,
+			hideResizeRect: hideResizeRect,
+			updateResizeRect: updateResizeRect,
 			controlSelect: controlSelect,
 			destroy: destroy
 		};

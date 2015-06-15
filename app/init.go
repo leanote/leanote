@@ -51,6 +51,18 @@ func init() {
 	revel.TemplateFuncs["raw"] = func(str string) template.HTML {
 		return template.HTML(str)
 	}
+	revel.TemplateFuncs["trim"] = func(str string) string {
+		str = strings.Trim(str, " ")
+		str = strings.Trim(str, " ")
+		
+		str = strings.Trim(str, "\n")
+		str = strings.Trim(str, "&nbsp;")
+		
+		// 以下两个空格不一样
+		str = strings.Trim(str, " ")
+		str = strings.Trim(str, " ")
+		return str
+	}
 	revel.TemplateFuncs["add"] = func(i int) string {
 		i = i + 1;
 		return fmt.Sprintf("%v", i)
@@ -145,8 +157,33 @@ func init() {
 		return template.HTML(tagStr)
 	}
 	
+	revel.TemplateFuncs["blogTagsForExport"] = func(renderArgs map[string]interface{}, tags []string) template.HTML {
+		if tags == nil || len(tags) == 0 {
+			return ""
+		}
+		tagStr := ""
+		lenTags := len(tags)
+		
+		for i, tag := range tags {
+			str := tag
+			var classes = "label"
+			if InArray([]string{"red", "blue", "yellow", "green"}, tag) {
+				classes += " label-" + tag
+			} else {
+				classes += " label-default"
+			}
+			
+			classes += " label-post"
+			tagStr += "<span class=\"" + classes + "\" >" + str + "</span>";
+			if i != lenTags - 1 {
+				tagStr += " "
+			}
+		}
+		return template.HTML(tagStr)
+	}
+	
 	// lea++
-	revel.TemplateFuncs["blogTagsLea"] = func(renderArgs map[string]interface{}, tags []string, isRecommend bool) template.HTML {
+	revel.TemplateFuncs["blogTagsLea"] = func(renderArgs map[string]interface{}, tags []string, typeStr string) template.HTML {
 		if tags == nil || len(tags) == 0 {
 			return ""
 		}
@@ -155,10 +192,12 @@ func init() {
 		lenTags := len(tags)
 		
 		tagPostUrl := "http://lea.leanote.com/"
-		if isRecommend {
+		if typeStr == "recommend" {
 			tagPostUrl += "?tag=";
-		} else {
+		} else if typeStr == "latest" {
 			tagPostUrl += "latest?tag=";
+		} else {
+			tagPostUrl += "subscription?tag=";
 		}
 		
 		for i, tag := range tags {

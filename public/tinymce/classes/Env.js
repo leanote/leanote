@@ -9,7 +9,7 @@
  */
 
 /**
- * This class contains various environment constrants like browser versions etc.
+ * This class contains various environment constants like browser versions etc.
  * Normally you don't want to sniff specific browser versions but sometimes you have
  * to when it's impossible to feature detect. So use this with care.
  *
@@ -18,9 +18,10 @@
  */
 define("tinymce/Env", [], function() {
 	var nav = navigator, userAgent = nav.userAgent;
-	var opera, webkit, ie, ie11, gecko, mac, iDevice;
+	var opera, webkit, ie, ie11, gecko, mac, iDevice, android;
 
 	opera = window.opera && window.opera.buildNumber;
+	android = /Android/.test(userAgent);
 	webkit = /WebKit/.test(userAgent);
 	ie = !webkit && !opera && (/MSIE/gi).test(userAgent) && (/Explorer/gi).test(nav.appName);
 	ie = ie && /MSIE (\w+)\./.exec(userAgent)[1];
@@ -88,6 +89,15 @@ define("tinymce/Env", [], function() {
 		 * @final
 		 */
 		iOS: iDevice,
+
+		/**
+		 * Constant that is true if the os is android.
+		 *
+		 * @property android
+		 * @type Boolean
+		 * @final
+		 */
+		android: android,
 
 		/**
 		 * Constant that is true if the browser supports editing.

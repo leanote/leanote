@@ -7,8 +7,8 @@
 <meta name="apple-touch-fullscreen" content="yes">
 <meta name=”apple-mobile-web-app-capable” content=”yes” />
 <meta name="keywords" content="leanote,leanote.com">
-<meta name="description" content="leanote, Not Just A Notebook">
-<title>leanote, Not Just A Notebook</title>
+<meta name="description" content="Leanote, {{msg $ "moto"}}">
+<title>Leanote, {{msg $ "moto"}}</title>
 
 <link href="/css/bootstrap.css" rel="stylesheet" />
 <!-- 先加载, 没有样式, 宽度不定 -->
@@ -186,13 +186,11 @@ function log(o) {
 					</div>
 				</div>
 
-				<!--
 				<div class="pull-right top-nav writting-hide lea-blog">
 					<a target="_blank" href="http://lea.leanote.com"> 
 						lea++
 					</a>
 				</div>
-				-->
 				
 				<div class="pull-right top-nav writting-hide" id="myBlog">
 					<a target="_blank" href="{{$.blogUrl}}/{{.userInfo.Username}}"> 
@@ -416,29 +414,7 @@ function log(o) {
 					<div class="noteSplit" id="noteSplitter"></div>
 					
 					<div id="note">
-					<!-- 只读模式 -->
-					<div id="noteRead">
-						<div id="noteReadContainer">
-							<div id="noteReadTop">
-								<h2 id="noteReadTitle"></h2>
-								<div class="clearfix" id="noteReadInfo">
-									<i class="fa fa-bookmark-o"></i>												
-									<span id="noteReadTags"></span>
-									
-									<!-- 修改时间 -->
-									<i class="fa fa-clock-o"></i>{{msg . "update"}} 
-									<span id="noteReadUpdatedTime"></span>  
-									
-									<!-- 修改时间 -->
-									<i class="fa fa-clock-o"></i>{{msg . "create"}} 										
-									<span id="noteReadCreatedTime"></span>
-								</div>
-							</div>
-							
-							<div id="noteReadContent">
-							</div>
-						</div>
-					</div>
+					
 					<!-- 遮罩, 为了resize3Columns用 -->
 					<div id="noteMask" class="note-mask"></div>
 					<div id="noteMaskForLoading" class="note-mask">
@@ -546,17 +522,38 @@ function log(o) {
 						<div id="noteTitleDiv">
 							<input name="noteTitle" id="noteTitle" value="" placeholder="{{msg . "unTitled"}}" tabindex="1" />
 						</div>
+						
+						<!-- 只读时 -->
+						<div id="noteReadTop">
+							<h2 id="noteReadTitle"></h2>
+							<div class="clearfix" id="noteReadInfo">
+								<i class="fa fa-bookmark-o"></i>												
+								<span id="noteReadTags"></span>
+								
+								<!-- 修改时间 -->
+								<i class="fa fa-clock-o"></i> {{msg . "update"}} 
+								<span id="noteReadUpdatedTime"></span>  
+								
+								<!-- 修改时间 -->
+								<i class="fa fa-clock-o"></i> {{msg . "create"}} 										
+								<span id="noteReadCreatedTime"></span>
+							</div>
+						</div>
 					</div>
 
 					<div id="editor">
 						<!-- 编辑器 -->
 						<div id="mceToolbar">
-							<div id="popularToolbar"
-								style="position: absolute; right: 30px; left: 0"></div>
-							<a
-								style="dispaly: block; position: absolute; cursor: pointer; right: 10px; padding: 3px 10px"
-								id="moreBtn"> <i class="fa fa-angle-down"></i>
-							</a>
+							<div id="mceToolbarContainer">
+								<div id="popularToolbar" style="position: absolute; right: 30px; left: 0"></div>
+								<a id="moreBtn"> <i class="fa more-fa"></i></a>
+							</div>
+							<!-- 查看信息 -->
+							<div id="infoToolbar" class="info-toolbar">
+				              <a class="toolbar-update"><i class="fa fa-pencil"></i> <span class="lang">{{msg . "modify"}}</span></a>
+				              <span class="lang">{{msg . "created"}}</span>: <span class="created-time">2015-04-03</span>
+				              <span class="lang">{{msg . "updated"}}</span>: <span class="updated-time">2015-05-01</span>
+				            </div>
 						</div>
 						<div class="editorBg"></div>
 						<div id="leanoteNav" class="leanoteNav">
@@ -585,49 +582,56 @@ function log(o) {
 					</div>
 					
 					<div id="mdEditor">
-					
 											
 						<div class="layout-wrapper-l1">
 						    <div class="layout-wrapper-l2">
 						        <div class="navbar navbar-default">
 						            <div class="navbar-inner" id="wmd-button-bar">
-						                <ul class="nav left-buttons">
-						                    <li class="wmd-button-group1 btn-group"></li>
-						                </ul>
-						                <ul class="nav left-buttons">
-						                    <li class="wmd-button-group2 btn-group"></li>
-						                </ul>
-						                <ul class="nav left-buttons">
-						                    <li class="wmd-button-group3 btn-group"></li>
-						                </ul>
-						                <ul class="nav left-buttons">
-						                    <li class="wmd-button-group5 btn-group"></li>
-						                </ul>
-						                <!-- 帮助 -->
-						                 <ul class="nav left-buttons">
-						                    <li class="wmd-button-group6 btn-group">
-						                    	<li class="wmd-button btn btn-success" id="wmd-help-button" title="Markdown syntax" style="left: 0px; display: none;"><span style="display: none; background-position: 0px 0px;"></span><i class="fa fa-question-circle"></i></li>
-						                    </li>
-						                </ul>
-						               
-						               <!--
-						                <ul class="nav pull-right right-buttons">
-						                    <li class="offline-status hide">
-						                        <div class="text-danger">
-						                            <i class="icon-attention-circled"></i>offline
-						                        </div>
-						                    </li>
-						                    <li class="extension-buttons"></li>
-						                </ul>
-						                <ul class="nav pull-right title-container">
-						                    <li><div class="working-indicator"></div></li>
-						                    <li><a class="btn btn-success file-title-navbar" href="#"
-						                        title="Rename document"> </a></li>
-						                    <li><div class="input-file-title-container"><input type="text"
-						                        class="col-sm-4 form-control hide input-file-title"
-						                        placeholder="Document title" /></div></li>
-						                </ul>
-						                -->
+						            	<div id="mdInfoToolbar" class="info-toolbar">
+							              <a class="toolbar-update"><i class="fa fa-pencil"></i> <span class="lang">{{msg . "modify"}}</span></a>
+							              <span class="lang">{{msg . "created"}}</span>: <span class="created-time">2015-04-03</span>
+							              <span class="lang">{{msg . "updated"}}</span>: <span class="updated-time">2015-05-01</span>
+							            </div>
+						            	
+						            	<div class="wmd-button-bar-inner">
+							                <ul class="nav left-buttons">
+							                    <li class="wmd-button-group1 btn-group"></li>
+							                </ul>
+							                <ul class="nav left-buttons">
+							                    <li class="wmd-button-group2 btn-group"></li>
+							                </ul>
+							                <ul class="nav left-buttons">
+							                    <li class="wmd-button-group3 btn-group"></li>
+							                </ul>
+							                <ul class="nav left-buttons">
+							                    <li class="wmd-button-group5 btn-group"></li>
+							                </ul>
+							                <!-- 帮助 -->
+							                 <ul class="nav left-buttons">
+							                    <li class="wmd-button-group6 btn-group">
+							                    	<li class="wmd-button btn btn-success" id="wmd-help-button" title="Markdown syntax" style="left: 0px; display: none;"><span style="display: none; background-position: 0px 0px;"></span><i class="fa fa-question-circle"></i></li>
+							                    </li>
+							                </ul>
+							               
+							               <!--
+							                <ul class="nav pull-right right-buttons">
+							                    <li class="offline-status hide">
+							                        <div class="text-danger">
+							                            <i class="icon-attention-circled"></i>offline
+							                        </div>
+							                    </li>
+							                    <li class="extension-buttons"></li>
+							                </ul>
+							                <ul class="nav pull-right title-container">
+							                    <li><div class="working-indicator"></div></li>
+							                    <li><a class="btn btn-success file-title-navbar" href="#"
+							                        title="Rename document"> </a></li>
+							                    <li><div class="input-file-title-container"><input type="text"
+							                        class="col-sm-4 form-control hide input-file-title"
+							                        placeholder="Document title" /></div></li>
+							                </ul>
+							                -->
+						                </div>
 						            </div>
 						            <div class="editorBg"></div>
 						        </div>
@@ -900,6 +904,7 @@ var GlobalConfigs = {{.globalConfigs|jsonJs}}; // 2014/11/9 beta2
 
 <!-- 渲染view -->
 <script src="/tinymce/tinymce.min.js"></script>
+
 <script src="/public/libs/ace/ace.js"></script>
 <script src="/js/app/page-min.js"></script>
 <script src="/js/jQuery-slimScroll-1.3.0/jquery.slimscroll-min.js"></script>
@@ -919,13 +924,14 @@ initPage();
 
 <!-- v2 use require.js, mdeditor -->
 <script>
-window.baseDir = '/public/dist';
+// 当tinymce.min.js时, 请注释require
 window.require = {
-    baseUrl: window.baseDir,
-    deps: ['main']
+    baseUrl: '/public',
 };
 </script>
 <script src="/js/require.js"></script>
+<script src="/public/dist/main.min.js"></script>
+<script src="/public/js/upload_paste/main.js"></script>
 </script>
 </body>
 </html>

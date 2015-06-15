@@ -32,11 +32,21 @@ func (this *GroupService) DeleteGroup(userId, groupId string) (ok bool, msg stri
 		return false, "groupHasUsers"
 	}
 	*/
+	if !this.isMyGroup(userId, groupId) {
+		return false, "notMyGroup"
+	}
+	
+	// 删除分组后, 需要删除所有用户分享到该组的笔记本, 笔记
+	
+	shareService.DeleteAllShareNotebookGroup(groupId);
+	shareService.DeleteAllShareNoteGroup(groupId);
+	
 	db.DeleteAll(db.GroupUsers, bson.M{"GroupId": bson.ObjectIdHex(groupId)})
 	return db.DeleteByIdAndUserId(db.Groups, groupId, userId), ""
 	
 	// TODO 删除分组后, 在shareNote, shareNotebook中也要删除
 }
+
 // 修改group标题
 func (this *GroupService) UpdateGroupTitle(userId, groupId, title string) (ok bool) {
 	return db.UpdateByIdAndUserIdField(db.Groups, groupId, userId, "Title", title)
@@ -44,9 +54,14 @@ func (this *GroupService) UpdateGroupTitle(userId, groupId, title string) (ok bo
 
 // 得到用户的所有分组(包括下的所有用户)
 func (this *GroupService) GetGroupsAndUsers(userId string) ([]info.Group) {
-	// 得到分组s
+/*
+	// 得到我的分组
 	groups := []info.Group{}
 	db.ListByQ(db.Groups, bson.M{"UserId": bson.ObjectIdHex(userId)}, &groups)
+*/
+	// 我的分组, 及我所属的分组
+	groups := this.GetGroupsContainOf(userId);
+	
 	// 得到其下的用户
 	for i, group := range groups {
 		group.Users = this.GetUsers(group.GroupId.Hex())
@@ -60,6 +75,28 @@ func (this *GroupService) GetGroups(userId string) ([]info.Group) {
 	groups := []info.Group{}
 	db.ListByQ(db.Groups, bson.M{"UserId": bson.ObjectIdHex(userId)}, &groups)
 	return groups
+}
+
+// 得到我的和我所属组的ids
+func (this *GroupService) GetMineAndBelongToGroupIds(userId string)  ([]bson.ObjectId) {
+	// 所属组
+	groupIds := this.GetBelongToGroupIds(userId)
+	
+	m := map[bson.ObjectId]bool{}
+	for _, groupId := range groupIds {
+		m[groupId] = true
+	}
+	
+	// 我的组
+	myGroups := this.GetGroups(userId)
+	
+	for _, group := range myGroups {
+		if !m[group.GroupId] {
+			groupIds = append(groupIds, group.GroupId)
+		}
+	}
+	
+	return groupIds
 }
 
 // 获取包含此用户的组对象数组
@@ -129,11 +166,26 @@ func (this *GroupService) GetBelongToGroupIds(userId string) ([]bson.ObjectId) {
 
 func (this *GroupService) isMyGroup(ownUserId, groupId string) (ok bool) {
 	return db.Has(db.Groups, bson.M{"_id": bson.ObjectIdHex(groupId), "UserId": bson.ObjectIdHex(ownUserId)})
-}	
+}
+
+// 判断组中是否包含指定用户
+func (this *GroupService) IsExistsGroupUser(userId, groupId string) (ok bool) {
+	// 如果我拥有这个组, 那也行
+	if this.isMyGroup(userId, groupId) {
+		return true
+	}
+	return db.Has(db.GroupUsers, bson.M{"UserId": bson.ObjectIdHex(userId), "GroupId": bson.ObjectIdHex(groupId)})
+}
+
 // 为group添加用户
 // 用户是否已存在?
 func (this *GroupService) AddUser(ownUserId, groupId, userId string) (ok bool, msg string) {
 	// groupId是否是ownUserId的?
+	/*
+	if !this.IsExistsGroupUser(ownUserId, groupId) {
+		return false, "forbidden"
+	}
+	*/
 	if !this.isMyGroup(ownUserId, groupId) {
 		return false, "forbidden"
 	}
@@ -150,20 +202,22 @@ func (this *GroupService) AddUser(ownUserId, groupId, userId string) (ok bool, m
 		CreatedTime: time.Now(),
 	}), ""
 }
+
 // 删除用户
 func (this *GroupService) DeleteUser(ownUserId, groupId, userId string) (ok bool, msg string) {
 	// groupId是否是ownUserId的?
+	/*
+	if !this.IsExistsGroupUser(ownUserId, groupId) {
+		return false, "forbidden"
+	}
+	*/
 	if !this.isMyGroup(ownUserId, groupId) {
 		return false, "forbidden"
 	}
+	
+	// 删除该用户分享到本组的笔记本, 笔记
+	shareService.DeleteShareNotebookGroupWhenDeleteGroupUser(userId, groupId);
+	shareService.DeleteShareNoteGroupWhenDeleteGroupUser(userId, groupId);
+	
 	return db.Delete(db.GroupUsers, bson.M{"GroupId": bson.ObjectIdHex(groupId), "UserId": bson.ObjectIdHex(userId)}), ""
-}
-
-// 判断组中是否包含指定用户
-func (this *GroupService) IsExistsGroupUser(userId, groupId string) (ok bool) {
-	// 如果我拥有这个组, 那也行
-	if this.isMyGroup(userId, groupId) {
-		return true
-	}
-	return db.Has(db.GroupUsers, bson.M{"UserId": bson.ObjectIdHex(userId), "GroupId": bson.ObjectIdHex(groupId)})
 }

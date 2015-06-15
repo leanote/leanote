@@ -1,1 +1,0 @@
-ace.define("ace/snippets/powershell",["require","exports","module"],function(e,p,s){p.snippetText="",p.scope="powershell"});

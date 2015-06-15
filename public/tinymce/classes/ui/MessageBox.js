@@ -11,8 +11,8 @@
 /**
  * This class is used to create MessageBoxes like alerts/confirms etc.
  *
- * @class tinymce.ui.Window
- * @extends tinymce.ui.FloatPanel
+ * @class tinymce.ui.MessageBox
+ * @extends tinymce.ui.Window
  */
 define("tinymce/ui/MessageBox", [
 	"tinymce/ui/Window"
@@ -94,44 +94,41 @@ define("tinymce/ui/MessageBox", [
 			msgBox: function(settings) {
 				var buttons, callback = settings.callback || function() {};
 
+				function createButton(text, status, primary) {
+					return {
+						type: "button",
+						text: text,
+						subtype: primary ? 'primary' : '',
+						onClick: function(e) {
+							e.control.parents()[1].close();
+							callback(status);
+						}
+					};
+				}
+
 				switch (settings.buttons) {
 					case MessageBox.OK_CANCEL:
 						buttons = [
-							{type: "button", text: "Ok", subtype: "primary", onClick: function(e) {
-								e.control.parents()[1].close();
-								callback(true);
-							}},
-
-							{type: "button", text: "Cancel", onClick: function(e) {
-								e.control.parents()[1].close();
-								callback(false);
-							}}
+							createButton('Ok', true, true),
+							createButton('Cancel', false)
 						];
 						break;
 
 					case MessageBox.YES_NO:
-						buttons = [
-							{type: "button", text: "Ok", subtype: "primary", onClick: function(e) {
-								e.control.parents()[1].close();
-								callback(true);
-							}}
-						];
-						break;
-
 					case MessageBox.YES_NO_CANCEL:
 						buttons = [
-							{type: "button", text: "Ok", subtype: "primary", onClick: function(e) {
-								e.control.parents()[1].close();
-							}}
+							createButton('Yes', 1, true),
+							createButton('No', 0)
 						];
+
+						if (settings.buttons == MessageBox.YES_NO_CANCEL) {
+							buttons.push(createButton('Cancel', -1));
+						}
 						break;
 
 					default:
 						buttons = [
-							{type: "button", text: "Ok", subtype: "primary", onClick: function(e) {
-								e.control.parents()[1].close();
-								callback(true);
-							}}
+							createButton('Ok', true, true)
 						];
 						break;
 				}
@@ -147,6 +144,7 @@ define("tinymce/ui/MessageBox", [
 					align: "center",
 					buttons: buttons,
 					title: settings.title,
+					role: 'alertdialog',
 					items: {
 						type: "label",
 						multiline: true,
@@ -154,7 +152,13 @@ define("tinymce/ui/MessageBox", [
 						maxHeight: 200,
 						text: settings.text
 					},
-					onClose: settings.onClose
+					onPostRender: function() {
+						this.aria('describedby', this.items()[0]._id);
+					},
+					onClose: settings.onClose,
+					onCancel: function() {
+						callback(false);
+					}
 				}).renderTo(document.body).reflow();
 			},
 
@@ -166,7 +170,7 @@ define("tinymce/ui/MessageBox", [
 			 * @param {function} [callback] Callback to execute when the user makes a choice.
 			 */
 			alert: function(settings, callback) {
-				if (typeof(settings) == "string") {
+				if (typeof settings == "string") {
 					settings = {text: settings};
 				}
 
@@ -182,7 +186,7 @@ define("tinymce/ui/MessageBox", [
 			 * @param {function} [callback] Callback to execute when the user makes a choice.
 			 */
 			confirm: function(settings, callback) {
-				if (typeof(settings) == "string") {
+				if (typeof settings == "string") {
 					settings = {text: settings};
 				}
 

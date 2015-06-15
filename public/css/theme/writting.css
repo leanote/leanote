@@ -143,7 +143,7 @@ h3 {
   width: 5px;
   height: 100%;
   overflow: hidden;
-  z-index: 5;
+  z-index: 3333;
   cursor: col-resize;
 }
 .dropdown-menu {
@@ -373,6 +373,9 @@ h3 {
 }
 .friend-header .notebook-setting {
   display: none;
+  position: absolute;
+  right: 0;
+  left: auto;
 }
 .friend-header:hover .notebook-setting {
   display: block;
@@ -636,6 +639,7 @@ h3 {
   text-overflow: ellipsis;
   overflow: hidden;
   color: #666;
+  margin-top: 8px;
 }
 .my-link,
 .new-markdown-text-abbr,
@@ -889,6 +893,7 @@ h3 {
 }
 .desc {
   margin: 0;
+  word-wrap: break-word;
 }
 #editorMask {
   position: absolute;
@@ -941,9 +946,9 @@ h3 {
 .dropdown-menu .divider {
   margin: 3px 0;
 }
-.ace_eidtor,
+.ace_editor,
 .ace_editor * {
-  font: 12px / normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro';
 }
 /* leanote nav */
 .leanoteNav {
@@ -1034,6 +1039,9 @@ h3 {
 #editorContent pre:hover .toggle-raw {
   display: block;
 }
+#editorContent * {
+  font-family: inherit;
+}
 .ace_invisible_space {
   visibility: hidden !important;
 }
@@ -1094,6 +1102,152 @@ h3 {
 }
 #tagNav a:hover {
   background: none !important;
+}
+#listNotebookDropdownMenu {
+  display: none;
+}
+#moreBtn span {
+  display: none;
+}
+.mce-colorbtn-trans div {
+  line-height: 11px;
+  text-align: center;
+}
+.mce-btn-small .mce-caret {
+  margin-top: 8px;
+}
+.mce-listbox.mce-btn-small .mce-caret {
+  margin-top: -2px;
+}
+.mce-btn i {
+  text-shadow: none;
+}
+.mce-colorbutton.mce-btn-small .mce-preview {
+  width: 15px;
+}
+#noteList {
+  z-index: 333;
+}
+#moreBtn {
+  dispaly: block;
+  position: absolute;
+  cursor: pointer;
+  right: 5px;
+  padding: 3px 10px;
+}
+.info-toolbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  line-height: 30px;
+  padding-left: 5px;
+  height: 30px;
+  display: none;
+}
+.info-toolbar .toolbar-update {
+  color: inherit;
+  float: right;
+  padding: 0 10px;
+}
+.info-toolbar .toolbar-update:hover {
+  background: #fff;
+  color: #000;
+}
+.info-toolbar .created-time {
+  display: inline-block;
+  padding-right: 10px;
+}
+#editorContent {
+  -webkit-user-select: text;
+}
+#editor.read-only #mceToolbarContainer {
+  display: none;
+}
+#editor.read-only .info-toolbar {
+  display: block;
+}
+#mdEditor.read-only .info-toolbar {
+  display: block;
+}
+#mdEditor.read-only .wmd-button-bar-inner,
+#mdEditor.read-only #mdSplitter2,
+#mdEditor.read-only .btn-info {
+  display: none;
+}
+#mdEditor.read-only #left-column {
+  visibility: hidden;
+}
+#mdEditor.read-only #right-column {
+  left: 0 !important;
+}
+#mdEditor.read-only .preview-container {
+  left: 10px;
+}
+#editor #mceToolbar {
+  height: 30px;
+}
+#editor.all-tool #mceToolbar {
+  height: 60px;
+}
+#editor.all-tool .more-fa:before {
+  content: "\f106";
+}
+#editor.all-tool #editorContent {
+  top: 60px;
+}
+#editor .more-fa:before {
+  content: "\f107";
+}
+#note.read-only #editor,
+#note.read-only #mdEditor {
+  top: 60px;
+}
+#note.read-only #tool {
+  display: none;
+}
+#note.read-only .toolbar-update {
+  display: none;
+}
+#note.read-only #noteReadTop {
+  display: block;
+}
+#note.read-only #infoToolbar,
+#note.read-only #mceToolbar,
+#note.read-only .navbar {
+  display: none;
+}
+#note.read-only #editorContent,
+#note.read-only #mdEditor .layout-wrapper-l3 {
+  top: 0;
+}
+#noteRead {
+  position: absolute;
+  left: 5px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: none;
+  z-index: 100;
+  padding-left: 5px;
+  background-color: #fff;
+}
+#noteReadTop {
+  position: absolute;
+  height: 60px;
+  left: 5px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  display: none;
+  background: #fff;
+  padding-left: 5px;
+}
+#noteReadTitle {
+  margin: 3px 0;
+  height: 26px;
 }
 @font-face {
   font-family: 'Open Sans';

@@ -59,8 +59,10 @@ tinymce.PluginManager.add('leanote_code', function(editor, url) {
 		// 当pre->text时会有遗留, 这里干脆清除之
 		$('#editorContent .toggle-raw').remove();
 
-		log('curNode:')
-		log(node);
+		var brushClasses = 'class="brush:' + brush + '"';
+
+		// log('curNode:')
+		// log(node);
 		// s = ed.selection;
 		// log(s);
 		// log($pre.get(0));
@@ -109,15 +111,15 @@ tinymce.PluginManager.add('leanote_code', function(editor, url) {
 				if(text) {
 					// 不是, 那么替换成<pre>
 					text = html2BreakLineForPre(text);
-					pre = '<pre id="' + id + '">' + text + '</pre>';
+					pre = '<pre id="' + id + '" ' + brushClasses + '>' + text + '</pre>';
 					ed.insertContent(pre);
 				} else {
 					if(node) {
 						text = html2BreakLineForPre(node);
-						pre = '<pre id="' + id + '">' + text + '</pre>';
+						pre = '<pre id="' + id + '" ' + brushClasses + '>' + text + '</pre>';
 						$(node).replaceWith(pre);
 					} else {
-						pre = '<pre id="' + id + '">' + text + '</pre>';
+						pre = '<pre id="' + id + '" ' + brushClasses + '>' + text + '</pre>';
 						ed.insertContent(pre);
 					}
 				}
@@ -173,17 +175,17 @@ tinymce.PluginManager.add('leanote_code', function(editor, url) {
 				// log(text);
 				text = html2BreakLine(text);
 				// log(text);
-				ed.insertContent('<pre id="' + id + '">' + text + '</pre>');
+				ed.insertContent('<pre id="' + id + '" ' + brushClasses + '>' + text + '</pre>');
 			} else {
 				// 不是, 那么替换成<pre>
 				text = html2BreakLine(node);
-				$(node).replaceWith("<pre id='" + id  + "'>" + text + "</pre>");
+				$(node).replaceWith("<pre id='" + id  + "'" + brushClasses + ">" + text + "</pre>");
 			}
-			var editor = LeaAce.initAce(id);
-			if(editor) {
-				editor.focus();
-				if(brush) {
-					editor.session.setMode("ace/mode/" + brush);
+			var aceEditor = LeaAce.initAce(id);
+			if(aceEditor) {
+				aceEditor.focus();
+				if(brush && brush != "convert") {
+					aceEditor.session.setMode("ace/mode/" + brush);
 				}
 			}
 		}
@@ -239,19 +241,23 @@ tinymce.PluginManager.add('leanote_code', function(editor, url) {
     	var langs = [
     		"Convert Code:convert",
 			"CSS:css", 
-            "C/C++:c_cpp", 
-            "C#:csharp",
             "HTML:html",
             "Javascript:javascript", 
+            "C/C++:c_cpp", 
+            "C#:csharp",
             "Java:java", 
+            "Objective-c:objectivec", 
             "PHP:php",
             "Python:python",
-            "Shell:shell", 
+            "Ruby:ruby",
+            "Shell:sh", 
             "Delphi:delphi",
             "Golang:golang",
             "Erlang:erlang",
             "Groovy:groovy",
-            "ActionScript:actionScript"
+            "Latex:latex",
+            "Xml:xml",
+            "ActionScript:actionScript",
          ];
 		var items = [];
     	for(var i in langs) {

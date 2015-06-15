@@ -10,6 +10,7 @@ import (
 	"io"
 	"gopkg.in/mgo.v2/bson"
 	"time"
+	"strings"
 	math_rand "math/rand" 
 )
 
@@ -314,4 +315,24 @@ func InArray(arr []string, str string) bool {
 		}
 	}
 	return false
+}
+
+// 将名称的特殊字符去掉
+func FixFilename(filename string) string {
+	if filename != "" {
+		// 把特殊字段给替换掉
+//		str := `life "%&()+,/:;<>=?@\|`
+		// . == \\.
+		// $ === \\$
+		reg, _ := regexp.Compile("\\.|/|#|\\$|!|\\^|\\*|'| |\"|%|&|\\(|\\)|\\+|\\,|/|:|;|<|>|=|\\?|@|\\||\\\\")
+		filename = reg.ReplaceAllString(filename, "-")
+		filename = strings.Trim(filename, "-") // 左右单独的-去掉
+		// 把空格替换成-
+//		filename = strings.Replace(filename, " ", "-", -1)
+		for strings.Index(filename, "--") >= 0 { // 防止出现连续的--
+			filename = strings.Replace(filename, "--", "-", -1)
+		}
+		return filename
+	}
+	return filename
 }

@@ -1,34 +1,38 @@
-@bgColor: #fff;
-@headerBgColor: #fff;
-@fontFamily: 'Microsoft YaHei','WenQuanYi Micro Hei','Open Sans','Helvetica Neue',Arial,'Hiragino Sans GB',sans-serif;
-
-@green: #65bd77;
+@font-face {
+	font-family: Si;
+	src:url("/public/fonts/MSYH.TTF");
+}
 
 // font
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 300;
-  src: local('Open Sans Light'), local('OpenSans-Light'), url('../fonts/open-sans2/DXI1ORHCpsQm3Vp6mXoaTXhCUOGz7vYGh680lGh-uXM.woff') format('woff');
+  src: local('Open Sans Light'), local('OpenSans-Light'), url('/public/fonts/open-sans2/DXI1ORHCpsQm3Vp6mXoaTXhCUOGz7vYGh680lGh-uXM.woff') format('woff');
 }
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
-  src: local('Open Sans'), local('OpenSans'), url('../fonts/open-sans2/cJZKeOuBrn4kERxqtaUH3T8E0i7KZn-EPnyo3HZu7kw.woff') format('woff');
+  src: local('Open Sans'), local('OpenSans'), url('/public/fonts/open-sans2/cJZKeOuBrn4kERxqtaUH3T8E0i7KZn-EPnyo3HZu7kw.woff') format('woff');
 }
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 700;
-  src: local('Open Sans Bold'), local('OpenSans-Bold'), url('../fonts/open-sans2/k3k702ZOKiLJc3WVjuplzHhCUOGz7vYGh680lGh-uXM.woff') format('woff');
+  src: local('Open Sans Bold'), local('OpenSans-Bold'), url('/public/fonts/open-sans2/k3k702ZOKiLJc3WVjuplzHhCUOGz7vYGh680lGh-uXM.woff') format('woff');
 }
 @font-face {
   font-family: 'Open Sans';
   font-style: italic;
   font-weight: 400;
-  src: local('Open Sans Italic'), local('OpenSans-Italic'), url('../fonts/open-sans2/xjAJXh38I15wypJXxuGMBobN6UDyHWBl620a-IRfuBk.woff') format('woff');
+  src: local('Open Sans Italic'), local('OpenSans-Italic'), url('/public/fonts/open-sans2/xjAJXh38I15wypJXxuGMBobN6UDyHWBl620a-IRfuBk.woff') format('woff');
 }
+
+@bgColor: #fff;
+@headerBgColor: #fff;
+@fontFamily: Si, 'Microsoft YaHei','WenQuanYi Micro Hei','Helvetica Neue',Arial,'Hiragino Sans GB';
+@green: #65bd77;
 
 *, body {
   font-family: @fontFamily;
@@ -39,23 +43,23 @@ h1, h2, h3 {
   font-family: @fontFamily;
 }
 * {
-	font-size: 18px;
+	font-size: 16px;
 }
 body {
-	width: 500px;
+	width: 650px;
 	margin: auto;
 	* {
 		line-height: 1.5;
 	}
 }
 #content {
-	padding: 0 10px;
+	// padding: 0 10px;
 }
 img {
 	max-width: 100%;
 }
 h1.title {
-	font-size: 24px;
+	font-size: 32px;
 	border-left: 5px solid @green;
 	padding-left: 10px;
 	font-weight: bold;
@@ -69,30 +73,40 @@ h1.title {
 #tag {
 	width: 15px;
 	display: inline-block;
-	margin-left: 10px;
+	// margin-left: 10px;
 	margin-top: -3px;
 }
 .created-time {
-	margin: 20px 0;
-	margin-bottom: 20px;
+	margin: 30px 0;
 }
 #footer {
-	background-color: @green;
-	color: #fff;
-	padding: 10px 0;
-	text-align: center;
+	margin-top: 50px;
+	margin-bottom: 20px;
+	  
+	  color: #ccc;
+	  padding: 10px 0;
+	  text-align: center;
 	#leanote_logo {
 		height: 50px;
 	}
-	font-size: 14px !important;
+	.split {
+		border-top: #ccc 1px solid;
+		height: 1px;
+		width: 60px;
+		margin: auto;
+		margin-bottom: 10px;
+	}
 	p {
 		margin: 0;
+		font-size: 12px !important;
 	}
 	a {
-		color: #fff;
+	  color: #ccc;
+		font-size: 12px !important;
 	}
 }
 // 代码
 pre * {
 	font-size: 14px;
+	font-family: "Open Sans"
 }

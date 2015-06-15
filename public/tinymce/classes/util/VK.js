@@ -26,12 +26,12 @@ define("tinymce/util/VK", [
 		UP: 38,
 
 		modifierPressed: function(e) {
-			return e.shiftKey || e.ctrlKey || e.altKey;
+			return e.shiftKey || e.ctrlKey || e.altKey || this.metaKeyPressed(e);
 		},
 
 		metaKeyPressed: function(e) {
-			// Check if ctrl or meta key is pressed also check if alt is false for Polish users
-			return (Env.mac ? e.ctrlKey || e.metaKey : e.ctrlKey) && !e.altKey;
+			// Check if ctrl or meta key is pressed. Edge case for AltGr on Windows where it produces ctrlKey+altKey states
+			return (Env.mac ? e.metaKey : e.ctrlKey && !e.altKey);
 		}
 	};
 });

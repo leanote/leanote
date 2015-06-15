@@ -20,7 +20,6 @@
 #notebookMin,
 .ui-loader,
 #md-section-helper,
-#right-column,
 .writing-mobile-hide
 {
 	display: none !important;
@@ -214,7 +213,8 @@ a:focus, a:hover, a:active {
 .wmd-input,
 #noteReadContent,
 #attachList,
-#tags
+#tags,
+.wmd-input-section
 {
 	-webkit-overflow-scrolling: touch !important; // for iphone
 	overflow: auto !important;
@@ -265,6 +265,31 @@ a:focus, a:hover, a:active {
 // editor
 #editorContent .ace-tomorrow {
 	padding: 0;
+}
+
+// readonly
+
+// 正常下, 右侧是隐藏的
+#mdEditor {
+	#right-column {
+		display: none;
+	}
+}
+
+// readonly下, 左侧是隐藏的
+#mdEditor.read-only {
+	#left-column {
+		// display: none;
+		visibility: hidden;
+	}
+	#right-column {
+		left: 0 !important;
+		display: block;
+		-webkit-overflow-scrolling: touch !important; 
+	}
+	.preview-container {
+		left: 10px;
+	}
 }
 
 }
@@ -339,7 +364,8 @@ a:focus, a:hover, a:active {
 .wmd-input,
 #noteReadContent,
 #attachList,
-#tags
+#tags,
+.wmd-input-section
 {
 	overflow: auto !important;
 	-webkit-overflow-scrolling: touch !important; // for iphone
@@ -360,7 +386,6 @@ a:focus, a:hover, a:active {
 .username,
 .ui-loader,
 #md-section-helper,
-#right-column
 {
 	display: none !important;
 }
@@ -444,6 +469,31 @@ a:focus, a:hover, a:active {
 
 #themeForm img {
 	height: 70px !important;
+}
+
+// readonly
+
+// 正常下, 右侧是隐藏的
+#mdEditor {
+	#right-column {
+		display: none;
+	}
+}
+
+// readonly下, 左侧是隐藏的
+#mdEditor.read-only {
+	#left-column {
+		// display: none;
+		visibility: hidden;
+	}
+	#right-column {
+		left: 0 !important;
+		display: block;
+		-webkit-overflow-scrolling: touch !important; 
+	}
+	.preview-container {
+		left: 10px;
+	}
 }
 
 }

@@ -14,9 +14,11 @@ define("tinymce/ui/DomUtils", [
 ], function(Tools, DOMUtils) {
 	"use strict";
 
+	var count = 0;
+
 	return {
 		id: function() {
-			return DOMUtils.DOM.uniqueId();
+			return 'mceu_' + (count++);
 		},
 
 		createFragment: function(html) {
@@ -55,15 +57,15 @@ define("tinymce/ui/DomUtils", [
 			return document.getElementById(id);
 		},
 
-		addClass : function(elm, cls) {
+		addClass: function(elm, cls) {
 			return DOMUtils.DOM.addClass(elm, cls);
 		},
 
-		removeClass : function(elm, cls) {
+		removeClass: function(elm, cls) {
 			return DOMUtils.DOM.removeClass(elm, cls);
 		},
 
-		hasClass : function(elm, cls) {
+		hasClass: function(elm, cls) {
 			return DOMUtils.DOM.hasClass(elm, cls);
 		},
 
@@ -73,6 +75,10 @@ define("tinymce/ui/DomUtils", [
 
 		css: function(elm, name, value) {
 			return DOMUtils.DOM.setStyle(elm, name, value);
+		},
+
+		getRuntimeStyle: function(elm, name) {
+			return DOMUtils.DOM.getStyle(elm, name, true);
 		},
 
 		on: function(target, name, callback, scope) {

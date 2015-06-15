@@ -25,9 +25,13 @@ editorMode.prototype.toggleAText = function(isWriting) {
 	}, 0);
 }
 editorMode.prototype.isWriting = function(hash) {
+	if(!hash) {
+		hash = location.hash;
+	}
 	return hash.indexOf(this.writingHash) >= 0
 }
 editorMode.prototype.init = function() {
+	this.$themeLink = $("#themeLink");
 	this.changeMode(this.isWritingMode);
 	var self = this;
 	$(".toggle-editor-mode").click(function(e) {
@@ -54,8 +58,6 @@ editorMode.prototype.changeMode = function(isWritingMode) {
 	} else {
 		this.normalMode();
 	}
-	
-	$("#moreBtn i").removeClass("fa-angle-up").addClass("fa-angle-down");
 }
 
 editorMode.prototype.resizeEditor = function() {
@@ -71,42 +73,39 @@ editorMode.prototype.resizeEditor = function() {
 	}, 500);
 }
 editorMode.prototype.normalMode = function() {
+	// 最开始的时候就调用?
 	/*
-	var w = $(document).width();
-	var h = $(document).height();
-	$("#lock").css({right:0, bottom:0});
-	*/
-	
 	var $c = $("#editorContent_ifr").contents();
-	
 	$c.contents().find("#writtingMode").remove();
 	$c.contents().find('link[href$="editor-writting-mode.css"]').remove();
-			
+	*/
+
 	$("#noteItemListWrap, #notesAndSort").show();
 	$("#noteList").unbind("mouseenter").unbind("mouseleave"); 
 	
 	var theme = UserInfo.Theme || "default";
 	theme += ".css";
-	$("#themeLink").attr("href", "/css/theme/" + theme);
-	
-	$("#mceToolbar").css("height", "30px");
-	
-//	$("#lock").animate({right:w},1000);
-	
-	this.resizeEditor();
+	var $themeLink = $("#themeLink");
+	// 如果之前不是normal才换
+	if(this.$themeLink.attr('href').indexOf('writting-overwrite.css') != -1) {
+		this.$themeLink.attr("href", "/css/theme/" + theme);
+	}
 	
 	$("#noteList").width(UserInfo.NoteListWidth);
 	$("#note").css("left", UserInfo.NoteListWidth);
 }
+
 editorMode.prototype.writtingMode = function() {
-	// $("#pageInner").removeClass("animated fadeInUp");
+	if(this.$themeLink.attr('href').indexOf('writting-overwrite.css') == -1) {
+		this.$themeLink.attr("href", "/css/theme/writting-overwrite.css");
+	}
 	
-	$("#themeLink").attr("href", "/css/theme/writting-overwrite.css");
-	
+	/*
 	setTimeout(function() {
 		var $c = $("#editorContent_ifr").contents();
 		$c.contents().find("head").append('<link type="text/css" rel="stylesheet" href="/css/editor/editor-writting-mode.css" id="writtingMode">');
 	}, 0);
+	*/
 		
 	$("#noteItemListWrap, #notesAndSort").fadeOut();
 	$("#noteList").hover(function() {
@@ -116,7 +115,7 @@ editorMode.prototype.writtingMode = function() {
 	});
 	
 	// 点击扩展会使html的height生成, 切换后会覆盖css文件的
-	$("#mceToolbar").css("height", "40px");
+	// $("#mceToolbar").css("height", "40px");
 	
 	//$("#pageInner").addClass("animated fadeInUp");
 
@@ -124,6 +123,9 @@ editorMode.prototype.writtingMode = function() {
 	
 	$("#noteList").width(250);
 	$("#note").css("left", 0);
+	
+	// 切换到写模式
+	Note.toggleWriteable();
 }
 
 editorMode.prototype.getWritingCss = function() {
@@ -133,6 +135,7 @@ editorMode.prototype.getWritingCss = function() {
 	return [];
 }
 var em = new editorMode();
+LEA.em = em;
 
 //----------------
 // 拖拉改变变宽度
@@ -444,28 +447,20 @@ function initEditor() {
 	var mceToobarEverHeight = 0;
 	$("#moreBtn").click(function() {
 		saveBookmark();
-		
-		var height = $("#mceToolbar").height();
-
-		// 现在是折叠的
-		if (height < $("#popularToolbar").height()) {
-			$("#mceToolbar").height($("#popularToolbar").height());
-			$(this).find("i").removeClass("fa-angle-down").addClass("fa-angle-up");
-			mceToobarEverHeight = height;
+		var $editor = $('#editor');
+		if($editor.hasClass('all-tool')) {
+			$editor.removeClass('all-tool');
 		} else {
-			$("#mceToolbar").height(mceToobarEverHeight);
-			$(this).find("i").removeClass("fa-angle-up").addClass("fa-angle-down");
+			$editor.addClass('all-tool');
 		}
-		
-		resizeEditor();
-		
+
 		restoreBookmark();
 	});
 
 	// 初始化编辑器
 	tinymce.init({
 		inline: true,
-		// theme: 'leanote',
+		theme: 'leanote',
 		valid_children: "+pre[div|#text|p|span|textarea|i|b|strong]", // ace
 		/*
 		protect: [
@@ -477,7 +472,16 @@ function initEditor() {
 	    ],
 	    */
 		setup: function(ed) {
-			ed.on('keydown', Note.saveNote);
+			ed.on('keydown', function(e) {
+				// 如果是readony, 则不能做任何操作
+				var num = e.which ? e.which : e.keyCode;
+				// 如果是readony, 则不能做任何操作, 除了复制
+				if(Note.readOnly && !((e.ctrlKey || e.metaKey) && num == 67)) {
+					e.preventDefault();
+					return;
+				}
+				Note.saveNote(e);
+			});
 			
 			// 为了把下拉菜单关闭
 	        ed.on("click", function(e) {
@@ -496,7 +500,7 @@ function initEditor() {
 		// height: 100,//这个应该是文档的高度, 而其上层的高度是$("#content").height(),
 		// parentHeight: $("#content").height(),
 		// content_css : ["/css/bootstrap.css", "/css/editor/editor.css"].concat(em.getWritingCss()),
-		content_css : ["/css/editor/editor.css"].concat(em.getWritingCss()),
+		content_css : ["/css/editor/editor.css"], // .concat(em.getWritingCss()),
 		skin : "custom",
 		language: LEA.locale, // 语言
 		plugins : [
@@ -983,9 +987,11 @@ LeaAce = {
 			me.disableAddHistory();
 			
 			// 本身就有格式的, 防止之前有格式的显示为<span>(ace下)
-			if($pre.attr('style') || $pre.html().indexOf('style') != -1) {
+			var classes = $pre.attr('class') || '';
+			var isHtml = classes.indexOf('brush:html') != -1;
+			if($pre.attr('style') || 
+				(!isHtml && $pre.html().indexOf('style') != -1)) { // 如果是html就不用考虑了, 因为html格式的支持有style
 				$pre.html($pre.text());
-				// return;
 			}
 			$pre.find('.toggle-raw').remove();
 			var preHtml = $pre.html();
@@ -1018,6 +1024,9 @@ LeaAce = {
 			aceEditor.setShowInvisibles(false); // OK 不显示空格
 			aceEditor.setOption("wrap", "free");
 			aceEditor.setShowInvisibles(false);
+			
+			aceEditor.setReadOnly(Note.readOnly);
+			
 			aceEditor.setAutoScrollEditorIntoView(true);
 			aceEditor.setOption("maxLines", 10000);
 			aceEditor.commands.addCommand({
@@ -1077,10 +1086,17 @@ LeaAce = {
 			var pres = content.find('pre');
 			for(var i = 0 ; i < pres.length; ++i) {
 				var pre = pres.eq(i);
-				// 如果不是ace
-				if(me.isInAce(pre)) {
-					break;
+				
+				var aceAndNode = me.isInAce(pre);
+				if(aceAndNode) {
+					if(isAceError(aceAndNode[0].getValue())) {
+						console.error('之前有些没有destroy掉');
+					}
+					else {
+						break;
+					}
 				}
+				
 				setTimeout((function(pre) {
 					return function() {
 						pre.find('.toggle-raw').remove();
@@ -1183,6 +1199,19 @@ LeaAce = {
 		}
 		return this._aceEditors[id];
 	},
+	setAceReadOnly: function(pre, readOnly) {
+		var me = this;
+		if(typeof pre == 'object') {
+			var id = pre.attr('id');
+		}
+		else {
+			var id = pre;
+		}
+		var ace = me.getAce(id);
+		if(ace) {
+			ace.setReadOnly(readOnly);
+		}
+	},
 	// 当前焦点是否在aceEditor中
 	nowIsInAce: function () {
 		if(!this.canAce()) {
@@ -1275,6 +1304,10 @@ LeaAce = {
 			var aceEditor = aceEditorAndPre[0];
 			var $pre = aceEditorAndPre[1];
 			var value = aceEditor.getValue();
+			// 表示有错
+			if(isAceError(value)) {
+				value = $pre.html();
+			}
 			value = value.replace(/</g, '&lt').replace(/>/g, '&gt');
 			// var id = getAceId();
 			var replacePre = $('<pre class="' + $pre.attr('class') + ' ace-to-pre">' + value + "</pre>");

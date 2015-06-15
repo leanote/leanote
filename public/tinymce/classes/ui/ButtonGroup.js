@@ -34,7 +34,7 @@ define("tinymce/ui/ButtonGroup", [
 	return Container.extend({
 		Defaults: {
 			defaultType: 'button',
-			role: 'toolbar'
+			role: 'group'
 		},
 
 		/**
@@ -51,8 +51,8 @@ define("tinymce/ui/ButtonGroup", [
 			layout.preRender(self);
 
 			return (
-				'<div id="' + self._id + '" class="' + self.classes() + '">'+
-					'<div id="' + self._id + '-body">'+
+				'<div id="' + self._id + '" class="' + self.classes() + '">' +
+					'<div id="' + self._id + '-body">' +
 						(self.settings.html || '') + layout.renderHtml(self) +
 					'</div>' +
 				'</div>'

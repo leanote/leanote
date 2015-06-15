@@ -37,7 +37,7 @@
 }
 *,
 body {
-  font-family: 'Open Sans', '微软雅黑', Arial, Tahoma, sans-serif;
+  font-family: "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
   font-weight: 300;
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
@@ -45,7 +45,7 @@ body {
 h1,
 h2,
 h3 {
-  font-family: 'Open Sans', '微软雅黑', Arial, Tahoma, sans-serif;
+  font-family: "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
 }
 a {
   cursor: pointer;
@@ -72,6 +72,16 @@ a:hover {
 #headerContainer .navbar-nav a {
   line-height: 60px;
   padding: 0 10px;
+}
+#lang {
+  position: absolute;
+  right: 10px;
+  top: -2px;
+  z-index: 11111;
+}
+#lang a {
+  font-size: 12px;
+  padding-left: 10px;
 }
 #postsContainer,
 #suggestion {
@@ -161,6 +171,7 @@ section {
 #navbar {
   float: right;
   background: #fff;
+  padding-right: 0;
 }
 #loginBtns {
   border-left: 1px solid #eee;
@@ -213,6 +224,9 @@ section {
   .navbar-nav #loginBtns {
     padding-right: 10px;
     padding-bottom: 5px;
+  }
+  #lang {
+    display: none;
   }
 }
 @media screen and (max-width: 600px) {

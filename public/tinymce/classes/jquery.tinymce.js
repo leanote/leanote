@@ -13,6 +13,7 @@
 (function($) {
 	var undef,
 		lazyLoading,
+		patchApplied,
 		delayedInits = [],
 		win = window;
 
@@ -26,7 +27,7 @@
 
 		// Get editor instance
 		if (!settings) {
-			return tinymce.get(self[0].id);
+			return window.tinymce ? tinymce.get(self[0].id) : null;
 		}
 
 		self.css('visibility', 'hidden'); // Hide textarea to avoid flicker
@@ -35,9 +36,9 @@
 			var editors = [], initCount = 0;
 
 			// Apply patches to the jQuery object, only once
-			if (applyPatch) {
+			if (!patchApplied) {
 				applyPatch();
-				applyPatch = null;
+				patchApplied = true;
 			}
 
 			// Create an editor instance for each matched node
@@ -69,7 +70,7 @@
 					if (oninit) {
 						// Fire the oninit event ones each editor instance is initialized
 						if (++initCount == editors.length) {
-							if (typeof(func) === "string") {
+							if (typeof func === "string") {
 								scope = (func.indexOf(".") === -1) ? null : tinymce.resolve(func.replace(/\.\w+$/, ""));
 								func = tinymce.resolve(func);
 							}
@@ -111,7 +112,8 @@
 			if (url.indexOf('gzip') != -1) {
 				lang = settings.language || "en";
 				url = url + (/\?/.test(url) ? '&' : '?') + "js=true&core=true&suffix=" + escape(suffix) +
-					"&themes=" + escape(settings.theme || '') + "&plugins=" + escape(settings.plugins || '') + "&languages=" + (lang || '');
+					"&themes=" + escape(settings.theme || 'modern') + "&plugins=" +
+					escape(settings.plugins || '') + "&languages=" + (lang || '');
 
 				// Check if compressor script is already loaded otherwise setup a basic one
 				if (!win.tinyMCE_GZ) {
@@ -146,7 +148,7 @@
 			var script = document.createElement('script');
 			script.type = 'text/javascript';
 			script.onload = script.onreadystatechange = function(e) {
-				e = e || event;
+				e = e || window.event;
 
 				if (lazyLoading !== 2 && (e.type == 'load' || /complete|loaded/.test(script.readyState))) {
 					tinymce.dom.Event.domLoaded = 1;
@@ -182,7 +184,17 @@
 	// it's now possible to use things like $('*:tinymce') to get all TinyMCE bound elements.
 	$.extend($.expr[":"], {
 		tinymce: function(e) {
-			return !!(e.id && "tinymce" in window && tinymce.get(e.id));
+			var editor;
+
+			if (e.id && "tinymce" in window) {
+				editor = tinymce.get(e.id);
+
+				if (editor && editor.editorManager === tinymce) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 	});
 
@@ -264,7 +276,7 @@
 			var origFn = jQueryFn[name] = $.fn[name],
 				textProc = (name === "text");
 
-			 $.fn[name] = function(value) {
+			$.fn[name] = function(value) {
 				var self = this;
 
 				if (!containsTinyMCE(self)) {
@@ -292,7 +304,7 @@
 
 					return ret;
 				}
-			 };
+			};
 		});
 
 		// Makes it possible to use $('#id').append("content"); to append contents to the TinyMCE editor iframe
@@ -300,7 +312,7 @@
 			var origFn = jQueryFn[name] = $.fn[name],
 				prepend = (name === "prepend");
 
-			 $.fn[name] = function(value) {
+			$.fn[name] = function(value) {
 				var self = this;
 
 				if (!containsTinyMCE(self)) {
@@ -308,19 +320,21 @@
 				}
 
 				if (value !== undef) {
-					self.filter(":tinymce").each(function(i, node) {
-						var ed = tinyMCEInstance(node);
+					if (typeof value === "string") {
+						self.filter(":tinymce").each(function(i, node) {
+							var ed = tinyMCEInstance(node);
 
-						if (ed) {
-							ed.setContent(prepend ? value + ed.getContent() : ed.getContent() + value);
-						}
-					});
+							if (ed) {
+								ed.setContent(prepend ? value + ed.getContent() : ed.getContent() + value);
+							}
+						});
+					}
 
 					origFn.apply(self.not(":tinymce"), arguments);
 
 					return self; // return original set for chaining
 				}
-			 };
+			};
 		});
 
 		// Makes sure that the editor instance gets properly destroyed when the parent element is removed

@@ -9,6 +9,7 @@
  */
 
 /*jshint loopfunc:true */
+/*eslint no-loop-func:0 */
 /*global tinymce:true */
 
 tinymce.PluginManager.add('noneditable', function(editor) {
@@ -16,44 +17,44 @@ tinymce.PluginManager.add('noneditable', function(editor) {
 	var externalName = 'contenteditable', internalName = 'data-mce-' + externalName;
 	var VK = tinymce.util.VK;
 
+	// Returns the content editable state of a node "true/false" or null
+	function getContentEditable(node) {
+		var contentEditable;
+
+		// Ignore non elements
+		if (node.nodeType === 1) {
+			// Check for fake content editable
+			contentEditable = node.getAttribute(internalName);
+			if (contentEditable && contentEditable !== "inherit") {
+				return contentEditable;
+			}
+
+			// Check for real content editable
+			contentEditable = node.contentEditable;
+			if (contentEditable !== "inherit") {
+				return contentEditable;
+			}
+		}
+
+		return null;
+	}
+
+	// Returns the noneditable parent or null if there is a editable before it or if it wasn't found
+	function getNonEditableParent(node) {
+		var state;
+
+		while (node) {
+			state = getContentEditable(node);
+			if (state) {
+				return state === "false" ? node : null;
+			}
+
+			node = node.parentNode;
+		}
+	}
+
 	function handleContentEditableSelection() {
 		var dom = editor.dom, selection = editor.selection, caretContainerId = 'mce_noneditablecaret', invisibleChar = '\uFEFF';
-
-		// Returns the content editable state of a node "true/false" or null
-		function getContentEditable(node) {
-			var contentEditable;
-
-			// Ignore non elements
-			if (node.nodeType === 1) {
-				// Check for fake content editable
-				contentEditable = node.getAttribute(internalName);
-				if (contentEditable && contentEditable !== "inherit") {
-					return contentEditable;
-				}
-
-				// Check for real content editable
-				contentEditable = node.contentEditable;
-				if (contentEditable !== "inherit") {
-					return contentEditable;
-				}
-			}
-
-			return null;
-		}
-
-		// Returns the noneditable parent or null if there is a editable before it or if it wasn't found
-		function getNonEditableParent(node) {
-			var state;
-
-			while (node) {
-				state = getContentEditable(node);
-				if (state) {
-					return state  === "false" ? node : null;
-				}
-
-				node = node.parentNode;
-			}
-		}
 
 		// Get caret container parent for the specified node
 		function getParentCaretContainer(node) {
@@ -127,34 +128,31 @@ tinymce.PluginManager.add('noneditable', function(editor) {
 			return caretContainer;
 		}
 
-		// Removes any caret container except the one we might be in
+		// Removes any caret container
 		function removeCaretContainer(caretContainer) {
-			var rng, child, currentCaretContainer, lastContainer;
+			var rng, child, lastContainer;
 
 			if (caretContainer) {
-					rng = selection.getRng(true);
-					rng.setStartBefore(caretContainer);
-					rng.setEndBefore(caretContainer);
+				rng = selection.getRng(true);
+				rng.setStartBefore(caretContainer);
+				rng.setEndBefore(caretContainer);
 
+				child = findFirstTextNode(caretContainer);
+				if (child && child.nodeValue.charAt(0) == invisibleChar) {
+					child = child.deleteData(0, 1);
+				}
+
+				dom.remove(caretContainer, true);
+
+				selection.setRng(rng);
+			} else {
+				while ((caretContainer = dom.get(caretContainerId)) && caretContainer !== lastContainer) {
 					child = findFirstTextNode(caretContainer);
 					if (child && child.nodeValue.charAt(0) == invisibleChar) {
 						child = child.deleteData(0, 1);
 					}
 
 					dom.remove(caretContainer, true);
-
-					selection.setRng(rng);
-			} else {
-				currentCaretContainer = getParentCaretContainer(selection.getStart());
-				while ((caretContainer = dom.get(caretContainerId)) && caretContainer !== lastContainer) {
-					if (currentCaretContainer !== caretContainer) {
-						child = findFirstTextNode(caretContainer);
-						if (child && child.nodeValue.charAt(0) == invisibleChar) {
-							child = child.deleteData(0, 1);
-						}
-
-						dom.remove(caretContainer, true);
-					}
 
 					lastContainer = caretContainer;
 				}
@@ -184,7 +182,7 @@ tinymce.PluginManager.add('noneditable', function(editor) {
 					if (offset < container.childNodes.length) {
 						// Browser represents caret position as the offset at the start of an element. When moving right
 						// this is the element we are moving into so we consider our container to be child node at offset-1
-						var pos = !left && offset > 0 ? offset-1 : offset;
+						var pos = !left && offset > 0 ? offset - 1 : offset;
 						container = container.childNodes[pos];
 						if (container.hasChildNodes()) {
 							container = container.firstChild;
@@ -349,12 +347,20 @@ tinymce.PluginManager.add('noneditable', function(editor) {
 				return true;
 			}
 
+			moveSelection();
+
 			startElement = selection.getStart();
 			endElement = selection.getEnd();
 
 			// Disable all key presses in contentEditable=false except delete or backspace
 			nonEditableParent = getNonEditableParent(startElement) || getNonEditableParent(endElement);
+			var currentNode = editor.selection.getNode();
+
+			var isDirectionKey = keyCode == VK.LEFT || keyCode == VK.RIGHT || keyCode == VK.UP || keyCode == VK.DOWN;
+			var left = keyCode == VK.LEFT || keyCode == VK.UP;
+
 			if (nonEditableParent && (keyCode < 112 || keyCode > 124) && keyCode != VK.DELETE && keyCode != VK.BACKSPACE) {
+
 				// Is Ctrl+c, Ctrl+v or Ctrl+x then use default browser behavior
 				if ((tinymce.isMac ? e.metaKey : e.ctrlKey) && (keyCode == 67 || keyCode == 88 || keyCode == 86)) {
 					return;
@@ -363,13 +369,33 @@ tinymce.PluginManager.add('noneditable', function(editor) {
 				e.preventDefault();
 
 				// Arrow left/right select the element and collapse left/right
-				if (keyCode == VK.LEFT || keyCode == VK.RIGHT) {
-					var left = keyCode == VK.LEFT;
+				if (isDirectionKey) {
+
 					// If a block element find previous or next element to position the caret
 					if (editor.dom.isBlock(nonEditableParent)) {
 						var targetElement = left ? nonEditableParent.previousSibling : nonEditableParent.nextSibling;
+
+						// Handling for edge-cases:
+						// 	- two nonEditables in a row -> no way to get between them
+						// 	- nonEditable as the first/last element -> no way to get before/behind it
+						if (!targetElement || targetElement && getContentEditable(targetElement) === 'false') {
+							var p = dom.create('p', null, '&nbsp;');
+							p.className = 'mceTmpParagraph';
+
+							var insertElement = left ? nonEditableParent : targetElement;
+
+							if (insertElement && insertElement.parentNode) {
+								insertElement.parentNode.insertBefore(p, insertElement);
+							} else if (!targetElement && !left) {
+								nonEditableParent.parentNode.appendChild(p);
+							}
+
+							targetElement = p;
+						}
+
 						var walker = new TreeWalker(targetElement, targetElement);
 						var caretElement = left ? walker.prev() : walker.next();
+
 						positionCaretOnElement(caretElement, !left);
 					} else {
 						positionCaretOnElement(nonEditableParent, left);
@@ -377,8 +403,9 @@ tinymce.PluginManager.add('noneditable', function(editor) {
 				}
 			} else {
 				// Is arrow left/right, backspace or delete
-				if (keyCode == VK.LEFT || keyCode == VK.RIGHT || keyCode == VK.BACKSPACE || keyCode == VK.DELETE) {
+				if (isDirectionKey || keyCode == VK.BACKSPACE || keyCode == VK.DELETE) {
 					caretContainer = getParentCaretContainer(startElement);
+
 					if (caretContainer) {
 						// Arrow left or backspace
 						if (keyCode == VK.LEFT || keyCode == VK.BACKSPACE) {
@@ -400,7 +427,7 @@ tinymce.PluginManager.add('noneditable', function(editor) {
 
 						// Arrow right or delete
 						if (keyCode == VK.RIGHT || keyCode == VK.DELETE) {
-							nonEditableParent = getNonEmptyTextNodeSibling(caretContainer);
+							nonEditableParent = getNonEmptyTextNodeSibling(caretContainer, true);
 
 							if (nonEditableParent && getContentEditable(nonEditableParent) === "false") {
 								e.preventDefault();
@@ -415,6 +442,42 @@ tinymce.PluginManager.add('noneditable', function(editor) {
 								removeCaretContainer(caretContainer);
 							}
 						}
+					} else {
+
+						if (isDirectionKey) {
+							// Removal of separator paragraphs between two nonEditables
+							// and before/after a nonEditable as the first/last element
+							if (currentNode && currentNode.className.indexOf('mceTmpParagraph') !== -1 &&
+									currentNode[left ? 'previousSibling' : 'nextSibling']) {
+								var jumpTarget = currentNode[left ? 'previousSibling' : 'nextSibling'];
+
+								// current node is still empty and a separator -> remove it
+								// else: remove the separator class, as it now includes content
+								if (currentNode.innerHTML === '&nbsp;' || currentNode.innerHTML === '' || currentNode.innerHTML === ' ') {
+									dom.remove(currentNode);
+								} else {
+									currentNode.className = currentNode.className.replace('mceTmpParagraph', '');
+								}
+
+								positionCaretOnElement(jumpTarget, !left);
+							}
+						}
+
+						var rng = selection.getRng(true);
+						var container = rng.endContainer;
+
+						// FIX: If end of node is selected, check wether next sibling is nonEditable to correctly remove it
+						// 			(else would break for more complex nonEditables, their content would get moved to the current node)
+						if (dom.isBlock(container) && dom.isBlock(container.nextSibling) && rng.endOffset == 1 && keyCode == VK.DELETE) {
+							nonEditableParent = getNonEditableParent(container.nextSibling);
+						}
+
+						// correctly remove block-level nonEditable domNode on delete/backspace
+						if (nonEditableParent && (keyCode == VK.DELETE || keyCode == VK.BACKSPACE) && dom.isBlock(nonEditableParent)) {
+							e.preventDefault();
+							dom.remove(nonEditableParent);
+							return;
+						}
 					}
 
 					if ((keyCode == VK.BACKSPACE || keyCode == VK.DELETE) && !canDelete(keyCode == VK.BACKSPACE)) {
@@ -428,13 +491,25 @@ tinymce.PluginManager.add('noneditable', function(editor) {
 		editor.on('mousedown', function(e) {
 			var node = editor.selection.getNode();
 
+			// Also remove separator lines when clicking on another node
+			if (node && node.className.indexOf('mceTmpParagraph') !== -1 && node !== e.target) {
+				// current node is still empty and a separator -> remove it
+				// else: remove the separator class, as it now includes content
+				if (node.innerHTML === '&nbsp;' || node.innerHTML === '' || node.innerHTML === ' ') {
+					dom.remove(node);
+				} else {
+					node.className = node.className.replace('mceTmpParagraph', '');
+				}
+			}
+
 			if (getContentEditable(node) === "false" && node == e.target) {
 				// Expand selection on mouse down we can't block the default event since it's used for drag/drop
 				moveSelection();
 			}
 		});
 
-		editor.on('mouseup keyup', moveSelection);
+		editor.on('mouseup', moveSelection);
+
 		editor.on('keydown', handleKey);
 	}
 
@@ -460,7 +535,7 @@ tinymce.PluginManager.add('noneditable', function(editor) {
 
 				return (
 					'<span class="' + cls + '" data-mce-content="' + editor.dom.encode(args[0]) + '">' +
-					editor.dom.encode(typeof(args[1]) === "string" ? args[1] : args[0]) + '</span>'
+					editor.dom.encode(typeof args[1] === "string" ? args[1] : args[0]) + '</span>'
 				);
 			});
 		}
@@ -529,5 +604,11 @@ tinymce.PluginManager.add('noneditable', function(editor) {
 				node.attr(externalName, null);
 			}
 		});
+	});
+
+	editor.on('drop', function(e) {
+		if (getNonEditableParent(e.target)) {
+			e.preventDefault();
+		}
 	});
 });

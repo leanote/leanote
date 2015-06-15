@@ -1,6 +1,7 @@
 @bgColor: #fff;
 @headerBgColor: #fff;
-@fontFamily:  'Open Sans', '微软雅黑', Arial, Tahoma, sans-serif;
+@fontFamily: 'Open Sans', '微软雅黑', Arial, Tahoma, sans-serif;
+@fontFamily: "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
 @aWhiteColor: #fff;
 @aBlackColor: #000;
 @borderColor: #EBEFF2;
@@ -87,6 +88,18 @@ a:hover {
 		padding: 0 10px;
 	}
 }
+
+#lang {
+	position: absolute;
+	right: 10px;
+	top: -2px;
+	z-index: 11111;
+	a {
+		font-size: 12px;
+		padding-left: 10px;
+	}
+}
+
 #header, #posts, #loginContainer {
 }
 #postsContainer, #suggestion {
@@ -182,6 +195,7 @@ section {
 #navbar {
 	float: right;
 	background: #fff;
+	padding-right: 0;
 }
 
 #loginBtns {
@@ -237,6 +251,10 @@ section {
 			padding-bottom: 5px;
 		}
 	}
+
+	#lang {
+		display: none;
+	}
 }
 @media screen and (max-width:600px) {
 	.header .btn {
@@ -246,6 +264,7 @@ section {
 	.mobile {
 		top: 0 !important;
 	}
+
 }
 /* posts */
 #posts {

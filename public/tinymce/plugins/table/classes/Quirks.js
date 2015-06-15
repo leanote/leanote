@@ -106,7 +106,7 @@ define("tinymce/tableplugin/Quirks", [
 				}
 
 				function getChildForDirection(parent, up) {
-					var child =  parent && parent[up ? 'lastChild' : 'firstChild'];
+					var child = parent && parent[up ? 'lastChild' : 'firstChild'];
 					// BR is not a valid table child to return in this case we return the table cell
 					return child && child.nodeName === 'BR' ? editor.dom.getParent(child, 'td,th') : child;
 				}
@@ -237,7 +237,7 @@ define("tinymce/tableplugin/Quirks", [
 						if (last.nodeValue.length > 0) {
 							break;
 						}
-					} else if (last.nodeType == 1 && !last.getAttribute('data-mce-bogus')) {
+					} else if (last.nodeType == 1 && (last.tagName == 'BR' || !last.getAttribute('data-mce-bogus'))) {
 						break;
 					}
 				}
@@ -281,7 +281,7 @@ define("tinymce/tableplugin/Quirks", [
 					tableParent = table.parentNode;
 				}
 
-				allOfCellSelected =rng.startContainer.nodeType == TEXT_NODE &&
+				allOfCellSelected = rng.startContainer.nodeType == TEXT_NODE &&
 					rng.startOffset === 0 &&
 					rng.endOffset === 0 &&
 					currentCell &&
@@ -302,7 +302,7 @@ define("tinymce/tableplugin/Quirks", [
 				}
 
 				if (!currentCell) {
-					currentCell=n;
+					currentCell = n;
 				}
 
 				// Get the very last node inside the table cell
@@ -312,8 +312,10 @@ define("tinymce/tableplugin/Quirks", [
 				}
 
 				// Select the entire table cell. Nothing outside of the table cell should be selected.
-				rng.setEnd(end, end.nodeValue.length);
-				editor.selection.setRng(rng);
+				if (end.nodeType == 3) {
+					rng.setEnd(end, end.data.length);
+					editor.selection.setRng(rng);
+				}
 			}
 
 			editor.on('KeyDown', function() {
@@ -326,6 +328,31 @@ define("tinymce/tableplugin/Quirks", [
 				}
 			});
 		}
+
+		/**
+		 * Delete table if all cells are selected.
+		 */
+		function deleteTable() {
+			editor.on('keydown', function(e) {
+				if ((e.keyCode == VK.DELETE || e.keyCode == VK.BACKSPACE) && !e.isDefaultPrevented()) {
+					var table = editor.dom.getParent(editor.selection.getStart(), 'table');
+
+					if (table) {
+						var cells = editor.dom.select('td,th', table), i = cells.length;
+						while (i--) {
+							if (!editor.dom.hasClass(cells[i], 'mce-item-selected')) {
+								return;
+							}
+						}
+
+						e.preventDefault();
+						editor.execCommand('mceTableDelete');
+					}
+				}
+			});
+		}
+
+		deleteTable();
 
 		if (Env.webkit) {
 			moveWebKitSelection();

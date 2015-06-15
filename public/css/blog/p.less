@@ -1,6 +1,7 @@
 @bgColor: #fff;
 @headerBgColor: #fff;
 @fontFamily: 'Open Sans','Helvetica Neue',Arial,'Hiragino Sans GB','Microsoft YaHei','WenQuanYi Micro Hei',sans-serif;
+@fontFamily: "lucida grande", "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
 @aWhiteColor: #fff;
 @aBlackColor: #000;
 @borderColor: #EBEFF2;
@@ -103,11 +104,12 @@ a:hover {
 	margin: auto;
 	padding: 0;
 }
+@navbarBg: #fafbfc;
 .navbar, .navbar-default {
 	margin: 0;
 	border-bottom: 1px solid #DEDDDF;
 	box-shadow: 0 1px 2px rgba(0,0,0,.04),inset 0 1px 0 #fff;
-	background-color: #fafbfc;
+	background-color: @navbarBg;
 	a {
 		font-size: 16px;
 	}
@@ -174,7 +176,7 @@ a:hover {
 // 文章列表
 .thumbnails {
 	padding: 0;
-	margin: 25px 0 0;
+	padding-top: 25px;
 }
 .thumbnails > li {
 	position: relative;
@@ -218,31 +220,209 @@ a:hover {
 		margin-right: 10px;
 	}
 }
-.avatar {
+
+@cardBg: #EAEDEF;
+.user-card {
 	position: absolute;
 	top: 1px;
-	right: 1px;
+	padding-right: 50px;
+	right: -50px;
+	.dropdown-menu {
+		width: 310px;
+  		left: -140px;
+		&:before {
+			
+			content: "";
+			width: 0;
+			height: 0;
+			border-left: 10px solid transparent;
+			border-right: 10px solid transparent;
+			border-bottom: 10px solid @cardBg;
+			background: none;
+			background-image: none;
+			top: -7px;
+
+			left: 145px;
+			right: auto;
+		}
+	}
+	
+	.user-card-content {
+	    width: 310px;
+	    padding: 0;
+	    background: @cardBg;
+		top: 35px;
+	    border-radius: 6px;
+	    word-break: break-all;
+
+		.loading {
+			display: none;
+		}
+		
+		&.loading {
+			.loading {
+				display: block;
+			}
+			.header,
+			.content {
+				display: none;
+			}
+		}
+	}
+	
+	.user-card-content .loading {
+		text-align: center;
+		padding: 10px 0;
+	   &:before {
+			content: "";
+			width: 17px;
+			height: 11px;
+			background: url(http://7xj51o.com1.z0.glb.clouddn.com/bar-loading.gif);
+			background-size: 17px 11px;
+			display: inline-block;
+		}
+	}
+	
+	.user-card-content .header {
+	    padding: 10px;
+	    overflow: hidden;
+	    border-bottom: 1px solid #d9d9d9;
+	    border-radius: 6px 6px 0 0;
+
+		.btn {
+			box-sizing: border-box;
+			width: 95px;
+		}
+
+		.follow-btn {
+			display: none;
+		}
+	
+		&.not-followed {
+			.follow-btn {
+				display: block;
+			}
+			.following-btn {
+				display: none;
+			}
+		}
+
+		.following-btn {
+			.unfollow {
+				display: none;
+			}
+			&:hover {
+				.following {
+					display: none;
+				}
+				.unfollow {
+					display: block;
+				}
+			}
+		}
+	}
+	
+	.user-card-content .header .follow-btn,
+	.user-card-content .header .following-btn {
+	    float: right;
+	    padding: 4px 10px 2px;
+	    margin: 0
+	}
+	
+	.user-card-content .header .avatar {
+	    float: left;
+	}
+
+	.user-card-content .username {
+		line-height: 32px;
+		padding-left: 10px;
+		  overflow: hidden;
+		  text-overflow: ellipsis;
+		  white-space: nowrap;
+		  margin-right: 100px;
+		  display: block;
+	}
+	
+	.user-card-content .header>span {
+	    position: relative;
+	    top: 6px;
+	    font-weight: bold
+	}
+	
+	.user-card-content .content {
+	    padding: 0 10px 10px;
+	    font-size: 12px;
+	}
+	
+	.user-card-content .content p {
+	    margin-bottom: 0
+	}
+	
+	.user-card-content .content .intro {
+	    padding: 10px 12px 7px;
+	    margin: 0 -10px 0;
+	    background: white;
+	    border-bottom: 1px solid #d9d9d9
+	}
+	
+	.user-card-content .content ul {
+	    padding: 1px 10px 2px 10px;
+	    margin: 0 -10px 10px;
+	    background: white
+	}
+	
+	.user-card-content .content ul li {
+	    border-bottom: 1px dashed #d9d9d9;
+		a {
+			margin: 5px 0;
+			line-height: 20px;
+			display: block;
+		}
+	}
+	
+	.user-card-content .content ul time {
+		position: absolute;
+		right: 10px;
+	    color: #999999;
+		font-size: 12px;
+	}
+	
+	.user-card-content .content h5 {
+		margin: 0;
+		padding-top: 3px;
+	    margin-right: 63px;
+	    font-size: 12px;
+	    font-weight: normal;
+	    overflow: hidden;
+	    text-overflow: ellipsis;
+	    white-space: nowrap
+	}
+	
+	.user-card-content .content a {
+	    color: #999999
+	}
+}
+
+
+.avatar {
 	width: 32px;
 	height: 32px;
+	line-height: 32px;
+	text-align: center;
 	-webkit-border-radius: 50%;
 	-moz-border-radius: 50%;
 	border-radius: 50%;
 	overflow: hidden;
+	display: inline-block;
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
 	img {
-		width: 32px;
-		// border: 2px solid white;
-		-webkit-box-sizing: border-box;
-		-moz-box-sizing: border-box;
-		box-sizing: border-box;
+		width: 30px;
 		/*
+		border-radius: 50%;
 		-webkit-border-radius: 50%;
 		-moz-border-radius: 50%;
-		border-radius: 50%;
-		-webkit-transition: border-color 0.3s !important;
-		-moz-transition: border-color 0.3s !important;
-		-ms-transition: border-color 0.3s !important;
-		-o-transition: border-color 0.3s !important;
-		transition: border-color 0.3s !important;
 		*/
 	}
 }

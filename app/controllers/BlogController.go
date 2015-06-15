@@ -824,7 +824,7 @@ func (c Blog) LikePost(noteId string, callback string) revel.Result {
 	re.Ok, re.Item = blogService.LikeBlog(noteId, userId)
 	return c.RenderJsonP(callback, re)
 }
-func (c Blog) GetComments(noteId string) revel.Result {
+func (c Blog) GetComments(noteId string, callback string) revel.Result {
 	// 评论
 	userId := c.GetUserId()
 	page := c.GetPage()
@@ -836,6 +836,10 @@ func (c Blog) GetComments(noteId string) revel.Result {
 	result["comments"] = comments
 	result["commentUserInfo"] = commentUserInfo
 	re.Item = result
+	
+	if callback != "" {
+		return c.RenderJsonP(callback, result)
+	}
 
 	return c.RenderJson(re)
 }

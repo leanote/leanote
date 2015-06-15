@@ -42,40 +42,36 @@ define("tinymce/ui/ElementPath", [
 				return false;
 			}
 
-			self.on('select', function(e) {
-				var parents = [], node, body = editor.getBody();
+			if (editor.settings.elementpath !== false) {
+				self.on('select', function(e) {
+					editor.focus();
+					editor.selection.select(this.data()[e.index].element);
+					editor.nodeChanged();
+				});
 
-				editor.focus();
+				editor.on('nodeChange', function(e) {
+					var outParents = [], parents = e.parents, i = parents.length;
 
-				node = editor.selection.getStart();
-				while (node && node != body) {
-					if (!isHidden(node)) {
-						parents.push(node);
+					while (i--) {
+						if (parents[i].nodeType == 1 && !isHidden(parents[i])) {
+							var args = editor.fire('ResolveName', {
+								name: parents[i].nodeName.toLowerCase(),
+								target: parents[i]
+							});
+
+							if (!args.isDefaultPrevented()) {
+								outParents.push({name: args.name, element: parents[i]});
+							}
+
+							if (args.isPropagationStopped()) {
+								break;
+							}
+						}
 					}
 
-					node = node.parentNode;
-				}
-
-				editor.selection.select(parents[parents.length - 1 - e.index]);
-				editor.nodeChanged();
-			});
-
-			editor.on('nodeChange', function(e) {
-				var parents = [], selectionParents = e.parents, i = selectionParents.length;
-
-				while (i--) {
-					if (selectionParents[i].nodeType == 1 && !isHidden(selectionParents[i])) {
-						var args = editor.fire('ResolveName', {
-							name: selectionParents[i].nodeName.toLowerCase(),
-							target: selectionParents[i]
-						});
-
-						parents.push({name: args.name});
-					}
-				}
-
-				self.data(parents);
-			});
+					self.data(outParents);
+				});
+			}
 
 			return self._super();
 		}

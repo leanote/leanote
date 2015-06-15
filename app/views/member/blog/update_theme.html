@@ -55,7 +55,7 @@
 		{{range .myTpls}}
 		<a href="#" class="list-group-item " data-file="{{.}}"> 
 			<i class="fa fa-remove icon-muted remove-file" title="delete file" ></i> 
-			{{.}}
+			<span class="filename" data-filename="{{.}}">{{.}}</span>
 			<span class="badge"></span>
 		</a>
 		{{end}}
@@ -123,7 +123,7 @@ var theme = {
 	saveBtnO: $("#saveBtn"),
 	newFileO: $("#newFile"),
 	curTpl: "",
-	tplInfos: {"header.html": "{{msg . "header"}}", "footer.html": "{{msg . "footer"}}", "index.html": "{{msg . "header"}}", "cate.html": "{{msg . "cate"}}", "search.html": "{{msg . "search"}}", "single.html": "{{msg . "single"}}", "archive.html": "{{msg . "archive"}}", "post.html": "{{msg . "post"}}", "tags.html": "{{msg . "tags"}}", "tag_posts.html": "{{msg . "tag_posts"}}", "share_comment.html": "{{msg . "share_comment"}}", "404.html":"404", "theme.json": "{{msg . "themeJson"}}", "paging.html": "{{msg . "paging"}}", "highlight.html": "{{msg . "highlight"}}"},
+	tplInfos: {"header.html": "{{msg . "header"}}", "footer.html": "{{msg . "footer"}}", "index.html": "{{msg . "index"}}", "cate.html": "{{msg . "cate"}}", "search.html": "{{msg . "search"}}", "single.html": "{{msg . "single"}}", "archive.html": "{{msg . "archive"}}", "post.html": "{{msg . "post"}}", "tags.html": "{{msg . "tags"}}", "tag_posts.html": "{{msg . "tag_posts"}}", "share_comment.html": "{{msg . "share_comment"}}", "404.html":"404", "theme.json": "{{msg . "themeJson"}}", "paging.html": "{{msg . "paging"}}", "highlight.html": "{{msg . "highlight"}}"},
 	init: function() {
 		var self = this;
 		self.showTplInfo();
@@ -171,12 +171,22 @@ var theme = {
 	newFile: function() {
 		var self = this;
 		self.newFileO.click(function() {
-			art.prompt("文件名", function(file){ 
+			// 文件是否存在?
+			
+			
+			art.prompt("Filename", function(file) { 
 				if(!file) {
 					return;
 				}
-				var t = '<a href="#" class="list-group-item " data-file="' + file + '"> <i class="fa fa-remove icon-muted remove-file" title="delete file" ></i> ' + file + '<span class="badge"></span></a>';
+				if($('[data-filename="' + file + '"]').length > 0) {
+					art.alert('File exists');
+					return;
+				}
+				var t = $('<a href="#" class="list-group-item " data-file="' + file + '"> <i class="fa fa-remove icon-muted remove-file" title="delete file" ></i> <span class="filename" data-filename="' + file + '">' + file + '</span><span class="badge"></span></a>');
 				$(".file-list").append(t);
+				self.cache[file] = "";
+				// trigger click, 选中之
+				t.click();
 			});
 		});
 	},
@@ -206,6 +216,9 @@ var theme = {
 		var content = editor.getValue()
 		
 		var filename = self.curTpl;
+		if(!filename) {
+			return;
+		}
 		// 之前的内容是否有改动
 		if(self.cache[filename] == content) {
 			return;
@@ -234,7 +247,7 @@ var theme = {
 	renderContent: function(name, content) {
 		var self = this;
 		self.curTplO.html(name);
-		self.curTpl = name; // 这里设计
+		self.curTpl = name; // 这里才设置
 		var lang = "html";
 		if(name.indexOf(".js") > 0 || name.indexOf(".json") > 0) {
 			lang = "javascript";
@@ -251,8 +264,8 @@ var theme = {
 	renderTpl: function(name) {
 		var self = this;
 		var content = "";
-		self.curTpl = name; // 这里设置
-		if(self.cache[name]) {
+		self.curTpl = ""; // 这里设置为空
+		if(self.cache[name] != undefined) {
 			content = self.cache[name];
 			self.renderContent(name, content);
 			return;
@@ -264,6 +277,7 @@ var theme = {
 			}
 		});
 	},
+	
 	//-----------------
 	// theme images
 	imageListO: $("#imageList"),

@@ -62,6 +62,43 @@ define("tinymce/ui/Button", [
 		},
 
 		/**
+		 * Sets/gets the current button icon.
+		 *
+		 * @method icon
+		 * @param {String} [icon] New icon identifier.
+		 * @return {String|tinymce.ui.MenuButton} Current icon or current MenuButton instance.
+		 */
+		icon: function(icon) {
+			var self = this, prefix = self.classPrefix;
+
+			if (typeof icon == 'undefined') {
+				return self.settings.icon;
+			}
+
+			self.settings.icon = icon;
+			icon = icon ? prefix + 'ico ' + prefix + 'i-' + self.settings.icon : '';
+
+			if (self._rendered) {
+				var btnElm = self.getEl().firstChild, iconElm = btnElm.getElementsByTagName('i')[0];
+
+				if (icon) {
+					if (!iconElm || iconElm != btnElm.firstChild) {
+						iconElm = document.createElement('i');
+						btnElm.insertBefore(iconElm, btnElm.firstChild);
+					}
+
+					iconElm.className = icon;
+				} else if (iconElm) {
+					btnElm.removeChild(iconElm);
+				}
+
+				self.text(self._text); // Set text again to fix whitespace between icon + text
+			}
+
+			return self;
+		},
+
+		/**
 		 * Repaints the button for example after it's been resizes by a layout engine.
 		 *
 		 * @method repaint
@@ -75,6 +112,26 @@ define("tinymce/ui/Button", [
 		},
 
 		/**
+		 * Sets/gets the current button text.
+		 *
+		 * @method text
+		 * @param {String} [text] New button text.
+		 * @return {String|tinymce.ui.Button} Current text or current Button instance.
+		 */
+		text: function(text) {
+			var self = this;
+
+			if (self._rendered) {
+				var textNode = self.getEl().lastChild.lastChild;
+				if (textNode) {
+					textNode.data = self.translate(text);
+				}
+			}
+
+			return self._super(text);
+		},
+
+		/**
 		 * Renders the control as a HTML string.
 		 *
 		 * @method renderHtml
@@ -82,17 +139,26 @@ define("tinymce/ui/Button", [
 		 */
 		renderHtml: function() {
 			var self = this, id = self._id, prefix = self.classPrefix;
-			var icon = self.settings.icon, image = '';
+			var icon = self.settings.icon, image;
 
-			if (self.settings.image) {
+			image = self.settings.image;
+			if (image) {
 				icon = 'none';
-				image = ' style="background-image: url(\'' + self.settings.image + '\')"';
+
+				// Support for [high dpi, low dpi] image sources
+				if (typeof image != "string") {
+					image = window.getSelection ? image[0] : image[1];
+				}
+
+				image = ' style="background-image: url(\'' + image + '\')"';
+			} else {
+				image = '';
 			}
 
 			icon = self.settings.icon ? prefix + 'ico ' + prefix + 'i-' + icon : '';
 
 			return (
-				'<div id="' + id + '" class="' + self.classes() + '" tabindex="-1">' +
+				'<div id="' + id + '" class="' + self.classes() + '" tabindex="-1" aria-labelledby="' + id + '">' +
 					'<button role="presentation" type="button" tabindex="-1">' +
 						(icon ? '<i class="' + icon + '"' + image + '></i>' : '') +
 						(self._text ? (icon ? '\u00a0' : '') + self.encode(self._text) : '') +

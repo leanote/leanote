@@ -1,1 +1,0 @@
-ace.define("ace/snippets/golang",["require","exports","module"],function(e,n,o){n.snippetText="",n.scope="golang"});

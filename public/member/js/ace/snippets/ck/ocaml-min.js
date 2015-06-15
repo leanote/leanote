@@ -1,1 +1,0 @@
-ace.define("ace/snippets/ocaml",["require","exports","module"],function(e,c,o){c.snippetText="",c.scope="ocaml"});

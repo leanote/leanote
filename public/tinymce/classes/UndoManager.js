@@ -14,36 +14,68 @@
  * @class tinymce.UndoManager
  */
 define("tinymce/UndoManager", [
+	"tinymce/util/VK",
 	"tinymce/Env",
-	"tinymce/util/Tools"
-], function(Env, Tools) {
+	"tinymce/util/Tools",
+	"tinymce/html/SaxParser"
+], function(VK, Env, Tools, SaxParser) {
 	var trim = Tools.trim, trimContentRegExp;
 
 	trimContentRegExp = new RegExp([
 		'<span[^>]+data-mce-bogus[^>]+>[\u200B\uFEFF]+<\\/span>', // Trim bogus spans like caret containers
-		'<div[^>]+data-mce-bogus[^>]+><\\/div>', // Trim bogus divs like resize handles
 		'\\s?data-mce-selected="[^"]+"' // Trim temporaty data-mce prefixed attributes like data-mce-selected
 	].join('|'), 'gi');
 
 	return function(editor) {
-		var self, index = 0, data = [], beforeBookmark, isFirstTypedCharacter, lock;
+		var self = this, index = 0, data = [], beforeBookmark, isFirstTypedCharacter, locks = 0;
 
 		// life ace
 		var canAdd = true;
 
-		// Returns a trimmed version of the current editor contents
+		/**
+		 * Returns a trimmed version of the editor contents to be used for the undo level. This
+		 * will remove any data-mce-bogus="all" marked elements since these are used for UI it will also
+		 * remove the data-mce-selected attributes used for selection of objects and caret containers.
+		 * It will keep all data-mce-bogus="1" elements since these can be used to place the caret etc and will
+		 * be removed by the serialization logic when you save.
+		 *
+		 * @private
+		 * @return {String} HTML contents of the editor excluding some internal bogus elements.
+		 */
 		function getContent() {
-			// TODO 性能有待检测
-			// life ace editor, 获取真正的内容, 只有<pre>
-			return getEditorContent();
-			// 这个有XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-			// return trim(editor.getContent({format: 'raw', no_events: 1}).replace(trimContentRegExp, ''));
+			// life ace
+			if(window.LeaAce && window.getEditorContent) {
+				return getEditorContent();
+			}
+
+			var content = editor.getContent({format: 'raw', no_events: 1});
+			var bogusAllRegExp = /<(\w+) [^>]*data-mce-bogus="all"[^>]*>/g;
+			var endTagIndex, index, matchLength, matches, shortEndedElements, schema = editor.schema;
+
+			content = content.replace(trimContentRegExp, '');
+			shortEndedElements = schema.getShortEndedElements();
+
+			// Remove all bogus elements marked with "all"
+			while ((matches = bogusAllRegExp.exec(content))) {
+				index = bogusAllRegExp.lastIndex;
+				matchLength = matches[0].length;
+
+				if (shortEndedElements[matches[1]]) {
+					endTagIndex = index;
+				} else {
+					endTagIndex = SaxParser.findEndTag(schema, content, index);
+				}
+
+				content = content.substring(0, index - matchLength) + content.substring(endTagIndex);
+				bogusAllRegExp.lastIndex = index - matchLength;
+			}
+
+			return trim(content);
 		}
 
-		function addNonTypingUndoLevel() {
+		function addNonTypingUndoLevel(e) {
 			self.typing = false;
-			// log('addNonTypingUndoLevel')
-			self.add();
+			self.add({}, e);
 		}
 
 		// Add initial undo level when the editor is initialized
@@ -65,7 +97,7 @@ define("tinymce/UndoManager", [
 			var cmd = e.command;
 
 			if (cmd != 'Undo' && cmd != 'Redo' && cmd != 'mceRepaint') {
-				self.add();
+				addNonTypingUndoLevel(e);
 			}
 		});
 
@@ -73,25 +105,21 @@ define("tinymce/UndoManager", [
 			self.beforeChange();
 		});
 
-		editor.on('SaveContent ObjectResized', addNonTypingUndoLevel);
-		editor.dom.bind(editor.dom.getRoot(), 'dragend', addNonTypingUndoLevel);
-		editor.dom.bind(editor.getBody(), 'focusout', function() {
-			if (!editor.removed && self.typing) {
-				addNonTypingUndoLevel();
-			}
-		});
+		editor.on('SaveContent ObjectResized blur', addNonTypingUndoLevel);
+		editor.on('DragEnd', addNonTypingUndoLevel);
 
 		editor.on('KeyUp', function(e) {
 			var keyCode = e.keyCode;
 
-			// ctrl + shift + c, command + shift + c 代码
 			// life ace
+			// ctrl + shift + c, command + shift + c 代码
 			if((e.metaKey && e.shiftKey) || (e.ctrlKey && e.shiftKey)) {
 				return;
 			}
 
+			// life ace
 			// 在ace中回车也会加history
-			if(keyCode == 13 && LeaAce.nowIsInAce()) {
+			if(keyCode == 13 && window.LeaAce && LeaAce.nowIsInAce()) {
 				return;
 			}
 
@@ -100,7 +128,6 @@ define("tinymce/UndoManager", [
 				editor.nodeChanged();
 			}
 
-			// 8 表示删除
 			if (keyCode == 46 || keyCode == 8 || (Env.mac && (keyCode == 91 || keyCode == 93))) {
 				editor.nodeChanged();
 			}
@@ -125,8 +152,8 @@ define("tinymce/UndoManager", [
 
 		editor.on('KeyDown', function(e) {
 			var keyCode = e.keyCode;
-			log('keyCode' + keyCode)
 
+			// life ace
 			// 在ace中回车也会加history
 			if(keyCode == 13/* && LeaAce.nowIsInAce()*/) {
 				return;
@@ -135,44 +162,39 @@ define("tinymce/UndoManager", [
 			// Is caracter positon keys left,right,up,down,home,end,pgdown,pgup,enter
 			if ((keyCode >= 33 && keyCode <= 36) || (keyCode >= 37 && keyCode <= 40) || keyCode == 45) {
 				if (self.typing) {
-					addNonTypingUndoLevel();
+					addNonTypingUndoLevel(e);
 				}
+
 				return;
 			}
 
-			// ctrl + shift + c, command + shift + c 代码
 			// life ace
+			// ctrl + shift + c, command + shift + c 代码
 			if((e.metaKey && e.shiftKey) || (e.ctrlKey || e.shiftKey)) {
-				log("no add history");
-				return;
-			}
-
-			// ctrl + z
-			if(e.metaKey && keyCode == 90 || (e.ctrlKey && keyCode == 90)) {
-				log('ctrl + z');
 				return;
 			}
 
 			// If key isn't shift,ctrl,alt,capslock,metakey
-			if ((keyCode < 16 || keyCode > 20) && keyCode != 224 && keyCode != 91 && !self.typing) {
+			var modKey = VK.modifierPressed(e);
+			if ((keyCode < 16 || keyCode > 20) && keyCode != 224 && keyCode != 91 && !self.typing && !modKey) {
 				self.beforeChange();
 				self.typing = true;
-				self.add();
+				self.add({}, e);
 				isFirstTypedCharacter = true;
 			}
 		});
 
-		editor.on('MouseDown', function() {
+		editor.on('MouseDown', function(e) {
 			if (self.typing) {
-				addNonTypingUndoLevel();
+				addNonTypingUndoLevel(e);
 			}
 		});
 
 		// Add keyboard shortcuts for undo/redo keys
-		editor.addShortcut('ctrl+z', '', 'Undo');
-		editor.addShortcut('ctrl+y,ctrl+shift+z', '', 'Redo');
+		editor.addShortcut('meta+z', '', 'Undo');
+		editor.addShortcut('meta+y,meta+shift+z', '', 'Redo');
 
-		editor.on('AddUndo Undo Redo ClearUndos MouseUp', function(e) {
+		editor.on('AddUndo Undo Redo ClearUndos', function(e) {
 			if (!e.isDefaultPrevented()) {
 				editor.nodeChanged();
 			}
@@ -197,11 +219,12 @@ define("tinymce/UndoManager", [
 			 * @method beforeChange
 			 */
 			beforeChange: function() {
-				if (!lock) {
+				if (!locks) {
 					beforeBookmark = editor.selection.getBookmark(2, true);
 				}
 			},
 
+			// life ace
 			setCanAdd: function(status) {
 				canAdd = status;
 			},
@@ -210,26 +233,31 @@ define("tinymce/UndoManager", [
 			 * Adds a new undo level/snapshot to the undo list.
 			 *
 			 * @method add
-			 * @param {Object} l Optional undo level object to add.
+			 * @param {Object} level Optional undo level object to add.
+			 * @param {DOMEvent} Event Optional event responsible for the creation of the undo level.
 			 * @return {Object} Undo level that got added or null it a level wasn't needed.
 			 */
-			add: function(level) {
+			add: function(level, event) {
+				// life ace
 				if(!canAdd) {
-					log('cant add history')
 					return;
 				}
-				log('add history')
+
 				var i, settings = editor.settings, lastLevel;
 
 				level = level || {};
 				level.content = getContent();
 
-				if (lock || editor.fire('BeforeAddUndo', {level: level}).isDefaultPrevented()) {
+				if (locks || editor.removed) {
+					return null;
+				}
+
+				lastLevel = data[index];
+				if (editor.fire('BeforeAddUndo', {level: level, lastLevel: lastLevel, originalEvent: event}).isDefaultPrevented()) {
 					return null;
 				}
 
 				// Add undo level if needed
-				lastLevel = data[index];
 				if (lastLevel && lastLevel.content == level.content) {
 					return null;
 				}
@@ -262,13 +290,13 @@ define("tinymce/UndoManager", [
 				data.push(level);
 				index = data.length - 1;
 
-				var args = {level: level, lastLevel: lastLevel};
+				var args = {level: level, lastLevel: lastLevel, originalEvent: event};
 
 				editor.fire('AddUndo', args);
 
 				if (index > 0) {
-					editor.fire('change', args);
 					editor.isNotDirty = false;
+					editor.fire('change', args);
 				}
 
 				return level;
@@ -297,10 +325,6 @@ define("tinymce/UndoManager", [
 					}
 
 					editor.setContent(level.content, {format: 'raw'});
-					// undo后如果有pre, 那么要重新init下
-					// life ace
-					// LeaAce.undo(editor);
-
 					editor.selection.moveToBookmark(level.beforeBookmark);
 
 					editor.fire('undo', {level: level});
@@ -375,9 +399,12 @@ define("tinymce/UndoManager", [
 			transact: function(callback) {
 				self.beforeChange();
 
-				lock = true;
-				callback();
-				lock = false;
+				try {
+					locks++;
+					callback();
+				} finally {
+					locks--;
+				}
 
 				self.add();
 			}

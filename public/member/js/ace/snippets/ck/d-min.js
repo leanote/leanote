@@ -1,1 +1,0 @@
-ace.define("ace/snippets/d",["require","exports","module"],function(e,p,i){p.snippetText="",p.scope="d"});

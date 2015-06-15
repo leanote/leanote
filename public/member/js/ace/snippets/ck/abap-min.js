@@ -1,1 +1,0 @@
-ace.define("ace/snippets/abap",["require","exports","module"],function(e,p,a){p.snippetText="",p.scope="abap"});

@@ -41,127 +41,6 @@ define("tinymce/ui/FormatControls", [
 	function registerControls(editor) {
 		var formatMenu;
 
-		// Generates a preview for a format
-		function getPreviewCss(format) {
-			var name, previewElm, dom = editor.dom;
-			var previewCss = '', parentFontSize, previewStyles;
-
-			previewStyles = editor.settings.preview_styles;
-
-			// No preview forced
-			if (previewStyles === false) {
-				return '';
-			}
-
-			// Default preview
-			if (!previewStyles) {
-				previewStyles = 'font-family font-size font-weight text-decoration ' +
-					'text-transform color background-color border border-radius';
-			}
-
-			// Removes any variables since these can't be previewed
-			function removeVars(val) {
-				return val.replace(/%(\w+)/g, '');
-			}
-
-			// Create block/inline element to use for preview
-			format = editor.formatter.get(format);
-			if (!format) {
-				return;
-			}
-
-			format = format[0];
-			name = format.block || format.inline || 'span';
-			previewElm = dom.create(name);
-
-			// Add format styles to preview element
-			each(format.styles, function(value, name) {
-				value = removeVars(value);
-
-				if (value) {
-					dom.setStyle(previewElm, name, value);
-				}
-			});
-
-			// Add attributes to preview element
-			each(format.attributes, function(value, name) {
-				value = removeVars(value);
-
-				if (value) {
-					dom.setAttrib(previewElm, name, value);
-				}
-			});
-
-			// Add classes to preview element
-			each(format.classes, function(value) {
-				value = removeVars(value);
-
-				if (!dom.hasClass(previewElm, value)) {
-					dom.addClass(previewElm, value);
-				}
-			});
-
-			editor.fire('PreviewFormats');
-
-			// Add the previewElm outside the visual area
-			dom.setStyles(previewElm, {position: 'absolute', left: -0xFFFF});
-			editor.getBody().appendChild(previewElm);
-
-			// Get parent container font size so we can compute px values out of em/% for older IE:s
-			parentFontSize = dom.getStyle(editor.getBody(), 'fontSize', true);
-			parentFontSize = /px$/.test(parentFontSize) ? parseInt(parentFontSize, 10) : 0;
-
-			each(previewStyles.split(' '), function(name) {
-				var value = dom.getStyle(previewElm, name, true);
-
-				// If background is transparent then check if the body has a background color we can use
-				if (name == 'background-color' && /transparent|rgba\s*\([^)]+,\s*0\)/.test(value)) {
-					value = dom.getStyle(editor.getBody(), name, true);
-
-					// Ignore white since it's the default color, not the nicest fix
-					// TODO: Fix this by detecting runtime style
-					if (dom.toHex(value).toLowerCase() == '#ffffff') {
-						return;
-					}
-				}
-
-				if (name == 'color') {
-					// Ignore black since it's the default color, not the nicest fix
-					// TODO: Fix this by detecting runtime style
-					if (dom.toHex(value).toLowerCase() == '#000000') {
-						return;
-					}
-				}
-
-				// Old IE won't calculate the font size so we need to do that manually
-				if (name == 'font-size') {
-					if (/em|%$/.test(value)) {
-						if (parentFontSize === 0) {
-							return;
-						}
-
-						// Convert font size from em/% to px
-						value = parseFloat(value, 10) / (/%$/.test(value) ? 100 : 1);
-						value = (value * parentFontSize) + 'px';
-					}
-				}
-
-				if (name == "border" && value) {
-					previewCss += 'padding:0 2px;';
-				}
-
-				previewCss += name + ':' + value + ';';
-			});
-
-			editor.fire('AfterPreviewFormats');
-
-			//previewCss += 'line-height:normal';
-
-			dom.remove(previewElm);
-
-			return previewCss;
-		}
-
 		function createListBoxChangeHandler(items, formatName) {
 			return function() {
 				var self = this;
@@ -198,7 +77,7 @@ define("tinymce/ui/FormatControls", [
 		}
 
 		function createFormats(formats) {
-			formats = formats.split(';');
+			formats = formats.replace(/;$/, '').split(';');
 
 			var i = formats.length;
 			while (i--) {
@@ -212,13 +91,13 @@ define("tinymce/ui/FormatControls", [
 			var count = 0, newFormats = [];
 
 			var defaultStyleFormats = [
-				{title: 'Headers', items: [
-					{title: 'Header 1', format: 'h1'},
-					{title: 'Header 2', format: 'h2'},
-					{title: 'Header 3', format: 'h3'},
-					{title: 'Header 4', format: 'h4'},
-					{title: 'Header 5', format: 'h5'},
-					{title: 'Header 6', format: 'h6'}
+				{title: 'Headings', items: [
+					{title: 'Heading 1', format: 'h1'},
+					{title: 'Heading 2', format: 'h2'},
+					{title: 'Heading 3', format: 'h3'},
+					{title: 'Heading 4', format: 'h4'},
+					{title: 'Heading 5', format: 'h5'},
+					{title: 'Heading 6', format: 'h6'}
 				]},
 
 				{title: 'Inline', items: [
@@ -270,10 +149,27 @@ define("tinymce/ui/FormatControls", [
 						}
 
 						menuItem.format = formatName;
+						menuItem.cmd = format.cmd;
 					}
 
 					menu.push(menuItem);
 				});
+
+				return menu;
+			}
+
+			function createStylesMenu() {
+				var menu;
+
+				if (editor.settings.style_formats_merge) {
+					if (editor.settings.style_formats) {
+						menu = createMenu(defaultStyleFormats.concat(editor.settings.style_formats));
+					} else {
+						menu = createMenu(defaultStyleFormats);
+					}
+				} else {
+					menu = createMenu(editor.settings.style_formats || defaultStyleFormats);
+				}
 
 				return menu;
 			}
@@ -284,11 +180,9 @@ define("tinymce/ui/FormatControls", [
 				});
 			});
 
-			var menu = createMenu(editor.settings.style_formats || defaultStyleFormats);
-
-			menu = {
+			return {
 				type: 'menu',
-				items: menu,
+				items: createStylesMenu(),
 				onPostRender: function(e) {
 					editor.fire('renderFormatsMenu', {control: e.control});
 				},
@@ -297,30 +191,40 @@ define("tinymce/ui/FormatControls", [
 
 					textStyle: function() {
 						if (this.settings.format) {
-							return getPreviewCss(this.settings.format);
+							return editor.formatter.getCssText(this.settings.format);
 						}
 					},
 
 					onPostRender: function() {
-						var self = this, formatName = this.settings.format;
+						var self = this;
 
-						if (formatName) {
-							self.parent().on('show', function() {
+						self.parent().on('show', function() {
+							var formatName, command;
+
+							formatName = self.settings.format;
+							if (formatName) {
 								self.disabled(!editor.formatter.canApply(formatName));
 								self.active(editor.formatter.match(formatName));
-							});
-						}
+							}
+
+							command = self.settings.cmd;
+							if (command) {
+								self.active(editor.queryCommandState(command));
+							}
+						});
 					},
 
 					onclick: function() {
 						if (this.settings.format) {
 							toggleFormat(this.settings.format);
 						}
+
+						if (this.settings.cmd) {
+							editor.execCommand(this.settings.cmd);
+						}
 					}
 				}
 			};
-
-			return menu;
 		}
 
 		formatMenu = createFormatMenu();
@@ -367,7 +271,6 @@ define("tinymce/ui/FormatControls", [
 			paste: ['Paste', 'Paste'],
 			help: ['Help', 'mceHelp'],
 			selectall: ['Select all', 'SelectAll'],
-			hr: ['Insert horizontal rule', 'InsertHorizontalRule'],
 			removeformat: ['Clear formatting', 'RemoveFormat'],
 			visualaid: ['Visual aids', 'mceToggleVisualAid'],
 			newdocument: ['New document', 'mceNewDocument']
@@ -380,7 +283,7 @@ define("tinymce/ui/FormatControls", [
 
 		// Simple command controls with format state
 		each({
-			blockquote: ['Toggle blockquote', 'mceBlockQuote'],
+			blockquote: ['Blockquote', 'mceBlockQuote'],
 			numlist: ['Numbered list', 'InsertOrderedList'],
 			bullist: ['Bullet list', 'InsertUnorderedList'],
 			subscript: ['Subscript', 'Subscript'],
@@ -412,30 +315,21 @@ define("tinymce/ui/FormatControls", [
 			});
 		});
 
-		function hasUndo() {
-			return editor.undoManager ? editor.undoManager.hasUndo() : false;
-		}
+		function toggleUndoRedoState(type) {
+			return function() {
+				var self = this;
 
-		function hasRedo() {
-			return editor.undoManager ? editor.undoManager.hasRedo() : false;
-		}
+				type = type == 'redo' ? 'hasRedo' : 'hasUndo';
 
-		function toggleUndoState() {
-			var self = this;
+				function checkState() {
+					return editor.undoManager ? editor.undoManager[type]() : false;
+				}
 
-			self.disabled(!hasUndo());
-			editor.on('Undo Redo AddUndo TypingUndo', function() {
-				self.disabled(!hasUndo());
-			});
-		}
-
-		function toggleRedoState() {
-			var self = this;
-
-			self.disabled(!hasRedo());
-			editor.on('Undo Redo AddUndo TypingUndo', function() {
-				self.disabled(!hasRedo());
-			});
+				self.disabled(!checkState());
+				editor.on('Undo Redo AddUndo TypingUndo ClearUndos', function() {
+					self.disabled(!checkState());
+				});
+			};
 		}
 
 		function toggleVisualAidState() {
@@ -450,19 +344,18 @@ define("tinymce/ui/FormatControls", [
 
 		editor.addButton('undo', {
 			tooltip: 'Undo',
-			onPostRender: toggleUndoState,
+			onPostRender: toggleUndoRedoState('undo'),
 			cmd: 'undo'
 		});
 
 		editor.addButton('redo', {
 			tooltip: 'Redo',
-			onPostRender: toggleRedoState,
+			onPostRender: toggleUndoRedoState('redo'),
 			cmd: 'redo'
 		});
 
 		editor.addMenuItem('newdocument', {
 			text: 'New document',
-			shortcut: 'Ctrl+N',
 			icon: 'newdocument',
 			cmd: 'mceNewDocument'
 		});
@@ -470,16 +363,16 @@ define("tinymce/ui/FormatControls", [
 		editor.addMenuItem('undo', {
 			text: 'Undo',
 			icon: 'undo',
-			shortcut: 'Ctrl+Z',
-			onPostRender: toggleUndoState,
+			shortcut: 'Meta+Z',
+			onPostRender: toggleUndoRedoState('undo'),
 			cmd: 'undo'
 		});
 
 		editor.addMenuItem('redo', {
 			text: 'Redo',
 			icon: 'redo',
-			shortcut: 'Ctrl+Y',
-			onPostRender: toggleRedoState,
+			shortcut: 'Meta+Y',
+			onPostRender: toggleUndoRedoState('redo'),
 			cmd: 'redo'
 		});
 
@@ -491,12 +384,12 @@ define("tinymce/ui/FormatControls", [
 		});
 
 		each({
-			cut: ['Cut', 'Cut', 'Ctrl+X'],
-			copy: ['Copy', 'Copy', 'Ctrl+C'],
-			paste: ['Paste', 'Paste', 'Ctrl+V'],
-			selectall: ['Select all', 'SelectAll', 'Ctrl+A'],
-			bold: ['Bold', 'Bold', 'Ctrl+B'],
-			italic: ['Italic', 'Italic', 'Ctrl+I'],
+			cut: ['Cut', 'Cut', 'Meta+X'],
+			copy: ['Copy', 'Copy', 'Meta+C'],
+			paste: ['Paste', 'Paste', 'Meta+V'],
+			selectall: ['Select all', 'SelectAll', 'Meta+A'],
+			bold: ['Bold', 'Bold', 'Meta+B'],
+			italic: ['Italic', 'Italic', 'Meta+I'],
 			underline: ['Underline', 'Underline'],
 			strikethrough: ['Strikethrough', 'Strikethrough'],
 			subscript: ['Subscript', 'Subscript'],
@@ -534,14 +427,13 @@ define("tinymce/ui/FormatControls", [
 		editor.addButton('formatselect', function() {
 			var items = [], blocks = createFormats(editor.settings.block_formats ||
 				'Paragraph=p;' +
-				'Address=address;' +
-				'Pre=pre;' +
-				'Header 1=h1;' +
-				'Header 2=h2;' +
-				'Header 3=h3;' +
-				'Header 4=h4;' +
-				'Header 5=h5;' +
-				'Header 6=h6'
+				'Heading 1=h1;' +
+				'Heading 2=h2;' +
+				'Heading 3=h3;' +
+				'Heading 4=h4;' +
+				'Heading 5=h5;' +
+				'Heading 6=h6;' +
+				'Preformatted=pre'
 			);
 
 			each(blocks, function(block) {
@@ -549,14 +441,14 @@ define("tinymce/ui/FormatControls", [
 					text: block[0],
 					value: block[1],
 					textStyle: function() {
-						return getPreviewCss(block[1]);
+						return editor.formatter.getCssText(block[1]);
 					}
 				});
 			});
 
 			return {
 				type: 'listbox',
-				text: {raw: blocks[0][0]},
+				text: blocks[0][0],
 				values: items,
 				fixedWidth: true,
 				onselect: toggleFormat,
@@ -566,21 +458,21 @@ define("tinymce/ui/FormatControls", [
 
 		editor.addButton('fontselect', function() {
 			var defaultFontsFormats =
-				'Andale Mono=andale mono,times;' +
+				'Andale Mono=andale mono,monospace;' +
 				'Arial=arial,helvetica,sans-serif;' +
-				'Arial Black=arial black,avant garde;' +
-				'Book Antiqua=book antiqua,palatino;' +
+				'Arial Black=arial black,sans-serif;' +
+				'Book Antiqua=book antiqua,palatino,serif;' +
 				'Comic Sans MS=comic sans ms,sans-serif;' +
-				'Courier New=courier new,courier;' +
-				'Georgia=georgia,palatino;' +
-				'Helvetica=helvetica;' +
-				'Impact=impact,chicago;' +
+				'Courier New=courier new,courier,monospace;' +
+				'Georgia=georgia,palatino,serif;' +
+				'Helvetica=helvetica,arial,sans-serif;' +
+				'Impact=impact,sans-serif;' +
 				'Symbol=symbol;' +
 				'Tahoma=tahoma,arial,helvetica,sans-serif;' +
-				'Terminal=terminal,monaco;' +
-				'Times New Roman=times new roman,times;' +
-				'Trebuchet MS=trebuchet ms,geneva;' +
-				'Verdana=verdana,geneva;' +
+				'Terminal=terminal,monaco,monospace;' +
+				'Times New Roman=times new roman,times,serif;' +
+				'Trebuchet MS=trebuchet ms,geneva,sans-serif;' +
+				'Verdana=verdana,geneva,sans-serif;' +
 				'Webdings=webdings;' +
 				'Wingdings=wingdings,zapf dingbats';
 
@@ -614,7 +506,14 @@ define("tinymce/ui/FormatControls", [
 			var fontsize_formats = editor.settings.fontsize_formats || defaultFontsizeFormats;
 
 			each(fontsize_formats.split(' '), function(item) {
-				items.push({text: item, value: item});
+				var text = item, value = item;
+				// Allow text=value font sizes.
+				var values = item.split('=');
+				if (values.length > 1) {
+					text = values[0];
+					value = values[1];
+				}
+				items.push({text: text, value: value});
 			});
 
 			return {

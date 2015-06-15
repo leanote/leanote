@@ -83,22 +83,29 @@ define("tinymce/ui/MenuButton", [
 					menu.type = menu.type || 'menu';
 				}
 
-				self.menu = Factory.create(menu).parent(self).renderTo(self.getContainerElm());
+				self.menu = Factory.create(menu).parent(self).renderTo();
 				self.fire('createmenu');
 				self.menu.reflow();
 				self.menu.on('cancel', function(e) {
-					if (e.control === self.menu) {
+					if (e.control.parent() === self.menu) {
+						e.stopPropagation();
 						self.focus();
+						self.hideMenu();
 					}
+				});
+
+				// Move focus to button when a menu item is selected/clicked
+				self.menu.on('select', function() {
+					self.focus();
 				});
 
 				self.menu.on('show hide', function(e) {
 					if (e.control == self.menu) {
 						self.activeMenu(e.type == 'show');
 					}
-				}).fire('show');
 
-				self.aria('expanded', true);
+					self.aria('expanded', e.type == 'show');
+				}).fire('show');
 			}
 
 			self.menu.show();
@@ -122,7 +129,6 @@ define("tinymce/ui/MenuButton", [
 				});
 
 				self.menu.hide();
-				self.aria('expanded', false);
 			}
 		},
 
@@ -143,14 +149,30 @@ define("tinymce/ui/MenuButton", [
 		 */
 		renderHtml: function() {
 			var self = this, id = self._id, prefix = self.classPrefix;
-			var icon = self.settings.icon ? prefix + 'ico ' + prefix + 'i-' + self.settings.icon : '';
+			var icon = self.settings.icon, image;
+
+			image = self.settings.image;
+			if (image) {
+				icon = 'none';
+
+				// Support for [high dpi, low dpi] image sources
+				if (typeof image != "string") {
+					image = window.getSelection ? image[0] : image[1];
+				}
+
+				image = ' style="background-image: url(\'' + image + '\')"';
+			} else {
+				image = '';
+			}
+
+			icon = self.settings.icon ? prefix + 'ico ' + prefix + 'i-' + icon : '';
 
 			self.aria('role', self.parent() instanceof MenuBar ? 'menuitem' : 'button');
 
 			return (
-				'<div id="' + id + '" class="' + self.classes() + '" tabindex="-1">' +
+				'<div id="' + id + '" class="' + self.classes() + '" tabindex="-1" aria-labelledby="' + id + '">' +
 					'<button id="' + id + '-open" role="presentation" type="button" tabindex="-1">' +
-						(icon ? '<i class="' + icon + '"></i>' : '') +
+						(icon ? '<i class="' + icon + '"' + image + '></i>' : '') +
 						'<span>' + (self._text ? (icon ? '\u00a0' : '') + self.encode(self._text) : '') + '</span>' +
 						' <i class="' + prefix + 'caret"></i>' +
 					'</button>' +
@@ -170,7 +192,7 @@ define("tinymce/ui/MenuButton", [
 				if (e.control === self && isChildOf(e.target, self.getEl())) {
 					self.showMenu();
 
-					if (e.keyboard) {
+					if (e.aria) {
 						self.menu.items()[0].focus();
 					}
 				}
@@ -213,7 +235,7 @@ define("tinymce/ui/MenuButton", [
 			if (self._rendered) {
 				children = self.getEl('open').getElementsByTagName('span');
 				for (i = 0; i < children.length; i++) {
-					children[i].innerHTML = self.encode(text);
+					children[i].innerHTML = (self.settings.icon && text ? '\u00a0' : '') + self.encode(text);
 				}
 			}
 

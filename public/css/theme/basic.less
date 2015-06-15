@@ -147,7 +147,7 @@ h1, h2, h3 {
   width: 5px;
   height: 100%;
   overflow: hidden;
-  z-index: 5;
+  z-index: 3333;
   cursor: col-resize;
 }
 .dropdown-menu {
@@ -401,6 +401,9 @@ h1, h2, h3 {
 	position: relative;
 	.notebook-setting {
 		display: none;
+	  position: absolute;
+	  right: 0;
+	  left: auto;
 	}
 	&:hover {
 		.notebook-setting {
@@ -691,6 +694,7 @@ h1, h2, h3 {
 #noteReadInfo {
 	white-space: nowrap;text-overflow:ellipsis; overflow:hidden;
 	color: #666;
+	margin-top: 8px;
 }
 .my-link, .new-markdown-text-abbr, .new-note-text-abbr {
 	display: none;
@@ -965,6 +969,7 @@ top: 4px;
 }
 .desc {
 	margin: 0;
+	word-wrap: break-word;
 }
 
 //--------
@@ -1014,8 +1019,8 @@ top: 4px;
 }
 
 // ace 重置css, 必须
-.ace_eidtor, .ace_editor * {
-	font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+.ace_editor, .ace_editor * {
+	font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro';
 }
 
 
@@ -1127,6 +1132,9 @@ top: 4px;
 			display: block;
 		}
 	}
+	
+	// 字体设置不起作用
+	* {font-family: inherit; }
 
 }
 // 不显示空白
@@ -1207,4 +1215,183 @@ top: 4px;
 	a:hover {
 		background: none !important;
 	}
+}
+
+// 新建不要显示笔记本下拉了, 没用
+#listNotebookDropdownMenu {
+	display: none;
+}
+// more btn下怎么会有<span data-mce-type="bookmark" id="mce_1_start" data-mce-style="overflow:hidden;line-height:0px" style="overflow:hidden;line-height:0px">﻿</span> ?
+#moreBtn span {
+	display: none;
+}
+
+// 没有颜色, tinymce
+.mce-colorbtn-trans div {
+	line-height: 11px;
+	text-align: center;
+}
+.mce-btn-small .mce-caret {
+  margin-top: 8px;
+}
+.mce-listbox.mce-btn-small .mce-caret {
+  margin-top: -2px;
+}
+
+// 字体没有shadow
+.mce-btn i {
+  text-shadow: none;
+}
+.mce-colorbutton.mce-btn-small .mce-preview {
+  width: 15px;
+}
+
+// 为了显示右侧的线条
+#noteList {
+	z-index: 333;
+}
+
+#moreBtn {
+	dispaly: block; position: absolute; 
+	cursor: pointer; 
+	right: 5px; 
+	padding: 3px 10px;
+}
+
+// readonly
+
+// readonly
+.info-toolbar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	line-height: 30px;
+	padding-left: 5px;
+	height: 30px;
+	display: none;
+
+	.toolbar-update {
+		color: inherit;
+		float: right;
+		padding: 0 10px;
+		&:hover {
+			background: #fff;
+			color: #000;
+		}
+	}
+
+	.created-time {
+		display: inline-block;
+		padding-right: 10px;
+	}
+}
+#editorContent {
+	-webkit-user-select: text;
+}
+
+#editor.read-only {
+	#mceToolbarContainer {
+		display: none;
+	}
+	.info-toolbar {
+		display: block;
+	}
+}
+
+#mdEditor.read-only {
+	.info-toolbar {
+		display: block;
+	}
+	.wmd-button-bar-inner,
+	#mdSplitter2, // 拖动
+	.btn-info // 拖动
+	{
+		display: none;
+	}
+	#left-column {
+		// display: none;
+		visibility: hidden;
+	}
+	#right-column {
+		left: 0 !important;
+	}
+	.preview-container {
+		left: 10px;
+	}
+}
+
+// 工具栏
+#editor {
+	#mceToolbar {
+		height: 30px;
+	}
+	// 所有都展开
+	&.all-tool {
+		#mceToolbar {
+			height: 60px;
+		}
+		.more-fa:before {
+			content: "\f106";
+		}
+		#editorContent {
+			top: 60px;
+		}
+	}
+	.more-fa:before {
+		content: "\f107";
+	}
+}
+
+//---------------
+// note for read
+#note.read-only {
+	#editor, #mdEditor {
+		top: 60px;
+	}
+	#tool {
+		display: none;
+	}
+	.toolbar-update {
+		display: none;
+	}
+	#noteReadTop {
+		display: block;
+	}
+	#infoToolbar, #mceToolbar, .navbar {
+		display: none;
+	}
+	#editorContent, #mdEditor .layout-wrapper-l3 {
+		top: 0;
+	}
+}
+#noteRead {
+	position: absolute;
+	left: 5px;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	display: none;
+	z-index: 100;
+	padding-left: 5px;
+	background-color: #fff;
+}
+
+@noteReadTopHeight: 60px;
+#noteReadTop {
+	position: absolute;
+	height: @noteReadTopHeight;
+	left: 5px;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	z-index: 2;
+	display: none;
+	background: #fff;
+	padding-left: 5px;
+}
+#noteReadTitle {
+	margin: 3px 0;
+	height: 26px;
 }

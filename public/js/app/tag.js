@@ -86,7 +86,7 @@ function showTagList(event) {
 Tag.renderReadOnlyTags = function(tags) {
 	// 先清空
 	$("#noteReadTags").html("");
-	if(isEmpty(tags)) {
+	if(isEmpty(tags) || (tags.length == 1 && tags[0] == "")) {
 		$("#noteReadTags").html(getMsg("noTag"));
 	}
 	
@@ -104,13 +104,11 @@ Tag.renderReadOnlyTags = function(tags) {
 	for(var i in tags) {
 		var text = tags[i];
 		text = Tag.mapEn2Cn[text] || text;
-		text = text.replace(/[\r\n]/g, '');
-		
 		var classes = Tag.classes[text];
 		if(!classes) {
 			classes = getNextDefaultClasses();
 		}
-		tag = tt('<span class="?">?</span>', classes, toHtmlEntity(text));
+		tag = tt('<span class="?">?</span>', classes, text);
 		
 		$("#noteReadTags").append(tag);
 	}
@@ -147,9 +145,7 @@ Tag.appendTag = function(tag, save) {
 		text = Tag.mapEn2Cn[text] || text;
 		rawText = Tag.mapCn2En[rawText] || rawText;
 	}
-	text = text.replace(/[\r\n]/g, '');
-	
-	tag = tt('<span class="?" data-tag="?">?<i title="' + getMsg("delete") + '">X</i></span>', classes, text, toHtmlEntity(text));
+	tag = tt('<span class="?" data-tag="?">?<i title="' + getMsg("delete") + '">X</i></span>', classes, text, text);
 
 	// 避免重复
 	var isExists = false;
@@ -239,9 +235,8 @@ Tag.renderTagNav = function(tags) {
 		if(LEA.locale == "zh") {
 			var text = Tag.mapEn2Cn[tag] || text;
 		}
-		text = text.replace(/[\r\n]/g, '');
 		var classes = Tag.classes[tag] || "label label-default";
-		$("#tagNav").append(tt('<li data-tag="?"><a> <span class="?">?</span> <span class="tag-delete">X</span></li>', tag, classes, toHtmlEntity(text)));
+		$("#tagNav").append(tt('<li data-tag="?"><a> <span class="?">?</span> <span class="tag-delete">X</span></li>', tag, classes, text));
 	}
 };
 

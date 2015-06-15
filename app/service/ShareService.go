@@ -33,8 +33,9 @@ type ShareService struct {
 
 // 谁共享给了我的Query
 func (this *ShareService) getOrQ(userId string) bson.M {
-	// 得到我参与的组织
-	groupIds := groupService.GetBelongToGroupIds(userId)
+	// 得到我和和我参与的组织
+	groupIds := groupService.GetMineAndBelongToGroupIds(userId)
+	
 	q := bson.M{}
 	if len(groupIds) > 0 {
 		orQ := []bson.M{
@@ -51,6 +52,8 @@ func (this *ShareService) getOrQ(userId string) bson.M {
 
 // 得到共享给我的笔记本和用户(谁共享给了我)
 func (this *ShareService) GetShareNotebooks(userId string) (info.ShareNotebooksByUser, []info.User) {
+	myUserId := userId
+	
 	// 得到共享给我的用户s信息
 	// 得到我参与的组织
 	q := this.getOrQ(userId)
@@ -64,7 +67,15 @@ func (this *ShareService) GetShareNotebooks(userId string) (info.ShareNotebooksB
 	db.Distinct(db.ShareNotebooks, q, "UserId", &userIds2) // BUG之前是userId1, 2014/12/29
 	
 	userIds := append(userIds1, userIds2...)
+	
 	userInfos := userService.GetUserInfosOrderBySeq(userIds);
+	// 不要我的id
+	for i, userInfo := range userInfos {
+		if userInfo.UserId.Hex() == myUserId {
+			userInfos = append(userInfos[:i], userInfos[i+1:]...)
+			break;
+		}
+	}
 	
 	//--------------------
 	// 得到他们共享给我的notebooks
@@ -102,6 +113,11 @@ func (this *ShareService) GetShareNotebooks(userId string) (info.ShareNotebooksB
 	// 先建立userId => []
 	for _, eachSub := range subShareNotebooks {
 		userId := eachSub.Notebook.UserId
+		// 我自己的, 算了
+		if userId.Hex() == myUserId {
+			continue;
+		}
+		
 		if _, ok := shareNotebooksByUsersMap[userId]; ok {
 			shareNotebooksByUsersMap[userId] = append(shareNotebooksByUsersMap[userId], eachSub)
 		} else {
@@ -775,6 +791,39 @@ func (this *ShareService) AddShareNotebookGroup(userId, notebookId, groupId stri
 // 删除
 func (this *ShareService) DeleteShareNotebookGroup(userId, notebookId, groupId string) bool {
 	return db.Delete(db.ShareNotebooks, bson.M{"NotebookId": bson.ObjectIdHex(notebookId),
+		"UserId": bson.ObjectIdHex(userId), 
+		"ToGroupId": bson.ObjectIdHex(groupId),
+	});
+}
+
+//--------------------
+// 删除组时, 删除所有的
+//--------------------
+
+func (this *ShareService) DeleteAllShareNotebookGroup(groupId string) bool {
+	return db.Delete(db.ShareNotebooks, bson.M{
+		"ToGroupId": bson.ObjectIdHex(groupId),
+	});
+}
+func (this *ShareService) DeleteAllShareNoteGroup(groupId string) bool {
+	return db.Delete(db.ShareNotes, bson.M{
+		"ToGroupId": bson.ObjectIdHex(groupId),
+	});
+}
+
+//--------------------
+// 删除组内用户时, 删除其分享的
+//--------------------
+
+func (this *ShareService) DeleteShareNotebookGroupWhenDeleteGroupUser(userId, groupId string) bool {
+	return db.Delete(db.ShareNotebooks, bson.M{
+		"UserId": bson.ObjectIdHex(userId), 
+		"ToGroupId": bson.ObjectIdHex(groupId),
+	});
+}
+
+func (this *ShareService) DeleteShareNoteGroupWhenDeleteGroupUser(userId, groupId string) bool {
+	return db.Delete(db.ShareNotes, bson.M{
 		"UserId": bson.ObjectIdHex(userId), 
 		"ToGroupId": bson.ObjectIdHex(groupId),
 	});

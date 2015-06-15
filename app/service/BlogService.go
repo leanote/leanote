@@ -1197,6 +1197,10 @@ func (this *BlogService) FixBlog(blog info.BlogItem) info.Post {
 		LikeNum:     blog.LikeNum,
 		IsMarkdown:  blog.IsMarkdown,
 	}
+	if blog2.Tags != nil && len(blog2.Tags) > 0 && blog2.Tags[0] != "" {
+	} else {
+		blog2.Tags = nil
+	}
 	return blog2
 }
 

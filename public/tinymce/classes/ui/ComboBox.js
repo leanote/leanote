@@ -18,8 +18,9 @@
  */
 define("tinymce/ui/ComboBox", [
 	"tinymce/ui/Widget",
+	"tinymce/ui/Factory",
 	"tinymce/ui/DomUtils"
-], function(Widget, DomUtils) {
+], function(Widget, Factory, DomUtils) {
 	"use strict";
 
 	return Widget.extend({
@@ -35,13 +36,30 @@ define("tinymce/ui/ComboBox", [
 
 			self._super(settings);
 			self.addClass('combobox');
+			self.subinput = true;
+			self.ariaTarget = 'inp'; // TODO: Figure out a better way
+
+			settings = self.settings;
+			settings.menu = settings.menu || settings.values;
+
+			if (settings.menu) {
+				settings.icon = 'caret';
+			}
 
 			self.on('click', function(e) {
-				var elm = e.target;
+				var elm = e.target, root = self.getEl();
 
-				while (elm) {
+				while (elm && elm != root) {
 					if (elm.id && elm.id.indexOf('-open') != -1) {
 						self.fire('action');
+
+						if (settings.menu) {
+							self.showMenu();
+
+							if (e.aria) {
+								self.menu.items()[0].focus();
+							}
+						}
 					}
 
 					elm = elm.parentNode;
@@ -90,6 +108,55 @@ define("tinymce/ui/ComboBox", [
 			}
 		},
 
+		showMenu: function() {
+			var self = this, settings = self.settings, menu;
+
+			if (!self.menu) {
+				menu = settings.menu || [];
+
+				// Is menu array then auto constuct menu control
+				if (menu.length) {
+					menu = {
+						type: 'menu',
+						items: menu
+					};
+				} else {
+					menu.type = menu.type || 'menu';
+				}
+
+				self.menu = Factory.create(menu).parent(self).renderTo(self.getContainerElm());
+				self.fire('createmenu');
+				self.menu.reflow();
+				self.menu.on('cancel', function(e) {
+					if (e.control === self.menu) {
+						self.focus();
+					}
+				});
+
+				self.menu.on('show hide', function(e) {
+					e.control.items().each(function(ctrl) {
+						ctrl.active(ctrl.value() == self.value());
+					});
+				}).fire('show');
+
+				self.menu.on('select', function(e) {
+					self.value(e.control.value());
+				});
+
+				self.on('focusin', function(e) {
+					if (e.target.tagName.toUpperCase() == 'INPUT') {
+						self.menu.hide();
+					}
+				});
+
+				self.aria('expanded', true);
+			}
+
+			self.menu.show();
+			self.menu.layoutRect({w: self.layoutRect().w});
+			self.menu.moveRel(self.getEl(), self.isRtl() ? ['br-tr', 'tr-br'] : ['bl-tl', 'tl-bl']);
+		},
+
 		/**
 		 * Getter/setter function for the control value.
 		 *
@@ -100,7 +167,7 @@ define("tinymce/ui/ComboBox", [
 		value: function(value) {
 			var self = this;
 
-			if (typeof(value) != "undefined") {
+			if (typeof value != "undefined") {
 				self._value = value;
 				self.removeClass('placeholder');
 
@@ -134,7 +201,7 @@ define("tinymce/ui/ComboBox", [
 		disabled: function(state) {
 			var self = this;
 
-			if (self._rendered && typeof(state) != 'undefined') {
+			if (self._rendered && typeof state != 'undefined') {
 				self.getEl('inp').disabled = state;
 			}
 
@@ -211,16 +278,40 @@ define("tinymce/ui/ComboBox", [
 		renderHtml: function() {
 			var self = this, id = self._id, settings = self.settings, prefix = self.classPrefix;
 			var value = settings.value || settings.placeholder || '';
-			var icon, text, openBtnHtml = '';
+			var icon, text, openBtnHtml = '', extraAttrs = '';
 
-			icon = settings.icon ? prefix + 'ico ' + prefix + 'i-' + settings.icon : '';
+			if ("spellcheck" in settings) {
+				extraAttrs += ' spellcheck="' + settings.spellcheck + '"';
+			}
+
+			if (settings.maxLength) {
+				extraAttrs += ' maxlength="' + settings.maxLength + '"';
+			}
+
+			if (settings.size) {
+				extraAttrs += ' size="' + settings.size + '"';
+			}
+
+			if (settings.subtype) {
+				extraAttrs += ' type="' + settings.subtype + '"';
+			}
+
+			if (self.disabled()) {
+				extraAttrs += ' disabled="disabled"';
+			}
+
+			icon = settings.icon;
+			if (icon && icon != 'caret') {
+				icon = prefix + 'ico ' + prefix + 'i-' + settings.icon;
+			}
+
 			text = self._text;
 
 			if (icon || text) {
 				openBtnHtml = (
-					'<div id="' + id + '-open" class="' + prefix + 'btn ' + prefix + 'open" tabIndex="-1">' +
-						'<button id="' + id + '-action" type="button" hidefocus tabindex="-1">' +
-							(icon ? '<i class="' + icon + '"></i>' : '<i class="' + prefix + 'caret"></i>') +
+					'<div id="' + id + '-open" class="' + prefix + 'btn ' + prefix + 'open" tabIndex="-1" role="button">' +
+						'<button id="' + id + '-action" type="button" hidefocus="1" tabindex="-1">' +
+							(icon != 'caret' ? '<i class="' + icon + '"></i>' : '<i class="' + prefix + 'caret"></i>') +
 							(text ? (icon ? ' ' : '') + text : '') +
 						'</button>' +
 					'</div>'
@@ -232,7 +323,7 @@ define("tinymce/ui/ComboBox", [
 			return (
 				'<div id="' + id + '" class="' + self.classes() + '">' +
 					'<input id="' + id + '-inp" class="' + prefix + 'textbox ' + prefix + 'placeholder" value="' +
-					value + '" hidefocus="true"' + (self.disabled() ? ' disabled="disabled"' : '') + '>' +
+					value + '" hidefocus="1"' + extraAttrs + ' />' +
 					openBtnHtml +
 				'</div>'
 			);

@@ -16,6 +16,13 @@ define("tinymce/util/URI", [
 	"tinymce/util/Tools"
 ], function(Tools) {
 	var each = Tools.each, trim = Tools.trim;
+	var queryParts = "source protocol authority userInfo user password host port relative path directory file query anchor".split(' ');
+	var DEFAULT_PORTS = {
+		'ftp': 21,
+		'http': 80,
+		'https': 443,
+		'mailto': 25
+	};
 
 	/**
 	 * Constructs a new URI instance.
@@ -28,11 +35,9 @@ define("tinymce/util/URI", [
 	function URI(url, settings) {
 		var self = this, baseUri, base_url;
 
-		// Trim whitespace
 		url = trim(url);
-
-		// Default settings
 		settings = self.settings = settings || {};
+		baseUri = settings.base_uri;
 
 		// Strange app protocol that isn't http/https or local anchor
 		// For example: mailto,skype,tel etc.
@@ -41,24 +46,32 @@ define("tinymce/util/URI", [
 			return;
 		}
 
+		var isProtocolRelative = url.indexOf('//') === 0;
+
 		// Absolute path with no host, fake host and protocol
-		if (url.indexOf('/') === 0 && url.indexOf('//') !== 0) {
-			url = (settings.base_uri ? settings.base_uri.protocol || 'http' : 'http') + '://mce_host' + url;
+		if (url.indexOf('/') === 0 && !isProtocolRelative) {
+			url = (baseUri ? baseUri.protocol || 'http' : 'http') + '://mce_host' + url;
 		}
 
 		// Relative path http:// or protocol relative //path
 		if (!/^[\w\-]*:?\/\//.test(url)) {
 			base_url = settings.base_uri ? settings.base_uri.path : new URI(location.href).directory;
-			url = ((settings.base_uri && settings.base_uri.protocol) || 'http') + '://mce_host' + self.toAbsPath(base_url, url);
+			if (settings.base_uri.protocol === "") {
+				url = '//mce_host' + self.toAbsPath(base_url, url);
+			} else {
+				url = /([^#?]*)([#?]?.*)/.exec(url);
+				url = ((baseUri && baseUri.protocol) || 'http') + '://mce_host' + self.toAbsPath(base_url, url[1]) + url[2];
+			}
 		}
 
 		// Parse URL (Credits goes to Steave, http://blog.stevenlevithan.com/archives/parseuri)
 		url = url.replace(/@@/g, '(mce_at)'); // Zope 3 workaround, they use @@something
 
 		/*jshint maxlen: 255 */
+		/*eslint max-len: 0 */
 		url = /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@\/]*):?([^:@\/]*))?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/.exec(url);
 
-		each(["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"], function(v, i) {
+		each(queryParts, function(v, i) {
 			var part = url[i];
 
 			// Zope 3 workaround, they use @@something
@@ -69,7 +82,6 @@ define("tinymce/util/URI", [
 			self[v] = part;
 		});
 
-		baseUri = settings.base_uri;
 		if (baseUri) {
 			if (!self.protocol) {
 				self.protocol = baseUri.protocol;
@@ -88,6 +100,10 @@ define("tinymce/util/URI", [
 			}
 
 			self.source = '';
+		}
+
+		if (isProtocolRelative) {
+			self.protocol = '';
 		}
 
 		//t.path = t.path || '/';
@@ -135,14 +151,15 @@ define("tinymce/util/URI", [
 			uri = new URI(uri, {base_uri: self});
 
 			// Not on same domain/port or protocol
-			if ((uri.host != 'mce_host' && self.host != uri.host && uri.host) || self.port != uri.port || self.protocol != uri.protocol) {
+			if ((uri.host != 'mce_host' && self.host != uri.host && uri.host) || self.port != uri.port ||
+				(self.protocol != uri.protocol && uri.protocol !== "")) {
 				return uri.getURI();
 			}
 
 			var tu = self.getURI(), uu = uri.getURI();
 
 			// Allow usage of the base_uri when relative_urls = true
-			if(tu == uu || (tu.charAt(tu.length - 1) == "/" && tu.substr(0, tu.length - 1) == uu)) {
+			if (tu == uu || (tu.charAt(tu.length - 1) == "/" && tu.substr(0, tu.length - 1) == uu)) {
 				return tu;
 			}
 
@@ -175,7 +192,31 @@ define("tinymce/util/URI", [
 		toAbsolute: function(uri, noHost) {
 			uri = new URI(uri, {base_uri: this});
 
-			return uri.getURI(this.host == uri.host && this.protocol == uri.protocol ? noHost : 0);
+			return uri.getURI(noHost && this.isSameOrigin(uri));
+		},
+
+		/**
+		 * Determine whether the given URI has the same origin as this URI.  Based on RFC-6454.
+		 * Supports default ports for protocols listed in DEFAULT_PORTS.  Unsupported protocols will fail safe: they
+		 * won't match, if the port specifications differ.
+		 *
+		 * @method isSameOrigin
+		 * @param {tinymce.util.URI} uri Uri instance to compare.
+		 * @returns {Boolean} True if the origins are the same.
+		 */
+		isSameOrigin: function(uri) {
+			if (this.host == uri.host && this.protocol == uri.protocol) {
+				if (this.port == uri.port) {
+					return true;
+				}
+
+				var defaultPort = DEFAULT_PORTS[this.protocol];
+				if (defaultPort && ((this.port || defaultPort) == (uri.port || defaultPort))) {
+					return true;
+				}
+			}
+
+			return false;
 		},
 
 		/**
@@ -314,6 +355,8 @@ define("tinymce/util/URI", [
 				if (!noProtoHost) {
 					if (self.protocol) {
 						s += self.protocol + '://';
+					} else {
+						s += '//';
 					}
 
 					if (self.userInfo) {

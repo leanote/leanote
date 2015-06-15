@@ -5,7 +5,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="keywords" content="leanote,leanote.com">
-<meta name="description" content="leanote, {{msg $ "moto"}}">
+<meta name="description" content="Leanote, {{msg $ "moto"}}">
+<meta property="qc:admins" content="2451332115167456375" />
 <meta name="author" content="leanote">
 <title>{{.title}}</title>
 
@@ -37,30 +38,29 @@ function log(o) {
 		</div>
 		
 		<div id="navbar" class="navbar-collapse collapse">
+			<div id="lang"><a data-lang="en-us">English</a><a data-lang="zh-cn">中文</a></div>
+			
 			<ul class="nav navbar-nav navbar-left">
-				<li><a href="/index#" target="body" class="smooth-scroll">{{msg . "home"}}</a></li>
-				<!--
-				<li><a href="/index#aboutLeanote" target="#aboutLeanote" class="smooth-scroll">{{msg . "aboutLeanote"}}</a> </li>
-				-->
-				<li><a href="/index#donate" target="#donate" class="smooth-scroll">{{msg . "donate"}}</a> </li>
-				<li><a id="leanoteBlog" href="http://lea.leanote.com" target="_blank" title="lea++, leanote博客平台" class="">lea++</a></li>
-				<li style="position: relative; margin-right: 3px;">
-					<a href="http://bbs.leanote.com" target="_blank" class="">{{msg . "discussion"}}</a>
+				<li><a href="/index#" data-target="body" class="smooth-scroll">{{msg . "home"}}</a></li>
+				<li style="position: relative;">
+					<a id="" href="http://leanote.com/service" title="" class="">{{msg . "service"}}</a>
 					<div class="red-circle" style=""></div>
 				</li>
 				
-				<li id="loginBtns">
-					{{if .userInfo.Email}}
-						{{msg . "hi"}}, {{.userInfo.Username}}
-						<a href="{{$.noteUrl}}">{{msg . "myNote"}}</a>
-						<a href="/logout">{{msg . "logout"}}</a>
-					{{else}}
-					<a href="/login">{{msg . "login"}}</a>
-						{{if .openRegister}}
-						<a href="/register" class="btn-register">{{msg . "register"}}</a>
-						{{end}}
-					{{end}}
+				<li style="position: relative; margin-right: 3px;">
+					<a href="http://bbs.leanote.com" target="_blank" class="">{{msg . "discussion"}}</a>
 				</li>
+				<li><a id="leanoteBlog" href="http://lea.leanote.com" target="_blank" title="lea++, leanote blog platform" class="">lea++</a></li>
+				<li><a id="leanoteApp" href="http://app.leanote.com" target="_blank" title="Leanote App" class="">{{msg . "desktopApp"}}</a></li>
+				<li><a href="http://leanote.org" target="_blank" title="leanote.org" class="">leanote.org</a></li>
+			
+				{{if .userInfo.Email}}
+				<li id="loginBtns">
+					{{msg . "hi"}}, {{.userInfo.Username}}
+					<a href="{{$.noteUrl}}">{{msg . "myNote"}}</a>
+					<a href="/logout">{{msg . "logout"}}</a>
+				</li>
+				{{end}}
 			</ul>
 		</div>
 	</div>
@@ -90,9 +90,11 @@ function log(o) {
 		</div>
 			
 		<ul id="blogNav" class="pull-right">
-			<li><a href="/index#" target="body" class="smooth-scroll">{{msg . "home"}}</a></li>
-			<li><a href="/index#donate" target="#donate" class="smooth-scroll">{{msg . "donate"}}</a> </li>
+			<li><a href="#" target="body" class="smooth-scroll">{{msg . "home"}}</a></li>
+			<li><a href="#download" target="#download" class="smooth-scroll">{{msg . "download"}}</a> </li>
+			<li><a href="#donate" target="#donate" class="smooth-scroll">{{msg . "donate"}}</a> </li>
 			<li><a id="leanoteBlog" href="{{.leaUrl}}/index" target="_blank" title="lea++, leanote博客平台" class="">lea++</a></li>
+			
 			<li style="position: relative; margin-right: 3px;">
 				<a href="http://bbs.leanote.com" target="_blank" class="">{{msg . "discussion"}}</a>
 				<div style="position: absolute;

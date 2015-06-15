@@ -1,1 +1,0 @@
-ace.define("ace/snippets/ftl",["require","exports","module"],function(e,t,p){t.snippetText="",t.scope="ftl"});

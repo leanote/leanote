@@ -379,8 +379,8 @@ function getLikesAndComments(noteId, callback) {
 	ajaxGetP(getLeanoteUrl() + "/blog/getLikesAndComments", {noteId: noteId}, callback);
 }
 // 得到评论
-function getComments(noteId, page) {
-	ajaxGetP(getLeanoteUrl() + "/blog/listComments", {noteId: noteId, page: page}, callback);
+function getComments(noteId, page, callback) {
+	ajaxGetP(getLeanoteUrl() + "/blog/getComments", {noteId: noteId, page: page}, callback);
 }
 // 点赞
 function likePost(noteId, callback) {

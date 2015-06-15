@@ -8,6 +8,8 @@ import (
 	. "github.com/leanote/leanote/app/lea"
 	"sort"
 	"time"
+	"strings"
+//	"html"
 )
 
 // 笔记本
@@ -40,7 +42,9 @@ func ParseAndSortNotebooks(userNotebooks []info.Notebook, noParentDelete, needSo
 	for _, each := range userNotebooks {
 		newNotebooks := info.Notebooks{Subs: info.SubNotebooks{}}
 		newNotebooks.NotebookId = each.NotebookId
-		newNotebooks.Title = each.Title
+		newNotebooks.Title = each.Title;
+//		newNotebooks.Title = html.EscapeString(each.Title)
+		newNotebooks.Title = strings.Replace(strings.Replace(each.Title, "<script>", "", -1), "</script", "", -1)
 		newNotebooks.Seq = each.Seq
 		newNotebooks.UserId = each.UserId
 		newNotebooks.ParentNotebookId = each.ParentNotebookId

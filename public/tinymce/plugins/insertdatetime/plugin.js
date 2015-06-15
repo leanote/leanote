@@ -15,7 +15,7 @@ tinymce.PluginManager.add('insertdatetime', function(editor) {
 	var daysLong = "Sunday Monday Tuesday Wednesday Thursday Friday Saturday Sunday".split(' ');
 	var monthsShort = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(' ');
 	var monthsLong = "January February March April May June July August September October November December".split(' ');
-	var menuItems = [], lastFormat;
+	var menuItems = [], lastFormat, defaultButtonTimeFormat;
 
 	function getDateTime(fmt, date) {
 		function addZeros(value, len) {
@@ -84,11 +84,11 @@ tinymce.PluginManager.add('insertdatetime', function(editor) {
 		insertDateTime(editor.getParam("insertdatetime_timeformat", editor.translate('%H:%M:%S')));
 	});
 
-	editor.addButton('inserttime', {
+	editor.addButton('insertdatetime', {
 		type: 'splitbutton',
-		title: 'Insert time',
+		title: 'Insert date/time',
 		onclick: function() {
-			insertDateTime(lastFormat || "%H:%M:%S");
+			insertDateTime(lastFormat || defaultButtonTimeFormat);
 		},
 		menu: menuItems
 	});
@@ -99,6 +99,10 @@ tinymce.PluginManager.add('insertdatetime', function(editor) {
 		"%I:%M:%S %p",
 		"%D"
 	], function(fmt) {
+		if (!defaultButtonTimeFormat) {
+			defaultButtonTimeFormat = fmt;
+		}
+
 		menuItems.push({
 			text: getDateTime(fmt),
 			onclick: function() {

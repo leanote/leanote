@@ -358,11 +358,18 @@ a.raw:hover {
 	border-bottom: 1px solid transparent;
 	border-color: rgba(255,255,255,0.05);
 	span {
-		display: inline-block;
 		line-height: @folderHeaderHeight;
 		color: #fff;
 		padding-left: 3px;
 		font-size: 14px;
+ 		display: block;
+		  position: absolute;
+		  left: 23px;
+		  top: 0;
+		  right: 23px;
+		  overflow: hidden;
+		  white-space: nowrap;
+		  text-overflow: ellipsis;
 	}
 	.fa {
 	  width: 20px;
@@ -678,44 +685,6 @@ a.raw:hover {
   // font-weight: bold;
 }
 
-//---------------
-// note for read
-#noteRead {
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
-	display: none;
-	z-index: 100;
-	padding-left: 5px;
-	background-color: #fff;
-}
-#noteReadContainer {
-	position: relative;
-	width: 100%;
-	height: 100%;
-}
-@noteReadTopHeight: 60px;
-#noteReadTop {
-	position: absolute;
-	height: @noteReadTopHeight;
-	left:0;
-	right: 0;
-	border-bottom: 1px solid @borderColor;
-}
-#noteReadTitle {
-	margin: 3px 0;
-}
-#noteReadContent {
-	position: absolute;
-	top: @noteReadTopHeight;
-	bottom: 0;
-	right: 0;
-	left: 0;
-	overflow: auto;
-	padding: 3px;
-}
 
 @sbc: @bgColor;
 

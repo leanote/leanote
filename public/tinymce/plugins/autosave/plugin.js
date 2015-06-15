@@ -10,8 +10,35 @@
 
 /*global tinymce:true */
 
+// Internal unload handler will be called before the page is unloaded
+// Needs to be outside the plugin since it would otherwise keep
+// a reference to editor in closue scope
+/*eslint no-func-assign:0 */
+tinymce._beforeUnloadHandler = function() {
+	var msg;
+
+	tinymce.each(tinymce.editors, function(editor) {
+		// Store a draft for each editor instance
+		if (editor.plugins.autosave) {
+			editor.plugins.autosave.storeDraft();
+		}
+
+		// Setup a return message if the editor is dirty
+		if (!msg && editor.isDirty() && editor.getParam("autosave_ask_before_unload", true)) {
+			msg = editor.translate("You have unsaved changes are you sure you want to navigate away?");
+		}
+	});
+
+	return msg;
+};
+
 tinymce.PluginManager.add('autosave', function(editor) {
-	var settings = editor.settings, LocalStorage = tinymce.util.LocalStorage, prefix = editor.id, started;
+	var settings = editor.settings, LocalStorage = tinymce.util.LocalStorage, prefix, started;
+
+	prefix = settings.autosave_prefix || 'tinymce-autosave-{path}{query}-{id}-';
+	prefix = prefix.replace(/\{path\}/g, document.location.pathname);
+	prefix = prefix.replace(/\{query\}/g, document.location.search);
+	prefix = prefix.replace(/\{id\}/g, editor.id);
 
 	function parseTime(time, defaultTime) {
 		var multipels = {
@@ -25,7 +52,7 @@ tinymce.PluginManager.add('autosave', function(editor) {
 	}
 
 	function hasDraft() {
-		var time = parseInt(LocalStorage.getItem(prefix + "autosave.time"), 10) || 0;
+		var time = parseInt(LocalStorage.getItem(prefix + "time"), 10) || 0;
 
 		if (new Date().getTime() - time > settings.autosave_retention) {
 			removeDraft(false);
@@ -36,8 +63,8 @@ tinymce.PluginManager.add('autosave', function(editor) {
 	}
 
 	function removeDraft(fire) {
-		LocalStorage.removeItem(prefix + "autosave.draft");
-		LocalStorage.removeItem(prefix + "autosave.time");
+		LocalStorage.removeItem(prefix + "draft");
+		LocalStorage.removeItem(prefix + "time");
 
 		if (fire !== false) {
 			editor.fire('RemoveDraft');
@@ -45,16 +72,16 @@ tinymce.PluginManager.add('autosave', function(editor) {
 	}
 
 	function storeDraft() {
-		if (!isEmpty()) {
-			LocalStorage.setItem(prefix + "autosave.draft", editor.getContent({format: 'raw', no_events: true}));
-			LocalStorage.setItem(prefix + "autosave.time", new Date().getTime());
+		if (!isEmpty() && editor.isDirty()) {
+			LocalStorage.setItem(prefix + "draft", editor.getContent({format: 'raw', no_events: true}));
+			LocalStorage.setItem(prefix + "time", new Date().getTime());
 			editor.fire('StoreDraft');
 		}
 	}
 
 	function restoreDraft() {
 		if (hasDraft()) {
-			editor.setContent(LocalStorage.getItem(prefix + "autosave.draft"), {format: 'raw'});
+			editor.setContent(LocalStorage.getItem(prefix + "draft"), {format: 'raw'});
 			editor.fire('RestoreDraft');
 		}
 	}
@@ -106,29 +133,10 @@ tinymce.PluginManager.add('autosave', function(editor) {
 		context: 'file'
 	});
 
-	// Internal unload handler will be called before the page is unloaded
-	function beforeUnloadHandler() {
-		var msg;
-
-		tinymce.each(tinymce.editors, function(editor) {
-			// Store a draft for each editor instance
-			if (editor.plugins.autosave) {
-				editor.plugins.autosave.storeDraft();
-			}
-
-			// Setup a return message if the editor is dirty
-			if (!msg && editor.isDirty() && editor.getParam("autosave_ask_before_unload", true)) {
-				msg = editor.translate("You have unsaved changes are you sure you want to navigate away?");
-			}
-		});
-
-		return msg;
-	}
-
 	function isEmpty(html) {
 		var forcedRootBlockName = editor.settings.forced_root_block;
 
-		html = tinymce.trim(typeof(html) == "undefined" ? editor.getBody().innerHTML : html);
+		html = tinymce.trim(typeof html == "undefined" ? editor.getBody().innerHTML : html);
 
 		return html === '' || new RegExp(
 			'^<' + forcedRootBlockName + '[^>]*>((\u00a0|&nbsp;|[ \t]|<br[^>]*>)+?|)<\/' + forcedRootBlockName + '>|<br>$', 'i'
@@ -147,7 +155,7 @@ tinymce.PluginManager.add('autosave', function(editor) {
 		});
 	}
 
-	window.onbeforeunload = beforeUnloadHandler;
+	window.onbeforeunload = tinymce._beforeUnloadHandler;
 
 	this.hasDraft = hasDraft;
 	this.storeDraft = storeDraft;

@@ -37,7 +37,7 @@ define("tinymce/ui/GridLayout", [
 		recalc: function(container) {
 			var settings = container.settings, rows, cols, items, contLayoutRect, width, height, rect,
 				ctrlLayoutRect, ctrl, x, y, posX, posY, ctrlSettings, contPaddingBox, align, spacingH, spacingV, alignH, alignV, maxX, maxY,
-				colWidths = [], rowHeights = [], ctrlMinWidth, ctrlMinHeight, alignX, alignY, availableWidth, availableHeight;
+				colWidths = [], rowHeights = [], ctrlMinWidth, ctrlMinHeight, availableWidth, availableHeight, reverseRows, idx;
 
 			// Get layout settings
 			settings = container.settings;
@@ -50,12 +50,13 @@ define("tinymce/ui/GridLayout", [
 			alignH = settings.alignH || settings.align;
 			alignV = settings.alignV || settings.align;
 			contPaddingBox = container._paddingBox;
+			reverseRows = 'reverseRows' in settings ? settings.reverseRows : container.isRtl();
 
-			if (alignH && typeof(alignH) == "string") {
+			if (alignH && typeof alignH == "string") {
 				alignH = [alignH];
 			}
 
-			if (alignV && typeof(alignV) == "string") {
+			if (alignV && typeof alignV == "string") {
 				alignV = [alignV];
 			}
 
@@ -166,7 +167,7 @@ define("tinymce/ui/GridLayout", [
 			// Calculate new column widths based on flex values
 			var ratio = availableWidth / totalFlex;
 			for (x = 0; x < cols; x++) {
-				colWidths[x] += flexWidths ? Math.ceil(flexWidths[x] * ratio) : ratio;
+				colWidths[x] += flexWidths ? flexWidths[x] * ratio : ratio;
 			}
 
 			// Move/resize controls
@@ -176,7 +177,13 @@ define("tinymce/ui/GridLayout", [
 				height = rowHeights[y] + flexV;
 
 				for (x = 0; x < cols; x++) {
-					ctrl = items[y * cols + x];
+					if (reverseRows) {
+						idx = y * cols + cols - 1 - x;
+					} else {
+						idx = y * cols + x;
+					}
+
+					ctrl = items[idx];
 
 					// No more controls to render then break
 					if (!ctrl) {
@@ -187,7 +194,6 @@ define("tinymce/ui/GridLayout", [
 					ctrlSettings = ctrl.settings;
 					ctrlLayoutRect = ctrl.layoutRect();
 					width = Math.max(colWidths[x], ctrlLayoutRect.startMinWidth);
-					alignX = alignY = 0;
 					ctrlLayoutRect.x = posX;
 					ctrlLayoutRect.y = posY;
 
@@ -205,7 +211,7 @@ define("tinymce/ui/GridLayout", [
 					align = ctrlSettings.alignV || (alignV ? (alignV[x] || alignV[0]) : null);
 					if (align == "center") {
 						ctrlLayoutRect.y = posY + (height / 2) - (ctrlLayoutRect.h / 2);
-					} else  if (align == "bottom") {
+					} else if (align == "bottom") {
 						ctrlLayoutRect.y = posY + height - ctrlLayoutRect.h;
 					} else if (align == "stretch") {
 						ctrlLayoutRect.h = height;

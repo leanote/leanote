@@ -460,7 +460,7 @@ func (c MemberBlog) ImportTheme() revel.Result {
 	var ext string
 	_, ext = SplitFilename(filename)
 	if ext != ".zip" {
-		re.Msg = "请上传zip文件"
+		re.Msg = "Please upload zip file"
 		return c.RenderJson(re)
 	}
 
@@ -472,7 +472,7 @@ func (c MemberBlog) ImportTheme() revel.Result {
 
 	// > 10M?
 	if len(data) > 10*1024*1024 {
-		re.Msg = "文件大于10M"
+		re.Msg = "File is big than 10M"
 		return c.RenderJson(re)
 	}
 

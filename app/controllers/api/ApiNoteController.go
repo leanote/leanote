@@ -335,8 +335,12 @@ func (c ApiNote) AddNote(noteOrContent info.ApiNote) revel.Result {
 		Abstract: noteOrContent.Abstract}
 
 	// 通过内容得到Desc, abstract
-	note.Desc = SubStringHTMLToRaw(noteContent.Content, 50)
-	noteContent.Abstract = SubStringHTML(noteContent.Content, 200, "")
+	if noteOrContent.Abstract == "" {
+		note.Desc = SubStringHTMLToRaw(noteContent.Content, 200)
+		noteContent.Abstract = SubStringHTML(noteContent.Content, 200, "")
+	} else {
+		note.Desc = SubStringHTMLToRaw(noteContent.Abstract, 200)
+	}
 
 	note = noteService.AddNoteAndContentApi(note, noteContent, myUserId)
 	
@@ -352,7 +356,7 @@ func (c ApiNote) AddNote(noteOrContent info.ApiNote) revel.Result {
 	noteOrContent.UpdatedTime = note.UpdatedTime
 	noteOrContent.UserId = c.getUserId()
 	noteOrContent.IsMarkdown = note.IsMarkdown
-	// 删除一些不要返回的
+	// 删除一些不要返回的, 删除Desc?
 	noteOrContent.Content = ""
 	noteOrContent.Abstract = ""
 	//	apiNote := info.NoteToApiNote(note, noteOrContent.Files)
@@ -494,8 +498,12 @@ func (c ApiNote) UpdateNote(noteOrContent info.ApiNote) revel.Result {
 	}
 
 	if c.Has("Content") {
-		// 通过内容得到Desc, abstract
-		noteUpdate["Desc"] = SubStringHTMLToRaw(noteOrContent.Content, 50)
+		// 通过内容得到Desc, 如果有Abstract, 则用Abstract生成Desc
+		if noteOrContent.Abstract == "" {
+			noteUpdate["Desc"] = SubStringHTMLToRaw(noteOrContent.Content, 200)
+		} else {
+			noteUpdate["Desc"] = SubStringHTMLToRaw(noteOrContent.Abstract, 200)
+		}
 	}
 
 	afterNoteUsn := 0

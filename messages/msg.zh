@@ -1,7 +1,7 @@
 # leanote
-app=leanote
+app=Leanote
 moto=不只是笔记!
-moto2=知识管理, 博客, 分享, 协作... 尽在leanote
+moto2=知识管理, 博客, 分享, 协作... 尽在Leanote
 moto3=简约而不简单
 fork github=Github 源码
 
@@ -13,9 +13,10 @@ try=体验一下
 usernameOrEmail=用户名或Email
 password=密码
 home=主页
-aboutLeanote=关于leanote
+desktopApp=客户端
+aboutLeanote=关于Leanote
 suggestions=建议
-yourSuggestions=帮助完善leanote
+yourSuggestions=帮助完善Leanote
 leanoteBlog=官方博客
 knowledge=知识
 knowledgeInfo=leanote是一个笔记, 你可以用它来管理自己的知识.
@@ -32,6 +33,7 @@ captcha=验证码
 reloadCaptcha=刷新验证码
 captchaError=验证码错误
 inputCaptcha=请输入验证码
+noTag=无标签
 
 hi=Hi
 welcomeUseLeanote=Welcome!
@@ -76,6 +78,7 @@ ing=正在处理
 use = 使用
 hadAcount = 已有帐户?
 hasAcount = 还无帐户?
+signInWithThird=使用第三方帐号登录
 
 # 注册
 registerSuccessAndRdirectToNote=注册成功, 正在跳转...
@@ -189,6 +192,7 @@ cancelPublic=取消公开为博客
 move=移动
 copy=复制
 rename=重命名
+exportPdf=导出PDF
 addChildNotebook=添加子笔记本
 deleteAllShared=删除所有共享
 deleteSharedNotebook=删除共享笔记本
@@ -268,8 +272,9 @@ themeValidHasRoundInclude=警告: 模板存在循环引用问题!
 
 # lea++
 leaDesc=leanote博客平台
-recommend=推荐
-latest=最新
+recommend=推荐文章
+latest=最新文章
+subscription=我的订阅
 
 # 用户中心
 memberCenter=用户中心
@@ -278,17 +283,19 @@ hasUsers=已存在该成员
 
 # yu
 service=服务
-imageSizeOver=对不起, 您的图片容量不足, 请<a href="/service">升级您的帐户</a>
-attachSizeOver=对不起, 您的附件容量不足, 请<a href="/service">升级您的帐户</a>
+trafficOver=对不起, 您本月的流量已用完, 请至<a href="/service">升级您的帐户</a>
+imageSizeOver=对不起, 您的图片容量不足, 请至<a href="/service">升级您的帐户</a>
+attachSizeOver=对不起, 您的附件容量不足, 请至<a href="/service">升级您的帐户</a>
 
 #memeber
 welcomeToLeanote=欢迎来到leanote
 accountInfo=帐户信息
 accountType=帐户类型
-premiumAccountType=彩色套餐
+premiumAccountType=旗舰套餐
 normalAccountType=共享套餐
 imageSize=图片空间
 attachSize=附件空间
+totalTraffic=流量
 upgrade=升级套餐
 leanoteEvents=Leanote动态
 addLeanoteAccount=新建Leanote帐户
@@ -361,6 +368,9 @@ deleteGroup=删除组
 addMemberTips=输入用户名或邮箱添加成员
 deleteMember=删除成员
 
+created=创建
+updated=更新
+modify=修改
 
 # 必须要加这个, 奇怪
 [CN]

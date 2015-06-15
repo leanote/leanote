@@ -9,7 +9,13 @@
  */
 
 /*jshint loopfunc:true*/
+/*eslint no-loop-func:0 */
 
+/**
+ * This class wraps the browsers native event logic with more convenient methods.
+ *
+ * @class tinymce.dom.EventUtils
+ */
 define("tinymce/dom/EventUtils", [], function() {
 	"use strict";
 
@@ -74,11 +80,11 @@ define("tinymce/dom/EventUtils", [], function() {
 			var doc = eventDoc.documentElement;
 			var body = eventDoc.body;
 
-			event.pageX = originalEvent.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0 ) -
-				( doc && doc.clientLeft || body && body.clientLeft || 0);
+			event.pageX = originalEvent.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) -
+				(doc && doc.clientLeft || body && body.clientLeft || 0);
 
-			event.pageY = originalEvent.clientY + (doc && doc.scrollTop  || body && body.scrollTop  || 0 ) -
-				( doc && doc.clientTop  || body && body.clientTop  || 0);
+			event.pageY = originalEvent.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) -
+				(doc && doc.clientTop || body && body.clientTop || 0);
 		}
 
 		// Add preventDefault method
@@ -106,7 +112,7 @@ define("tinymce/dom/EventUtils", [], function() {
 				} else {
 					originalEvent.cancelBubble = true; // IE
 				}
-			 }
+			}
 		};
 
 		// Add stopImmediatePropagation
@@ -146,7 +152,9 @@ define("tinymce/dom/EventUtils", [], function() {
 		}
 
 		function waitForDomLoaded() {
-			if (doc.readyState === "complete") {
+			// Check complete or interactive state if there is a body
+			// element on some iframes IE 8 will produce a null body
+			if (doc.readyState === "complete" || (doc.readyState === "interactive" && doc.body)) {
 				removeEvent(doc, "readystatechange", waitForDomLoaded);
 				readyHandler();
 			}
@@ -177,7 +185,7 @@ define("tinymce/dom/EventUtils", [], function() {
 			addEvent(doc, "readystatechange", waitForDomLoaded);
 
 			// Wait until we can scroll, when we can the DOM is initialized
-			if (doc.documentElement.doScroll && win === win.top) {
+			if (doc.documentElement.doScroll && win.self === win.top) {
 				tryScroll();
 			}
 		}
@@ -334,6 +342,7 @@ define("tinymce/dom/EventUtils", [], function() {
 					events[id][name] = callbackList = [{func: callback, scope: scope}];
 					callbackList.fakeName = fakeName;
 					callbackList.capture = capture;
+					//callbackList.callback = callback;
 
 					// Add the nativeHandler to the callback list so that we can later unbind it
 					callbackList.nativeHandler = nativeHandler;
@@ -398,10 +407,13 @@ define("tinymce/dom/EventUtils", [], function() {
 								while (ci--) {
 									if (callbackList[ci].func === callback) {
 										var nativeHandler = callbackList.nativeHandler;
+										var fakeName = callbackList.fakeName, capture = callbackList.capture;
 
 										// Clone callbackList since unbind inside a callback would otherwise break the handlers loop
 										callbackList = callbackList.slice(0, ci).concat(callbackList.slice(ci + 1));
 										callbackList.nativeHandler = nativeHandler;
+										callbackList.fakeName = fakeName;
+										callbackList.capture = capture;
 
 										eventMap[name] = callbackList;
 									}

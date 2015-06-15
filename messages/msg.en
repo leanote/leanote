@@ -1,9 +1,9 @@
 # leanote
-app=leanote
-moto=Not Just A Notebook!
-moto2=Knowledge, Blog, Sharing, Cooperation... all in leanote
+app=Leanote
+moto=Not Just A Notepad!
+moto2=Knowledge, Blog, Sharing, Cooperation... all in Leanote
 moto3=Brief But Not Simple
-fork github=Fork leanote on Github
+fork github=Fork Leanote on Github
 
 # 首页
 forgetPassword = Forget password?
@@ -13,7 +13,8 @@ try=Try it
 usernameOrEmail=Username or email
 password=Password
 home=Home
-aboutLeanote=About leanote
+desktopApp=App
+aboutLeanote=About Leanote
 suggestions=Suggestions
 yourSuggestions=Suggestions
 leanoteBlog=Blog
@@ -32,6 +33,7 @@ captcha=Captcha
 reloadCaptcha=Reload Captcha
 captchaError=Captcha Do Not Match
 inputCaptcha=Captcha is required
+noTag=No Tags
 
 hi=Hi
 welcomeUseLeanote=Welcome!
@@ -56,6 +58,7 @@ ing=processing
 use = Use
 hadAcount = Already have an account?
 hasAcount = Do not have an account?
+signInWithThird=Sign in with other account
 
 # 注册
 registerSuccessAndRdirectToNote=Register success, redirecting...
@@ -165,6 +168,7 @@ cancelPublic=Cancel public
 move=Move
 copy=Copy
 rename=Rename
+exportPdf=Export PDF
 addChildNotebook=Add child notebook
 deleteAllShared=Delete shared user
 deleteSharedNotebook=Delete shared notebook
@@ -244,6 +248,7 @@ themeValidHasRoundInclude=WARNING: Templates have circular references!
 leaDesc=leanote blog platform
 recommend=Recommend
 latest=Latest
+subscription=Subscription
 
 # 用户中心
 memberCenter=Member Center
@@ -252,8 +257,9 @@ hasUsers=The user already exists
 
 # yu
 service=Service
-imageSizeOver=Sorry, you have no image opacity, please <a href="/service">upgrade your account</a>.
-attachSizeOver=Sorry, you have no attachment opacity, please <a href="/service">upgrade your account</a>.
+trafficOver=Sorry, you have no web traffic, please go <a href="/service">upgrade your account</a>.
+imageSizeOver=Sorry, you have no image capacity, please go <a href="/service">upgrade your account</a>.
+attachSizeOver=Sorry, you have no attachment opacity, please go <a href="/service">upgrade your account</a>.
 
 
 #memeber
@@ -262,8 +268,9 @@ accountInfo=Account Info
 accountType=Account Type
 premiumAccountType=Premium
 normalAccountType=Normal
-imageSize=Image Opacity
-attachSize=Attachment Opacity
+imageSize=Image Capacity
+attachSize=Attachment Capacity
+totalTraffic=Web Traffic
 upgrade=Upgrade My Account
 leanoteEvents=Leanote News
 addLeanoteAccount=New Leanote Account
@@ -335,6 +342,10 @@ newGroup=New group
 deleteGroup=Delete group
 addMemberTips=Input username or email to add member
 deleteMember=Delete member
+
+created=Created
+updated=Updated
+modify=Modify
 
 # error 
 notFound=This page cann't found.

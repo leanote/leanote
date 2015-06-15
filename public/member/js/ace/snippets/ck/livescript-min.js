@@ -1,1 +1,0 @@
-ace.define("ace/snippets/livescript",["require","exports","module"],function(e,i,p){i.snippetText="",i.scope="livescript"});

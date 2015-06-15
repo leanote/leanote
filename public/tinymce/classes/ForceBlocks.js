@@ -14,7 +14,6 @@ define("tinymce/ForceBlocks", [], function() {
 		var schema = editor.schema, blockElements = schema.getBlockElements();
 
 		function addRootBlocks() {
-
 			var node = selection.getStart(), rootNode = editor.getBody(), rng;
 			var startContainer, startOffset, endContainer, endOffset, rootBlockNode;
 			var tempNode, offset = -0xFFFFFF, wrapped, restoreSelection;

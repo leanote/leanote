@@ -1,1 +1,0 @@
-ace.define("ace/snippets/pascal",["require","exports","module"],function(e,p,s){p.snippetText="",p.scope="pascal"});

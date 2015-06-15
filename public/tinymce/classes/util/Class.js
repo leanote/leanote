@@ -27,16 +27,14 @@ define("tinymce/util/Class", [
 
 	// Provides classical inheritance, based on code made by John Resig
 	Class.extend = extendClass = function(prop) {
-		var Self = this, _super = Self.prototype, prototype, name, member;
+		var self = this, _super = self.prototype, prototype, name, member;
 
 		// The dummy class constructor
 		function Class() {
-			var i, mixins, mixin, self;
+			var i, mixins, mixin, self = this;
 
 			// All construction is actually done in the init method
 			if (!initializing) {
-				self = this;
-
 				// Run class constuctor
 				if (self.init) {
 					self.init.apply(self, arguments);
@@ -64,7 +62,7 @@ define("tinymce/util/Class", [
 		// Creates a overloaded method for the class
 		// this enables you to use this._super(); to call the super function
 		function createMethod(name, fn) {
-			return function(){
+			return function() {
 				var self = this, tmp = self._super, ret;
 
 				self._super = _super[name];
@@ -78,7 +76,9 @@ define("tinymce/util/Class", [
 		// Instantiate a base class (but only create the instance,
 		// don't run the init constructor)
 		initializing = true;
-		prototype = new Self();
+
+		/*eslint new-cap:0 */
+		prototype = new self();
 		initializing = false;
 
 		// Add mixins

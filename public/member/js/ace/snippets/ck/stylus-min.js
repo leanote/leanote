@@ -1,1 +1,0 @@
-ace.define("ace/snippets/stylus",["require","exports","module"],function(e,s,t){s.snippetText="",s.scope="stylus"});

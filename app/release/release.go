@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"io/ioutil"
 	"strings"
+//	"time"
 )
 
 /*
@@ -32,7 +33,7 @@ import (
 //var jss = []string{"js/jquery-cookie", "js/bootstrap"}
 var jss = []string{"js/jquery-cookie", "js/bootstrap", 
 	"js/common", "js/app/note", "js/app/tag", "js/app/notebook", "js/app/share", 
-	"js/object_id"}
+	"js/object_id", "js/ZeroClipboard/ZeroClipboard"}
 	
 var base1 = "/Users/life/Documents/Go/package2/src/github.com/leanote/leanote/"
 var base = "/Users/life/Documents/Go/package2/src/github.com/leanote/leanote/public/"
@@ -91,7 +92,6 @@ func dev() {
 		"notebook.js": "notebook-min.js",
 		"share.js": "share-min.js",
 		"tag.js": "tag-min.js",
-		"main.js": "main-min.js",
 		"jquery.slimscroll.js": "jquery.slimscroll-min.js",
 		"jquery.contextmenu.js": "jquery.contextmenu-min.js",
 		"editor/editor.js": "editor/editor-min.js",
@@ -107,6 +107,13 @@ func dev() {
 	for key, value := range m {
 		content = strings.Replace(content, key, value, -1)
 	}
+	
+//	var time = time.Now().Unix() % 1000
+	
+//	content = strings.Replace(content, "-min.js", fmt.Sprintf("-min.js?r=%d", time), -1)
+//	content = strings.Replace(content, "default{{end}}.css", fmt.Sprintf("default{{end}}.css?r=%d", time), 1)
+//	content = strings.Replace(content, "writting-overwrite.css", fmt.Sprintf("writting-overwrite.css?r=%d", time), 1)
+	
 	ioutil.WriteFile(target, []byte(content), os.ModeAppend)
 }
 
@@ -114,8 +121,10 @@ func dev() {
 func tinymce() {
 //	cmdStr := "node_modules/jake/bin/cli.js minify bundle[themes:modern,plugins:table,paste,advlist,autolink,link,image,lists,charmap,hr,searchreplace,visualblocks,visualchars,code,nav,tabfocus,contextmenu,directionality,codemirror,codesyntax,textcolor,fullpage]"
 //	cmd := exec.Command("/Users/life/Documents/eclipse-workspace/go/leanote_release/tinymce-master/node_modules/jake/bin/cli.js", "minify", "bundle[themes:modern,plugins:table,paste,advlist,autolink,link,image,lists,charmap,hr,searchreplace,visualblocks,visualchars,code,nav,tabfocus,contextmenu,directionality,codemirror,codesyntax,textcolor,fullpage]")
-	cmd := exec.Command("/Users/life/Documents/eclipse-workspace/go/leanote_release/tinymce-master/node_modules/jake/bin/cli.js", "minify")
-	cmd.Dir = "/Users/life/Documents/eclipse-workspace/go/leanote_release/tinymce-master"
+	cmd := exec.Command("/bin/sh", "-c", "grunt minify");
+	cmd.Dir = base + "/tinymce_4.1.9"
+	
+	fmt.Println("正在build tinymce");
 	
 	// 必须要先删除
 	cmd2 := exec.Command("/bin/sh", "-c", "rm " + cmd.Dir + "/js/tinymce/tinymce.dev.js")
@@ -123,32 +132,19 @@ func tinymce() {
 	cmd2 = exec.Command("/bin/sh", "-c", "rm " + cmd.Dir + "/js/tinymce/tinymce.jquery.dev.js")
 	c, _ := cmd2.CombinedOutput()
 	fmt.Println(string(c))
+	
 	c, _ = cmd.CombinedOutput()
 	fmt.Println(string(c))
 }
 
 func main() {
 	// 压缩tinymce
-	tinymce()
+	// tinymce()
 	
 	dev();
 	
 	// 其它零散的需要压缩的js
-	otherJss := []string{"tinymce/tinymce", "js/main", "js/app/page", "js/contextmenu/jquery.contextmenu", 
-		"mdeditor/editor/scrollLink", 
-		"mdeditor/editor/editor",
-		"mdeditor/editor/jquery.waitforimages",
-		"mdeditor/editor/pagedown/local/Markdown.local.zh",
-		"mdeditor/editor/pagedown/local/Markdown.local.en",
-		"mdeditor/editor/pagedown/Markdown.Editor",
-		"mdeditor/editor/pagedown/Markdown.Sanitizer",
-		"mdeditor/editor/pagedown/Markdown.Converter",
-		"mdeditor/editor/Markdown.Extra",
-		"mdeditor/editor/underscore",
-		"mdeditor/editor/mathJax",
-		"js/jQuery-slimScroll-1.3.0/jquery.slimscroll",
-		"js/app/editor_drop_paste",
-		"js/app/attachment_upload",
+	otherJss := []string{"js/main", "js/app/page", "js/contextmenu/jquery.contextmenu", 
 		"js/jquery.ztree.all-3.5",
 		"js/jQuery-slimScroll-1.3.0/jquery.slimscroll",
 		}

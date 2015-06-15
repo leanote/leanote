@@ -17,7 +17,7 @@ tinymce.PluginManager.add('template', function(editor) {
 		return function() {
 			var templateList = editor.settings.templates;
 
-			if (typeof(templateList) == "string") {
+			if (typeof templateList == "string") {
 				tinymce.util.XHR.send({
 					url: templateList,
 					success: function(text) {
@@ -100,18 +100,28 @@ tinymce.PluginManager.add('template', function(editor) {
 
 		win = editor.windowManager.open({
 			title: 'Insert template',
+			layout: 'flex',
+			direction: 'column',
+			align: 'stretch',
+			padding: 15,
+			spacing: 10,
 
-			body: [
-				{type: 'container', label: 'Templates', items: {
-					type: 'listbox', name: 'template', values: values, onselect: onSelectTemplate
-				}},
+			items: [
+				{type: 'form', flex: 0, padding: 0, items: [
+					{type: 'container', label: 'Templates', items: {
+						type: 'listbox', label: 'Templates', name: 'template', values: values, onselect: onSelectTemplate
+					}}
+				]},
 				{type: 'label', name: 'description', label: 'Description', text: '\u00a0'},
-				{type: 'iframe', minWidth: 600, minHeight: 400, border: 1}
+				{type: 'iframe', flex: 1, border: 1}
 			],
 
 			onsubmit: function() {
 				insertTemplate(false, templateHtml);
-			}
+			},
+
+			width: editor.getParam('template_popup_width', 600),
+			height: editor.getParam('template_popup_height', 500)
 		});
 
 		win.find('listbox')[0].fire('select');
@@ -163,7 +173,7 @@ tinymce.PluginManager.add('template', function(editor) {
 		each(dom.select('*', e), function(e) {
 			each(vl, function(v, k) {
 				if (dom.hasClass(e, k)) {
-					if (typeof(vl[k]) == 'function') {
+					if (typeof vl[k] == 'function') {
 						vl[k](e);
 					}
 				}
@@ -173,7 +183,7 @@ tinymce.PluginManager.add('template', function(editor) {
 
 	function replaceTemplateValues(html, templateValuesOptionName) {
 		each(editor.getParam(templateValuesOptionName), function(v, k) {
-			if (typeof(v) != 'function') {
+			if (typeof v != 'function') {
 				html = html.replace(new RegExp('\\{\\$' + k + '\\}', 'g'), v);
 			}
 		});

@@ -49,10 +49,11 @@ func (c Note) Index(noteId string) revel.Result {
 		hasRightNoteId := false
 		if IsObjectId(noteId) {
 			note := noteService.GetNoteById(noteId)
-			var noteOwner = note.UserId.Hex()
-			noteContent = noteService.GetNoteContent(noteId, noteOwner)
 			
 			if note.NoteId != "" {
+				var noteOwner = note.UserId.Hex()
+				noteContent = noteService.GetNoteContent(noteId, noteOwner)
+				
 				hasRightNoteId = true
 				c.RenderArgs["curNoteId"] = noteId
 				c.RenderArgs["curNotebookId"] = note.NotebookId.Hex()

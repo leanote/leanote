@@ -1,1 +1,0 @@
-ace.define("ace/snippets/rust",["require","exports","module"],function(e,s,t){s.snippetText="",s.scope="rust"});

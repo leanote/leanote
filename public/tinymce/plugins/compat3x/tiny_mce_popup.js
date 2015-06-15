@@ -249,18 +249,21 @@ var tinyMCEPopup = {
 	 * @param {string} element_id Element id to be filled with the color value from the picker.
 	 */
 	pickColor : function(e, element_id) {
-		this.execCommand('mceColorPicker', true, {
-			color : document.getElementById(element_id).value,
-			func : function(c) {
-				document.getElementById(element_id).value = c;
-
-				try {
-					document.getElementById(element_id).onchange();
-				} catch (ex) {
-					// Try fire event, ignore errors
-				}
-			}
-		});
+		var el = document.getElementById(element_id), colorPickerCallback = this.editor.settings.color_picker_callback;
+		if (colorPickerCallback) {
+			colorPickerCallback.call(
+				this.editor,
+				function (value) {
+					el.value = value;
+					try {
+						el.onchange();
+					} catch (ex) {
+						// Try fire event, ignore errors
+					}
+				},
+				el.value
+			);
+		}
 	},
 
 	/**
@@ -295,7 +298,7 @@ var tinyMCEPopup = {
 	 * native version use the callback method instead then it can be extended.
 	 *
 	 * @method alert
-	 * @param {String} t Title for the new alert dialog.
+	 * @param {String} tx Title for the new alert dialog.
 	 * @param {function} cb Callback function to be executed after the user has selected ok.
 	 * @param {Object} s Optional scope to execute the callback in.
 	 */
@@ -329,8 +332,9 @@ var tinyMCEPopup = {
 	_restoreSelection : function() {
 		var e = window.event.srcElement;
 
-		if (e.nodeName == 'INPUT' && (e.type == 'submit' || e.type == 'button'))
+		if (e.nodeName == 'INPUT' && (e.type == 'submit' || e.type == 'button')) {
 			tinyMCEPopup.restoreSelection();
+		}
 	},
 
 /*	_restoreSelection : function() {
@@ -385,11 +389,15 @@ var tinyMCEPopup = {
 		document.body.style.display = '';
 
 		// Restore selection in IE when focus is placed on a non textarea or input element of the type text
-		if (tinymce.isIE) {
-			document.attachEvent('onmouseup', tinyMCEPopup._restoreSelection);
+		if (tinymce.Env.ie) {
+			if (tinymce.Env.ie < 11) {
+				document.attachEvent('onmouseup', tinyMCEPopup._restoreSelection);
 
-			// Add base target element for it since it would fail with modal dialogs
-			t.dom.add(t.dom.select('head')[0], 'base', {target : '_self'});
+				// Add base target element for it since it would fail with modal dialogs
+				t.dom.add(t.dom.select('head')[0], 'base', {target: '_self'});
+			} else {
+				document.addEventListener('mouseup', tinyMCEPopup._restoreSelection, false);
+			}
 		}
 
 		t.restoreSelection();
@@ -436,7 +444,11 @@ var tinyMCEPopup = {
 
 		document.onkeyup = tinyMCEPopup._closeWinKeyHandler;
 
-		t.uiWindow.getEl('head').firstChild.firstChild.data = document.title;
+		if ('textContent' in document) {
+			t.uiWindow.getEl('head').firstChild.textContent = document.title;
+		} else {
+			t.uiWindow.getEl('head').firstChild.innerText = document.title;
+		}
 	},
 
 	_accessHandler : function(e) {

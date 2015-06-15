@@ -1,0 +1,167 @@
+## Editor.js
+### [1]
+	line 670
+	// life
+	title: self.editorManager.translate("Leanote Editor"),
+
+### [2]
+	line 1620
+	setContent
+	/**
+	 * life ace
+	 */
+	// 先destroy之前的ace
+	if(LeaAce && LeaAce.canAce) { // 有些地方不用, 比如单页面
+		var everContent = $(self.getBody());
+		if(everContent) {
+			LeaAce.destroyAceFromContent(everContent);
+		}
+	}
+	// end
+
+### [3]
+	line 1687
+	/**
+			 * life ace
+			 */
+			if(LeaAce && LeaAce.canAce) {
+				if(LeaAce.canAce() && LeaAce.isAce) {
+					try {
+						LeaAce.initAceFromContent(self);
+					} catch(e) {
+						log(e);
+					}
+				} else {
+					// 为了在firefox下有正常的显示
+					$("#editorContent pre").removeClass("ace-tomorrow ace_editor");
+				}
+			}
+			// end
+
+### [4]
+	line 1777
+		// life
+		insertRawContent: function(content) {
+			this.execCommand('mceInsertRawHTML', false, content);
+		},
+
+## EditorCommands.js
+### [1]
+	line 57
+	// life ace
+	if(cmd != "toggleCode")
+		self.focus();
+
+### [2]
+	line 642
+	// life ace
+					// 插入的时候把<pre>内的标签全清掉
+					// life 把<pre></pre>间的代码拿出, 去掉标签<span>之类的
+					value = value.replace(/<pre([^>]*?)>([\s\S]*?)<\/pre>/g, function(v, v1, v2) {
+						// v == "<pre>a, b, c</pre>"
+						v2 = v2.replace(/(<([^>]+)>)/gi, '').replace(/\s+$/, ''); // 把最后一个换行去掉
+						return "<pre " + v1 + ">" + v2 + "</pre>";
+					});
+### [3] ace
+	line 699
+	mceInsertRawHTML: function() {}
+
+
+## EnterKey.js
+	
+### [1]
+	line 493
+	// life ace, 在ace editor下回车给ace来控制
+			var $container = $(container);
+			var aceEditorAndPre = LeaAce.isInAce($container);
+			if(aceEditorAndPre) {
+				// alert(2);
+				// 跳出aceEditor
+				if(evt.shiftKey) {
+					// alert(33);
+					// var id = $container.attr('id');
+					var aceEditor = aceEditorAndPre[0];
+					aceEditor.blur();
+					var pre = aceEditorAndPre[1];
+					// 必须要延迟
+					setTimeout(function() {
+						aceEditor.blur();
+						// log('blur...')
+						var newBlock = $("<p><br /></p>");
+						pre.after(newBlock);
+						// log(newBlock.get(0));
+						rng.setStart(newBlock.get(0), 0);
+						rng.setEnd(newBlock.get(0), 0);
+						// 没用
+						rng.selectNode(newBlock.get(0));
+						selection.setRng(rng);
+						// 再延迟
+						setTimeout(function() {
+							selection.setRng(rng);
+						}, 10);
+
+						// TODO ... 这里
+						// log("why");
+						// log(rng);
+						// log(selection.getRng());
+					}, 10);
+					return true;
+				}
+				return false;
+			}
+
+## UndoManager.js
+
+
+## dom/Selection.js
+
+### [1]
+	line 499
+	// Convert bookmark to range IE 11 fix
+				// life ace, 不知道会出什么错
+				try {
+					if (bookmark.startContainer) {
+						rng = doc.createRange();
+						rng.setStart(bookmark.startContainer, bookmark.startOffset);
+						rng.setEnd(bookmark.endContainer, bookmark.endOffset);
+					} else {
+						rng = bookmark;
+					}
+				} catch(e){ 
+					console.error(e);
+				}
+
+## ui/ListBox.js
+### [1]
+		/**
+		 * disable/enable 某一list的item
+		 * leanote ace life ace
+		 * value = convert, state = true | false
+		 */
+		diableValue: function(value, state) {
+			var self = this;
+			var menu = self.settings.menu;
+			if (self.menu) {
+				self.menu.items().each(function(ctrl) {// menuitem
+					if(ctrl.value() === value) {
+						ctrl.disabled(state);
+						return;
+					}
+				});
+			} else {
+				for (var i = 0; i < menu.length; i++) {
+					if(menu[i].value == value) {
+						menu[i].disabled = state;
+						return;
+					}
+				}
+			}
+		},
+
+## Formatter.js
+### [1]
+	removeformat: [
+		{
+		// life
+		selector: 'h1,h2,h3,h4,h5,h6,pre,b,strong,em,i,font,u,strike,sub,sup,dfn,code,samp,kbd,var,cite,mark,q,del,ins',
+					

@@ -56,6 +56,14 @@ func ClearDir(dir string) bool {
 	return true
 }
 
+func MkdirAll(dir string) bool {
+	err := os.MkdirAll(dir, 0777)
+	if err != nil {
+		return false
+	}
+	return true
+}
+
 // list dir's all file, return filenames
 func ListDir(dir string) []string {
 	f, err := os.Open(dir)
