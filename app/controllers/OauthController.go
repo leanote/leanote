@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"code.google.com/p/goauth2/oauth"
+	"golang.org/x/oauth2"
 	"github.com/revel/revel"
 	"github.com/leanote/leanote/app/lea/netutil"
 	. "github.com/leanote/leanote/app/lea"
