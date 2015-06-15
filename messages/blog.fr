@@ -1,0 +1,91 @@
+# blog
+
+blogNavs=Navigation
+quickLinks=Liens rapides
+latestPosts=Dernières publications
+
+noBlog=Aucun blog
+noTag=Aucune étiquette
+blogClass=Catégorie
+updatedTime=Mis à jour à
+createdTime=Créé à
+fullBlog=Blog entier
+blogNav=Navigation du blog
+more=Plus...
+previous=Précédent
+next=Suivant
+
+#
+# set blog
+#
+blogSet=Configuration du blog
+baseInfoSet=Information de base
+commentSet=Commentaires
+themeSet=Thème
+theme=Thème
+blogName=Titre
+blogLogo=Logo
+blogDesc=Description
+aboutMe=A propos de moi
+
+#domain
+domainSet=Domaine
+subDomain=Sous-domaine
+domain=Domaine personnalisé
+
+# theme
+elegant=Elegant
+navFixed=Navigation figée sur le côté gauche
+
+openComment=Ouvrir un commentaire?
+chooseComment=Système de commentaires
+disqusHelp=Veuillez renseigner votre identifiant Disqus
+needHelp=Besoin d'aide?
+blogLogoTips=Téléverser une image pour remplacer le titre du blog
+saveSuccess=Sauvegarde réussie
+
+community=Communauté
+home=Accueil
+none=Aucun
+moreShare=Plus
+sinaWeibo=Weibo
+weixin=Weichat
+tencentWeibo=Tencent Weibo
+qqZone=QQ Zone
+renren=Renren
+report=Rapport
+like=J'aime
+unlike=Je n'aime plus
+viewers=Lecteurs
+author=Auteur
+delete=Effacer
+reply=Répondre
+comment=Commenter
+comments=Commentaires
+cancel=Annuler
+confirm=Confirmer
+signIn=S'identifier
+signUp=S'incrire
+submitComment=Soumettre
+reportReason1=不友善内容
+reportReason2=广告等垃圾信息
+reportReason3=违法违规内容
+reportReason4=不宜公开讨论的政治内容
+other=Autre
+reportReason=Raison
+chooseReason=请选择举报理由
+reportSuccess=举报成功, 我们处理后会通知作者, 感谢您的监督
+error=Erreur
+reportComment?=举报该评论?
+reportBlog?=举报该博客?
+confirmDeleteComment=Êtes-vous sûr?
+scanQRCode=Ouvrez Weichat et scannez le QR Code
+justNow=Seulement maintenant
+minutesAgo=Il y a quelques minutes
+hoursAgo=Il y a plusieurs heures
+daysAgo=Il y a plusieurs jours
+weeksAgo=Il y a plusieurs semaines
+monthsAgo=Il y a plusieurs mois
+
+
+a=a

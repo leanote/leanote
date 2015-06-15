@@ -10,8 +10,8 @@ import (
 
 // convert revel msg to js msg
 
-var msgBasePath = "/Users/life/Documents/Go/package1/src/github.com/leanote/leanote/messages/"
-var targetBasePath = "/Users/life/Documents/Go/package1/src/github.com/leanote/leanote/public/js/i18n/"
+var msgBasePath = "/Users/life/Documents/Go/package2/src/github.com/leanote/leanote/messages/"
+var targetBasePath = "/Users/life/Documents/Go/package2/src/github.com/leanote/leanote/public/js/i18n/"
 func parse(filename string) {
 	file, err := os.Open(msgBasePath + filename)
 	reader := bufio.NewReader(file)
@@ -84,6 +84,8 @@ function getMsg(key, data) {
 func main() {
 	parse("msg.en")
 	parse("msg.zh")
+	parse("msg.fr")
 	parse("blog.zh")
 	parse("blog.en")
+	parse("blog.fr")
 }
