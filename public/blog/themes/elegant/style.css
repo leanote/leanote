@@ -541,3 +541,6 @@ table tr:nth-child(2n) {
 	border-collapse: collapse;
 	padding: 6px 13px;
 }
+.desc *, #content * {
+    word-wrap: break-word;
+}
