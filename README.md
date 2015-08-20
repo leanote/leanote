@@ -54,7 +54,7 @@ Support us, [donate us](http://leanote.org/#donate). And thanks [donators](http:
 
 ## 9. Related projects
 * [Leanote Desktop App](https://github.com/leanote/desktop-app), [Download](http://app.leanote.com)
-* [Leanote IOS](https://github.com/leanote/leanote-ios)
+* [Leanote IOS](https://github.com/leanote/leanote-ios), [Download From App Store](https://itunes.apple.com/en/app/leanote/id1022302858?mt=8)
 * [Leanote Android](https://github.com/Dminter/leanote-android-client), development phase
 
 And also, you are welcome to join us.
