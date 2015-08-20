@@ -10,10 +10,10 @@ forgetPassword = Mot de passe oublié?
 or=ou
 try=Essayer
 3th=Comptes tiers
-usernameOrEmail=Nom d'utilisateur ou courriel
+usernameOrEmail=Nom d'utilisateur ou adresse de courriel
 password=Mot de passe
-home=Mon bloc-note
-desktopApp=App
+home=Mes blocs-notes
+desktopApp=Application
 aboutLeanote=A propos de leanote
 suggestions=Suggestions
 yourSuggestions=Suggestions
@@ -37,17 +37,17 @@ noTag=No Tags
 
 hi=Coucou
 welcomeUseLeanote=Bienvenue!
-myNote=Ma note
-curUser=Courriel
+myNote=Mes notes
+curUser=Adresse courriel
 
 # form
 submit=Soumettre
 register=S'inscrire
 login=S'identifier
 password2=Confirmer votre mot de passe
-email=Courriel
-inputUsername=Le nom d'utilisateur(courriel) est requis
-inputEmail=Le courriel est requis
+email=Adresse de courriel
+inputUsername=Le nom d'utilisateur(adresse courriel) est requis
+inputEmail=L'adresse courriel est requis
 wrongEmail=Wrong email
 wrongUsernameOrPassword=Mauvais nom d'utilisateur ou mot de passe
 inputPassword=Le mot de passe est requis
@@ -58,7 +58,7 @@ ing=En cours
 use = Utiliser
 hadAcount = Déjà inscrit?
 hasAcount = Pas encore inscrit?
-signInWithThird=Sign in with other account
+signInWithThird=S'identifier avec un compte tiers
 
 # 注册
 registerSuccessAndRdirectToNote=inscription réussie, redirection...
@@ -85,7 +85,7 @@ editorTips=Astuces
 editorTipsInfo=<h4>1. Raccourcis</h4>ctrl+maj+c Active/désactive le code<h4>2. maj+entrée Sortir du bloc courant</h4> ex. <img src="/images/outofcode.png" style="width: 90px"/> dans cette situation vous pouvez utiliser maj+entrée pour sortir du bloc de code courant.
 newNote=Nouvelle note
 newMarkdownNote=Nouvelle Note Markdown
-noNoteNewNoteTips=Le bloc-note est vide, pourquoi pas...
+noNoteNewNoteTips=Le bloc-note est vide, pourquoi ne pas...
 canntNewNoteTips=Désolé, impossible de créer une nouvelle note ici, veuillez d'abord choisir un bloc-note.
 new=Nouveau
 newMarkdown=Nouvelle note markdown
@@ -249,7 +249,7 @@ recommend=Recommandé
 latest=Plus récent.
 
 # 用户中心
-memberCenter=Centre de Membre
+memberCenter=Espace Membre
 userNotExists=L'utilisateur n'existe pas
 hasUsers=L'utilisateur existe déjà
 
@@ -296,7 +296,7 @@ asc=Asc
 postList=Afficher la liste
 hasSelfDefined=Défini
 noSelfDefined=Non défini
-setAbstract=Réglages abstraits
+setAbstract=Autres réglages
 title=Titre
 content=Contenu
 
