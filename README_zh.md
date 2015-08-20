@@ -63,7 +63,7 @@ Leanote还有很多问题, 如果你喜欢它, 欢迎加入我们一起完善lea
 
 ## 讨论
 * [leanote 社区](http://bbs.leanote.com)
-* QQ群: 158716820
+* QQ群: 158716820, 256076853
 * [leanote google group](https://groups.google.com/forum/#!forum/leanote)
 
 ----------------------------------------------------------------

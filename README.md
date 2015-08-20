@@ -62,7 +62,7 @@ And also, you are welcome to join us.
 ## 9. Discussion
 * [leanote bbs](http://bbs.leanote.com)
 * [leanote google group](https://groups.google.com/forum/#!forum/leanote)
-* QQ Group: 158716820
+* QQ Group: 158716820, 256076853
 
 -----------------------------------------------------------------------
 [中文](README_zh.md)
