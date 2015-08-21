@@ -59,10 +59,13 @@ Support us, [donate us](http://leanote.org/#donate). And thanks [donators](http:
 
 And also, you are welcome to join us.
 
-## 9. Discussion
-* [leanote bbs](http://bbs.leanote.com)
-* [leanote google group](https://groups.google.com/forum/#!forum/leanote)
+## 9. Support & Join us
+
+* Email: leanote@leanote.com
+* [Leanote BBS](http://bbs.leanote.com)
+* [Leanote Google Group](https://groups.google.com/forum/#!forum/leanote)
 * QQ Group: 158716820, 256076853
+
 
 -----------------------------------------------------------------------
 [中文](README_zh.md)

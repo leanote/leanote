@@ -59,12 +59,13 @@ Leanote还有很多问题, 如果你喜欢它, 欢迎加入我们一起完善lea
 * [Leanote IOS](https://github.com/leanote/leanote-ios), [从App Store下载](https://itunes.apple.com/zn/app/leanote/id1022302858?mt=8)
 * [Leanote Android](https://github.com/Dminter/leanote-android-client), 开发阶段
 
-同样, 欢迎加入我们!
+欢迎加入我们!
 
-## 讨论
+## 联系&加入我们
+* Email: leanote@leanote.com
 * [leanote 社区](http://bbs.leanote.com)
 * QQ群: 158716820, 256076853
-* [leanote google group](https://groups.google.com/forum/#!forum/leanote)
+* [Leanote Google Group](https://groups.google.com/forum/#!forum/leanote)
 
 ----------------------------------------------------------------
 [English](README.md)
