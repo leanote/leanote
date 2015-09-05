@@ -1,0 +1,22 @@
+{
+  "name": "leanote-ios-markdown-editor",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "gulp": "^3.8.7",
+    "gulp-uglify": "^1.0.0",
+    "gulp-clean": "^0.3.1",
+    "gulp-util": "^3.0.1",
+    "gulp-rename": "^1.0",
+    "gulp-minify-html": "^1.0",
+    "gulp-concat": "",
+    "gulp-replace": "",
+    "gulp-inject": "",
+    "gulp-sequence": ""
+  },
+  "author": "life(http://life.leanote.com)",
+  "license": "GPL v2",
+  "bugs": {
+    "url": "https://github.com/lenaote/leanote-ios/issues"
+  }
+}

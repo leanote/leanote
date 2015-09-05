@@ -16,5 +16,4 @@ app/tmp/main.go
 .project
 public/config.codekit
 files
-/gulpfile.js
 /node_modules

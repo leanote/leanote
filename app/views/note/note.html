@@ -18,13 +18,15 @@
 <link href="/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
 <!-- mdeditor -->
 <link href="/public/dist/themes/default.css" rel="stylesheet" />
+<!-- context-menu -->
+<link rel="stylesheet" href="/js/contextmenu/css/contextmenu.css" type="text/css" />
 
 <script>
 var hash = location.hash;
 if(hash.indexOf("writing") >= 0) {
 	var files = '<link rel="stylesheet" href="/css/theme/writting-overwrite.css" type="text/css" id="themeLink" />';
 } else {
-	var files ='<link rel="stylesheet" href="/css/theme/{{if .userInfo.Theme}}{{.userInfo.Theme}}{{else}}default{{end}}.css" type="text/css" id="themeLink" />';
+	var files ='<link rel="stylesheet" href="/css/theme/{{if .userInfo.Theme}}{{.userInfo.Theme}}{{else}}default{{end}}.css?t=3" type="text/css" id="themeLink" />';
 }
 document.write(files);
 </script>
@@ -60,7 +62,7 @@ function log(o) {
 				<!-- search -->
 				<div class="pull-left" id="searchWrap">
 					<form class="navbar-form form-inline col-lg-2" id="searchNote">
-						<input class="form-control" placeholder="Search" type="text" id="searchNoteInput">
+						<input class="form-control" placeholder="{{msg . "SearchNote"}}" type="text" id="searchNoteInput">
 					</form>
 				</div>
 
@@ -68,14 +70,15 @@ function log(o) {
 				<div class="pull-left" style="" id="newNoteWrap">
 					<!-- 新建笔记 -->
 					<div id="newMyNote">
-						<a id="newNoteBtn" title="{{msg . "newNote"}}">
-							<i class="fa fa-file-o"></i>
+						<a class="new-note" id="newNoteBtn" title="{{msg . "newNote"}}">
+							<!--<i class="fa fa-file-o"></i>-->
 							<span class="new-note-text">{{msg . "newNote"}}</span>
 							<span class="new-note-text-abbr">{{msg . "new"}}</span>
 						</a>
 						<span class="new-split">|</span>
-						<a id="newNoteMarkdownBtn" title="{{msg . "newMarkdown"}}">
-							<span class="new-markdown-text">Markdown</span>
+						<a class="new-note new-markdown" id="newNoteMarkdownBtn" title="{{msg . "newMarkdown"}}">
+							<!-- <i class="lea-icon icon-markdown"></i> -->
+							<span class="new-markdown-text">{{msg . "newMarkdown"}}</span>
 							<span class="new-markdown-text-abbr">Md</span>
 						</a>
 						<span class="for-split"> - </span>
@@ -86,7 +89,7 @@ function log(o) {
 								<i class="fa fa-angle-down"></i>
 							</a>
 							<div class="dropdown-menu dropdown-list" id="searchNotebookForAddDropdownList">
-								<input type="text" placeholder="Search notebook" class="form-control" id="searchNotebookForAdd"/>
+								<input type="text" placeholder="{{msg . "SearchNotebook"}}" class="form-control" id="searchNotebookForAdd"/>
 								<ul class="clearfix" role="menu" aria-labelledby="listNotebookDropdownMenu" id="notebookNavForNewNote">
 								</ul>
 							</div>
@@ -95,14 +98,14 @@ function log(o) {
 					
 					<!-- 只为新建别人的笔记 -->
 					<div id="newSharedNote" style="display: none">
-						<a id="newSharedNoteBtn">
-							<i class="fa fa-file-o"></i>
+						<a id="newSharedNoteBtn" class="new-note">
+							<!--<i class="fa fa-file-o"></i> -->
 							<span class="new-note-text">{{msg . "newNote"}}</span>
 							<span class="new-note-text-abbr">{{msg . "new"}}</span>
 						</a>
 						<span class="new-split">|</span>
-						<a id="newShareNoteMarkdownBtn" title="{{msg . "newMarkdown"}}">
-							<span class="new-markdown-text">Markdown</span>
+						<a id="newShareNoteMarkdownBtn" class="new-note" title="{{msg . "newMarkdown"}}">
+							<span class="new-markdown-text">{{msg . "newMarkdown"}}</span>
 							<span class="new-markdown-text-abbr">Md</span>
 						</a>
 						<span class="for-split"> - </span>
@@ -267,7 +270,7 @@ function log(o) {
 							</div>
 							
 							<div class="folderBody">
-								<input type="text" class="form-control" id="searchNotebookForList" placeholder="Search notebook"/>							
+								<input type="text" class="form-control" id="searchNotebookForList" placeholder="{{msg . "SearchNotebook"}}"/>							
 								<ul class="ztree" id="notebookList"></ul>
 								<ul class="ztree" id="notebookListForSearch"></ul>
 							</div>
@@ -541,7 +544,7 @@ function log(o) {
 						</div>
 					</div>
 
-					<div id="editor">
+					<div id="editor" class="read-only">
 						<!-- 编辑器 -->
 						<div id="mceToolbar">
 							<div id="mceToolbarContainer">
@@ -549,10 +552,10 @@ function log(o) {
 								<a id="moreBtn"> <i class="fa more-fa"></i></a>
 							</div>
 							<!-- 查看信息 -->
-							<div id="infoToolbar" class="info-toolbar">
+							<div id="infoToolbar" class="info-toolbar invisible">
 				              <a class="toolbar-update"><i class="fa fa-pencil"></i> <span class="lang">{{msg . "modify"}}</span></a>
-				              <span class="lang">{{msg . "created"}}</span>: <span class="created-time">2015-04-03</span>
-				              <span class="lang">{{msg . "updated"}}</span>: <span class="updated-time">2015-05-01</span>
+				              <span class="lang">{{msg . "created"}}</span>: <span class="created-time"></span>
+				              <span class="lang">{{msg . "updated"}}</span>: <span class="updated-time"></span>
 				            </div>
 						</div>
 						<div class="editorBg"></div>
@@ -581,16 +584,15 @@ function log(o) {
 				       </div>
 					</div>
 					
-					<div id="mdEditor">
-											
+					<div id="mdEditor" class="read-only">
 						<div class="layout-wrapper-l1">
 						    <div class="layout-wrapper-l2">
 						        <div class="navbar navbar-default">
 						            <div class="navbar-inner" id="wmd-button-bar">
-						            	<div id="mdInfoToolbar" class="info-toolbar">
+						            	<div id="mdInfoToolbar" class="info-toolbar invisible">
 							              <a class="toolbar-update"><i class="fa fa-pencil"></i> <span class="lang">{{msg . "modify"}}</span></a>
-							              <span class="lang">{{msg . "created"}}</span>: <span class="created-time">2015-04-03</span>
-							              <span class="lang">{{msg . "updated"}}</span>: <span class="updated-time">2015-05-01</span>
+							              <span class="lang">{{msg . "created"}}</span>: <span class="created-time"></span>
+							              <span class="lang">{{msg . "updated"}}</span>: <span class="updated-time"></span>
 							            </div>
 						            	
 						            	<div class="wmd-button-bar-inner">
@@ -880,12 +882,12 @@ function log(o) {
 		</div>
 	</div>
 </div>
-<script src="/js/jquery-1.9.0.min.js"></script>
-<script src="/js/jquery.ztree.all-3.5-min.js"></script>
-<script src="/js/i18n/msg.{{.locale}}.js"></script>
-<script src="/js/common-min.js"></script>
+
 <script>
-var UrlPrefix = '{{.siteUrl}}'; // 为了发weibo
+var LEA = {};
+LEA.s1 = new Date();
+LEA.locale = "{{.locale}}";
+var UrlPrefix = '{{.siteUrl}}';
 var UserInfo = {{.userInfo|jsonJs}};
 var notebooks = {{.notebooks|jsonJs}};
 var shareNotebooks = {{.shareNotebooks|jsonJs}};
@@ -898,40 +900,35 @@ var notes = {{.notes|jsonJs}};
 var latestNotes = {{if .latestNotes}}{{.latestNotes|jsonJs}}{{else}}[]{{end}};
 var noteContentJson = {{.noteContentJson|jsonJs}};
 var tagsJson = {{.tags|jsonJs}};
-LEA.locale = "{{.locale}}";
-var GlobalConfigs = {{.globalConfigs|jsonJs}}; // 2014/11/9 beta2
+var GlobalConfigs = {{.globalConfigs|jsonJs}};
+var tinyMCEPreInit = {base: '/public/js/tinymce', suffix: '.min'};
 </script>
 
-<!-- 渲染view -->
-<script src="/tinymce/tinymce.min.js"></script>
+<script src="/js/i18n/msg.{{.locale}}.js"></script>
+
+<script src="/js/dep.min.js"></script>
+
+
 
 <script src="/public/libs/ace/ace.js"></script>
-<script src="/js/app/page-min.js"></script>
-<script src="/js/jQuery-slimScroll-1.3.0/jquery.slimscroll-min.js"></script>
-<script src="/js/contextmenu/jquery.contextmenu-min.js"></script>
-<script src="/js/bootstrap-min.js"></script>
-<script src="/js/app/note-min.js"></script>
-<script src="/js/app/tag-min.js"></script>
-<script src="/js/app/notebook-min.js"></script>
-<script src="/js/app/share-min.js"></script>
-<script src="/js/object_id-min.js"></script>
+
+
+
+<script src="/js/app.min.js"></script>
+
 <script>
 initPage();
-</script>
-
-<!-- context-menu -->
-<link rel="stylesheet" href="/js/contextmenu/css/contextmenu.css" type="text/css" />
-
-<!-- v2 use require.js, mdeditor -->
-<script>
-// 当tinymce.min.js时, 请注释require
+// 当tinymce.dev.js时, 请注释require
 window.require = {
     baseUrl: '/public',
 };
 </script>
-<script src="/js/require.js"></script>
-<script src="/public/dist/main.min.js"></script>
+
+<script src="/js/markdown.min.js"></script>
+
+
+
 <script src="/public/js/upload_paste/main.js"></script>
-</script>
+
 </body>
 </html>
