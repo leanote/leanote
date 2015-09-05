@@ -21,7 +21,7 @@ gulp.task('concatDepJs', function() {
     var jss = [
         'js/jquery-1.9.0.min.js',
         'js/jquery.ztree.all-3.5-min.js',
-        'js/tinymce/tinymce.full.min.js', // 使用打成的包, 加载速度快
+        'tinymce/tinymce.full.min.js', // 使用打成的包, 加载速度快
         // 'libs/ace/ace.js',
         'js/jQuery-slimScroll-1.3.0/jquery.slimscroll-min.js',
         'js/contextmenu/jquery.contextmenu-min.js',
@@ -89,7 +89,7 @@ gulp.task('devToProHtml', function() {
         .pipe(replace(/<!-- pro_dep_js -->/, '<script src="/js/dep.min.js"></script>')) // 替换
         .pipe(replace(/<!-- pro_app_js -->/, '<script src="/js/app.min.js"></script>')) // 替换
         .pipe(replace(/<!-- pro_markdown_js -->/, '<script src="/js/markdown.min.js"></script>')) // 替换
-        .pipe(replace(/<!-- pro_tinymce_init_js -->/, "var tinyMCEPreInit = {base: '/public/js/tinymce', suffix: '.min'};")) // 替换
+        .pipe(replace(/<!-- pro_tinymce_init_js -->/, "var tinyMCEPreInit = {base: '/public/tinymce', suffix: '.min'};")) // 替换
         // 连续两个空行换成一个空行, 没用
         .pipe(replace(/\n\n/g, '\n'))
         .pipe(replace(/\n\n/g, '\n'))
