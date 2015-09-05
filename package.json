@@ -1,5 +1,5 @@
 {
-  "name": "leanote-ios-markdown-editor",
+  "name": "leanote-front-end-builder“,
   "version": "1.0.0",
   "private": true,
   "devDependencies": {
@@ -17,6 +17,6 @@
   "author": "life(http://life.leanote.com)",
   "license": "GPL v2",
   "bugs": {
-    "url": "https://github.com/lenaote/leanote-ios/issues"
+    "url": "https://github.com/leanote/leanote/issues"
   }
 }
