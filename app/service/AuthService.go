@@ -4,11 +4,13 @@ import (
 	"gopkg.in/mgo.v2/bson"
 //	"github.com/leanote/leanote/app/db"
 	"github.com/leanote/leanote/app/info"
+	. "github.com/leanote/leanote/app/crypto"
 //	"github.com/revel/revel"
 	"strings"
 	. "github.com/leanote/leanote/app/lea"
 	"fmt"
 	"strconv"
+	"errors"
 )
 
 // 登录与权限
@@ -16,12 +18,17 @@ import (
 type AuthService struct {
 }
 
-// pwd已md5了
-func (this *AuthService) Login(emailOrUsername, pwd string) info.User {
+// 
+func (this *AuthService) Login(emailOrUsername, pwd string) (info.User, error) {
 	emailOrUsername = strings.Trim(emailOrUsername, " ")
-//	pwd = strings.Trim(pwd, " ")
-	userInfo := userService.LoginGetUserInfo(emailOrUsername, Md5(pwd))
-	return userInfo
+  //	pwd = strings.Trim(pwd, " ")
+	userInfo := userService.GetUserInfoByName(emailOrUsername)
+
+  hex := []byte(userInfo.Pwd)
+	if !CompareHash(hex, pwd) {
+		return userInfo,  errors.New("wrong username or password")
+	}
+	return userInfo, nil
 }
 
 // 注册
@@ -40,7 +47,12 @@ func (this *AuthService) Register(email, pwd, fromUserId string) (bool, string) 
 	if userService.IsExistsUser(email) {
 		return false, "userHasBeenRegistered-" + email
 	}
-	user := info.User{UserId: bson.NewObjectId(), Email: email, Username: email, Pwd: Md5(pwd)}
+  digest, err := GenerateHash(pwd)
+	if err != nil {
+		return false,"GenerateHash error"
+	}
+  passwd := string(digest)
+	user := info.User{UserId: bson.NewObjectId(), Email: email, Username: email, Pwd: passwd}
 	if fromUserId != "" && IsObjectId(fromUserId) {
 		user.FromUserId = bson.ObjectIdHex(fromUserId)
 	}
