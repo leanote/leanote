@@ -69,6 +69,8 @@ tinymce.addI18n('en',{
 "Encoding": "Encoding",
 "Description": "Description",
 "Author": "Author",
+"codeLang": "Language",
+"toggleCode": "`ctrl+shift+c` toggle code",
 "Fullscreen": "Full-screen",
 "Horizontal line": "Horizontal line",
 "Horizontal space": "Horizontal space",

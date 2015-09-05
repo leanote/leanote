@@ -38,6 +38,16 @@ tinymce.PluginManager.add('leanote_code', function(editor, url) {
 		return html.replace(/\n/g, "<br />"); // .replace(/\<br *\/*\>/gi,"\n").replace(/<\/(p|li|div|ul|ol|hr)>/, "\n").replace(/(<([^>]+)>)/gi, "");
 	}
 
+	// 在toggle成pre或ace时
+	// 最后没有元素, 或者元素不是p, 则在最后插入之
+	function insertPIfNotExists() {
+		var children = $('#editorContent').children();
+		var lastChild = children && children.length > 0 ? children[children.length - 1] : null;
+		if (!lastChild || lastChild.tagName != 'P') {
+			$('#editorContent').append('<p><br data-mce-bogus="1"></p>');
+		}
+	}
+
 	// brush 刷子
 	function toggleCode(brush) {
 		ed = tinymce.activeEditor;
@@ -124,6 +134,7 @@ tinymce.PluginManager.add('leanote_code', function(editor, url) {
 					}
 				}
 				if(pre) {
+					insertPIfNotExists();
 					/*
 					var rng = ed.selection.getRng();
 					var $pre = $(pre);
@@ -181,12 +192,15 @@ tinymce.PluginManager.add('leanote_code', function(editor, url) {
 				text = html2BreakLine(node);
 				$(node).replaceWith("<pre id='" + id  + "'" + brushClasses + ">" + text + "</pre>");
 			}
+
 			var aceEditor = LeaAce.initAce(id);
 			if(aceEditor) {
 				aceEditor.focus();
 				if(brush && brush != "convert") {
 					aceEditor.session.setMode("ace/mode/" + brush);
 				}
+
+				insertPIfNotExists();
 			}
 		}
 		// ed.selection.moveToBookmark(everBookmark);
@@ -291,8 +305,7 @@ tinymce.PluginManager.add('leanote_code', function(editor, url) {
 
 	if(LeaAce.canAce()) {
 		editor.addButton('leanote_ace_pre', {
-			icon: 'code',
-			image: url + '/img/ace-pre2.png',
+			icon: 'ace-pre',
 			tooltip: 'Toggle ace with raw html',
 			active: LeaAce.isAce === false,
 			onclick: function() {
