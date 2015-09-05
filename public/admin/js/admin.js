@@ -274,21 +274,56 @@ function goNowToDatetime(goNow) {
 !function ($) {
   $(function(){
   	
-  	// life
-  	$(".nav li > a").click(function(e) {
-  		$p = $(this).closest("ul");
-  		var $li = $(this).closest("li");
-  		if($li.find("ul").length == 0) {
-  			return true;
-  		}
-  		e.preventDefault();
-  		var hasClass = $li.hasClass("active");
-  		$p.find("li").removeClass("active");
-  		if(hasClass) {
-  		} else {
-  			$li.addClass("active");
-  		}
-  	});
+  	//navigation
+	!function ($) {
+		/**
+		* description
+		* every href must begin with "?t="
+		*/
+		//initial
+		function getParameterByName(name, queryString) {
+		    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]"); //address array [] condiion
+		    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+		        results = regex.exec(queryString);
+		    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+		}
+
+		var pathname = window.location.pathname; // admin/t
+		var search = window.location.search; // ?t=xxx
+		var fullPath = pathname;
+
+		//test case
+		//http://localhost:9000/admin/t?p=0&t=email/sendToUsers
+		//t=email/sendToUsers  and t=email/send
+		var paramId = getParameterByName("t",window.location.search)
+		if(paramId !== "") {
+			var fullPath = pathname + "?t=" + paramId; // /admin/t?t=xxx
+		}
+		
+		$("#nav > li").removeClass("active");
+
+		var $thisLi = $('#nav a[href="' + fullPath + '"]').parent();
+		// 自己
+		$thisLi.addClass("active");
+		// 父也active
+		$thisLi.parent().parent().addClass('active');
+
+		// event binding
+	  	$(".nav li > a").click(function(e) {
+	  		$p = $(this).closest("ul");
+	  		var $li = $(this).closest("li");
+	  		if($li.find("ul").length == 0) {
+	  			return true;
+	  		}
+	  		e.preventDefault();
+	  		var hasClass = $li.hasClass("active");
+	  		$p.find("li").removeClass("active");
+	  		if(hasClass) {
+	  		} else {
+	  			$li.addClass("active");
+	  		}
+	  	});
+	}($);
   	
   	// sort
   	$(".th-sortable").click(function() {
