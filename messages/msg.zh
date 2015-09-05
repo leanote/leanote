@@ -41,9 +41,11 @@ myNote=My note
 curUser=Email
 
 # form
-submit=submit
+submit=提交
+Submit=提交
 register=Sign up
 login=Sign in
+Password=密码
 password2=Confirm your password
 email=Email
 inputUsername=Username(email) is required
@@ -104,7 +106,7 @@ history=历史记录
 save=保存
 editorTips=帮助
 editorTipsInfo=<h4>1. 快捷键</h4>ctrl+shift+c 代码块切换 <h4>2. shift+enter 跳出当前区域</h4>比如在代码块中<img src="/images/outofcode.png" style="width: 90px"/>按shift+enter可跳出当前代码块.
-newNote=新建笔记
+newNote=新建普通笔记
 newMarkdownNote=新建Markdown笔记
 noNoteNewNoteTips=该笔记本下空空如也...何不
 canntNewNoteTips=Sorry, 这里不能添加笔记的. 你需要先选择一个笔记本.
@@ -121,7 +123,7 @@ all=最新
 trash=废纸篓
 delete=删除
 unTitled=无标题
-defaultShare=默认共享
+defaultShare=默认分享
 leftHidden=隐藏左侧
 leftShow=展开左侧
 nav=文档导航
@@ -129,6 +131,8 @@ writingMode=写作模式
 normalMode=普通模式
 saving=正在保存
 saveSuccess=保存成功
+SearchNote=搜索笔记
+SearchNotebook=搜索笔记本
 
 update=更新
 create=创建
@@ -270,14 +274,8 @@ errorPerPageSize=每页记录数至少为1
 errorSortField=排序类型错误
 themeValidHasRoundInclude=警告: 模板存在循环引用问题!
 
-# lea++
-leaDesc=leanote博客平台
-recommend=推荐文章
-latest=最新文章
-subscription=我的订阅
-
 # 用户中心
-memberCenter=用户中心
+memberCenter=个人中心
 userNotExists=该成员沿未注册
 hasUsers=已存在该成员
 
@@ -371,6 +369,25 @@ deleteMember=删除成员
 created=创建
 updated=更新
 modify=修改
+
+#share
+tokenExpired = 会话已过期
+Share=分享
+hasSharedThisNote=分享了笔记
+inputSharePwd=您需要输入分享密码才能查看
+shareToGroup=分享给项目组
+shareByPwd=通过密码分享
+groupName=分组名
+operation=操作
+groupAndMemberManage=项目组/成员管理
+shareToGroupTips=将笔记/笔记本分享给项目组后, 该组下的用户便拥有了该笔记/笔记本
+shared=已分享
+notShared=未分享
+shareLink=分享链接
+sharePwd=查看密码
+cancelShare=取消分享
+getShareLinkAndPwd=生成该笔记的分享链接和密码
+
 
 # 必须要加这个, 奇怪
 [CN]

@@ -686,3 +686,7 @@ input,
 .hide-img {
   opacity: 0;
 }
+/* news */
+.index-news a:hover {
+  text-decoration: underline !important;
+}

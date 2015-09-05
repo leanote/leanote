@@ -5,7 +5,9 @@
 //--------------
 
 // 最上级变量
-var LEA = {};
+if(typeof LEA === 'undefined') {
+	var LEA = {};
+}
 // 命名空间
 var Notebook = {
 	cache: {}, // notebookId => {Title, Seq}
@@ -365,6 +367,9 @@ function setEditorContent(content, isMarkdown, preview, callback) {
 		$("#editorContent").html(content);
 		if(typeof tinymce != "undefined" && tinymce.activeEditor) {
 			var editor = tinymce.activeEditor;
+			// console.log('set content');
+			LEA.s4 = new Date();
+			LEA.s4_1 = LEA.s4.getTime()-LEA.s1.getTime();
 			editor.setContent(content);
 			callback && callback();
 			/*
@@ -411,6 +416,8 @@ function setEditorContent(content, isMarkdown, preview, callback) {
 		if(MD) {
 			MD.setContent(content);
 			callback && callback();
+			LEA.s4 = new Date();
+			LEA.s4_1 = LEA.s4.getTime()-LEA.s1.getTime()
 		} else {
 			clearIntervalForSetContent = setTimeout(function() {
 				setEditorContent(content, true, false, callback);
@@ -886,7 +893,7 @@ var email2LoginAddress = {
     'eyou.com': 'http://www.eyou.com/',
     '21cn.com': 'http://mail.21cn.com/',
     '188.com': 'http://www.188.com/',
-    'foxmail.coom': 'http://www.foxmail.com'
+    'foxmail.com': 'http://mail.foxmail.com'
 };
 
 function getEmailLoginAddress(email) {
@@ -1298,5 +1305,9 @@ function setHash(key, value) {
 }
 
 var trimTitle = function(title) {
-	return title.replace(/<.*?script.*?>/g, '');
+	if(!title || typeof title != 'string') {
+		return '';
+	}
+	return title.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+	// return title.replace(/<.*?script.*?>/g, '');
 };

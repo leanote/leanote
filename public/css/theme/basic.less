@@ -1,4 +1,5 @@
 // font
+/*
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
@@ -23,8 +24,9 @@
   font-weight: 400;
   src: local('Open Sans Italic'), local('OpenSans-Italic'), url('../../fonts/open-sans2/xjAJXh38I15wypJXxuGMBobN6UDyHWBl620a-IRfuBk.woff') format('woff');
 }
-
+*/
 /* leanote */
+/*
 @font-face {
     font-family: 'leanoteregular';
     src: url('../../fonts/leanote/leanote-regular-webfont.eot');
@@ -35,6 +37,83 @@
     font-weight: normal;
     font-style: normal;
 }
+*/
+
+@font-face {
+	font-family: 'leanote';
+	src:url('../../fonts/leanote-font2/leanote.eot?-vcf23i');
+	src:url('../../fonts/leanote-font2/leanote.eot?#iefix-vcf23i') format('embedded-opentype'),
+		url('../../fonts/leanote-font2/leanote.ttf?-vcf23i') format('truetype'),
+		url('../../fonts/leanote-font2/leanote.woff?-vcf23i') format('woff'),
+		url('../../fonts/leanote-font2/leanote.svg?-vcf23i#leanote') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+// 字体
+
+#logo,
+#switcher span,
+.mce-i-mind,
+.mce-i-ace-pre,
+.lea-icon
+{
+	font-family: 'leanote' !important;
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+.icon-markdown:before {
+	content: "\e604";
+}
+.mce-i-mind:before {
+	content: "\e602";
+}
+.mce-i-ace-pre:before {
+	content: "\e603";
+}
+#logo:before {
+	content: "\e600";
+	line-height: 1;
+ 	margin-top: 5px;
+  	display: inline-block;
+  	vertical-align: top;
+}
+#switcher span:before {
+	content: "\e601";
+}
+
+// 新建
+.new-split {
+	display: none;
+}
+.new-note {
+  background-color: #000;
+  border-radius: 3px;
+  padding: 3px 5px;
+  border: 1px solid #080303;
+	&, a {
+		color: #fff;
+	}
+	&:hover {
+		background: #3D3B3B;
+		border-color: transparent;
+		&, a {
+			color: #fff;
+		}
+	}
+}
+.new-markdown {
+	margin-left: 3px;
+	margin-right: 3px;
+}
+
 html,body {
 }
 *,.h1,
@@ -47,12 +126,20 @@ html,body {
 }
 body {
   font-family: @fontFamily;
-  font-weight: 300;
+  font-weight: normal; // 400
   font-size: @fontSize;
 }
+
+// retina频幕则font-weight: 300
+@media
+only screen and (-webkit-min-device-pixel-ratio : 2),
+only screen and (min-device-pixel-ratio : 2) {
+    body { font-weight: 300;}
+}
+
 h1, h2, h3 {
   font-family: @fontFamily;
-  font-weight: 300 !important;
+  font-weight: normal !important;
 }
 /*"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue", Helvetica, "Microsoft Yahei", Verdana, Simsun, "Segoe UI", "Segoe UI Web Regular", "Segoe UI Symbol",  "BBAlpha Sans", "S60 Sans", Arial, sans-serif;*/
 
@@ -121,14 +208,10 @@ h1, h2, h3 {
 }
 
 #logo {
-	font-family: "leanoteregular";
 	font-size: 36px;
 }
-#logo:before {
-	content: "a";
-}
+
 #switcher span {
-	font-family: "leanoteregular";
 	border-radius: 5px;
 	display: inline-block;
 	cursor: pointer;
@@ -138,9 +221,8 @@ h1, h2, h3 {
 	margin-top: 8px;
 	padding: 0 5px;
 }
-#switcher span:before {
-	content: "b";
-}
+
+
 .noteSplit {
   position: absolute;
   top: 0;
@@ -1287,6 +1369,10 @@ top: 4px;
 		padding-right: 10px;
 	}
 }
+.invisible {
+	visibility: hidden;
+}
+
 #editorContent {
 	-webkit-user-select: text;
 }

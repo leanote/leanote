@@ -2,7 +2,8 @@
 
 @bgColor: #fff;
 @headerBgColor: #fff;
-@fontFamily: 'Open Sans','Helvetica Neue',Arial,'Hiragino Sans GB','Microsoft YaHei','WenQuanYi Micro Hei',sans-serif;
+// @fontFamily: 'Open Sans','Helvetica Neue',Arial,'Hiragino Sans GB','Microsoft YaHei','WenQuanYi Micro Hei',sans-serif;
+@fontFamily: Helvetica, Tahoma, Arial, Hiragino Sans GB, "Microsoft YaHei", "微软雅黑", "Micro Hei", SimSun, "宋体", Heiti, "黑体", sans-serif;
 @aWhiteColor: #fff;
 @aBlackColor: #000;
 @borderColor: #EBEFF2;
@@ -19,6 +20,20 @@
 ::selection { background:@selectionBg; color:@selectionColor; } 
 ::-moz-selection { background:@selectionBg; color:@selectionColor; } 
 ::-webkit-selection { background:@selectionBg; color:@selectionColor; }
+
+.new-note {
+  background-color: #eee; // #50A361;
+  border: 1px solid transparent;
+	&, a {
+		color: #000;
+	}
+	&:hover {
+		background: #E0E0E0;
+		&, a {
+			color: #000;
+		}
+	}
+}
 
 a {
   color: @aBlackColor;
@@ -558,8 +573,8 @@ a.raw:hover {
   padding: 5px 5px !important;
   line-height: 20px !important;
 }
-.mce-btn {
-  // background-color: @bgColor !important;
+.mce-foot .mce-btn {
+	border-radius: 3px;
 }
 .mce-menubtn.mce-btn-small span {
   line-height: 20px !important;
@@ -572,7 +587,7 @@ a.raw:hover {
 }
 .mce-primary {
 	background-color: #47a447 !important;
-	border-color: #398439 !important;
+	border: none !important;
 }
 .mce-menu-item:hover, .mce-menu-item.mce-selected, .mce-menu-item:focus {
 	background-color: @borderColor;

@@ -42,8 +42,10 @@ curUser=Email
 
 # form
 submit=submit
+Submit=Submit
 register=Sign up
 login=Sign in
+Password=Password
 password2=Confirm your password
 email=Email
 inputUsername=Username(email) is required
@@ -108,6 +110,8 @@ writingMode=Writing Mode
 normalMode=Normal Mode
 saving=Saving
 saveSuccess=Save success
+SearchNote=Search Note
+SearchNotebook=Search Notebook
 
 update=Update
 create=Create
@@ -244,12 +248,6 @@ errorPerPageSize=Page size is error
 errorSortField=Sort Field is error
 themeValidHasRoundInclude=WARNING: Templates have circular references!
 
-# lea++
-leaDesc=leanote blog platform
-recommend=Recommend
-latest=Latest
-subscription=Subscription
-
 # 用户中心
 memberCenter=Member Center
 userNotExists=The user is not exists
@@ -346,6 +344,24 @@ deleteMember=Delete member
 created=Created
 updated=Updated
 modify=Modify
+
+# share
+tokenExpired=Token Expired
+Share=Share
+hasSharedThisNote=has shared this note
+inputSharePwd=Please input password
+shareToGroup=Share to group
+shareByPwd=Share by password
+groupName=Group Name
+operation=Operation
+groupAndMemberManage=Manage group/member
+shareToGroupTips=If you share your note to group, the member belongs to group will have the right to access the note
+shared=Shared
+notShared=Not shared
+shareLink=Share link
+sharePwd=Access password
+cancelShare=Cancel
+getShareLinkAndPwd=Get link and password
 
 # error 
 notFound=This page cann't found.

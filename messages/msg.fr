@@ -42,6 +42,7 @@ curUser=Adresse courriel
 
 # form
 submit=Soumettre
+Submit=Soumettre
 register=S'inscrire
 login=S'identifier
 password2=Confirmer votre mot de passe
@@ -108,6 +109,8 @@ writingMode=Mode écriture
 normalMode=Mode normal
 saving=Sauvegarde
 saveSuccess=Sauvegarde réussie
+SearchNote=Search Note
+SearchNotebook=Search Notebook
 
 update=Mettre à jour
 create=Créer
@@ -343,6 +346,25 @@ deleteMember=Effacer membre
 created=Created
 updated=Updated
 modify=Modify
+
+# share
+tokenExpired=Token Expired
+Share=Share
+hasSharedThisNote=has shared this note
+inputSharePwd=Please input password
+shareToGroup=Share to group
+shareByPwd=Share by password
+groupName=Group Name
+operation=Operation
+groupAndMemberManage=Manage group/member
+shareToGroupTips=If you share your note to group, the member belongs to group will have the right to access the note
+shared=Shared
+notShared=Not shared
+shareLink=Share link
+sharePwd=Access password
+cancelShare=Cancel
+getShareLinkAndPwd=Get link and password
+
 
 # error 
 notFound=Page introuvable.

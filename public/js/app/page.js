@@ -481,6 +481,9 @@ function initEditor() {
 					return;
 				}
 				Note.saveNote(e);
+
+				// 当输入的时候, 把当前raw删除掉
+				LeaAce.removeCurToggleRaw();
 			});
 			
 			// 为了把下拉菜单关闭
@@ -504,17 +507,16 @@ function initEditor() {
 		skin : "custom",
 		language: LEA.locale, // 语言
 		plugins : [
-				"autolink link leaui_image lists charmap hr", "paste",
+				"autolink link leaui_image lists hr", "paste",
 				"searchreplace leanote_nav leanote_code tabfocus",
-				"table directionality textcolor" ], // nonbreaking
-				
+				"table textcolor" ], // nonbreaking directionality charmap
 		toolbar1 : "formatselect | forecolor backcolor | bold italic underline strikethrough | leaui_image | leanote_code leanote_inline_code | bullist numlist | alignleft aligncenter alignright alignjustify",
 		toolbar2 : "outdent indent blockquote | link unlink | table | hr removeformat | subscript superscript |searchreplace | pastetext pasteCopyImage | leanote_ace_pre | fontselect fontsizeselect",
 
 		// 使用tab键: http://www.tinymce.com/wiki.php/Plugin3x:nonbreaking
 		// http://stackoverflow.com/questions/13543220/tiny-mce-how-to-allow-people-to-indent
 		// nonbreaking_force_tab : true,
-		
+
 		menubar : false,
 		toolbar_items_size : 'small',
 		statusbar : false,
@@ -608,7 +610,10 @@ function scrollTo(self, tagName, text) {
 
 //--------------
 // 调用之
-$(function() {
+// $(function() {
+	LEA.s3 = new Date();
+	console.log('initing...');
+	
 	// 窗口缩放时
 	$(window).resize(function() {
 		Mobile.isMobile();
@@ -844,8 +849,7 @@ $(function() {
 	
 	// 手机端?
 	Mobile.init();
-});
-
+//});
 
 //------------
 // pjax
@@ -1333,19 +1337,34 @@ LeaAce = {
 			}
 		}
 	},
+	// 当删除了pre时, 也要删除toggle raw
+	removeAllToggleRaw: function () {
+		$('#editorContent .toggle-raw').remove();
+	},
+	removeCurToggleRaw: function() {
+		if(this.curToggleRaw) {
+			try {
+				this.curToggleRaw.remove();
+			}
+			catch(e){}
+		}
+	},
+	curToggleRaw: null,
 	// 转换raw <-> code
 	handleEvent: function () {
 		if(!this.canAce()) {
 			return;
 		}
 		var me = this;
-		$("#editorContent").on('mouseenter', 'pre', function(){
+		$("#editorContent").on('mouseenter', 'pre', function(e) {
 			// log('in');
 			// log($(this));
 			var $t = $(this);
 			$raw = $t.find('.toggle-raw');
 			if($raw.length == 0) {
-				$t.append('<div class="toggle-raw" title="Toggle code with raw html"><input type="checkbox" /></div>');
+				var curToggleRaw = $('<div class="toggle-raw" title="Toggle code with raw html"><input type="checkbox" /></div>');
+				$t.append(curToggleRaw);
+				me.curToggleRaw = curToggleRaw;
 			}
 			$input = $t.find('.toggle-raw input');
 			if(LeaAce.isInAce($t)) {
@@ -1361,11 +1380,39 @@ LeaAce = {
 		$("#editorContent").on('change', '.toggle-raw input', function(){
 			var checked = $(this).prop('checked');
 			var $pre = $(this).closest('pre');
-			if(checked) {
+			if (checked) {
 				// 转成ace
 				me.preToAce($pre, true);
 			} else {
 				me.aceToPre($pre, true);
+			}
+		});
+
+		// 当ace里没有内容时, 连续删除则把ace remove掉
+		// keydown的delete事件没有
+		var lastDeleteTime;
+		$("#editorContent").on('keyup', 'pre',  function(e) {
+			var keyCode = e.keyCode;
+			// console.log('keyup');
+			if(keyCode == 8 || keyCode == 46) { // BackSpace || Delete
+				// console.log('delete');
+				if(!lastDeleteTime) {
+					lastDeleteTime = (new Date()).getTime();
+				}
+				else {
+					var now = (new Date()).getTime();
+					if(now - lastDeleteTime < 300) { // 间隔时间很短
+						var inAce = me.isInAce($(this))
+						if(inAce && !inAce[0].getValue()) {
+							// console.log('destroy');
+							inAce[0].destroy();
+							$(this).remove();
+							return;
+						}
+					}
+					lastDeleteTime = now;
+				}
+				// console.log($(this));
 			}
 		});
 	}
@@ -1374,7 +1421,8 @@ LeaAce = {
 // note.html调用
 // 实始化页面
 function initPage() {
-	$(function() {
+	// 不要用$(function() {}) 因为要等到<script>都加载了才执行
+	// $(function() {
 		Notebook.renderNotebooks(notebooks);
 		Share.renderShareNotebooks(sharedUserInfos, shareNotebooks);
 		
@@ -1397,7 +1445,7 @@ function initPage() {
 				}
 			}
 		}
-		
+
 		// 指定笔记, 也要保存最新笔记
 		if(latestNotes.length > 0) {
 			for(var i = 0; i < latestNotes.length; ++i) {
@@ -1410,5 +1458,5 @@ function initPage() {
 		initSlimScroll();
 
 		LeaAce.handleEvent();
-	});
+	// });
 }
