@@ -1139,71 +1139,6 @@ Note.listNoteContentHistories = function() {
 	});
 }
 
-// 导出成PDF
-Note.exportPDF = function(target) {
-	var noteId = $(target).attr("noteId");
-	/*
-	{
-	  "Ok": true,
-	  "Code": 0,
-	  "Msg": "",
-	  "Id": "upload/5368c1aa99c37b029d000001/images/weibo/我靠, 这是什么??.pdf",
-	  "List": null,
-	  "Item": null
-	}
-	*/
-	$('<form target="mdImageManager" action="/note/exportPdf" method="GET"><input name="noteId" value="' + noteId + '"/></form>').appendTo('body').submit().remove();
-	// $.get("/note/exportPdf?noteId=" + noteId);
-	// window.open("/note/exportPdf?noteId=" + noteId);
-	/*
-	ajaxGet(", {noteId: noteId}, function(ret) {
-		if(reIsOk(ret)) {
-			window.open(UrlPrefix + '/pubic/' + ret.Id);
-		} else {
-			alert('error!');
-		}
-	});
-	*/
-};
-
-// 长微博
-Note.html2Image = function(target) {
-	var noteId = $(target).attr("noteId");
-	showDialog("html2ImageDialog", {title: "分享到社区", postShow: function() {
-		ajaxGet("/note/html2Image", {noteId: noteId}, function(ret) {
-			if (typeof ret == "object" && ret.Ok) {
-				$("#leanoteDialog .weibo span").html("生成成功, 右键图片保存到本地.")
-				$("#leanoteDialog .weibo img").attr("src", ret.Id + "?" + ((new Date()).getTime()));
-				$("#leanoteDialog .btn-share").removeClass("disabled");
-				var note = Note.cache[noteId];
-				var pic = UrlPrefix + ret.Id;
-				var title = encodeURI(note.Title + " (" + UserInfo.Username + "分享. 来自leanote.com)");
-				var windowParam = 'width=700, height=580, top=180, left=320, toolbar=no, menubar=no, scrollbars=no, location=yes, resizable=no, status=no';
-				$("#leanoteDialog .sendWeiboBtn").click(function() {
-					var url = "http://service.weibo.com/share/share.php?title=" + title;
-					url += "&pic=" + pic;
-					window.open(url, '分享到新浪微博', windowParam);
-				});
-				$("#leanoteDialog .sendTxWeiboBtn").click(function() {
-					var _appkey = '801542571';
-					var url = "http://share.v.t.qq.com/index.php?c=share&a=index&appkey=" + _appkey +"&title=" + title +"&url=&pic=" + pic
-					window.open(url, '分享到腾讯微博', windowParam);
-				});
-				$("#leanoteDialog .sendQQBtn").click(function() {
-					var url = 'http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=' + UrlPrefix + '&title=' + title + '&pics=' + pic;
-					window.open(url, '分享QQ空间', windowParam);
-				});
-				$("#leanoteDialog .sendRRBtn").click(function() {
-					var url = 'http://widget.renren.com/dialog/share?resourceUrl=' + UrlPrefix +  '&srcUrl=' + UrlPrefix + '&title=' + title + '&pic=' + pic;
-					window.open(url, '分享人人网', windowParam);
-				});
-			} else {
-				$("#leanoteDialog .weibo").html("对不起, 我们出错了!")
-			}
-		});
-	}});
-}
-
 //--------------
 // read only
 
@@ -1601,9 +1536,6 @@ Note.initContextmenu = function() {
 			{ type: "splitLine" },
 			{ text: getMsg("publicAsBlog"), alias: 'set2Blog', faIcon: "fa-bold", action: Note.setNote2Blog },
 			{ text: getMsg("cancelPublic"), alias: 'unset2Blog', faIcon: "fa-undo", action: Note.setNote2Blog },
-			{ type: "splitLine" },
-			// { text: "分享到社区", alias: 'html2Image', icon: "", action: Note.html2Image},
-			{ text: getMsg("exportPdf"), alias: 'exportPDF', faIcon: "fa-file-pdf-o", action: Note.exportPDF},
 			{ type: "splitLine" },
 			{ text: getMsg("delete"), icon: "", faIcon: "fa-trash-o", action: Note.deleteNote },
 			{ text: getMsg("move"), alias: "move", faIcon: "fa-arrow-right",
