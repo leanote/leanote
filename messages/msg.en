@@ -81,7 +81,7 @@ notGoodPassword=Tt's not a good password, the length is at least 6
 
 # 笔记主页
 myBlog=Blog
-history=Histories
+history=History
 save=Save
 editorTips=Tips
 editorTipsInfo=<h4>1. Short cuts</h4>ctrl+shift+c Toggle code<h4>2. shift+enter Get out of current block</h4> eg. <img src="/images/outofcode.png" style="width: 90px"/> in this situation you can use shift+enter to get out of current code block.
@@ -364,4 +364,4 @@ cancelShare=Cancel
 getShareLinkAndPwd=Get link and password
 
 # error 
-notFound=This page cann't found.
+notFound=This page can't found.
