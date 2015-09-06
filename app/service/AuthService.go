@@ -4,7 +4,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 //	"github.com/leanote/leanote/app/db"
 	"github.com/leanote/leanote/app/info"
-	. "github.com/leanote/leanote/app/crypto"
 //	"github.com/revel/revel"
 	"strings"
 	. "github.com/leanote/leanote/app/lea"
@@ -26,12 +25,13 @@ func (this *AuthService) Login(emailOrUsername, pwd string) (info.User, error) {
   passwd := userInfo.Pwd
   if len(passwd) == 32 && Md5(pwd) != passwd {
   	return userInfo,  errors.New("wrong username or password")
-  } else {
+  } 
+  if len(passwd) > 32 {
     hex := []byte(passwd)
 	  if !CompareHash(hex, pwd) {
 		  return userInfo,  errors.New("wrong username or password")
-	  }
-  }
+	  } 
+  } 
 	return userInfo, nil
 }
 

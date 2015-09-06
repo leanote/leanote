@@ -1,5 +1,5 @@
-// Package crypto contains two cryptographic functions for both storing and comparing passwords.
-package crypto
+// contains two cryptographic functions for both storing and comparing passwords.
+package lea
 
 import (
 	"golang.org/x/crypto/bcrypt"

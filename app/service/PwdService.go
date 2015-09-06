@@ -4,7 +4,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"github.com/leanote/leanote/app/db"
 	"github.com/leanote/leanote/app/info"
-	. "github.com/leanote/leanote/app/crypto"
+	. "github.com/leanote/leanote/app/lea"
 )
 
 // 找回密码
