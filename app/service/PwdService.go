@@ -45,9 +45,13 @@ func (this *PwdService) UpdatePwd(token, pwd string) (bool, string) {
 	if ok, msg, tokenInfo = tokenService.VerifyToken(token, info.TokenPwd); !ok {
 		return ok, msg
 	}
-	
+	digest, err := GenerateHash(pwd)
+	if err != nil {
+		return false,"GenerateHash error"
+	}
+  passwd := string(digest)
 	// 修改密码之
-	ok = db.UpdateByQField(db.Users, bson.M{"_id": tokenInfo.UserId}, "Pwd", Md5(pwd))
+	ok = db.UpdateByQField(db.Users, bson.M{"_id": tokenInfo.UserId}, "Pwd", passwd)
 	
 	// 删除token
 	tokenService.DeleteToken(tokenInfo.UserId.Hex(), info.TokenPwd)

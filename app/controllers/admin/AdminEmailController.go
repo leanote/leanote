@@ -46,7 +46,10 @@ func (c AdminEmail) Demo() revel.Result {
 func (c AdminEmail) DoDemo(demoUsername, demoPassword string) revel.Result {
 	re := info.NewRe()
 	
-	userInfo := authService.Login(demoUsername, demoPassword)
+	userInfo, err := authService.Login(demoUsername, demoPassword)
+	if err != nil {
+		return c.RenderJson(info.Re{Ok: false})
+	}
 	if userInfo.UserId == "" {
 		re.Msg = "The User is Not Exists";
 		return c.RenderJson(re)

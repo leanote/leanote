@@ -41,15 +41,15 @@ func (c Auth) doLogin(email, pwd string) revel.Result {
 	sessionId := c.Session.Id()
 	var msg = ""
 	
-	userInfo := authService.Login(email, pwd)
-	if userInfo.Email != "" {
+	userInfo, err := authService.Login(email, pwd)
+	if err != nil {
+		// 登录错误, 则错误次数++
+		msg = "wrongUsernameOrPassword"
+	} else {
 		c.SetSession(userInfo)
 		sessionService.ClearLoginTimes(sessionId)
 		return c.RenderJson(info.Re{Ok: true})
-	} else {
-		// 登录错误, 则错误次数++
-		msg = "wrongUsernameOrPassword"
-	}
+	} 
 	
 	return c.RenderJson(info.Re{Ok: false, Item: sessionService.LoginTimesIsOver(sessionId) , Msg: c.Message(msg)})
 }
@@ -61,16 +61,16 @@ func (c Auth) DoLogin(email, pwd string, captcha string) revel.Result {
 	if sessionService.LoginTimesIsOver(sessionId) && sessionService.GetCaptcha(sessionId) != captcha {
 		msg = "captchaError"
 	} else {
-		userInfo := authService.Login(email, pwd)
-		if userInfo.Email != "" {
-			c.SetSession(userInfo)
-			sessionService.ClearLoginTimes(sessionId)
-			return c.RenderJson(info.Re{Ok: true})
-		} else {
+		userInfo, err := authService.Login(email, pwd)
+		if err != nil {
 			// 登录错误, 则错误次数++
 			msg = "wrongUsernameOrPassword"
 			sessionService.IncrLoginTimes(sessionId)
-		}
+	  } else {
+			c.SetSession(userInfo)
+			sessionService.ClearLoginTimes(sessionId)
+			return c.RenderJson(info.Re{Ok: true})
+		} 
 	}
 	
 	return c.RenderJson(info.Re{Ok: false, Item: sessionService.LoginTimesIsOver(sessionId) , Msg: c.Message(msg)})
@@ -87,8 +87,10 @@ func (c Auth) Logout() revel.Result {
 func (c Auth) Demo() revel.Result {
 	email := configService.GetGlobalStringConfig("demoPassword")
 	pwd := configService.GetGlobalStringConfig("demoPassword");
-	userInfo := authService.Login(email, pwd)
-	if userInfo.Email != "" {
+	userInfo, err := authService.Login(email, pwd)
+	if err != nil {
+		  return c.RenderJson(info.Re{Ok: false})
+	  } else {
 		c.SetSession(userInfo)
 		return c.Redirect("/note")
 	}
