@@ -295,10 +295,16 @@ func (this *UserService) UpdateAvatar(userId, avatarPath string) (bool) {
 // 已经登录了的用户修改密码
 func (this *UserService) UpdatePwd(userId, oldPwd, pwd string) (bool, string) {
 	userInfo := this.GetUserInfo(userId)
-	if userInfo.Pwd != Md5(oldPwd) {
+	if !ComparePwd(oldPwd, userInfo.Pwd) {
 		return false, "oldPasswordError"
 	}
-	ok := db.UpdateByQField(db.Users, bson.M{"_id": bson.ObjectIdHex(userId)}, "Pwd", Md5(pwd))
+
+	passwd := GenPwd(pwd)
+	if passwd == "" {
+		return false, "GenerateHash error"
+	}
+
+	ok := db.UpdateByQField(db.Users, bson.M{"_id": bson.ObjectIdHex(userId)}, "Pwd", passwd)
 	return ok, ""
 }
 
@@ -307,7 +313,12 @@ func (this *UserService) ResetPwd(adminUserId, userId, pwd string) (ok bool, msg
 	if configService.GetAdminUserId() != adminUserId {
 		return
 	}
-	ok = db.UpdateByQField(db.Users, bson.M{"_id": bson.ObjectIdHex(userId)}, "Pwd", Md5(pwd))
+	
+	passwd := GenPwd(pwd)
+	if passwd == "" {
+		return false, "GenerateHash error"
+	}
+	ok = db.UpdateByQField(db.Users, bson.M{"_id": bson.ObjectIdHex(userId)}, "Pwd", passwd)
 	return
 }
 

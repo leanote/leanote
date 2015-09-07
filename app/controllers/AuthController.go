@@ -40,7 +40,7 @@ func (c Auth) Login(email, from string) revel.Result {
 func (c Auth) doLogin(email, pwd string) revel.Result {
 	sessionId := c.Session.Id()
 	var msg = ""
-	
+
 	userInfo, err := authService.Login(email, pwd)
 	if err != nil {
 		// 登录错误, 则错误次数++
