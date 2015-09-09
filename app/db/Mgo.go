@@ -6,6 +6,7 @@ import (
 	. "github.com/leanote/leanote/app/lea"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+	"strings"
 )
 
 // Init mgo and the common DAO
@@ -62,6 +63,14 @@ func Init(url, dbname string) {
 	config := revel.Config
 	if url == "" { 
 		url, ok = config.String("db.url")
+		if !ok {
+			url, ok = config.String("db.urlEnv")
+		}
+		if ok {
+			// get dbname from url
+			urls := strings.Split(url, "/")
+			dbname = urls[len(urls)-1]
+		}
 	}
 	if dbname == "" {
 		dbname, _ = config.String("db.dbname")
