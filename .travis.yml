@@ -6,7 +6,7 @@ services:
 
 install:
   - export PATH=$PATH:$HOME/gopath/bin
-  - go get -v github.com/leanote/leanote
+  - go get -v github.com/leanote/leanote/app
 
 script:
   - mongo --version
