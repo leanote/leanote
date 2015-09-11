@@ -239,20 +239,6 @@ func (this *UserService) GetUserInfosOrderBySeq(userIds []bson.ObjectId) []info.
 	return users2
 }
 
-// 使用email(username), pwd得到用户信息
-func (this *UserService) LoginGetUserInfo(emailOrUsername, md5Pwd string) info.User {
-	emailOrUsername = strings.ToLower(emailOrUsername)
-	
-	user := info.User{}
-	if strings.Contains(emailOrUsername, "@") {
-		db.GetByQ(db.Users, bson.M{"Email": emailOrUsername, "Pwd": md5Pwd}, &user)
-	} else {
-		db.GetByQ(db.Users, bson.M{"Username": emailOrUsername, "Pwd": md5Pwd}, &user)
-	}
-	this.setUserLogo(&user)
-	return user
-}
-
 // 使用email(username), 得到用户信息
 func (this *UserService) GetUserInfoByName(emailOrUsername string) info.User {
 	emailOrUsername = strings.ToLower(emailOrUsername)
