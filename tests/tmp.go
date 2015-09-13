@@ -1,0 +1,3 @@
+package tests
+func a() {
+}
