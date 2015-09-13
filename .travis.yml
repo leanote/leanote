@@ -7,6 +7,7 @@ services:
 install:
   - export PATH=$PATH:$HOME/gopath/bin
   - go get -v github.com/leanote/leanote/app
+  - go get github.com/revel/cmd/revel
   - go install github.com/revel/cmd/revel
 
 script:
