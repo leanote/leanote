@@ -7,12 +7,13 @@ services:
 install:
   - export PATH=$PATH:$HOME/gopath/bin
   - go get -v github.com/leanote/leanote/app
-  - go get github.com/revel/cmd/revel
-  - go install github.com/revel/cmd/revel
+  # - go get github.com/revel/cmd/revel
+  # - go install github.com/revel/cmd/revel
 
 script:
   - mongo --version
   - mongorestore -h localhost -d leanote --directoryperdb ./mongodb_backup/leanote_install_data/
   - go test github.com/leanote/leanote/tests
-  - revel build github.com/leanote/leanote tmp
+  - go build -ldflags -X github.com/leanote/leanote/app
+  # - revel build github.com/leanote/leanote tmp
   # OK
