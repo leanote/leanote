@@ -13,7 +13,7 @@ install:
 script:
   - mongo --version
   - mongorestore -h localhost -d leanote --directoryperdb ./mongodb_backup/leanote_install_data/
-  - go test github.com/leanote/leanote/tests
+  - go test github.com/leanote/leanote/app/tests
   - go build -ldflags -X github.com/leanote/leanote/app
   # - revel build github.com/leanote/leanote tmp
   # OK
