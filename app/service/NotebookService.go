@@ -275,11 +275,15 @@ func (this *NotebookService) ToBlog(userId, notebookId string, isBlog bool) (boo
 // 查看是否有子notebook
 // 先查看该notebookId下是否有notes, 没有则删除
 func (this *NotebookService) DeleteNotebook(userId, notebookId string) (bool, string) {
-	if db.Count(db.Notebooks, bson.M{"ParentNotebookId": bson.ObjectIdHex(notebookId), 
-		"UserId": bson.ObjectIdHex(userId)}) == 0 { // 无
+	if db.Count(db.Notebooks, bson.M{
+			"ParentNotebookId": bson.ObjectIdHex(notebookId), 
+			"UserId": bson.ObjectIdHex(userId),
+			"IsDeleted": false,
+		}) == 0 { // 无
 		if db.Count(db.Notes, bson.M{"NotebookId": bson.ObjectIdHex(notebookId), 
 			"UserId": bson.ObjectIdHex(userId),
-			"IsTrash": false}) == 0 { // 不包含trash
+			"IsTrash": false,
+			"IsDeleted": false}) == 0 { // 不包含trash
 			// 不是真删除 1/20, 为了同步笔记本
 			ok := db.UpdateByQMap(db.Notebooks, bson.M{"_id": bson.ObjectIdHex(notebookId)}, bson.M{"IsDeleted": true, "Usn": userService.IncrUsn(userId)})
 			return ok, ""
