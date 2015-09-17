@@ -11,7 +11,7 @@ rm -rf $SCRIPTPATH/src/github.com/leanote/leanote # 先删除
 ln -s ../../../../ $SCRIPTPATH/src/github.com/leanote/leanote
 
 # set GOPATH
-export GOPATH=$GOPATH:$SCRIPTPATH
+export GOPATH=$SCRIPTPATH
 
 # run
 osName=`uname` # Darwin or Linux
