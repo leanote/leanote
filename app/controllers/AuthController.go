@@ -85,7 +85,7 @@ func (c Auth) Logout() revel.Result {
 
 // 体验一下
 func (c Auth) Demo() revel.Result {
-	email := configService.GetGlobalStringConfig("demoPassword")
+	email := configService.GetGlobalStringConfig("demoUsername")
 	pwd := configService.GetGlobalStringConfig("demoPassword");
 	userInfo, err := authService.Login(email, pwd)
 	if err != nil {
