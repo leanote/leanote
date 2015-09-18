@@ -16,9 +16,17 @@ script:
 
   - go test github.com/leanote/leanote/app/tests
 
+  # gen tmp/main.go, routes/routes.go
+  - go run app/cmd/main.go
+  # build
   - go build -o leanote github.com/leanote/leanote/app/tmp
+  # run with port 9000
   - ./leanote -importPath=github.com/leanote/leanote -runMode=dev -port=9000 &
+  # test
   - wget http://localhost:9000
+  - wget http://localhost:9000/blog
+  - wget http://localhost:9000/login
+  - wget http://localhost:9000/demo
 
   # - revel build github.com/leanote/leanote tmp
   # OK
