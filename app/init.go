@@ -10,8 +10,6 @@ import (
 	"github.com/leanote/leanote/app/controllers/admin"
 	"github.com/leanote/leanote/app/controllers/member"
 	_ "github.com/leanote/leanote/app/lea/binder"
-//	"github.com/leanote/leanote/app/lea/session"
-//	"github.com/leanote/leanote/app/lea/memcache"
 	"github.com/leanote/leanote/app/lea/route"
 	"reflect"
 	"fmt"
