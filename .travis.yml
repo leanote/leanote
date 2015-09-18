@@ -7,8 +7,7 @@ services:
 install:
   - export PATH=$PATH:$HOME/gopath/bin
   - go get -v github.com/leanote/leanote/app
-
-  # - go get github.com/revel/cmd/revel
+  - go get github.com/revel/cmd/revel
   # - go install github.com/revel/cmd/revel
   - pwd
   - ls
@@ -26,10 +25,10 @@ script:
   # run with port 9000
   - ./leanote -importPath=github.com/leanote/leanote -runMode=dev -port=9000 &
   # test
-  - wget http://localhost:9000
-  - wget http://localhost:9000/blog
-  - wget http://localhost:9000/login
-  - wget http://localhost:9000/demo
+  - curl http://localhost:9000
+  - curl http://localhost:9000/blog
+  - curl http://localhost:9000/login
+  - curl http://localhost:9000/demo
 
   # - revel build github.com/leanote/leanote tmp
   # OK
