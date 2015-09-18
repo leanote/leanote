@@ -41,7 +41,7 @@ build "linux" "amd64";
 build "windows" "386";
 build "windows" "amd64";
 
-build "darwin" "386";
+# build "darwin" "386";
 build "darwin" "amd64";
 
 
@@ -139,7 +139,7 @@ tarRelease "linux" "amd64";
 tarRelease "windows" "386";
 tarRelease "windows" "amd64";
 
-tarRelease "darwin" "386";
+# tarRelease "darwin" "386";
 tarRelease "darwin" "amd64";
 
 # BLOCK'
