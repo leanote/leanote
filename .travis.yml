@@ -9,7 +9,7 @@ install:
   - go get -v github.com/leanote/leanote/app
   - go get github.com/revel/cmd/revel
   # - go install github.com/revel/cmd/revel
-  - pwd
+  - pwd 
   - ls
 
 script:
