@@ -8,7 +8,7 @@ install:
   - export PATH=$PATH:$HOME/gopath/bin
   - go get -v github.com/leanote/leanote/app
   - go get -u github.com/revel/cmd/revel
-  - ls $GOPATH/github.com/revel/
+  - ls $GOPATH/src/github.com/revel/
   # - go get github.com/revel/moudle/revel
   # - go install github.com/revel/cmd/revel
   - pwd
