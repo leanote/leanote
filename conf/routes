@@ -2,7 +2,7 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-module:testrunner
+# module:testrunner
 
 # Home is My Blog
 Get 	/											Index.Default

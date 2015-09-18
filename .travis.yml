@@ -25,7 +25,8 @@ script:
   # build
   - go build -o leanote github.com/leanote/leanote/app/tmp
   # run with port 9000
-  - ./leanote -importPath=github.com/leanote/leanote -runMode=prod -port=9000 &
+  - ./leanote -importPath=github.com/leanote/leanote -runMode=dev -port=9000 &
+  - sleep 20s;
   # test
   - curl http://localhost:9000
   - curl http://localhost:9000/blog
