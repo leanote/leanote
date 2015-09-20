@@ -16,7 +16,8 @@
     				{{blogTags $ $.post.Tags}}
     				&nbsp;&nbsp;
     			{{end}}
-    			
+    			<i class="fa fa-user"></i> {{.post.Username}}
+			    &nbsp;&nbsp;
     			<i class="fa fa-clock-o"></i> {{$.post.PublicTime | datetime}} 
     			&nbsp;&nbsp;
     			<span class="fa fa-eye"></span> {{$.post.ReadNum}}

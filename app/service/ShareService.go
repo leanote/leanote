@@ -190,7 +190,7 @@ func (this *ShareService) ListShareNotesByNotebookId(notebookId, myUserId, share
 	perm := shareNotebook.Perm
 	
 	// 2 得到该notebook下分页显示所有的notes
-	_, notes := noteService.ListNotes(sharedUserId, notebookId, false, page, pageSize, sortField, isAsc, false);
+	_, notes := noteService.ListUserNotes(sharedUserId, notebookId, false, page, pageSize, sortField, isAsc, false);
 	
 	// 3 添加权限信息
 	// 3.1 如果该notebook自己有其它权限信息, 比如1, 那么覆盖notebook的权限信息

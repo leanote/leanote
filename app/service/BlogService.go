@@ -80,10 +80,51 @@ func (this *BlogService) ListBlogNotebooks(userId string) []info.Notebook {
 	return notebooks
 }
 
-// 博客列表
+// 用户博客列表
 // userId 表示谁的blog
-func (this *BlogService) ListBlogs(userId, notebookId string, page, pageSize int, sortField string, isAsc bool) (info.Page, []info.BlogItem) {
-	count, notes := noteService.ListNotes(userId, notebookId, false, page, pageSize, sortField, isAsc, true)
+func (this *BlogService) ListUserBlogs(userId, notebookId string, page, pageSize int, sortField string, isAsc bool) (info.Page, []info.BlogItem) {
+	count, notes := noteService.ListUserNotes(userId, notebookId, false, page, pageSize, sortField, isAsc, true)
+
+	if notes == nil || len(notes) == 0 {
+		return info.Page{}, nil
+	}
+
+	// 得到content, 并且每个都要substring
+	noteIds := make([]bson.ObjectId, len(notes))
+	for i, note := range notes {
+		noteIds[i] = note.NoteId
+	}
+
+	// 直接得到noteContents表的abstract
+	// 这里可能是乱序的
+	noteContents := noteService.ListNoteAbstractsByNoteIds(noteIds) // 返回[info.NoteContent]
+	noteContentsMap := make(map[bson.ObjectId]info.NoteContent, len(noteContents))
+	for _, noteContent := range noteContents {
+		noteContentsMap[noteContent.NoteId] = noteContent
+	}
+
+	// 组装成blogItem
+	// 按照notes的顺序
+	blogs := make([]info.BlogItem, len(noteIds))
+	for i, note := range notes {
+		hasMore := true
+		var content string
+		var abstract string
+		if noteContent, ok := noteContentsMap[note.NoteId]; ok {
+			abstract = noteContent.Abstract
+			content = noteContent.Content
+		}
+		blogs[i] = info.BlogItem{note, abstract, content, hasMore, info.User{}}
+	}
+
+	pageInfo := info.NewPage(page, pageSize, count, nil)
+
+	return pageInfo, blogs
+}
+
+// 所有博客列表
+func (this *BlogService) ListBlogs(notebookId string, page, pageSize int, sortField string, isAsc bool) (info.Page, []info.BlogItem) {
+	count, notes := noteService.ListNotes(notebookId, false, page, pageSize, sortField, isAsc, true)
 
 	if notes == nil || len(notes) == 0 {
 		return info.Page{}, nil
@@ -183,7 +224,7 @@ Posts: []
 }
 */
 func (this *BlogService) ListBlogsArchive(userId, notebookId string, year, month int, sortField string, isAsc bool) []info.Archive {
-	//	_, notes := noteService.ListNotes(userId, notebookId, false, 1, 99999, sortField, isAsc, true);
+	//	_, notes := noteService.ListUserNotes(userId, notebookId, false, 1, 99999, sortField, isAsc, true);
 	q := bson.M{"UserId": bson.ObjectIdHex(userId), "IsBlog": true, "IsTrash": false}
 	if notebookId != "" {
 		q["NotebookId"] = bson.ObjectIdHex(notebookId)
@@ -1180,10 +1221,12 @@ func (this *BlogService) FixBlog(blog info.BlogItem) info.Post {
 	if urlTitle == "" {
 		urlTitle = blog.NoteId.Hex()
 	}
+	usename := userService.GetUsername(blog.UserId.Hex())
 	blog2 := info.Post{
 		NoteId:      blog.NoteId.Hex(),
 		Title:       blog.Title,
 		UrlTitle:    urlTitle,
+		Username:    usename,
 		ImgSrc:      blog.ImgSrc,
 		CreatedTime: blog.CreatedTime,
 		UpdatedTime: blog.UpdatedTime,

@@ -145,15 +145,43 @@ func (this *NoteService) getFiles(noteIds []bson.ObjectId) map[string][]info.Not
 	return noteFilesMap
 }
 
-// 列出note, 排序规则, 还有分页
+// 列出用户notes, 排序规则, 还有分页
 // CreatedTime, UpdatedTime, title 来排序
-func (this *NoteService) ListNotes(userId, notebookId string,
+func (this *NoteService) ListUserNotes(userId, notebookId string,
 		isTrash bool, pageNumber, pageSize int, sortField string, isAsc bool, isBlog bool) (count int, notes []info.Note) {
 	notes = []info.Note{}
 	skipNum, sortFieldR := parsePageAndSort(pageNumber, pageSize, sortField, isAsc)
 	
 	// 不是trash的
 	query := bson.M{"UserId": bson.ObjectIdHex(userId), "IsTrash": isTrash, "IsDeleted": false}
+	if isBlog {
+		query["IsBlog"] = true
+	}
+	if notebookId != "" {
+		query["NotebookId"] = bson.ObjectIdHex(notebookId)
+	}
+	
+	q := db.Notes.Find(query);
+	
+	// 总记录数
+	count, _ = q.Count()
+		
+	q.Sort(sortFieldR).
+		Skip(skipNum).
+		Limit(pageSize).
+		All(&notes)
+	return
+}
+
+// 列出所有notes, 排序规则, 还有分页
+// CreatedTime, UpdatedTime, title 来排序
+func (this *NoteService) ListNotes(notebookId string,
+		isTrash bool, pageNumber, pageSize int, sortField string, isAsc bool, isBlog bool) (count int, notes []info.Note) {
+	notes = []info.Note{}
+	skipNum, sortFieldR := parsePageAndSort(pageNumber, pageSize, sortField, isAsc)
+	
+	// 不是trash的
+	query := bson.M{"IsTrash": isTrash, "IsDeleted": false}
 	if isBlog {
 		query["IsBlog"] = true
 	}

@@ -46,7 +46,7 @@ func (c Preview) Index(userIdOrEmail string, themeId string) revel.Result {
 	if !c.getPreviewThemeAbsolutePath(themeId) {
 		return c.E404()
 	}
-	return c.Blog.Index(c.GetUserId())
+	return c.Blog.Index()
 //	return blog.RenderTemplate("index.html", c.RenderArgs, c.getPreviewThemeAbsolutePath(themeId))
 }
 

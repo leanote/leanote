@@ -70,7 +70,7 @@ func (c Note) Index(noteId string) revel.Result {
 						hasRightNoteId = false
 					}
 				} else {
-					_, notes = noteService.ListNotes(c.GetUserId(), note.NotebookId.Hex(), false, c.GetPage(), 50, defaultSortField, false, false);
+					_, notes = noteService.ListUserNotes(c.GetUserId(), note.NotebookId.Hex(), false, c.GetPage(), 50, defaultSortField, false, false);
 					
 					// 如果指定了某笔记, 则该笔记放在首位
 					lenNotes := len(notes)
@@ -93,14 +93,14 @@ func (c Note) Index(noteId string) revel.Result {
 			}
 			
 			// 得到最近的笔记
-			_, latestNotes := noteService.ListNotes(c.GetUserId(), "", false, c.GetPage(), 50, defaultSortField, false, false);
+			_, latestNotes := noteService.ListUserNotes(c.GetUserId(), "", false, c.GetPage(), 50, defaultSortField, false, false);
 			c.RenderArgs["latestNotes"] = latestNotes
 		}
 		
 		// 没有传入笔记
 		// 那么得到最新笔记
 		if !hasRightNoteId {
-			_, notes = noteService.ListNotes(c.GetUserId(), "", false, c.GetPage(), 50, defaultSortField, false, false);
+			_, notes = noteService.ListUserNotes(c.GetUserId(), "", false, c.GetPage(), 50, defaultSortField, false, false);
 			if len(notes) > 0 {
 				noteContent = noteService.GetNoteContent(notes[0].NoteId.Hex(), userId)
 				c.RenderArgs["curNoteId"] = notes[0].NoteId.Hex()
@@ -138,13 +138,13 @@ func (c Note) Index(noteId string) revel.Result {
 // 已登录, 得到用户基本信息(notebook, shareNotebook), 跳转到index.html中
 // 否则, 转向登录页面
 func (c Note) ListNotes(notebookId string) revel.Result {
-	_, notes := noteService.ListNotes(c.GetUserId(), notebookId, false, c.GetPage(), pageSize, defaultSortField, false, false);
+	_, notes := noteService.ListUserNotes(c.GetUserId(), notebookId, false, c.GetPage(), pageSize, defaultSortField, false, false);
 	return c.RenderJson(notes)
 }
 
 // 得到trash
 func (c Note) ListTrashNotes() revel.Result {
-	_, notes := noteService.ListNotes(c.GetUserId(), "", true, c.GetPage(), pageSize, defaultSortField, false, false);
+	_, notes := noteService.ListUserNotes(c.GetUserId(), "", true, c.GetPage(), pageSize, defaultSortField, false, false);
 	return c.RenderJson(notes)
 }
 

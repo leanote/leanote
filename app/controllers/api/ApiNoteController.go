@@ -61,14 +61,14 @@ func (c ApiNote) GetNotes(notebookId string) revel.Result {
 		re.Msg = "notebookIdInvalid"
 		return c.RenderJson(re)
 	}
-	_, notes := noteService.ListNotes(c.getUserId(), notebookId, false, c.GetPage(), pageSize, defaultSortField, false, false)
+	_, notes := noteService.ListUserNotes(c.getUserId(), notebookId, false, c.GetPage(), pageSize, defaultSortField, false, false)
 	return c.RenderJson(noteService.ToApiNotes(notes))
 }
 
 // 得到trash
 // [OK]
 func (c ApiNote) GetTrashNotes() revel.Result {
-	_, notes := noteService.ListNotes(c.getUserId(), "", true, c.GetPage(), pageSize, defaultSortField, false, false)
+	_, notes := noteService.ListUserNotes(c.getUserId(), "", true, c.GetPage(), pageSize, defaultSortField, false, false)
 	return c.RenderJson(noteService.ToApiNotes(notes))
 }
 
