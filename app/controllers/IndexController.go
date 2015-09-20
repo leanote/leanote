@@ -15,7 +15,7 @@ type Index struct {
 func (c Index) Default() revel.Result {
 	if configService.HomePageIsAdminsBlog(){ 
 		blog := Blog{c.BaseController}
-		return blog.Index(configService.GetAdminUsername());
+		return blog.Index();
 	}
 	return c.Index()
 }

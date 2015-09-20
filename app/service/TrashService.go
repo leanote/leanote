@@ -114,6 +114,6 @@ func (this *TrashService) DeleteTrashApi(noteId, userId string, usn int) (bool, 
 // CreatedTime, UpdatedTime, title 来排序
 func (this *TrashService) ListNotes(userId string, 
 		pageNumber, pageSize int, sortField string, isAsc bool) (notes []info.Note) {
-	_, notes = noteService.ListNotes(userId, "", true, pageNumber, pageSize, sortField, isAsc, false)
+	_, notes = noteService.ListUserNotes(userId, "", true, pageNumber, pageSize, sortField, isAsc, false)
 	return
 }

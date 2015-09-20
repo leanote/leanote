@@ -322,7 +322,7 @@ func (c Blog) blogCommon(userId string, userBlog info.UserBlog, userInfo info.Us
 	//	c.RenderArgs["userInfo"] = userInfo
 
 	// 最新笔记
-	_, recentBlogs := blogService.ListBlogs(userId, "", 1, 5, userBlog.SortField, userBlog.IsAsc)
+	_, recentBlogs := blogService.ListUserBlogs(userId, "", 1, 5, userBlog.SortField, userBlog.IsAsc)
 	c.RenderArgs["recentPosts"] = blogService.FixBlogs(recentBlogs)
 	c.RenderArgs["latestPosts"] = c.RenderArgs["recentPosts"]
 	c.RenderArgs["tags"] = blogService.GetBlogTags(userId)
@@ -541,7 +541,7 @@ func (c Blog) Cate(userIdOrEmail string, notebookId string) (re revel.Result) {
 
 	// 分页的话, 需要分页信息, totalPage, curPage
 	page := c.GetPage()
-	pageInfo, blogs := blogService.ListBlogs(userId, notebookId2, page, userBlog.PerPageSize, userBlog.SortField, userBlog.IsAsc)
+	pageInfo, blogs := blogService.ListUserBlogs(userId, notebookId2, page, userBlog.PerPageSize, userBlog.SortField, userBlog.IsAsc)
 	blogs2 := blogService.FixBlogs(blogs)
 	c.RenderArgs["posts"] = blogs2
 
@@ -574,7 +574,7 @@ func (c Blog) userIdOrEmail(hasDomain bool, userBlog info.UserBlog, userIdOrEmai
 	return
 }
 
-func (c Blog) Index(userIdOrEmail string) (re revel.Result) {
+func (c Blog) Index() (re revel.Result) {
 	// 自定义域名
 	hasDomain, userBlog := c.domain()
 	defer func() {
@@ -582,10 +582,10 @@ func (c Blog) Index(userIdOrEmail string) (re revel.Result) {
 			re = c.e404(userBlog.ThemePath)
 		}
 	}()
-	// 用户id为空, 则是admin用户的博客
-	if userIdOrEmail == "" {
-		userIdOrEmail = configService.GetAdminUsername()
-	}
+	// 使用admin用户的博客设置
+
+	userIdOrEmail := configService.GetAdminUsername()
+	
 	userId, userInfo := c.userIdOrEmail(hasDomain, userBlog, userIdOrEmail)
 	var ok = false
 	if ok, userBlog = c.blogCommon(userId, userBlog, userInfo); !ok {
@@ -594,7 +594,7 @@ func (c Blog) Index(userIdOrEmail string) (re revel.Result) {
 
 	// 分页的话, 需要分页信息, totalPage, curPage
 	page := c.GetPage()
-	pageInfo, blogs := blogService.ListBlogs(userId, "", page, userBlog.PerPageSize, userBlog.SortField, userBlog.IsAsc)
+	pageInfo, blogs := blogService.ListBlogs("", page, userBlog.PerPageSize, userBlog.SortField, userBlog.IsAsc)
 	blogs2 := blogService.FixBlogs(blogs)
 	c.RenderArgs["posts"] = blogs2
 
@@ -896,7 +896,7 @@ func (c Blog) ListCateLatest(notebookId, callback string) revel.Result {
 
 	// 分页的话, 需要分页信息, totalPage, curPage
 	page := 1
-	_, blogs := blogService.ListBlogs(userId, notebookId, page, 5, userBlog.SortField, userBlog.IsAsc)
+	_, blogs := blogService.ListUserBlogs(userId, notebookId, page, 5, userBlog.SortField, userBlog.IsAsc)
 	re := info.NewRe()
 	re.Ok = true
 	re.List = blogs

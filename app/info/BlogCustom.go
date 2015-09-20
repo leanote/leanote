@@ -24,6 +24,7 @@ type Post struct {
 	NoteId string
 	Title string
 	UrlTitle string
+	Username string
 	ImgSrc string
 	CreatedTime time.Time
 	UpdatedTime time.Time
