@@ -65,9 +65,15 @@ func Init(url, dbname string) {
 		url, ok = config.String("db.url")
 		if !ok {
 			url, ok = config.String("db.urlEnv")
+			if ok {
+				Log("get db conf from urlEnv: " + url)
+			}
+		} else {
+			Log("get db conf from db.url: " + url)
 		}
+		
 		if ok {
-			// get dbname from url
+			// get dbname from urlEnv
 			urls := strings.Split(url, "/")
 			dbname = urls[len(urls)-1]
 		}
@@ -75,6 +81,8 @@ func Init(url, dbname string) {
 	if dbname == "" {
 		dbname, _ = config.String("db.dbname")
 	}
+	
+	// get db config from host, port, username, password
 	if !ok {
 		host, _ := revel.Config.String("db.host")
 		port, _ := revel.Config.String("db.port")
