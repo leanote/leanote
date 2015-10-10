@@ -47,8 +47,9 @@ define("tinymce/pasteplugin/Clipboard", [
 			ajaxPost("/file/copyHttpImage", {src: src}, function(ret) {
 				if(reIsOk(ret)) {
 					// 将图片替换之
-					var src = urlPrefix + "/" + ret.Item;
-					var dom = editor.dom
+					// var src = urlPrefix + "/" + ret.Item;
+					var src = urlPrefix + "/file/outputImage?fileId=" + ret.Id;
+					var dom = editor.dom;
 					for(var i in ids) {
 						var id = ids[i];
 						var imgElm = dom.get(id);

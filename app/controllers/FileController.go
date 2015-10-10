@@ -234,35 +234,39 @@ func (c File) CopyImage(userId, fileId, toUserId string) revel.Result {
 	return c.RenderJson(re)
 }
 
-// 复制外网的图片, 成公共图片 放在/upload下
+// 复制外网的图片
 // 都要好好的计算大小
 func (c File) CopyHttpImage(src string) revel.Result {
 	re := info.NewRe()
-	fileUrlPath := "upload/" + c.GetUserId() + "/images"
-	dir := revel.BasePath + "/public/" +  fileUrlPath
+
+	// 生成上传路径
+	newGuid := NewGuid()
+	userId := c.GetUserId()
+	fileUrlPath := "files/" + Digest3(userId) + "/" + userId + "/" + Digest2(newGuid) + "/images"
+	dir := revel.BasePath + "/" + fileUrlPath
 	err := os.MkdirAll(dir, 0755)
 	if err != nil {
 		return c.RenderJson(re)
 	}
 	filesize, filename, _, ok := netutil.WriteUrl(src, dir)
-	
+
 	if !ok {
 		re.Msg = "copy error"
 		return c.RenderJson(re)
 	}
-	
+
 	// File
 	fileInfo := info.File{Name: filename,
 		Title: filename,
-		Path: fileUrlPath + "/" + filename,
-		Size: filesize}
-		
-	id := bson.NewObjectId();
+		Path:  fileUrlPath + "/" + filename,
+		Size:  filesize}
+
+	id := bson.NewObjectId()
 	fileInfo.FileId = id
-	
+
 	re.Id = id.Hex()
-	re.Item = fileInfo.Path
+//	re.Item = fileInfo.Path
 	re.Ok, re.Msg = fileService.AddImage(fileInfo, "", c.GetUserId(), true)
-	
+
 	return c.RenderJson(re)
 }
