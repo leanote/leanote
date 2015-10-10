@@ -43,19 +43,20 @@ curUser=Email
 # form
 submit=提交
 Submit=提交
-register=Sign up
-login=Sign in
+register=注册
+login=登录
 Password=密码
-password2=Confirm your password
+password2=请确认密码
 email=Email
-inputUsername=Username(email) is required
-inputEmail=Email is required
-wrongEmail=Wrong email
-wrongUsernameOrPassword=Wrong username or password
-inputPassword=Password is required
-wrongPassword=Wrong password
-logining=Sign in
-loginSuccess=login success
+inputUsername=请输入用户名或Email
+inputEmail=请输入Email
+wrongEmail=Email错误
+wrongUsernameOrPassword=用户名或密码错误
+inputPassword=请输入密码
+inputLoginPasswordTips=请输入登录密码
+wrongPassword=密码错误
+logining=登录
+loginSuccess=登录成功
 
 hi=Hi
 welcomeUseLeanote=欢迎使用leanote
@@ -133,6 +134,13 @@ saving=正在保存
 saveSuccess=保存成功
 SearchNote=搜索笔记
 SearchNotebook=搜索笔记本
+Choose File=选择文件
+Download All=下载全部
+Information=信息
+Are you sure to delete it ?=确认删除?
+Insert link into content=将附件链接插入到内容中
+Download=下载
+Delete=删除
 
 update=更新
 create=创建
@@ -238,8 +246,6 @@ inviteEmailBody=Hi, 你好, 我是%s, %s非常好用, 快来注册吧!
 # 历史记录
 historiesNum=leanote会保存笔记的最近<b>10</b>份历史记录
 noHistories=无历史记录
-fold=折叠
-unfold=展开
 datetime=日期
 restoreFromThisVersion=从该版本还原
 confirmBackup=确定要从该版还原? 还原前leanote会备份当前版本到历史记录中.
@@ -278,6 +284,7 @@ themeValidHasRoundInclude=警告: 模板存在循环引用问题!
 memberCenter=个人中心
 userNotExists=该成员沿未注册
 hasUsers=已存在该成员
+Leanote Blog Theme Api=Leanote博客主题API
 
 # yu
 service=服务
