@@ -430,7 +430,7 @@ func (this *NoteService) UpdateNote(updatedUserId, noteId string, needUpdate bso
 	if isBlog, ok := needUpdate["IsBlog"]; ok {
 		isBlog2 := isBlog.(bool)
 		if note.IsBlog != isBlog2 {
-			db.UpdateByIdAndUserIdMap(db.NoteContents, noteId, userId, bson.M{"IsBlog": isBlog2})
+			this.UpdateNoteContentIsBlog(noteId, userId, isBlog2);
 
 			// 重新发布成博客
 			if !note.IsBlog {
@@ -469,6 +469,11 @@ func (this *NoteService) UpdateNote(updatedUserId, noteId string, needUpdate bso
 	}
 	
 	return true, "", afterUsn
+}
+
+// 当设置/取消了笔记为博客
+func (this *NoteService) UpdateNoteContentIsBlog(noteId, userId string, isBlog bool) {
+	db.UpdateByIdAndUserIdMap(db.NoteContents, noteId, userId, bson.M{"IsBlog": isBlog})
 }
 
 // 附件修改, 增加noteIncr
@@ -584,6 +589,8 @@ func (this *NoteService) ToBlog(userId, noteId string, isBlog, isTop bool) bool 
 	ok := db.UpdateByIdAndUserIdMap(db.Notes, noteId, userId, noteUpdate)
 	// 重新计算tags
 	go (func() {
+		this.UpdateNoteContentIsBlog(noteId, userId, isBlog);
+	
 		blogService.ReCountBlogTags(userId)
 	})()
 	return ok
