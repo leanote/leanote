@@ -22,7 +22,7 @@ type Note struct {
 // 笔记首页, 判断是否已登录
 // 已登录, 得到用户基本信息(notebook, shareNotebook), 跳转到index.html中
 // 否则, 转向登录页面
-func (c Note) Index(noteId string) revel.Result {
+func (c Note) Index(noteId, online string) revel.Result {
 	c.SetLocale()
 	userInfo := c.GetUserInfo()
 	
@@ -127,7 +127,7 @@ func (c Note) Index(noteId string) revel.Result {
 	
 	// return c.RenderTemplate("note/note.html")
 		
-	if isDev, _ := revel.Config.Bool("mode.dev"); isDev {
+	if isDev, _ := revel.Config.Bool("mode.dev"); isDev && online == "" {
 		return c.RenderTemplate("note/note-dev.html")
 	} else {
 		return c.RenderTemplate("note/note.html")
