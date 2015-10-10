@@ -94,7 +94,7 @@ func (c User) ReSendActiveEmail() revel.Result {
 }
 
 // 修改Email发送激活邮箱
-func (c User) UpdateEmailSendActiveEmail(email string) revel.Result {
+func (c User) updateEmailSendActiveEmail(email, pwd string) revel.Result {
 	re := info.NewRe()
 	if(c.GetUsername() == "demo") {
 		re.Msg = "cannotUpdateDemo"

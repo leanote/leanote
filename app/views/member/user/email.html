@@ -13,10 +13,14 @@
   					<span class="label label-green">{{msg . "verified"}}</span>
   				{{else}}
   					<span class="label label-red">{{msg . "unVerified"}}</span>
-					<a class="raw nowToActive">{{msg . "verifiedNow"}}</a> 
+					<a class="a raw nowToActive">{{msg . "verifiedNow"}}</a> 
 					{{msg . "or"}}
-					<a class="raw reSendActiveEmail">{{msg . "resendVerifiedEmail"}}</a> 
+					<a class="a raw reSendActiveEmail">{{msg . "resendVerifiedEmail"}}</a> 
   				{{end}}
+  				
+  				<!--
+  				
+  				<hr />
   				
   				<div class="alert alert-danger" id="emailMsg" style="display: none"></div>
 				<div class="form-group">
@@ -29,12 +33,28 @@
 				    	]'
 				    	data-msg_target="#emailMsg"
 				    />
-				    {{msg . "updateEmailTips"}}
+				    <div class="form-tips">{{msg . "updateEmailTips"}}</div>
 				</div>
+				
+				<div class="form-group"> 
+					<label class="control-label" for="pwd">{{msg . "password"}}</label>
+					<input type="password" class="form-control" id="pwd" name="pwd"
+					    data-rules='[
+					    	{rule: "required", msg: "inputPassword"},
+					    	{rule: "password", msg: "errorPassword"}
+				    	]'
+				    	data-msg_target="#emailMsg"
+				    >
+				    <div class="form-tips">{{msg . "inputLoginPasswordTips"}}</div>
+				</div>
+				
+				-->
 			</div>
+			<!--
 			<footer class="panel-footer text-right bg-light lter">
 			    <button type="submit" id="emailBtn" class="btn btn-success">{{msg . "submit"}}</button>
 			</footer>
+			-->
 		</section>
 	</form>
 </div>
@@ -76,7 +96,8 @@ $("#emailBtn").click(function(e) {
 		return;
 	}
 	var email = $("#email").val();
-	post("/user/updateEmailSendActiveEmail", {email: email}, function(e) {
+	var pwd = $("#pwd").val();
+	post("/user/updateEmailSendActiveEmail", {email: email, pwd: pwd}, function(e) {
 		if(e.Ok) {
 			var url = getEmailLoginAddress(email);
 			showAlert("#emailMsg", getMsg("verifiedEmaiHasSent") +" <a href='" + url + "' target='_blank'>" + getMsg("checkEmail") + "</a>", "success");
