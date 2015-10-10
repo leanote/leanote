@@ -84,6 +84,13 @@ func (c BaseController) GetUserInfo() info.User {
 	return info.User{}
 }
 
+func (c BaseController) GetUserAndBlogUrl() info.UserAndBlogUrl {
+	if userId, ok := c.Session["UserId"]; ok && userId != "" {
+		return userService.GetUserAndBlogUrl(userId);
+	}
+	return info.UserAndBlogUrl{}
+}
+
 // 这里的session都是cookie中的, 与数据库session无关
 func (c BaseController) GetSession(key string) string {
 	v, ok := c.Session[key]

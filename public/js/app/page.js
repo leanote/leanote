@@ -480,7 +480,8 @@ function initEditor() {
 					e.preventDefault();
 					return;
 				}
-				Note.saveNote(e);
+				// 这里就不要了, 避免两次updateNote
+				// Note.saveNote(e);
 
 				// 当输入的时候, 把当前raw删除掉
 				LeaAce.removeCurToggleRaw();
@@ -511,12 +512,12 @@ function initEditor() {
 				"searchreplace leanote_nav leanote_code tabfocus",
 				"table textcolor" ], // nonbreaking directionality charmap
 		toolbar1 : "formatselect | forecolor backcolor | bold italic underline strikethrough | leaui_image | leanote_code leanote_inline_code | bullist numlist | alignleft aligncenter alignright alignjustify",
-		toolbar2 : "outdent indent blockquote | link unlink | table | hr removeformat | subscript superscript |searchreplace | pastetext pasteCopyImage | leanote_ace_pre | fontselect fontsizeselect",
+		toolbar2 : "outdent indent blockquote | link unlink | table | hr removeformat | subscript superscript |searchreplace | pastetext | leanote_ace_pre | fontselect fontsizeselect",
 
 		// 使用tab键: http://www.tinymce.com/wiki.php/Plugin3x:nonbreaking
 		// http://stackoverflow.com/questions/13543220/tiny-mce-how-to-allow-people-to-indent
 		// nonbreaking_force_tab : true,
-
+		
 		menubar : false,
 		toolbar_items_size : 'small',
 		statusbar : false,
@@ -554,7 +555,7 @@ function initEditor() {
 	window.onbeforeunload = function(e) {
     	Note.curChangedSaveIt();
 	}
-	
+
 	// 全局ctrl + s
 	$("body").on('keydown', Note.saveNote);
 }
@@ -813,12 +814,7 @@ function scrollTo(self, tagName, text) {
 		// $ul.css("max-height", getMaxDropdownHeight(this));
 	});
 	
-	//--------
-	// 编辑器帮助
-	$("#tipsBtn").click(function() {
-		showDialog2("#tipsDialog");
-	});
-	
+	/*
 	//--------
 	// 建议
 	$("#yourSuggestions").click(function() {
@@ -843,6 +839,7 @@ function scrollTo(self, tagName, text) {
 			}
 		});
 	});
+	*/
 	
 	// 编辑器模式
 	em.init();
