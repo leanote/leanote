@@ -23,6 +23,22 @@ func Md5(s string) string {
 	return hex.EncodeToString(h.Sum(nil))
 }
 
+// 3位数的转换, 为了用bson.id -> 3位数
+func Digest3(str string) string {
+	var b rune = 0
+	for _, k := range str {
+		b += k
+	}
+	return fmt.Sprintf("%d", b % 1000)
+}
+func Digest2(str string) string {
+	var b rune = 0
+	for _, k := range str {
+		b += k
+	}
+	return fmt.Sprintf("%d", b % 100)
+}
+
 // Guid
 func NewGuid() string {
 	b := make([]byte, 48)

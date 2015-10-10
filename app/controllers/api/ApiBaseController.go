@@ -74,7 +74,9 @@ func (c ApiBaseContrller) uploadAttach(name string, noteId string) (ok bool, msg
 	}
 	
 	// 生成上传路径
-	filePath := "files/" + userId + "/attachs"
+	newGuid := NewGuid()
+	filePath :=	"files/" + Digest3(userId) + "/" + userId + "/" + Digest2(newGuid) + "/attachs"	
+	
 	dir := revel.BasePath + "/" +  filePath
 	err = os.MkdirAll(dir, 0755)
 	if err != nil {
@@ -83,7 +85,7 @@ func (c ApiBaseContrller) uploadAttach(name string, noteId string) (ok bool, msg
 	// 生成新的文件名
 	filename := handel.Filename
 	_, ext := SplitFilename(filename) // .doc
-	filename = NewGuid() + ext
+	filename = newGuid + ext
 	toPath := dir + "/" + filename;
 	err = ioutil.WriteFile(toPath, data, 0777)
 	if err != nil {
@@ -124,8 +126,12 @@ func (c ApiBaseContrller) upload(name string, noteId string, isAttach bool) (ok 
 		return 
 	}
 	defer file.Close()
+	
+	newGuid := NewGuid()
 	// 生成上传路径
-	fileUrlPath := "files/" + c.getUserId() + "/images"
+	userId := c.getUserId()
+	fileUrlPath := "files/" + Digest3(userId) + "/" + userId + "/" + Digest2(newGuid) + "/images"
+	
 	dir := revel.BasePath + "/" +  fileUrlPath
 	err = os.MkdirAll(dir, 0755)
 	if err != nil {
@@ -139,7 +145,7 @@ func (c ApiBaseContrller) upload(name string, noteId string, isAttach bool) (ok 
 		return
 	}
 
-	filename = NewGuid() + ext
+	filename = newGuid + ext
 	data, err := ioutil.ReadAll(file)
 	if err != nil {
 		return

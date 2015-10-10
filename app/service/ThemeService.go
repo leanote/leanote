@@ -85,13 +85,13 @@ func (this *ThemeService) getDefaultTheme(style string) info.Theme {
 
 // 用户的主题路径设置
 func (this *ThemeService) getUserThemeBasePath(userId string) string {
-	return revel.BasePath + "/public/upload/" + userId + "/themes"
+	return revel.BasePath + "/public/upload/" + Digest3(userId) + "/" + userId + "/themes"
 }
 func (this *ThemeService) getUserThemePath(userId, themeId string) string {
 	return this.getUserThemeBasePath(userId) + "/" + themeId
 }
 func (this *ThemeService) getUserThemePath2(userId, themeId string) string {
-	return "public/upload/" + userId + "/themes/" + themeId
+	return "public/upload/" + Digest3(userId) + "/" + userId + "/themes/" + themeId
 }
 
 // 新建主题
@@ -412,10 +412,18 @@ func (this *ThemeService) ImportTheme(userId, path string) (ok bool, msg string)
 	themeIdO := bson.NewObjectId()
 	themeId := themeIdO.Hex()
 	targetPath := this.getUserThemePath(userId, themeId) // revel.BasePath + "/public/upload/" + userId + "/themes/" + themeId
+
+	err := os.MkdirAll(targetPath, 0755)
+	if err != nil {
+		msg = "error"
+		return 
+	}
 	if ok, msg = archive.Unzip(path, targetPath); !ok {
 		DeleteFile(targetPath)
+		Log("oh no")
 		return
 	}
+	
 	// 主题验证
 	if ok, msg = this.ValidateTheme(targetPath, "", ""); !ok {
 		DeleteFile(targetPath)
