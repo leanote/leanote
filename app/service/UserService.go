@@ -362,7 +362,7 @@ func (this *UserService) UpdateEmail(token string) (ok bool, msg, email string) 
 	tokenInfo := info.Token{}
 	if ok, msg, tokenInfo = tokenService.VerifyToken(token, info.TokenUpdateEmail); ok {
 		// 修改之后的邮箱
-		email = tokenInfo.Email
+		email = strings.ToLower(tokenInfo.Email)
 		// 先验证该email是否被注册了
 		if userService.IsExistsUser(email) {
 			ok = false
