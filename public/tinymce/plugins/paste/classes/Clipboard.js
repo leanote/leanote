@@ -115,7 +115,7 @@ define("tinymce/pasteplugin/Clipboard", [
 							var needCopyImages = {}; // src => [id1,id2]
 							var time = (new Date()).getTime();
 							try {
-								var $html = $("<div>" + html + "</div");
+								var $html = $("<div>" + html + "</div>");
 								var $imgs = $html.find("img");
 								for(var i = 0; i < $imgs.length; ++i) {
 									var $img = $imgs.eq(i)
