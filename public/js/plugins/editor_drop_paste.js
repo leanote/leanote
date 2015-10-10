@@ -292,7 +292,6 @@ define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function(){
 	        add: function(e, data) {
 	        	// 防止两次
 	        	var now = (new Date()).getTime();
-	        	console.log(now - lastTime);
 	        	if (now - lastTime < 500) {
 	        		// console.log('haha');
 	        		return;
