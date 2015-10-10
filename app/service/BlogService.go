@@ -133,7 +133,8 @@ func (this *BlogService) ListBlogs(userId, notebookId string, page, pageSize int
 func (this *BlogService) GetBlogTags(userId string) []info.TagCount {
 	// 得到所有博客
 	tagCounts := []info.TagCount{}
-	query := bson.M{"UserId": bson.ObjectIdHex(userId), "IsBlog": true}
+	// tag不能为空
+	query := bson.M{"UserId": bson.ObjectIdHex(userId), "IsBlog": true, "Tag": bson.M{"$ne": ""}}
 	db.TagCounts.Find(query).Sort("-Count").All(&tagCounts)
 	return tagCounts
 }
