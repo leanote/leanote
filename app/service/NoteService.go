@@ -28,7 +28,8 @@ func (this *NoteService) GetNoteById(noteId string) (note info.Note) {
 // 不要传userId, 因为是公开的
 func (this *NoteService) GetBlogNote(noteId string) (note info.Note) {
 	note = info.Note{}
-	db.GetByQ(db.Notes, bson.M{"_id": bson.ObjectIdHex(noteId), "IsBlog": true, "IsTrash": false}, &note)
+	db.GetByQ(db.Notes, bson.M{"_id": bson.ObjectIdHex(noteId), 
+		"IsBlog": true, "IsTrash": false, "IsDeleted": false}, &note)
 	return
 }
 // 通过id, userId得到noteContent
@@ -734,6 +735,7 @@ func (this *NoteService) SearchNote(key, userId string, pageNumber, pageSize int
 	// 不是trash的
 	query := bson.M{"UserId": bson.ObjectIdHex(userId), 
 		"IsTrash": false, 
+		"IsDeleted": false, // 不能搜索已删除了的
 		"$or": orQ,
 	}
 	if isBlog {
@@ -819,14 +821,14 @@ func (this *NoteService) SearchNoteByTags(tags []string, userId string, pageNumb
 //------------
 // 统计
 func (this *NoteService) CountNote(userId string) int {
-	q := bson.M{"IsTrash": false}
+	q := bson.M{"IsTrash": false, "IsDeleted": false}
 	if userId != "" {
 		q["UserId"] = bson.ObjectIdHex(userId)
 	}
 	return db.Count(db.Notes, q)
 }
 func (this *NoteService) CountBlog(userId string) int {
-	q := bson.M{"IsBlog": true, "IsTrash": false}
+	q := bson.M{"IsBlog": true, "IsTrash": false, "IsDeleted": false}
 	if userId != "" {
 		q["UserId"] = bson.ObjectIdHex(userId)
 	}
