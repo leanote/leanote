@@ -10,23 +10,23 @@
 <meta name="description" content="Leanote, {{msg $ "moto"}}">
 <title>Leanote, {{msg $ "moto"}}</title>
 
-<link href="/css/bootstrap.css" rel="stylesheet" />
+<link href="/css/bootstrap-min.css" rel="stylesheet" />
 <!-- 先加载, 没有样式, 宽度不定 -->
 <link rel="stylesheet" href="/tinymce/skins/custom/skin.min.css" rel="stylesheet"/>
 <!-- leanote css -->
-<link href="/css/font-awesome-4.2.0/css/font-awesome.css" rel="stylesheet" />
-<link href="/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+<link href="/css/font-awesome-4.2.0/css/font-awesome-min.css" rel="stylesheet" />
+<link href="/css/zTreeStyle/zTreeStyle-min.css" rel="stylesheet" />
 <!-- mdeditor -->
-<link href="/public/dist/themes/default.css" rel="stylesheet" />
+<link href="/public/dist/themes/default-min.css" rel="stylesheet" />
 <!-- context-menu -->
-<link rel="stylesheet" href="/js/contextmenu/css/contextmenu.css" type="text/css" />
+<link rel="stylesheet" href="/js/contextmenu/css/contextmenu-min.css" type="text/css" />
 
 <script>
 var hash = location.hash;
 if(hash.indexOf("writing") >= 0) {
 	var files = '<link rel="stylesheet" href="/css/theme/writting-overwrite.css" type="text/css" id="themeLink" />';
 } else {
-	var files ='<link rel="stylesheet" href="/css/theme/{{if .userInfo.Theme}}{{.userInfo.Theme}}{{else}}default{{end}}.css?t=3" type="text/css" id="themeLink" />';
+	var files ='<link rel="stylesheet" href="/css/theme/{{if .userInfo.Theme}}{{.userInfo.Theme}}{{else}}default{{end}}.css?t=4" type="text/css" id="themeLink" />';
 }
 document.write(files);
 </script>
@@ -160,7 +160,7 @@ function log(o) {
 							</li>
 							
 							<li role="presentation" class="my-link" >
-								<a target="_blank" href="{{$.blogUrl}}/{{.userInfo.Username}}">
+								<a target="_blank" href="{{$.userInfo.BlogUrl}}">
 								<i class="fa fa-bold"></i>
 								{{msg . "myBlog"}}</a>
 							</li>
@@ -475,34 +475,36 @@ function log(o) {
 							</div>
 							
 							<ul class="pull-right" id="editorTool">
-								<li><a class="ios7-a " id="saveBtn" title="ctrl+s"
-									data-toggle="dropdown">
-									<span class="fa fa-save"></span>
-									{{msg . "save"}}</a></li>
-									
+								<li><a class="ios7-a " id="saveBtn"
+									data-toggle="dropdown" title="ctrl+s {{msg . "save"}}">
+									<span class="fa fa-save"></span></a></li>
+
+								<li class="dropdown" id="noteInfoDropdown">
+									<a class="ios7-a dropdown-toggle" data-toggle="dropdown" id="showAttach" title="{{msg . "Information"}}">
+										<span class="fa fa-info"></span>
+									</a>
+									<div class="dropdown-menu" id="noteInfo"></div>
+								</li>
+
 								<li class="dropdown" id="attachDropdown">
-									<a class="ios7-a dropdown-toggle" data-toggle="dropdown" id="showAttach">
+									<a class="ios7-a dropdown-toggle" data-toggle="dropdown" id="showAttach" title="{{msg . "attachments"}}">
 										<span class="fa fa-paperclip"></span>
-										{{msg . "attachments"}}<span id="attachNum"></span>
+										<span id="attachNum"></span>
 									</a>
 									<div class="dropdown-menu" id="attachMenu">
 										<ul id="attachList">
-											
 										</ul>
 										<form id="uploadAttach" method="post" action="/attach/UploadAttach" enctype="multipart/form-data">
 							                <div id="dropAttach" class="dropzone">
 							                    <a class="btn btn-success btn-choose-file">
 													<i class="fa fa-upload"></i>
-							                    	<span>Choose File</span>
+							                    	<span>{{msg . "Choose File"}}</span>
 							                    </a>
 							                    <a class="btn btn-default" id="downloadAllBtn">
 								                    <i class="fa fa-download"></i>
-							                    	<span>Download All</span>
+							                    	<span>{{msg . "Download All"}}</span>
 							                    </a>
-							                    <a class="btn btn-default" id="linkAllBtn">
-								                    <i class="fa fa-link"></i>
-							                    	<span>Link All</span>
-							                    </a>
+							                    
 							                    <input type="file" name="file" multiple/>
 							                </div>
 							                <div id="attachUploadMsg">
@@ -511,14 +513,12 @@ function log(o) {
 									</div>
 								</li>
 								
-								<li><a class="ios7-a " id="tipsBtn"
-									data-toggle="dropdown">
-									<span class="fa fa-question"></span>
-									{{msg . "editorTips"}}</a></li>
 								<li><a class="ios7-a " id="contentHistory"
-									data-toggle="dropdown">
-									<span class="fa fa-history"></span>
-									{{msg . "history"}}</a></li>
+									data-toggle="dropdown" title="{{msg . "history"}}">
+									<span class="fa fa-history"></span></a></li>
+								<li><a class="ios7-a " id="tipsBtn"
+									data-toggle="dropdown" title="{{msg . "editorTips"}}">
+									<span class="fa fa-question"></span></a></li>
 							</ul>
 						</div>
 
@@ -530,7 +530,7 @@ function log(o) {
 						<div id="noteReadTop">
 							<h2 id="noteReadTitle"></h2>
 							<div class="clearfix" id="noteReadInfo">
-								<i class="fa fa-bookmark-o"></i>												
+								<i class="fa fa-bookmark-o"></i>
 								<span id="noteReadTags"></span>
 								
 								<!-- 修改时间 -->
@@ -538,7 +538,7 @@ function log(o) {
 								<span id="noteReadUpdatedTime"></span>  
 								
 								<!-- 修改时间 -->
-								<i class="fa fa-clock-o"></i> {{msg . "create"}} 										
+								<i class="fa fa-clock-o"></i> {{msg . "create"}} 
 								<span id="noteReadCreatedTime"></span>
 							</div>
 						</div>
@@ -857,24 +857,7 @@ function log(o) {
 			</div><!-- /.modal -->
 			
 			<!-- 编辑器提示 -->
-			<div class="modal fade bs-modal-sm" id="tipsDialog" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-			  <div class="modal-dialog modal-sm">
-			    <div class="modal-content">
-			    
-				  <div class="modal-header">
-			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			        <h4 class="modal-title" class="modalTitle">{{msg . "editorTips"}}</h4>
-			      </div>
-					<div class="modal-body">
-						{{msg . "editorTipsInfo"}}
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">{{msg . "close"}}</button>
-					</div>
-				    
-			    </div><!-- /.modal-content -->
-			  </div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
+			
 			
 			<!-- modal 静态区域 -->
 			<div class="display: hidden">
@@ -946,7 +929,7 @@ window.require = {
 <script src="/public/dist/main.min.js"></script>
 <!-- /dev -->
 
-<script src="/public/js/upload_paste/main.js"></script>
+<script src="/public/js/plugins/main.js"></script>
 
 </body>
 </html>

@@ -265,10 +265,6 @@ func (c Blog) getCates(userBlog info.UserBlog) {
 		}
 	}
 	
-	Log("cates")
-	LogJ(cates)
-	LogJ(catesTree);
-	
 	c.RenderArgs["cates"] = cates
 	c.RenderArgs["catesTree"] = catesTree
 }
@@ -352,9 +348,10 @@ func (c Blog) blogCommon(userId string, userBlog info.UserBlog, userInfo info.Us
 	// 得到主题信息
 	themeInfo := themeService.GetThemeInfo(userBlog.ThemeId.Hex(), userBlog.Style)
 	c.RenderArgs["themeInfo"] = themeInfo
-	Log(">>")
-	Log(userBlog.Style)
-	Log(userBlog.ThemeId.Hex())
+	
+//	Log(">>")
+//	Log(userBlog.Style)
+//	Log(userBlog.ThemeId.Hex())
 
 	return true, userBlog
 }

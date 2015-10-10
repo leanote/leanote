@@ -21,14 +21,26 @@ func (this *NoteService) GetNote(noteId, userId string) (note info.Note) {
 // 不能是已经删除了的, life bug, 客户端删除后, 竟然还能在web上打开
 func (this *NoteService) GetNoteById(noteId string) (note info.Note) {
 	note = info.Note{}
+	if noteId == "" {
+		return
+	}
 	db.GetByQ(db.Notes, bson.M{"_id": bson.ObjectIdHex(noteId), "IsDeleted": false}, &note)
+	return
+}
+func (this *NoteService) GetNoteByIdAndUserId(noteId, userId string) (note info.Note) {
+	note = info.Note{}
+	if noteId == "" || userId == "" {
+		return
+	}
+	db.GetByQ(db.Notes, bson.M{"_id": bson.ObjectIdHex(noteId), "UserId": bson.ObjectIdHex(userId), "IsDeleted": false}, &note)
 	return
 }
 // 得到blog, blogService用
 // 不要传userId, 因为是公开的
 func (this *NoteService) GetBlogNote(noteId string) (note info.Note) {
 	note = info.Note{}
-	db.GetByQ(db.Notes, bson.M{"_id": bson.ObjectIdHex(noteId), "IsBlog": true, "IsTrash": false}, &note)
+	db.GetByQ(db.Notes, bson.M{"_id": bson.ObjectIdHex(noteId), 
+		"IsBlog": true, "IsTrash": false, "IsDeleted": false}, &note)
 	return
 }
 // 通过id, userId得到noteContent
@@ -418,7 +430,7 @@ func (this *NoteService) UpdateNote(updatedUserId, noteId string, needUpdate bso
 	if isBlog, ok := needUpdate["IsBlog"]; ok {
 		isBlog2 := isBlog.(bool)
 		if note.IsBlog != isBlog2 {
-			db.UpdateByIdAndUserIdMap(db.NoteContents, noteId, userId, bson.M{"IsBlog": isBlog2})
+			this.UpdateNoteContentIsBlog(noteId, userId, isBlog2);
 
 			// 重新发布成博客
 			if !note.IsBlog {
@@ -457,6 +469,11 @@ func (this *NoteService) UpdateNote(updatedUserId, noteId string, needUpdate bso
 	}
 	
 	return true, "", afterUsn
+}
+
+// 当设置/取消了笔记为博客
+func (this *NoteService) UpdateNoteContentIsBlog(noteId, userId string, isBlog bool) {
+	db.UpdateByIdAndUserIdMap(db.NoteContents, noteId, userId, bson.M{"IsBlog": isBlog})
 }
 
 // 附件修改, 增加noteIncr
@@ -572,6 +589,8 @@ func (this *NoteService) ToBlog(userId, noteId string, isBlog, isTop bool) bool 
 	ok := db.UpdateByIdAndUserIdMap(db.Notes, noteId, userId, noteUpdate)
 	// 重新计算tags
 	go (func() {
+		this.UpdateNoteContentIsBlog(noteId, userId, isBlog);
+	
 		blogService.ReCountBlogTags(userId)
 	})()
 	return ok
@@ -734,6 +753,7 @@ func (this *NoteService) SearchNote(key, userId string, pageNumber, pageSize int
 	// 不是trash的
 	query := bson.M{"UserId": bson.ObjectIdHex(userId), 
 		"IsTrash": false, 
+		"IsDeleted": false, // 不能搜索已删除了的
 		"$or": orQ,
 	}
 	if isBlog {
@@ -819,14 +839,14 @@ func (this *NoteService) SearchNoteByTags(tags []string, userId string, pageNumb
 //------------
 // 统计
 func (this *NoteService) CountNote(userId string) int {
-	q := bson.M{"IsTrash": false}
+	q := bson.M{"IsTrash": false, "IsDeleted": false}
 	if userId != "" {
 		q["UserId"] = bson.ObjectIdHex(userId)
 	}
 	return db.Count(db.Notes, q)
 }
 func (this *NoteService) CountBlog(userId string) int {
-	q := bson.M{"IsBlog": true, "IsTrash": false}
+	q := bson.M{"IsBlog": true, "IsTrash": false, "IsDeleted": false}
 	if userId != "" {
 		q["UserId"] = bson.ObjectIdHex(userId)
 	}

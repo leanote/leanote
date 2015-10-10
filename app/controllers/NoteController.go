@@ -24,8 +24,8 @@ type Note struct {
 // 否则, 转向登录页面
 func (c Note) Index(noteId, online string) revel.Result {
 	c.SetLocale()
-	userInfo := c.GetUserInfo()
-	
+	userInfo := c.GetUserAndBlogUrl()
+
 	userId := userInfo.UserId.Hex()
 	
 	// 没有登录
@@ -126,7 +126,7 @@ func (c Note) Index(noteId, online string) revel.Result {
 	c.RenderArgs["globalConfigs"] = configService.GetGlobalConfigForUser()
 	
 	// return c.RenderTemplate("note/note.html")
-		
+
 	if isDev, _ := revel.Config.Bool("mode.dev"); isDev && online == "" {
 		return c.RenderTemplate("note/note-dev.html")
 	} else {
@@ -138,13 +138,13 @@ func (c Note) Index(noteId, online string) revel.Result {
 // 已登录, 得到用户基本信息(notebook, shareNotebook), 跳转到index.html中
 // 否则, 转向登录页面
 func (c Note) ListNotes(notebookId string) revel.Result {
-	_, notes := noteService.ListNotes(c.GetUserId(), notebookId, false, c.GetPage(), pageSize, defaultSortField, false, false);
+	_, notes := noteService.ListNotes(c.GetUserId(), notebookId, false, c.GetPage(), pageSize, defaultSortField, false, false)
 	return c.RenderJson(notes)
 }
 
 // 得到trash
 func (c Note) ListTrashNotes() revel.Result {
-	_, notes := noteService.ListNotes(c.GetUserId(), "", true, c.GetPage(), pageSize, defaultSortField, false, false);
+	_, notes := noteService.ListNotes(c.GetUserId(), "", true, c.GetPage(), pageSize, defaultSortField, false, false)
 	return c.RenderJson(notes)
 }
 

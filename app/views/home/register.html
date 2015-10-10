@@ -72,7 +72,7 @@ $(function() {
 			showMsg("{{msg . "inputEmail"}}", "email");
 			return;
 		} else {
-			var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[0-9a-zA-Z]{2,3}$/;
+			var myreg = /^([a-zA-Z0-9]+[_|\_|\.|\-]?)*[a-zA-Z0-9\-_]+@([a-zA-Z0-9\-]+[_|\_|\.|\-]?)*[a-zA-Z0-9\-]+\.[0-9a-zA-Z]{2,6}$/;
 			if(!myreg.test(email)) {
 				showMsg("{{msg . "wrongEmail"}}", "email");
 				return;

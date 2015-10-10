@@ -69,13 +69,13 @@ func (c File) UploadAvatar() revel.Result {
 			c.UpdateSession("Logo", re.Id);
 		}
 	}
-	
+
 	return c.RenderJson(re)
 }
 
 // leaui image plugin upload image
 func (c File) UploadImageLeaui(albumId string) revel.Result {
-	re := c.uploadImage("", albumId);
+	re := c.uploadImage("", albumId)
 	return c.RenderJson(re)
 }
 
@@ -84,74 +84,80 @@ func (c File) UploadImageLeaui(albumId string) revel.Result {
 func (c File) uploadImage(from, albumId string) (re info.Re) {
 	var fileUrlPath = ""
 	var fileId = ""
-	var resultCode = 0 // 1表示正常
+	var resultCode = 0      // 1表示正常
 	var resultMsg = "error" // 错误信息
 	var Ok = false
-	
+
 	defer func() {
 		re.Id = fileId // 只是id, 没有其它信息
 		re.Code = resultCode
 		re.Msg = resultMsg
 		re.Ok = Ok
 	}()
-	
+
 	file, handel, err := c.Request.FormFile("file")
 	if err != nil {
 		return re
 	}
 	defer file.Close()
+	
 	// 生成上传路径
+	newGuid := NewGuid()
+	
+	userId := c.GetUserId()
+	
 	if(from == "logo" || from == "blogLogo") {
-		fileUrlPath = "public/upload/" + c.GetUserId() + "/images/logo"
+		fileUrlPath = "public/upload/" + Digest3(userId) + "/" + userId + "/images/logo"
 	} else {
-		fileUrlPath = "files/" + c.GetUserId() + "/images"
+		fileUrlPath = "files/" + Digest3(userId) + "/" + userId + "/" + Digest2(newGuid) + "/images"
 	}
-	dir := revel.BasePath + "/" +  fileUrlPath
+
+	dir := revel.BasePath + "/" + fileUrlPath
 	err = os.MkdirAll(dir, 0755)
 	if err != nil {
 		return re
 	}
 	// 生成新的文件名
 	filename := handel.Filename
-	
-	var ext string;
+
+	var ext string
 	if from == "pasteImage" {
-		ext = ".png"; // TODO 可能不是png类型
+		ext = ".png" // TODO 可能不是png类型
 	} else {
 		_, ext = SplitFilename(filename)
-		if(ext != ".gif" && ext != ".jpg" && ext != ".png" && ext != ".bmp" && ext != ".jpeg") {
+		if ext != ".gif" && ext != ".jpg" && ext != ".png" && ext != ".bmp" && ext != ".jpeg" {
 			resultMsg = "Please upload image"
 			return re
 		}
 	}
 
-	filename = NewGuid() + ext
+	filename = newGuid + ext
 	data, err := ioutil.ReadAll(file)
 	if err != nil {
 		LogJ(err)
 		return re
 	}
-	
+
 	var maxFileSize float64
-	if(from == "logo") {
-		maxFileSize = configService.GetUploadSize("uploadAvatarSize");
+	if from == "logo" {
+		maxFileSize = configService.GetUploadSize("uploadAvatarSize")
 	} else if from == "blogLogo" {
-		maxFileSize = configService.GetUploadSize("uploadBlogLogoSize");
+		maxFileSize = configService.GetUploadSize("uploadBlogLogoSize")
 	} else {
-		maxFileSize = configService.GetUploadSize("uploadImageSize");
+		maxFileSize = configService.GetUploadSize("uploadImageSize")
 	}
 	if maxFileSize <= 0 {
 		maxFileSize = 1000
 	}
-	
+
 	// > 2M?
-	if(float64(len(data)) > maxFileSize * float64(1024*1024)) {
+	if float64(len(data)) > maxFileSize*float64(1024*1024) {
 		resultCode = 0
 		resultMsg = fmt.Sprintf("The file Size is bigger than %vM", maxFileSize)
 		return re
 	}
-	
-	toPath := dir + "/" + filename;
+
+	toPath := dir + "/" + filename
 	err = ioutil.WriteFile(toPath, data, 0777)
 	if err != nil {
 		LogJ(err)
@@ -164,26 +170,27 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 	fileUrlPath += "/" + filename
 	resultCode = 1
 	resultMsg = "Upload Success!"
-	
+
 	// File
 	fileInfo := info.File{Name: filename,
 		Title: handel.Filename,
-		Path: fileUrlPath,
-		Size: filesize}
-		
-	id := bson.NewObjectId();
+		Path:  fileUrlPath,
+		Size:  filesize}
+
+	id := bson.NewObjectId()
 	fileInfo.FileId = id
 	fileId = id.Hex()
-	if(from == "logo" || from == "blogLogo") {
-		fileId = "public/upload/" + c.GetUserId() + "/images/logo/" + filename
-	}
 	
+	if(from == "logo" || from == "blogLogo") {
+		fileId = fileUrlPath
+	}
+
 	Ok, resultMsg = fileService.AddImage(fileInfo, albumId, c.GetUserId(), from == "" || from == "pasteImage")
 	resultMsg = c.Message(resultMsg)
-	
-	fileInfo.Path = ""; // 不要返回
+
+	fileInfo.Path = "" // 不要返回
 	re.Item = fileInfo
-	
+
 	return re
 }
 
@@ -204,6 +211,7 @@ func (c File) DeleteImage(fileId string) revel.Result {
 	re.Ok, re.Msg = fileService.DeleteImage(c.GetUserId(), fileId)
 	return c.RenderJson(re)
 }
+
 //-----------
 
 // 输出image
@@ -226,35 +234,39 @@ func (c File) CopyImage(userId, fileId, toUserId string) revel.Result {
 	return c.RenderJson(re)
 }
 
-// 复制外网的图片, 成公共图片 放在/upload下
+// 复制外网的图片
 // 都要好好的计算大小
 func (c File) CopyHttpImage(src string) revel.Result {
 	re := info.NewRe()
-	fileUrlPath := "upload/" + c.GetUserId() + "/images"
-	dir := revel.BasePath + "/public/" +  fileUrlPath
+
+	// 生成上传路径
+	newGuid := NewGuid()
+	userId := c.GetUserId()
+	fileUrlPath := "files/" + Digest3(userId) + "/" + userId + "/" + Digest2(newGuid) + "/images"
+	dir := revel.BasePath + "/" + fileUrlPath
 	err := os.MkdirAll(dir, 0755)
 	if err != nil {
 		return c.RenderJson(re)
 	}
 	filesize, filename, _, ok := netutil.WriteUrl(src, dir)
-	
+
 	if !ok {
 		re.Msg = "copy error"
 		return c.RenderJson(re)
 	}
-	
+
 	// File
 	fileInfo := info.File{Name: filename,
 		Title: filename,
-		Path: fileUrlPath + "/" + filename,
-		Size: filesize}
-		
-	id := bson.NewObjectId();
+		Path:  fileUrlPath + "/" + filename,
+		Size:  filesize}
+
+	id := bson.NewObjectId()
 	fileInfo.FileId = id
-	
+
 	re.Id = id.Hex()
-	re.Item = fileInfo.Path
+//	re.Item = fileInfo.Path
 	re.Ok, re.Msg = fileService.AddImage(fileInfo, "", c.GetUserId(), true)
-	
+
 	return c.RenderJson(re)
 }

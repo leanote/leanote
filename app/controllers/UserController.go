@@ -29,8 +29,8 @@ func (c User) Account(tab int) revel.Result {
 
 // 修改用户名, 需要重置session
 func (c User) UpdateUsername(username string) revel.Result {
-	re := info.NewRe();
-	if(c.GetUsername() == "demo") {
+	re := info.NewRe()
+	if c.GetUserId() == configService.GetGlobalStringConfig("demoUserId") {
 		re.Msg = "cannotUpdateDemo"
 		return c.RenderRe(re);
 	}
@@ -48,8 +48,8 @@ func (c User) UpdateUsername(username string) revel.Result {
 
 // 修改密码
 func (c User) UpdatePwd(oldPwd, pwd string) revel.Result {
-	re := info.NewRe();
-	if(c.GetUsername() == "demo") {
+	re := info.NewRe()
+	if c.GetUserId() == configService.GetGlobalStringConfig("demoUserId") {
 		re.Msg = "cannotUpdateDemo"
 		return c.RenderRe(re);
 	}
@@ -94,9 +94,9 @@ func (c User) ReSendActiveEmail() revel.Result {
 }
 
 // 修改Email发送激活邮箱
-func (c User) UpdateEmailSendActiveEmail(email string) revel.Result {
+func (c User) updateEmailSendActiveEmail(email, pwd string) revel.Result {
 	re := info.NewRe()
-	if(c.GetUsername() == "demo") {
+	if c.GetUserId() == configService.GetGlobalStringConfig("demoUserId") {
 		re.Msg = "cannotUpdateDemo"
 		return c.RenderJson(re);
 	}

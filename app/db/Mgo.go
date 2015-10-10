@@ -355,3 +355,20 @@ func Err(err error) bool {
 	}
 	return true
 }
+
+// 检查mognodb是否lost connection
+// 每个请求之前都要检查!!
+func CheckMongoSessionLost() {
+	// fmt.Println("检查CheckMongoSessionLostErr")
+    err := Session.Ping()
+    if err != nil {
+        Log("Lost connection to db!")
+        Session.Refresh()
+        err = Session.Ping()
+        if err == nil {
+            Log("Reconnect to db successful.")
+        } else {
+        	Log("重连失败!!!! 警告")
+        }
+    }
+}

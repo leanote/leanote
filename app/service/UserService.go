@@ -69,6 +69,13 @@ func (this *UserService) GetUsername(userId string) string {
 	return user.Username
 }
 
+// 得到用户名
+func (this *UserService) GetUsernameById(userId bson.ObjectId) string {
+	user := info.User{}
+	db.GetByQWithFields(db.Users, bson.M{"_id": userId}, []string{"Username"}, &user)
+	return user.Username
+}
+
 // 是否存在该用户 email
 func (this *UserService) IsExistsUser(email string) bool {
 	if this.GetUserId(email) == "" {
@@ -105,6 +112,13 @@ func (this *UserService) setUserLogo(user *info.User) {
 		user.Logo = strings.Trim(user.Logo, "/")
 		user.Logo = configService.GetSiteUrl() + "/" + user.Logo
 	}	
+}
+
+// 仅得到用户
+func (this *UserService) GetUser(userId string) info.User {
+	user := info.User{}
+	db.Get(db.Users, userId, &user)
+	return user
 }
 
 // 得到用户信息 userId
@@ -202,19 +216,33 @@ func (this *UserService) MapUserAndBlogByUserIds(userIds []bson.ObjectId) map[st
 	return userAndBlogMap
 }
 
+// 得到用户信息+博客主页
+func (this *UserService) GetUserAndBlogUrl(userId string) info.UserAndBlogUrl {
+	user := this.GetUserInfo(userId)
+	userBlog := blogService.GetUserBlog(userId)
+	
+	blogUrls := blogService.GetBlogUrls(&userBlog, &user)
+	
+	return info.UserAndBlogUrl{
+		User: user,
+		BlogUrl: blogUrls.IndexUrl,
+		PostUrl: blogUrls.PostUrl,
+	}
+}
+
 // 得到userAndBlog公开信息
 func (this *UserService) GetUserAndBlog(userId string) info.UserAndBlog {
 	user := this.GetUserInfo(userId)
 	userBlog := blogService.GetUserBlog(userId)
 	return info.UserAndBlog{
-		UserId: user.UserId,
-		Username: user.Username,
-		Email: user.Email,
-		Logo: user.Logo,
+		UserId:    user.UserId,
+		Username:  user.Username,
+		Email:     user.Email,
+		Logo:      user.Logo,
 		BlogTitle: userBlog.Title,
-		BlogLogo: userBlog.Logo,
-		BlogUrl: blogService.GetUserBlogUrl(&userBlog, user.Username),
-		BlogUrls: blogService.GetBlogUrls(&userBlog, &user),
+		BlogLogo:  userBlog.Logo,
+		BlogUrl:   blogService.GetUserBlogUrl(&userBlog, user.Username),
+		BlogUrls:  blogService.GetBlogUrls(&userBlog, &user),
 	}
 }
 
@@ -362,7 +390,7 @@ func (this *UserService) UpdateEmail(token string) (ok bool, msg, email string) 
 	tokenInfo := info.Token{}
 	if ok, msg, tokenInfo = tokenService.VerifyToken(token, info.TokenUpdateEmail); ok {
 		// 修改之后的邮箱
-		email = tokenInfo.Email
+		email = strings.ToLower(tokenInfo.Email)
 		// 先验证该email是否被注册了
 		if userService.IsExistsUser(email) {
 			ok = false

@@ -23,16 +23,16 @@ type ApiAuth struct {
 // 失败返回 {Ok: false, Msg: ""}
 func (c ApiAuth) Login(email, pwd string) revel.Result {
 	var msg = ""
-
+	
 	userInfo, err := authService.Login(email, pwd)
-	if err != nil {
-		// 登录错误, 则错误次数++
-		msg = "wrongUsernameOrPassword"
-	} else {
+	if err == nil {
 		token := bson.NewObjectId().Hex()
 		sessionService.SetUserId(token, userInfo.UserId.Hex())
 		return c.RenderJson(info.AuthOk{Ok: true, Token: token, UserId: userInfo.UserId, Email: userInfo.Email, Username: userInfo.Username})
-	} 
+	} else {
+		// 登录错误, 则错误次数++
+		msg = "wrongUsernameOrPassword"
+	}
 	return c.RenderJson(info.ApiRe{Ok: false, Msg: c.Message(msg)})
 }
 

@@ -70,6 +70,13 @@ type UserAccount struct {
 	MaxPerAttachSize int `bson:"MaxPerAttachSize" json:"-"` // 单个附件大小
 }
 
+// note主页需要
+type UserAndBlogUrl struct {
+	User
+	BlogUrl   string        `BlogUrl`
+	PostUrl   string        `PostUrl`
+}
+
 // 用户与博客信息结合, 公开
 type UserAndBlog struct {
 	UserId    bson.ObjectId `bson:"_id,omitempty"` // 必须要设置bson:"_id" 不然mgo不会认为是主键

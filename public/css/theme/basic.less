@@ -159,9 +159,13 @@ h1, h2, h3 {
 	-webkit-overflow-scrolling: touch !important; // for iphone
 }
 
+.btn * {
+    cursor: pointer !important; // 下载所有, 被dropdown
+}
+
 .ios7-a {
   display: inline-block;
-  padding: 0 10px 0 5px;
+  padding: 0 10px;
   height: 36px;
   vertical-align: middle;
   line-height: 36px;
@@ -247,7 +251,7 @@ h1, h2, h3 {
 		height: 12px;
 		position: absolute;
 		top: -12px;
-		right: 20px;
+		right: 8px;
 		background-image: url("../../images/triangle_2x.png");
 		background-size: 20px 12px;
 	}
@@ -414,7 +418,16 @@ h1, h2, h3 {
 	line-height: 40px; margin-top: 10px;
 }
 
-
+/* editor */
+#editorTool {
+  margin: 0;
+  margin-right: 5px;
+  padding: 0;
+  list-style: none;
+}
+#editorTool li {
+  display: inline-block;
+}
 
 #searchNotebookForAdd {
 	line-height: normal;
@@ -1480,4 +1493,155 @@ top: 4px;
 #noteReadTitle {
 	margin: 3px 0;
 	height: 26px;
+}
+
+// 笔记信息设置
+#noteInfo {
+    width: 400px;
+    box-sizing: border-box;
+    padding: 10px 10px;
+    -webkit-user-select: initial;
+    table {
+        width: 100%;
+        margin: 0;
+        th {
+            width: 80px;
+        }
+        th, td {
+            border-top: none;
+            border-bottom: 1px solid #dddddd;
+        }
+    }
+    a {
+        cursor: pointer;
+    }
+
+    a.post-url {
+        background: #FDF936;
+    }
+
+    .post-url-wrap {
+        span {
+            display: inline;
+        }
+        input {
+            display: none;
+        }
+        &.post-url-edit {
+            .post-url-pencil {
+                display: none;
+            }
+            .post-url-text {
+                display: none;
+            }
+            input {
+                display: inline;
+            }
+        }
+    }
+}
+
+//===========
+// history
+.history-modal .modal-dialog {
+    width: auto !important;
+    position: absolute;
+    /* width: 100%; */
+    /* height: 100%; */
+    left: 5px;
+    right: 5px;
+    top: 5px;
+    bottom: 5px;
+
+    .modal-content {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: 0;
+        padding: 0;
+        overflow: scroll;
+
+        .modal-body {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 0;
+            .history-list-wrap {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                overflow-y: auto;
+                width: 200px;
+                border-right: 1px solid #ccc;
+                box-shadow: 1px 1px 10px #ddd;
+
+                .history-list-header {
+                    line-height: 50px;
+                    font-size: 16px;
+                    font-weight: bold;
+                    padding-left: 15px;
+                    border-bottom: 1px solid #eee;
+                    background-color: #ccc;
+                }
+
+                .history-list {
+                    position: absolute;
+                    top: 51px;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    overflow-y: auto;
+                    margin-bottom: 0;
+                }
+
+                .list-group-item {
+                    border-top: none;
+                    &.active, &:hover {
+                        color: #000;
+                        background-color: #eee;
+                        border-color: #eee;
+                    }
+                }
+            }
+            .history-content-wrap {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                right: 0;
+                left: 200px;
+
+                .close {
+                    padding: 10px 15px;
+                }
+                
+                .back {
+                    margin-left: 10px;
+                    margin-top: 5px;
+                }
+
+                .history-content-header {
+                    // background-color: #eee;
+                    height: 51px;
+                    border-bottom: 1px solid #eee;
+                    box-shadow: 5px 0px 5px #ccc;
+                }
+
+                .history-content {
+                    position: absolute;
+                    top: 51px;
+                    bottom: 0;
+                    right: 0;
+                    left: 0;
+                    padding-top: 5px;
+                    padding-right: 5px;
+                    padding-left: 10px;
+                    overflow-y: auto;
+                }
+            }
+        }
+    }
 }

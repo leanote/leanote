@@ -70,6 +70,7 @@ func (c ApiNote) GetNotes(notebookId string) revel.Result {
 func (c ApiNote) GetTrashNotes() revel.Result {
 	_, notes := noteService.ListNotes(c.getUserId(), "", true, c.GetPage(), pageSize, defaultSortField, false, false)
 	return c.RenderJson(noteService.ToApiNotes(notes))
+	
 }
 
 // get Note

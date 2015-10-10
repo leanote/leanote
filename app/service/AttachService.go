@@ -63,10 +63,19 @@ func (this *AttachService) updateNoteAttachNum(noteId bson.ObjectId, addNum int)
 // list attachs
 func (this *AttachService) ListAttachs(noteId, userId string) []info.Attach {
 	attachs := []info.Attach{}
-	// 判断是否有权限为笔记添加附件
-	if !shareService.HasUpdateNotePerm(noteId, userId) {
+	
+	// 判断是否有权限为笔记添加附件, userId为空时表示是分享笔记的附件
+	if userId != "" && !shareService.HasUpdateNotePerm(noteId, userId) {
 		return attachs
 	}
+	
+	// 笔记是否是自己的
+	note := noteService.GetNoteByIdAndUserId(noteId, userId)
+	if note.NoteId == "" {
+		return attachs
+	}
+	
+	// TODO 这里, 优化权限控制
 
 	db.ListByQ(db.Attachs, bson.M{"NoteId": bson.ObjectIdHex(noteId)}, &attachs)
 

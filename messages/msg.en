@@ -53,6 +53,7 @@ inputEmail=Email is required
 wrongEmail=Wrong email
 wrongUsernameOrPassword=Wrong username or password
 inputPassword=Password is required
+inputLoginPasswordTips=Please input login password
 wrongPassword=Wrong password
 logining=Sign in
 loginSuccess=login success
@@ -101,7 +102,7 @@ clearSearch=Clear Search
 all=Newest
 trash=Trash
 delete=Delete
-unTitled=Untitled
+unTitled=UnTitled
 defaultShare=Default sharing
 leftHidden=Hidden slide bar
 leftShow=Show slide bar
@@ -112,6 +113,9 @@ saving=Saving
 saveSuccess=Save success
 SearchNote=Search Note
 SearchNotebook=Search Notebook
+Choose File=Choose File
+Download All=Download All
+Information=Information
 
 update=Update
 create=Create
@@ -213,8 +217,6 @@ inviteEmailBody=Hi,I am %s, %s is awesome, come on!
 # 历史记录
 historiesNum=We have saved at most <b>10</b> latest histories with each note
 noHistories=No histories
-fold=Fold
-unfold=Unfold
 datetime=Datetime
 restoreFromThisVersion=Restore from this version
 confirmBackup=Are you sure to restore from this version? We will backup the current note.
@@ -252,6 +254,7 @@ themeValidHasRoundInclude=WARNING: Templates have circular references!
 memberCenter=Member Center
 userNotExists=The user is not exists
 hasUsers=The user already exists
+Leanote Blog Theme Api=Leanote Blog Theme Api
 
 # yu
 service=Service

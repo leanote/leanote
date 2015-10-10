@@ -47,8 +47,9 @@ define("tinymce/pasteplugin/Clipboard", [
 			ajaxPost("/file/copyHttpImage", {src: src}, function(ret) {
 				if(reIsOk(ret)) {
 					// 将图片替换之
-					var src = urlPrefix + "/" + ret.Item;
-					var dom = editor.dom
+					// var src = urlPrefix + "/" + ret.Item;
+					var src = urlPrefix + "/file/outputImage?fileId=" + ret.Id;
+					var dom = editor.dom;
 					for(var i in ids) {
 						var id = ids[i];
 						var imgElm = dom.get(id);
@@ -114,7 +115,7 @@ define("tinymce/pasteplugin/Clipboard", [
 							var needCopyImages = {}; // src => [id1,id2]
 							var time = (new Date()).getTime();
 							try {
-								var $html = $("<div>" + html + "</div");
+								var $html = $("<div>" + html + "</div>");
 								var $imgs = $html.find("img");
 								for(var i = 0; i < $imgs.length; ++i) {
 									var $img = $imgs.eq(i)

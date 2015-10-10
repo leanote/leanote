@@ -25,7 +25,6 @@ define('attachment_upload', ['jquery.ui.widget', 'fileupload'], function(){
 		    if(timeout) {
 		        clearTimeout(timeout);
 		    }
-		    
 		    var found = false,
 		        node = e.target;
 		    do {
@@ -48,7 +47,6 @@ define('attachment_upload', ['jquery.ui.widget', 'fileupload'], function(){
     }
     
     setDropStyle("#dropAttach", "#uploadAttach");
-    setDropStyle("#dropAvatar", "#uploadAvatar");
     
 	var initUploader = function() {
 	    $('.dropzone .btn-choose-file').click(function() {
@@ -138,76 +136,6 @@ define('attachment_upload', ['jquery.ui.widget', 'fileupload'], function(){
 	                })(tpl), 3000);
 	
 	            $("#uploadAttachMsg").scrollTop(1000);
-	        }
-	    });
-	    
-	    //-------------------
-	    // 已经过时, 没有avatar了
-	    
-	    var $msg2 = $('#avatarUploadMsg');
-	    $('#uploadAvatar').fileupload({
-	        dataType: 'json',
-	        dropZone: $('#dropAvatar'),
-	        pasteZone: '',
-	        add: function(e, data) {
-	            var tpl = $('<div class="alert alert-info"><img class="loader" src="/tinymce/plugins/leaui_image/public/images/ajax-loader.gif"> <a class="close" data-dismiss="alert">×</a></div>');
-	
-	            // Append the file name and file size
-	            tpl.append(data.files[0].name + ' <small>[<i>' + formatFileSize(data.files[0].size) + '</i>]</small>');
-	
-	            // Add the HTML to the UL element
-	            $msg2.html(tpl);
-	            data.context = $msg2;
-	            
-	            // 检查文件大小
-	            var size = data.files[0].size;
-	            var maxFileSize = +GlobalConfigs["uploadAvatarSize"] || 100;
-	            if(typeof size == 'number' && size > 1024 * 1024 * maxFileSize) {
-	            	tpl.find("img").remove();
-	            	tpl.removeClass("alert-info").addClass("alert-danger");
-	            	tpl.append(" Warning: File size is bigger than " + maxFileSize + "M");
-	            	setTimeout((function(tpl) {
-	                	return function() {
-		                	tpl.remove();
-	                	}
-	                })(tpl), 3000);
-	            	return;
-	            }
-	            
-	            // Automatically upload the file once it is added to the queue
-	            var jqXHR;
-	            setTimeout(function() {
-		            jqXHR = data.submit();
-	            }, 10);
-	        },
-	        done: function(e, data) {
-	            if (data.result.Ok == true) {
-	                data.context.html("");
-	                var re = data.result;
-	                $("#avatar").attr("src", UrlPrefix + "/" + re.Id);
-	            } else {
-	                var re = data.result;
-	                data.context.html("");
-	                var tpl = $('<div class="alert alert-danger"><a class="close" data-dismiss="alert">×</a></div>');
-	                tpl.append('<b>Error:</b> ' + data.files[0].name + ' <small>[<i>' + formatFileSize(data.files[0].size) + '</i>]</small> ' + data.result.Msg);
-	                data.context.html(tpl);
-	                setTimeout((function(tpl) {
-	                	return function() {
-		                	tpl.remove();
-	                	}
-	                })(tpl), 3000);
-	            }
-	        },
-	        fail: function(e, data) {
-                data.context.html("");
-	            var tpl = $('<div class="alert alert-danger"><a class="close" data-dismiss="alert">×</a></div>');
-	            tpl.append('<b>Error:</b> ' + data.files[0].name + ' <small>[<i>' + formatFileSize(data.files[0].size) + '</i>]</small> ' + data.errorThrown);
-	            data.context.html(tpl);
-	            setTimeout((function(tpl) {
-                	return function() {
-	                	tpl.remove();
-                	}
-	             })(tpl), 3000);
 	        }
 	    });
 	};

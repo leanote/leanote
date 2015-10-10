@@ -61,9 +61,12 @@ Note.setNoteCache = function(content, clear) {
 	if(!Note.cache[content.NoteId]) {
 		 Note.cache[content.NoteId] = content;
 	} else {
+		// console.log('pre');
+		// console.log(Note.cache[content.NoteId].IsBlog);
 		$.extend(Note.cache[content.NoteId], content);
+		// console.log(Note.cache[content.NoteId].IsBlog);
 	}
-	
+
 	if(clear == undefined) {
 		clear = true;
 	}
@@ -228,7 +231,7 @@ Note.curHasChanged = function(force) {
 		} catch(e) {
 		}
 	}
-	
+
 	var hasChanged = {
 		hasChanged: false, // 总的是否有改变
 		IsNew: cacheNote.IsNew, // 是否是新添加的
@@ -238,11 +241,11 @@ Note.curHasChanged = function(force) {
 		NotebookId: cacheNote.NotebookId,
 		Version: cacheNote.Version || 0, // 版本控制
 	};
-	
+
 	if(hasChanged.IsNew) {
 		$.extend(hasChanged, cacheNote);
 	} else {
-		if(!cacheNote.isDirty) {
+		if(!force && !cacheNote.isDirty) {
 			log("no dirty");
 			hasChanged.hasChanged = false;
 			return hasChanged;
@@ -619,7 +622,10 @@ Note.changeNote = function(selectNoteId, isShare, needSaveChanged, callback) {
 	}
 	
 	// 这里要切换编辑器
-	switchEditor(cacheNote.IsMarkdown)
+	switchEditor(cacheNote.IsMarkdown);
+
+	// 发送事件
+	LEA.trigger('noteChanged', cacheNote);
 	
 	Attach.renderNoteAttachNum(selectNoteId, true);
 	
@@ -631,9 +637,9 @@ Note.changeNote = function(selectNoteId, isShare, needSaveChanged, callback) {
 			return;
 		}
 		Note.setNoteCache(ret, false);
+
 		// 把其它信息也带上
 		ret = Note.cache[selectNoteId]
-		
 		Note.renderNoteContent(ret);
 		/* 都用editable的render
 		if(hasPerm) {
@@ -651,7 +657,7 @@ Note.changeNote = function(selectNoteId, isShare, needSaveChanged, callback) {
 		setContent(cacheNote);
 		return;
 	}
-	
+
 	var url = "/note/getNoteContent";
 	var param = {noteId: selectNoteId};
 	if(isShare) {
@@ -663,7 +669,11 @@ Note.changeNote = function(selectNoteId, isShare, needSaveChanged, callback) {
 	if(Note.contentAjax != null) {
 		Note.contentAjax.abort();
 	}
-	Note.contentAjax = ajaxGet(url, param, setContent);
+	Note.contentAjax = ajaxGet(url, param, function (ret) {
+		// 因为之前Content内的IsBlog和Note的IsBlog不同步, 所以去掉Content中的IsBlog
+		delete ret['IsBlog'];
+		setContent(ret);
+	});
 }
 
 // 渲染
@@ -1075,69 +1085,16 @@ Note.shareNote = function(target) {
 	
 	var noteId = $(target).attr("noteId");
 	shareNoteOrNotebook(noteId, true);
-}
+};
 
-// 历史记录
-Note.listNoteContentHistories = function() {
-	// 弹框
-	$("#leanoteDialog #modalTitle").html(getMsg("history"));
-	$content = $("#leanoteDialog .modal-body");
-	$content.html("");
-	$("#leanoteDialog .modal-footer").html('<button type="button" class="btn btn-default" data-dismiss="modal">' + getMsg("close") + '</button>');
-	options = {}
-	options.show = true;
-	$("#leanoteDialog").modal(options);
-	
-	ajaxGet("/noteContentHistory/listHistories", {noteId: Note.curNoteId}, function(re) {
-		if(!isArray(re)) {$content.html(getMsg("noHistories")); return}
-		// 组装成一个tab
-		var str = "<p>" + getMsg("historiesNum") + '</p><div id="historyList"><table class="table table-hover">';
-		note = Note.cache[Note.curNoteId];
-		var s = "div"
-		if(note.IsMarkdown) {
-			s = "pre";
-		}
-		for (i in re) {
-			var content = re[i]
-			content.Ab = Note.genAbstract(content.Content, 200);
-			// 为什么不用tt(), 因为content可能含??
-			str += '<tr><td seq="' +  i + '">#' + (i+1) +'<' + s + ' class="each-content">' + content.Ab + '</' + s + '> <div class="btns">' + getMsg("datetime") + ': <span class="label label-default">' + goNowToDatetime(content.UpdatedTime) + '</span> <button class="btn btn-default all">' + getMsg("unfold") + '</button> <button class="btn btn-primary back">' + getMsg('restoreFromThisVersion') + '</button></div></td></tr>';
-		}
-		str += "</table></div>";
-		$content.html(str);
-		$("#historyList .all").click(function() {
-			$p = $(this).parent().parent();
-			var seq = $p.attr("seq");
-			var $c = $p.find(".each-content");
-			var info = re[seq]; 
-			if(!info.unfold) { // 默认是折叠的
-				$(this).text(getMsg("fold")); // 折叠
-				$c.html(info.Content);
-				info.unfold = true;
-			} else {
-				$(this).text(getMsg("unfold")); // 展开
-				$c.html(info.Ab);
-				info.unfold = false
-			}
-		});
-		
-		// 还原
-		$("#historyList .back").click(function() {
-			$p = $(this).parent().parent();
-			var seq = $p.attr("seq");
-			if(confirm(getMsg("confirmBackup"))) {
-				// 保存当前版本
-				Note.curChangedSaveIt();
-				// 设置之
-				note = Note.cache[Note.curNoteId];
-				setEditorContent(re[seq].Content, note.IsMarkdown);
-				//
-				hideDialog();
-			}
-		});
-		
-	});
-}
+// 下载
+Note.download = function(url, params) {
+	var inputs = '';
+	for (var i in params) {
+		inputs += '<input name="' + i + '" value="' + params[i] + '">';
+	}
+	$('<form target="mdImageManager" action="' + url + '" method="GET">' + inputs + '</form>').appendTo('body').submit().remove();
+};
 
 //--------------
 // read only
@@ -1256,14 +1213,15 @@ Note.setNote2Blog = function(target) {
 	if(note.IsBlog != undefined) {
 		isBlog = !note.IsBlog;
 	}
-	// 标志添加/去掉
-	if(isBlog) {
-		$(target).find(".item-blog").show();
-	} else {
-		$(target).find(".item-blog").hide();
-	}
+
 	ajaxPost("/note/setNote2Blog", {noteId: noteId, isBlog: isBlog}, function(ret) {
 		if(ret) {
+			// 标志添加/去掉
+			if(isBlog) {
+				$(target).find(".item-blog").show();
+			} else {
+				$(target).find(".item-blog").hide();
+			}
 			Note.setNoteCache({NoteId: noteId, IsBlog: isBlog}, false); // 不清空NotesByNotebookId缓存
 		}
 	});
@@ -1482,6 +1440,11 @@ Note.toggleWriteable = function() {
 	Note.readOnly = false;
 };
 
+Note.getPostUrl = function (note) {
+	var urlTitle = note.UrlTitle || note.NoteId;
+	return UserInfo.PostUrl + '/' + urlTitle;
+};
+
 // 这里速度不慢, 很快
 Note.getContextNotebooks = function(notebooks) {
 	var moves = [];
@@ -1578,6 +1541,8 @@ Note.initContextmenu = function() {
 			items.push("set2Blog");
 			items.push("copy");
 		} else {
+			// console.log('haha');
+			// console.log(note);
 			// 是否已公开为blog
 			if(!note.IsBlog) {
 				items.push("unset2Blog");
@@ -1591,11 +1556,12 @@ Note.initContextmenu = function() {
 			items.push("copy." + notebookTitle);
 		}
 
+		// diable 这里
         menu.applyrule({
         	name: "target..",
             disable: true,
             items: items
-        });		
+        });
 	   
 	}
 	function beforeContextMenu() {
@@ -1630,7 +1596,7 @@ var Attach = {
 			e.stopPropagation();
 			var attachId = $(this).closest('li').data("id");
 			var t = this;
-			if(confirm("Are you sure to delete it ?")) {
+			if(confirm(getMsg("Are you sure to delete it ?"))) {
 				$(t).button("loading");
 				ajaxPost("/attach/deleteAttach", {attachId: attachId}, function(re) {
 					$(t).button("reset");
@@ -1646,21 +1612,20 @@ var Attach = {
 		self.attachListO.on("click", ".download-attach", function(e) {
 			e.stopPropagation();
 			var attachId = $(this).closest('li').data("id");
-			window.open(UrlPrefix + "/attach/download?attachId=" + attachId);
-			// location.href = "/attach/download?attachId=" + attachId;
+			Note.download(UrlPrefix + "/attach/download", {attachId:attachId});
 		});
 		// 下载全部
 		self.downloadAllBtnO.click(function() {
-			window.open(UrlPrefix + "/attach/downloadAll?noteId=" + Note.curNoteId);
-			// location.href = "/attach/downloadAll?noteId=" + Note.curNoteId;
+			Note.download(UrlPrefix + "/attach/downloadAll", {noteId: Note.curNoteId});
 		});
-		
+
 		// make link
 		self.attachListO.on("click", ".link-attach", function(e) {
 			e.stopPropagation();
 			var attachId = $(this).closest('li').data("id");
 			var attach = self.attachsMap[attachId];
 			var src = UrlPrefix + "/attach/download?attachId=" + attachId;
+			Note.toggleWriteable();
 			if(LEA.isMarkdownEditor() && MD) {
 				MD.insertLink(src, attach.Title);
 			} else {
@@ -1668,8 +1633,9 @@ var Attach = {
 				tinymce.activeEditor.insertContent('<a target="_blank" href="' + src + '">' + attach.Title + '</a>');
 			}
 		});
-		
+
 		// make all link
+		/*
 		self.linkAllBtnO.on("click",function(e) {
 			e.stopPropagation();
 			var note = Note.getCurNote();
@@ -1685,6 +1651,7 @@ var Attach = {
 				tinymce.activeEditor.insertContent('<a target="_blank" href="' + src + '">' + title + '</a>');
 			}
 		});
+		*/
 	},
 	attachListO: $("#attachList"),
 	attachNumO: $("#attachNum"),
@@ -1728,14 +1695,17 @@ var Attach = {
 		*/
 		var html = "";
 		var attachNum = attachs.length;
+		var titleDelete = getMsg('Delete');
+		var titleDownload = getMsg('Download');
+		var titleLink = getMsg('Insert link into content');
 		for(var i = 0; i < attachNum; ++i) {
 			var each = attachs[i];
 			html += '<li class="clearfix" data-id="' + each.AttachId + '">' +
 						'<div class="attach-title">' + each.Title + '</div>' + 
 						'<div class="attach-process"> ' +
-						'	  <button class="btn btn-sm btn-warning delete-attach" data-loading-text="..."><i class="fa fa-trash-o"></i></button> ' + 
-						'	  <button type="button" class="btn btn-sm btn-primary download-attach"><i class="fa fa-download"></i></button> ' +
-						'	  <button type="button" class="btn btn-sm btn-default link-attach" title="Insert link into content"><i class="fa fa-link"></i></button> ' +
+						'	  <button class="btn btn-sm btn-warning delete-attach" data-loading-text="..." title="' + titleDelete + '"><i class="fa fa-trash-o"></i></button> ' + 
+						'	  <button type="button" class="btn btn-sm btn-primary download-attach" title="' + titleDownload + '"><i class="fa fa-download"></i></button> ' +
+						'	  <button type="button" class="btn btn-sm btn-default link-attach" title="' + titleLink + '"><i class="fa fa-link"></i></button> ' +
 						'</div>' + 
 					'</li>';
 			self.attachsMap[each.AttachId] = each;
@@ -1807,7 +1777,7 @@ var Attach = {
 	},
 	downloadAll: function() {
 	}
-}
+};
 
 //------------------- 事件
 $(function() {
@@ -1824,7 +1794,9 @@ $(function() {
 		}
 	});
 	$("#noteItemList").on("click", ".item", function(event) {
-		event.stopPropagation();
+		// 为什么要stop, 这会导致context, dropdown不隐藏
+		// event.stopPropagation();
+
 		var noteId = $(this).attr("noteId");
 		
 		// 手机端处理
@@ -1839,7 +1811,7 @@ $(function() {
 			Note.changeNoteForPjax(noteId, true, false);
 		}
 	});
-	
+
 	// 当前笔记可以已修改
 	$('#editorContent, #wmd-input, #noteTitle').on('keyup input', function() {
 		Note.curNoteIsDirtied();
@@ -1849,7 +1821,7 @@ $(function() {
 		Note.curNoteIsDirtied();
 	});
 	*/
-	
+
 	//------------------
 	// 新建笔记
 	// 1. 直接点击新建 OR
@@ -1901,33 +1873,39 @@ $(function() {
 	//--------------------
 	// Note.initContextmenu();
 	
-	//------------
-	// 文档历史
-	$("#contentHistory").click(function() {
-		Note.listNoteContentHistories()
-	});
-	
 	$("#saveBtn").click(function() {
 		Note.curChangedSaveIt(true);
 	});
-	
+
 	// blog
 	$("#noteItemList").on("click", ".item-blog", function(e) {
 		e.preventDefault();
+		// 这导致其它dropdown不能隐藏
 		e.stopPropagation();
+		// 所以
+		$(document).click();
+
 		// 得到ID
 		var noteId = $(this).parent().attr('noteId');
-		window.open("/blog/view/" + noteId);
+		var note = Note.getNote(noteId);
+		if (note) {
+			window.open(Note.getPostUrl(note));
+		}
 	});
-	
+
 	// note setting
 	$("#noteItemList").on("click", ".item-my .item-setting", function(e) {
 		e.preventDefault();
+
+		// 这导致其它dropdown不能隐藏
 		e.stopPropagation();
+		// 所以
+		$(document).click();
+
 		var $p = $(this).parent();
 		Note.contextmenu.showMenu(e, $p);
 	});
-	
+
 	// readony
 	// 修改
 	$('.toolbar-update').click(function() {

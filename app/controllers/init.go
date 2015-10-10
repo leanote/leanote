@@ -68,7 +68,7 @@ var commonUrl = map[string]map[string]bool{"Index": map[string]bool{"Index": tru
 	},
 	"Oauth":  map[string]bool{"GithubCallback": true},
 	"File":   map[string]bool{"OutputImage": true, "OutputFile": true},
-	"Attach": map[string]bool{"Download": true, "DownloadAll": true},
+	"Attach": map[string]bool{"Download": true/*, "DownloadAll": true*/},
 }
 
 func needValidate(controller, method string) bool {

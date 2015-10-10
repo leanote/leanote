@@ -258,6 +258,7 @@ define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function(){
 		});
 	};
 
+	var lastTime = 0;
 
 	// pasteImage
 	var pasteImageInit =  function() {
@@ -285,7 +286,19 @@ define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function(){
 		        	data.process.update(data.loaded / data.total);
 	        	}
 	        },
+
+	        // 调用了两次
+	        // 不知道为什么会触发两次
 	        add: function(e, data) {
+	        	// 防止两次
+	        	var now = (new Date()).getTime();
+	        	if (now - lastTime < 500) {
+	        		// console.log('haha');
+	        		return;
+	        	}
+	        	// console.log('nono');
+	        	lastTime = now;
+
 	        	var note = Note.getCurNote();
 	        	curNote = note;
 	        	if(!note || note.IsNew) {

@@ -11,6 +11,8 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"time"
 	"strings"
+	"github.com/PuerkitoBio/goquery"
+	"bytes"
 	math_rand "math/rand" 
 )
 
@@ -21,6 +23,22 @@ func Md5(s string) string {
 	h := md5.New()
 	h.Write([]byte(s))
 	return hex.EncodeToString(h.Sum(nil))
+}
+
+// 3位数的转换, 为了用bson.id -> 3位数
+func Digest3(str string) string {
+	var b rune = 0
+	for _, k := range str {
+		b += k
+	}
+	return fmt.Sprintf("%d", b % 1000)
+}
+func Digest2(str string) string {
+	var b rune = 0
+	for _, k := range str {
+		b += k
+	}
+	return fmt.Sprintf("%d", b % 100)
 }
 
 // Guid
@@ -124,73 +142,48 @@ func ReplaceAll(oldStr, pattern, newStr string) string {
 }
 
 // 获取纯文本
-func SubStringHTMLToRaw(param string, length int) (result string) {
+func SubStringHTMLToRaw(param string, length int) string {
 	if param == "" {
-		return ""
+		return param
 	}
-	result = ""
 	n := 0
 	var temp rune // 中文问题, 用rune来解决
 	rStr := []rune(param)
+	lenStr := len(rStr)
 	isCode := false
-	for i := 0; i < len(rStr); i++ {
+
+	resultRune := make([]rune, length)
+	// s := ""
+	for i := 0; i < lenStr; i++ {
 		temp = rStr[i]
 		if temp == '<' {
 			isCode = true
 			continue
 		} else if temp == '>' {
 			isCode = false
-			result += " "; // 空格
+			resultRune[n] = ' ';
+
+			n++
+			if n >= length {
+				break
+			}
 			continue
 		}
 		if !isCode {
-			result += string(temp)
+			resultRune[n] = temp;
+			// s += string(temp)
 			n++
 			if n >= length {
 				break
 			}
 		}
 	}
-	return 
+	result := string(resultRune[0:n])
+	return strings.Trim(result, " ")
 }
 
-// 获取摘要, HTML
-func SubStringHTML(param string, length int, end string) string {
-	if param == "" {
-		return ""
-	}
-	
-	// 先取出<pre></pre>占位..
-	result := ""
-
-	// 1
-	n := 0
-	var temp rune // 中文问题, 用rune来解决
-	isCode := false //是不是HTML代码
-	isHTML := false //是不是HTML特殊字符,如&nbsp;
-	rStr := []rune(param)
-	for i := 0; i < len(rStr); i++ {
-		temp = rStr[i]
-		if temp == '<' {
-			isCode = true
-		} else if temp == '&' {
-			isHTML = true
-		} else if temp == '>' && isCode {
-			n = n - 1
-			isCode = false
-		} else if temp == ';' && isHTML {
-			isHTML = false
-		}
-		if !isCode && !isHTML {
-			n = n + 1
-		}
-		result += string(temp)
-		if n >= length {
-			break
-		}
-	}
-	result += end
-	
+// 自带方法补全html
+func fixHtml(result string) string {
 	// 取出所有标签
 	tempResult := ReplaceAll(result, "(>)[^<>]*(<?)", "$1$2") // 把标签中间的所有内容都去掉了
 
@@ -233,6 +226,71 @@ func SubStringHTML(param string, length int, end string) string {
 	return result
 }
 
+// 获取摘要, HTML
+func SubStringHTML(param string, length int, end string) string {
+	if param == "" {
+		return param
+	}
+	result := ""
+
+	rStr := []rune(param)
+	lenStr := len(rStr)
+
+	if lenStr <= length {
+		result = param
+	} else {
+		// 1
+		n := 0
+		var temp rune // 中文问题, 用rune来解决
+		isCode := false //是不是HTML代码
+		isHTML := false //是不是HTML特殊字符,如&nbsp;
+		var i = 0;
+		for ; i < lenStr; i++ {
+			temp = rStr[i]
+			if temp == '<' {
+				isCode = true
+			} else if temp == '&' {
+				isHTML = true
+			} else if temp == '>' && isCode {
+				// n = n - 1
+				isCode = false
+			} else if temp == ';' && isHTML {
+				isHTML = false
+			}
+			if !isCode && !isHTML {
+				n = n + 1
+			}
+			// 每一次都相加, 速度非常慢!, 重新分配内存, 7倍的差距
+			// result += string(temp)
+			if n >= length {
+				break
+			}
+		}
+
+		result = string(rStr[0:i])
+
+		if end != "" {
+			result += end
+		}
+	}
+
+	// 使用goquery来取出html, 为了补全html
+	htmlReader := bytes.NewBufferString(result)
+	dom, err1 := goquery.NewDocumentFromReader(htmlReader)
+	if err1 == nil {
+		html, _ := dom.Html()
+		html = strings.Replace(html, "<html><head></head><body>", "", 1)
+		html = strings.Replace(html, "</body></html>", "", 1)
+		
+		// TODO 把style="float: left"去掉
+		return html
+		
+	// 如果有错误, 则使用自己的方法补全, 有风险
+	} else {
+		return fixHtml(result)
+	}
+}
+
 // 是否是合格的密码
 func IsGoodPwd(pwd string) (bool, string) {
 	if pwd == "" {
@@ -249,7 +307,7 @@ func IsEmail(email string) bool {
 	if email == "" {
 		return false;
 	}
-	ok, _ := regexp.MatchString(`^([a-zA-Z0-9]+[_|\_|\.|\-]?)*[a-z\-A-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.|\-]?)*[a-zA-Z0-9\-]+\.[0-9a-zA-Z]{2,3}$`, email)
+	ok, _ := regexp.MatchString(`^([a-zA-Z0-9]+[_|\_|\.|\-]?)*[_a-z\-A-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.|\-]?)*[a-zA-Z0-9\-]+\.[0-9a-zA-Z]{2,6}$`, email)
 	return ok
 }
 

@@ -2,7 +2,7 @@ package route
 
 import (
 	"github.com/revel/revel"
-//	"github.com/leanote/leanote/app/service"
+	"github.com/leanote/leanote/app/db"
 //	. "github.com/leanote/leanote/app/lea"
 	"net/url"
 	"strings"
@@ -42,6 +42,10 @@ func RouterFilter(c *revel.Controller, fc []revel.Filter) {
 	}
 	*/
 	if route.ControllerName != "Static" {
+
+		// 检查mongodb 是否lost
+		db.CheckMongoSessionLost()
+	
 		// api设置
 		// leanote.com/api/user/get => ApiUser::Get
 		//*       /api/login               ApiAuth.Login,  这里的设置, 其实已经转成了ApiAuth了
