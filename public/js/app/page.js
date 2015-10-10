@@ -913,10 +913,12 @@ var Pjax = {
 	// ajax后调用
 	changeNote: function(noteInfo) {
 		var me = this;
-		log("push");
 		var noteId = noteInfo.NoteId;
 		var title = noteInfo.Title;
 		var url = '/note/' + noteId;
+		if (location.href.indexOf('?online') > 0) {
+			url += '?online=1'
+		}
 		if(location.hash) {
 			url += location.hash;
 		}
