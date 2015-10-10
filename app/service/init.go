@@ -90,7 +90,7 @@ func decodeValue(val string) string {
 	v, _ := url.ParseQuery("a=" + val)
 	return v.Get("a")
 }
-		
+
 func encodeValue(val string) string {
 	if val == "" {
 		return val
@@ -99,16 +99,17 @@ func encodeValue(val string) string {
 	v.Set("", val)
 	return v.Encode()[1:]
 }
+
 // 添加笔记时通过title得到urlTitle
 func fixUrlTitle(urlTitle string) string {
 	if urlTitle != "" {
 		// 把特殊字段给替换掉
-//		str := `life "%&()+,/:;<>=?@\|`
+		//		str := `life "%&()+,/:;<>=?@\|`
 		reg, _ := regexp.Compile("/|#|\\$|!|\\^|\\*|'| |\"|%|&|\\(|\\)|\\+|\\,|/|:|;|<|>|=|\\?|@|\\||\\\\")
 		urlTitle = reg.ReplaceAllString(urlTitle, "-")
 		urlTitle = strings.Trim(urlTitle, "-") // 左右单独的-去掉
 		// 把空格替换成-
-//		urlTitle = strings.Replace(urlTitle, " ", "-", -1)
+		//		urlTitle = strings.Replace(urlTitle, " ", "-", -1)
 		for strings.Index(urlTitle, "--") >= 0 { // 防止出现连续的--
 			urlTitle = strings.Replace(urlTitle, "--", "-", -1)
 		}
@@ -119,11 +120,20 @@ func fixUrlTitle(urlTitle string) string {
 
 func getUniqueUrlTitle(userId string, urlTitle string, types string, padding int) string {
 	urlTitle2 := urlTitle
+
+	// 判断urlTitle是不是过长, 过长则截断, 300
+	// 不然生成index有问题
+	// it will not index a single field with more than 1024 bytes.
+	// If you're indexing a field that is 2.5MB, it's not really indexing it, it's being skipped.
+	if len(urlTitle2) > 320 {
+		urlTitle2 = urlTitle2[:300] // 为什么要少些, 因为怕无限循环, 因为把padding截了
+	}
+
 	if padding > 1 {
 		urlTitle2 = urlTitle + "-" + strconv.Itoa(padding)
 	}
 	userIdO := bson.ObjectIdHex(userId)
-	
+
 	var collection *mgo.Collection
 	if types == "note" {
 		collection = db.Notes
@@ -136,9 +146,10 @@ func getUniqueUrlTitle(userId string, urlTitle string, types string, padding int
 		padding++
 		urlTitle2 = urlTitle + "-" + strconv.Itoa(padding)
 	}
-	
+
 	return urlTitle2
 }
+
 // types == note,notebook,single
 func GetUrTitle(userId string, title string, types string) string {
 	urlTitle := strings.Trim(title, " ")
