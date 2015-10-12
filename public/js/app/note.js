@@ -1612,11 +1612,11 @@ var Attach = {
 		self.attachListO.on("click", ".download-attach", function(e) {
 			e.stopPropagation();
 			var attachId = $(this).closest('li').data("id");
-			Note.download(UrlPrefix + "/attach/download", {attachId:attachId});
+			Note.download("/attach/download", {attachId:attachId});
 		});
 		// 下载全部
 		self.downloadAllBtnO.click(function() {
-			Note.download(UrlPrefix + "/attach/downloadAll", {noteId: Note.curNoteId});
+			Note.download("/attach/downloadAll", {noteId: Note.curNoteId});
 		});
 
 		// make link
