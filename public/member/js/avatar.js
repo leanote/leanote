@@ -1,7 +1,5 @@
-// upload attachment
-// 依赖note
 var urlPrefix = UrlPrefix;
-define('avatar', ['jquery.ui.widget', 'fileupload'], function(){
+define('avatar', ['fileupload'], function(){
 	// Helper function that formats the file sizes
     function formatFileSize(bytes) {
         if (typeof bytes !== 'number') {

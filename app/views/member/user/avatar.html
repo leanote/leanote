@@ -36,14 +36,8 @@ var GlobalConfigs = {{.globalConfigs|jsonJs}}; // 2014/11/9 beta2
 require.config({
 	baseUrl: '/public',
     paths: {
-    	// ajax upload image/attach
-    	'avatar': 'js/plugins/avatar',
-    	'jquery.ui.widget': 'js/plugins/libs-min/jquery.ui.widget',
-        'fileupload': 'js/plugins/libs-min/jquery.fileupload',
-        'iframe-transport': 'js/plugins/libs-min/jquery.iframe-transport',
-    },
-    shim: {
-    	'fileupload': {deps: ['jquery.ui.widget', 'iframe-transport']}
+    	'avatar': 'member/js/avatar',
+        'fileupload': 'js/plugins/libs-min/fileupload',
     }
 });
 $(function() {
