@@ -37,17 +37,17 @@ require.config({
 	baseUrl: '/public',
     paths: {
     	// ajax upload image/attach
-    	'attachment_upload': 'js/app/attachment_upload',
-    	'jquery.ui.widget': 'tinymce/plugins/leaui_image/public/js/jquery.ui.widget',
-    	'fileupload': '/tinymce/plugins/leaui_image/public/js/jquery.fileupload',
-    	'iframe-transport': '/tinymce/plugins/leaui_image/public/js/jquery.iframe-transport'
+    	'avatar': 'js/plugins/avatar',
+    	'jquery.ui.widget': 'js/plugins/libs-min/jquery.ui.widget',
+        'fileupload': 'js/plugins/libs-min/jquery.fileupload',
+        'iframe-transport': 'js/plugins/libs-min/jquery.iframe-transport',
     },
     shim: {
     	'fileupload': {deps: ['jquery.ui.widget', 'iframe-transport']}
     }
 });
 $(function() {
-	require(['attachment_upload'], function(attachment_upload) {});
+	require(['avatar'], function(avatar) {});
 });
 </script>
 

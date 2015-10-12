@@ -139,6 +139,6 @@ define('attachment_upload', ['jquery.ui.widget', 'fileupload'], function(){
 	        }
 	    });
 	};
-
+	
 	initUploader();
 });
