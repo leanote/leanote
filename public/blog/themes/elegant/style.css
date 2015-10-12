@@ -357,6 +357,11 @@ a:hover {
 #search {
   width: 150px;
 }
+.footer-leanote {
+    text-align: center;
+    padding: 3px 0;
+    color: #ccc;
+}
 #footerContainer {
   background-color: #ffffff;
   color: #666666;
@@ -517,6 +522,7 @@ a:hover {
     padding: 0 10px;
   }
 }
+
 
 table {
     margin-bottom: 16px;

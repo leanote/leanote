@@ -204,6 +204,11 @@ ul.dropdown-menu {
 #footer {
   padding-bottom: 10px;
 }
+.footer-leanote {
+    text-align: center;
+    padding: 3px 0;
+    color: #ccc;
+}
 .navbar-brand {
   display: none;
 }
