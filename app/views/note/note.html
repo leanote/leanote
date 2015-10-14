@@ -611,7 +611,7 @@ function log(o) {
 							                <!-- 帮助 -->
 							                 <ul class="nav left-buttons">
 							                    <li class="wmd-button-group6 btn-group">
-							                    	<li class="wmd-button btn btn-success" id="wmd-help-button" title="Markdown syntax" style="left: 0px; display: none;"><span style="display: none; background-position: 0px 0px;"></span><i class="fa fa-question-circle"></i></li>
+							                    	<li class="wmd-button btn btn-success" id="wmd-help-button" title="{{msg . "Markdown syntax"}}" style="left: 0px; display: none;"><span style="display: none; background-position: 0px 0px;"></span><i class="fa fa-question-circle"></i></li>
 							                    </li>
 							                </ul>
 							               
@@ -691,32 +691,6 @@ function log(o) {
 			</div>
 			
 			<!-- mdEditor -->
-			<!-- v2 -->
-			<div class="modal fade modal-insert-link">
-			    <div class="modal-dialog">
-			        <div class="modal-content">
-			            <div class="modal-header">
-			                <button type="button" class="close" data-dismiss="modal"
-			                    aria-hidden="true">&times;</button>
-			                <h4 class="modal-title">Hyperlink</h4>
-			            </div>
-			            <div class="modal-body">
-			                <p>Please provide the link URL and an optional title:</p>
-			                <div class="input-group">
-			                    <span class="input-group-addon"><i class="icon-globe"></i></span><input
-			                        id="input-insert-link" type="text" class="col-sm-5 form-control"
-			                        placeholder='http://example.com/ "optional title"' />
-			                </div>
-			            </div>
-			            <div class="modal-footer">
-			                <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
-			                <a href="#" class="btn btn-primary action-insert-link"
-			                    data-dismiss="modal">OK</a>
-			            </div>
-			        </div>
-			    </div>
-			</div>
-			
 			<!-- 插入图片 -->
 			<div class="modal fade modal-insert-image">
 			    <div class="modal-dialog"  style="width: 840px;max-width:100%;">
@@ -724,15 +698,15 @@ function log(o) {
 			            <div class="modal-header">
 			                <button type="button" class="close" data-dismiss="modal"
 			                    aria-hidden="true">&times;</button>
-			                <h4 class="modal-title">Image</h4>
+			                <h4 class="modal-title">{{msg . "Image"}}</h4>
 			            </div>
 			            <div class="modal-body" style="padding-top: 0; padding-bottom: 0">
 			            	<iframe name="mdImageManager" style="width: 100%; height: 350px" scrolling="no" id="leauiIfrForMD" src="" frameborder="0"></iframe>
 			            </div>
 			            <div class="modal-footer">
 			                 <a href="#" class="btn btn-default"
-			                    data-dismiss="modal">Cancel</a> <a href="#"
-			                    class="btn btn-primary action-insert-image" data-dismiss="modal">Insert Image</a>
+			                    data-dismiss="modal">{{msg . "Cancel"}}</a> <a href="#"
+			                    class="btn btn-primary action-insert-image" data-dismiss="modal">{{msg . "Insert Image"}}</a>
 			            </div>
 			        </div>
 			    </div>
@@ -747,7 +721,7 @@ function log(o) {
 				        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				        <h4 class="modal-title" id="editorDialog-title"></h4>
 				      </div>
-				      
+
 				      <div class="modal-body">
 							<p></p>
 							<div class="input-group">

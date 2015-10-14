@@ -180,6 +180,16 @@ func init() {
 		return template.HTML(tagStr)
 	}
 	
+	// 不用revel的msg
+	revel.TemplateFuncs["leaMsg"] = func(renderArgs map[string]interface{}, key string) template.HTML {
+		locale, _ := renderArgs[revel.CurrentLocaleRenderArg].(string)
+		str := revel.Message(locale, key)
+		if strings.HasPrefix(str, "???") {
+			str = key
+		}
+		return template.HTML(str);
+	}
+
 	// lea++
 	revel.TemplateFuncs["blogTagsLea"] = func(renderArgs map[string]interface{}, tags []string, typeStr string) template.HTML {
 		if tags == nil || len(tags) == 0 {

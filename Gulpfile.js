@@ -139,6 +139,7 @@ gulp.task('i18n', function() {
     ls(base + '/blog');
     ls(base + '/dist');
     ls(base + '/js');
+    ls(base + '/album');
     ls(base + '/libs');
     ls(base + '/member');
     ls(base + '/tinymce');
@@ -201,6 +202,39 @@ gulp.task('i18n', function() {
     genI18nJsFile('blog.fr', keys);
 });
 
+
+// 合并album需要的js
+gulp.task('concatAlbumJs', function() {
+    /*
+    gulp.src(base + '/album/js/main.js')
+        .pipe(uglify()) // 压缩
+        .pipe(rename({suffix: '.min'}))
+        .pipe(gulp.dest(base + '/album/js/'));
+    */
+
+    gulp.src(base + '/album/css/style.css')
+        .pipe(rename({suffix: '-min'}))
+        .pipe(minifycss())
+        .pipe(gulp.dest(base + '/album/css'));
+
+    var jss = [
+        'js/jquery-1.9.0.min.js',
+        'js/bootstrap-min.js',
+        'js/plugins/libs-min/fileupload.js',
+        'js/jquery.pagination.js',
+        'album/js/main.js',
+    ];
+
+    for(var i in jss) {
+        jss[i] = base + '/' + jss[i];
+    }
+
+    return gulp
+        .src(jss)
+        .pipe(uglify()) // 压缩
+        .pipe(concat('main.all.js'))
+        .pipe(gulp.dest(base + '/album/js'));
+});
 
 // plugins压缩
 gulp.task('plugins', function() {
@@ -308,4 +342,4 @@ gulp.task('concatCss', function() {
 
 gulp.task('concat', ['concatDepJs', 'concatAppJs', 'concatMarkdownJs']);
 gulp.task('html', ['devToProHtml']);
-gulp.task('default', ['concat', 'plugins', 'minifycss', 'i18n', 'html']);
+gulp.task('default', ['concat', 'plugins', 'minifycss', 'i18n', 'concatAlbumJs', 'html']);
