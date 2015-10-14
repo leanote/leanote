@@ -36974,41 +36974,40 @@ define('editor',[
         };
 
     var defaultsStrings = {
-        bold: "Strong <strong> Ctrl/Cmd+B",
-        boldexample: "strong text",
+        bold: getMsg("Strong") + ' <strong> Ctrl/Cmd+B',
+        boldexample: getMsg("strong text"),
 
-        italic: "Emphasis <em> Ctrl/Cmd+I",
-        italicexample: "emphasized text",
+        italic: getMsg("Emphasis") + ' <em> Ctrl/Cmd+I',
+        italicexample: getMsg("emphasized text"),
 
-        link: "Hyperlink <a> Ctrl/Cmd+L",
-        linkdescription: "enter link description here",
+        link: getMsg("Hyperlink") + ' <a> Ctrl/Cmd+L',
+        linkdescription: getMsg("enter link description here"),
         linkdialog: "<p><b>Insert Hyperlink</b></p><p>http://example.com/ \"optional title\"</p>",
 
-        quote: "Blockquote <blockquote> Ctrl/Cmd+Q",
-        quoteexample: "Blockquote",
+        quote: getMsg("Blockquote") + ' <blockquote> Ctrl/Cmd+Q',
+        quoteexample: getMsg("Blockquote"),
 
-        code: "Code Sample <pre><code> Ctrl/Cmd+K",
-        codeexample: "enter code here",
+        code: getMsg("Code Sample") + ' <pre><code> Ctrl/Cmd+K',
+        codeexample: getMsg("enter code here"),
 
-        image: "Image <img> Ctrl/Cmd+G",
-        imagedescription: "enter image description here",
+        image: getMsg("Image") + '<img> Ctrl/Cmd+G',
+        imagedescription: getMsg("enter image description here"),
         imagedialog: "<p><b>Insert Image</b></p><p>http://example.com/images/diagram.jpg \"optional title\"<br><br>Need <a href='http://www.google.com/search?q=free+image+hosting' target='_blank'>free image hosting?</a></p>",
 
-        olist: "Numbered List <ol> Ctrl/Cmd+O",
-        ulist: "Bulleted List <ul> Ctrl/Cmd+U",
-        litem: "List item",
+        olist: getMsg("Numbered List") +' <ol> Ctrl/Cmd+O',
+        ulist: getMsg("Bulleted List") +' <ul> Ctrl/Cmd+U',
+        litem: getMsg("List item"),
 
-        heading: "Heading <h1>/<h2> Ctrl/Cmd+H",
-        headingexample: "Heading",
+        heading: getMsg("Heading") + ' <h1>/<h2> Ctrl/Cmd+H',
+        headingexample: getMsg("Heading"),
 
-        hr: "Horizontal Rule <hr> Ctrl/Cmd+R",
+        hr: getMsg("Horizontal Rule") + ' <hr> Ctrl/Cmd+R',
 
-        undo: "Undo - Ctrl/Cmd+Z",
-        redo: "Redo - Ctrl/Cmd+Y",
+        undo: getMsg("Undo") + ' - Ctrl/Cmd+Z',
+        redo: getMsg("Redo") + ' - Ctrl/Cmd+Y',
 
         help: "Markdown Editing Help"
     };
-
 
     // -------------------------------------------------------------------
     //  YOUR CHANGES GO HERE
@@ -38312,7 +38311,8 @@ define('editor',[
        
         // life 新添加函数
         // life
-        function insertLinkLife(link, text) {
+        // isImage 2015/3/1
+        function insertLinkLife(link, text, isImage) {
             inputBox.focus();
             if (undoManager) {
                 undoManager.setCommandMode();
@@ -38336,7 +38336,7 @@ define('editor',[
                 previewManager.refresh();
             };
 
-            var a = commandProto.insertLink(chunks, fixupInputArea, link, text);
+            var a = commandProto.insertLink(chunks, fixupInputArea, link, text, isImage);
             if(!a) fixupInputArea();
         }
        
@@ -38734,9 +38734,8 @@ define('editor',[
         });
     }
 
-     // life 添加
-    commandProto.insertLink = function (chunk, postProcessing, link, text) {
-        isImage = false;
+    // life 添加
+    commandProto.insertLink = function (chunk, postProcessing, link, text, isImage) {
         chunk.trimWhitespace();
         chunk.findTags(/\s*!?\[/, /\][ ]?(?:\n[ ]*)?(\[.*?\])?/);
         var background;
@@ -38746,10 +38745,9 @@ define('editor',[
             chunk.startTag = chunk.startTag.replace(/!?\[/, "");
             chunk.endTag = "";
             this.addLinkDef(chunk, null);
-
         }
         else {
-            
+
             // We're moving start and end tag back into the selection, since (as we're in the else block) we're not
             // *removing* a link, but *adding* one, so whatever findTags() found is now back to being part of the
             // link text. linkEnteredCallback takes care of escaping any brackets.
@@ -38814,8 +38812,7 @@ define('editor',[
             var that = this;
             // The function to be executed when you enter a link and press OK or Cancel.
             // Marks up the link and adds the ref.
-            var linkEnteredCallback = function (link) {
-
+            var linkEnteredCallback = function (link, text) {
                 background.parentNode.removeChild(background);
 
                 if (link !== null) {
@@ -38845,16 +38842,21 @@ define('editor',[
                     var num = that.addLinkDef(chunk, linkDef);
                     */
                     chunk.startTag = isImage ? "![" : "[";
-                    //chunk.endTag = "][" + num + "]";
+                    // chunk.endTag = "][" + num + "]";
                     chunk.endTag = "](" + properlyEncoded(link) + ")";
 
                     if (!chunk.selection) {
-                        if (isImage) {
-                            chunk.selection = that.getString("imagedescription");
+                        var str = '';
+                        if (text) {
+                            str = text;
+                        } else if (isImage) {
+                            str = that.getString("imagedescription");
                         }
                         else {
-                            chunk.selection = that.getString("linkdescription");
+                            str = that.getString("linkdescription");
                         }
+
+                        chunk.selection = str;
                     }
                 }
                 postProcessing();
@@ -39064,6 +39066,7 @@ define('editor',[
         }
     };
 
+    // 这里, 应该用 ``` ```
     commandProto.doCode = function (chunk, postProcessing) {
 
         var hasTextBefore = /\S[ ]*$/.test(chunk.before);
@@ -39232,8 +39235,9 @@ define('editor',[
 
     };
 
+    // 要改成 ## ### #### 
+    // life 2015/7/12
     commandProto.doHeading = function (chunk, postProcessing) {
-
         // Remove leading/trailing whitespace and reduce internal spaces to single spaces.
         chunk.selection = chunk.selection.replace(/\s+/g, " ");
         chunk.selection = chunk.selection.replace(/(^\s+|\s+$)/g, "");
@@ -39241,62 +39245,57 @@ define('editor',[
         // If we clicked the button with no selected text, we just
         // make a level 2 hash header around some default text.
         if (!chunk.selection) {
-            chunk.startTag = "## ";
+            // 需要skip的时候 life
+            if(chunk.before && (chunk.before[chunk.before.length - 1] != "\n")) {
+                chunk.skipLines(1, 1);
+            }
+            chunk.startTag = "# ";
             chunk.selection = this.getString("headingexample");
-            chunk.endTag = " ##";
+            chunk.endTag = ""; // ##
             return;
         }
 
-        var headerLevel = 0;     // The existing header level of the selected text.
-
-        // Remove any existing hash heading markdown and save the header level.
         chunk.findTags(/#+[ ]*/, /[ ]*#+/);
-        if (/#+/.test(chunk.startTag)) {
-            headerLevel = re.lastMatch.length;
-        }
-        chunk.startTag = chunk.endTag = "";
+        // console.log(chunk);
 
-        // Try to get the current header level by looking for - and = in the line
-        // below the selection.
-        chunk.findTags(null, /\s?(-+|=+)/);
-        if (/=+/.test(chunk.endTag)) {
-            headerLevel = 1;
-        }
-        if (/-+/.test(chunk.endTag)) {
-            headerLevel = 2;
+        if(chunk.before && (chunk.before[chunk.before.length - 1] != "\n")) {
+            chunk.skipLines(1, 1);
         }
 
-        // Skip to the next line so we can create the header markdown.
-        chunk.startTag = chunk.endTag = "";
-        chunk.skipLines(1, 1);
+        var beforeHLevel = 0;
+        var startTag = chunk.startTag;
+        if (/^#+[ ]*$/.test(startTag)) {
+            startTag = startTag.replace(/ /g, '');
+            beforeHLevel = startTag.length;
+        }
 
-        // We make a level 2 header if there is no current header.
-        // If there is a header level, we substract one from the header level.
-        // If it's already a level 1 header, it's removed.
-        var headerLevelToCreate = headerLevel == 0 ? 2 : headerLevel - 1;
+        // [0, 4]
+        var headerLevelToCreate = 0;
+        if(beforeHLevel >= 0 && beforeHLevel <= 3) {
+            headerLevelToCreate = beforeHLevel + 1;
+        }
+        if(beforeHLevel >= 4) {
+            headerLevelToCreate = 0;
+            chunk.startTag = '';
+        }
 
         if (headerLevelToCreate > 0) {
+            var header = "";
+            while (headerLevelToCreate--) {
+                header += "#";
+            }
+            header += " ";
 
-            // The button only creates level 1 and 2 underline headers.
-            // Why not have it iterate over hash header levels?  Wouldn't that be easier and cleaner?
-            var headerChar = headerLevelToCreate >= 2 ? "-" : "=";
-            var len = chunk.selection.length;
-            if (len > SETTINGS.lineLength) {
-                len = SETTINGS.lineLength;
-            }
-            chunk.endTag = "\n";
-            while (len--) {
-                chunk.endTag += headerChar;
-            }
+            chunk.startTag = header;
         }
+        return;
     };
 
     commandProto.doHorizontalRule = function (chunk, postProcessing) {
         chunk.startTag = "----------\n";
         chunk.selection = "";
-        chunk.skipLines(2, 1, true);
+        chunk.skipLines(1, 1, true);
     }
-
 
 })();
 
@@ -39336,12 +39335,21 @@ define('core',[
 		}
 	}
 
-	// Load settings in settings dialog
-	// var $themeInputElt;
-
 	// Create the PageDown editor
 	var pagedownEditor;
 	var fileDesc;
+	var insertLinkO = $('<div class="modal fade modal-insert-link"><div class="modal-dialog"><div class="modal-content">'
+			+ '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>'
+			+ '<h4 class="modal-title">' + getMsg('Hyperlink') + '</h4></div>'
+			+ '<div class="modal-body"><p>' + getMsg('Please provide the link URL and an optional title') + ':</p>'
+			+ '<div class="input-group"><span class="input-group-addon"><i class="fa fa-link"></i></span><input id="input-insert-link" type="text" class="col-sm-5 form-control" placeholder="http://example.com  ' + getMsg('optional title') + '"></div></div><div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal">' + getMsg('Cancel') + '</a> <a href="#" class="btn btn-primary action-insert-link" data-dismiss="modal">' + getMsg('OK') + '</a></div></div></div></div>');
+
+	var actionInsertLinkO = insertLinkO.find('.action-insert-link');
+
+
+	// Load settings in settings dialog
+	// var $themeInputElt;
+
 	core.initEditorFirst = function() {
 		// Create the converter and the editor
 		var converter = new Markdown.Converter();
@@ -39370,7 +39378,7 @@ define('core',[
 		pagedownEditor.hooks.set("insertLinkDialog", function(callback) {
 			core.insertLinkCallback = callback;
 			utils.resetModalInputs();
-			$(".modal-insert-link").modal();
+			insertLinkO.modal();
 			return true;
 		});
 		// Custom insert image dialog
@@ -39382,7 +39390,7 @@ define('core',[
 			utils.resetModalInputs();
 			var ifr = $("#leauiIfrForMD");
 			if(!ifr.attr('src')) {
-				ifr.attr('src', '/tinymce/plugins/leaui_image/index.html?md=1');
+				ifr.attr('src', '/album/index?md=1');
 			}
 
 			$(".modal-insert-image").modal();
@@ -39489,17 +39497,33 @@ define('core',[
 		});
 
 		// Click events on "insert link" and "insert image" dialog buttons
-		$(".action-insert-link").click(function(e) {
+		actionInsertLinkO.click(function(e) {
 			var value = utils.getInputTextValue($("#input-insert-link"), e);
 			if(value !== undefined) {
-				core.insertLinkCallback(value);
+				var arr = value.split(' ');
+				var text = '';
+				var link = arr[0];
+				if (arr.length > 1) {
+					arr.shift();
+					text = $.trim(arr.join(' '));
+				}
+				core.insertLinkCallback(link, text);
 				core.insertLinkCallback = undefined;
 			}
 		});
+
 		// 插入图片
 		$(".action-insert-image").click(function() {
 			// 得到图片链接或图片
-			var value = document.mdImageManager.mdGetImgSrc();
+			/*
+			https://github.com/leanote/leanote/issues/171
+			同遇到了网页编辑markdown时不能添加图片的问题。
+			可以上传图片，但是按下“插入图片”按钮之后，编辑器中没有加入![...](...)
+			我的控制台有这样的错误： TypeError: document.mdImageManager is undefined
+			*/
+			// mdImageManager是iframe的name, mdGetImgSrc是iframe内的全局方法
+			// var value = document.mdImageManager.mdGetImgSrc();
+			var value = document.getElementById('leauiIfrForMD').contentWindow.mdGetImgSrc();
 			// var value = utils.getInputTextValue($("#input-insert-image"), e);
 			if(value) {
 				core.insertLinkCallback(value);
@@ -39508,7 +39532,7 @@ define('core',[
 		});
 
 		// Hide events on "insert link" and "insert image" dialogs
-		$(".modal-insert-link, .modal-insert-image").on('hidden.bs.modal', function() {
+		insertLinkO.on('hidden.bs.modal', function() {
 			if(core.insertLinkCallback !== undefined) {
 				core.insertLinkCallback(null);
 				core.insertLinkCallback = undefined;
@@ -39522,7 +39546,7 @@ define('core',[
 
 		// 弹框显示markdown语法
 		$('#wmd-help-button').click(function() {
-	        window.open("http://leanote.com/blog/view/531b263bdfeb2c0ea9000002");
+	        window.open("http://leanote.com/blog/post/531b263bdfeb2c0ea9000002");
 		});
 
 		// Load images
@@ -40607,6 +40631,10 @@ if(window.baseDir.indexOf('-min') !== -1) {
 	themeModule = "css!themes/" + window.theme;
 }
 */
+
+window.getMsg || (getMsg = function(msg) {
+	return msg;
+});
 
 // RequireJS entry point. By requiring synchronizer, publisher, sharing and
 // media-importer, we are actually loading all the modules

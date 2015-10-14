@@ -395,6 +395,64 @@ sharePwd=查看密码
 cancelShare=取消分享
 getShareLinkAndPwd=生成该笔记的分享链接和密码
 
+# markdown editor
+
+Hyperlink=超链接
+Please provide the link URL and an optional title=请填写链接和一个可选的标题
+optional title=可选标题
+Ok=确认
+Cancel=取消
+Strong=粗体
+strong text=粗体
+Emphasis=斜体
+emphasized text=斜体
+Blockquote=引用
+Code Sample=代码
+enter code here=代码
+Image=图片
+Heading=标题
+Numbered List=有序列表
+Bulleted List=无序列表
+List item=项目
+Horizontal Rule=水平线
+Markdown syntax=Markdown 语法
+Undo=撤销
+Redo=重做
+enter image description here=图片标题
+enter link description here=链接标题
+
+Insert Image=插入
+
+# album image
+Images=图片
+Upload=上传
+Image URL=图片地址
+Albums=相册
+Default=默认
+File title search=通过标题搜索
+Go to upload images=去上传图片
+Rename=重命名
+Add=添加
+Add Album=添加相册
+Add Image=添加图片
+Can't load this url=不能载入该图片
+No Images=无图片
+Click to upload images Or Drop images to here=点击上传图片或将图片拖至此
+
+Cannot delete default album=不能删除默认相册
+Cannot rename default album=不能重命名默认相册
+This album has images, please delete it's images at first.=相册内有图片, 不能删除
+
+Rename Album=重命名
+Add Success!=添加成功!
+Rename Success!=重命名成功!
+Delete Success!=删除成功
+Are you sure to delete this image ?=确定删除该图片?
+click to remove this image=删除图片
+error=错误
+Error=错误
+Prev=上一页
+Next=下一页
 
 # 必须要加这个, 奇怪
 [CN]
