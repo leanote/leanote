@@ -144,6 +144,9 @@ Delete=删除
 
 update=更新
 create=创建
+Update Time=更新时间
+Create Time=创建时间
+Post Url=博文链接
 
 demoRegister=<a href="/register">立即注册</a>
 
