@@ -146,9 +146,10 @@ func init() {
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &Note{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &Share{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &User{})
+	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &Album{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &File{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &Attach{})
-//	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &Blog{})
+	//	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &Blog{})
 	revel.InterceptFunc(AuthInterceptor, revel.BEFORE, &NoteContentHistory{})
 
 	revel.OnAppStart(func() {

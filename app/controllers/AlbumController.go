@@ -14,6 +14,12 @@ type Album struct {
 	BaseController
 }
 
+// 图片管理, iframe
+func (c Album) Index() revel.Result {
+	c.SetLocale();
+	return c.RenderTemplate("album/index.html")
+}
+
 // all albums by userId
 func (c Album) GetAlbums() revel.Result {
 	re := albumService.GetAlbums(c.GetUserId())

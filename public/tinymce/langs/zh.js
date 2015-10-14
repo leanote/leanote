@@ -79,6 +79,8 @@ tinymce.addI18n('zh',{
 "Insert\/edit mind map": "新建/编辑思维导图",
 "Insert Mind Map": "插入思维导图",
 "Mind Map": "思维导图",
+"Image": "图片",
+"Insert Image": "插入",
 "General": "\u666e\u901a",
 "Advanced": "\u9ad8\u7ea7",
 "Source": "\u5730\u5740",

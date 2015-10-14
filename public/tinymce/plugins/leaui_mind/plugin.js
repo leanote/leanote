@@ -3,36 +3,9 @@
  * copyright leaui
  * leaui.com
  */
-var LEAUI_DATAS = [];
-tinymce.PluginManager.add('leaui_image', function(editor, url) {
-	//当url改变时, 得到图片的大小
-	function getImageSize(url, callback) {
-		var img = document.createElement('img');
+var LEAUI_MIND = {};
+tinymce.PluginManager.add('leaui_mind', function(editor, url) {
 	
-		function done(width, height) {
-			img.parentNode.removeChild(img);
-			callback({width: width, height: height});
-		}
-	
-		img.onload = function() {
-			done(img.clientWidth, img.clientHeight);
-		};
-	
-		img.onerror = function() {
-			done();
-		};
-	
-		img.src = url;
-	
-		var style = img.style;
-		style.visibility = 'hidden';
-		style.position = 'fixed';
-		style.bottom = style.left = 0;
-		style.width = style.height = 'auto';
-	
-		document.body.appendChild(img);
-	}
-
 	function showDialog() {
 		var dom = editor.dom;
 
@@ -41,36 +14,29 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 		var p = /<img.*?\/>/g;
 		var images = content.match(p);
 		var newNode = document.createElement("p");
-		var datas = [];
+		LEAUI_MIND = {};
 		for(var i in images) {
 			newNode.innerHTML = images[i];
 			var imgElm = newNode.firstChild;
 			if(imgElm && imgElm.nodeName == "IMG") {
-				var data = {};
-				data.src = dom.getAttrib(imgElm, 'data-src') || dom.getAttrib(imgElm, 'src');
-				data.width = dom.getAttrib(imgElm, 'width');
-				data.height = dom.getAttrib(imgElm, 'height');
-				data.title = dom.getAttrib(imgElm, 'title');
-				datas.push(data);
+				LEAUI_MIND.json = dom.getAttrib(imgElm, 'data-mind-json');
+				break;
 			}
 		}
-		LEAUI_DATAS = datas;
 
 		function GetTheHtml(){
-			var html = '<iframe id="leauiIfr" src="/album/index'+ '?' + new Date().getTime() + '" frameborder="0"></iframe>';
+			var lang = editor.settings.language;
+			var u = '//leanote.com/public/libs/mind/edit.html';
+			// u = 'http://localhost:9000/public/libs/mind/edit.html';
+			var html = '<iframe id="leauiIfr" src="'+ u + '?' + new Date().getTime() + '&lang=' + lang + '" frameborder="0"></iframe>';
 			return html;
 		}
-
+		
 		var w = $(document).width() - 10;
-		if(w > 805) {
-			w = 805;
-		}
 		var h = $(document).height() - 100;
-		if(h > 365) {
-			h = 365;
-		}
+		
 		win = editor.windowManager.open({
-			title: "Image",
+			title: "Mind Map",
 			width : w,
 			height : h,
 			html: GetTheHtml(),
@@ -82,10 +48,22 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 					}
 				},
 				{
-				text: 'Insert Image',
+				text: 'Insert Mind Map',
 				subtype: 'primary',
 				onclick: function(e) {
+					var me = this;
 					var _iframe = document.getElementById('leauiIfr').contentWindow;
+					var km = _iframe.km;
+					km.exportData('png').then(function(data) {
+						var json = JSON.stringify(km.exportJson());
+						// console.log(json);
+						var img = '<img src="' + data + '" data-mce-src="-" data-mind-json=\'' + json + '\'>';
+						editor.insertContent(img);
+						
+						me.parent().parent().close();
+					});
+					return;
+					
 					var _div =_iframe.document.getElementById('preview');
 					var ii = _div.childNodes; 
 					//console.log(ii);
@@ -185,33 +163,10 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 		});
 	}
 	
-	editor.addButton('leaui_image', {
-		icon: 'image',
-		tooltip: 'Insert/edit image',
+	editor.addButton('leaui_mind', {
+		icon: 'mind',
+		tooltip: 'Insert/edit mind map',
 		onclick: showDialog,
-		stateSelector: 'img:not([data-mind-json])'
+		stateSelector: 'img[data-mind-json]'
 	});
-
-	editor.addMenuItem('leaui_image', {
-		icon: 'image',
-		text: 'Insert image',
-		onclick: showDialog,
-		context: 'insert',
-		prependToContext: true
-	});
-	
-	// 为解决在editor里拖动图片问题
-	// 2014/7/8 21:43 浮躁的一天终有收获
-    var dragStart = false;
-    editor.on("dragstart", function(e) {
-    	dragStart = true;
-    });
-    editor.on("dragend", function(e) {
-    	dragStart = false;
-    });
-	editor.on("dragover", function(e) {
-		if(!dragStart) {
-    		$("body").trigger("dragover");
-    	}
-    });
 });

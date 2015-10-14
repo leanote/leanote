@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+	Leanote Album Image Manager
+</title>
+
+<link href="/css/bootstrap-min.css" rel="stylesheet" />
+<link href="/css/font-awesome-4.2.0/css/font-awesome-min.css" rel="stylesheet" />
+<link href="/public/album/css/style-min.css" rel="stylesheet" />
+
+</head>
+<body class="md" id="body">
+<div style="margin: 3px;">
+	<div class="holder"></div>
+
+    <div class="tabs">
+      <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a href="#images" data-toggle="tab">{{leaMsg . "Images"}}</a></li>
+        <li class=""><a href="#uploadTab" data-toggle="tab">{{leaMsg . "Upload"}}</a></li>
+        <li class=""><a href="#url" data-toggle="tab">{{leaMsg . "Image URL"}}</a></li>
+      </ul>
+      <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade active in" id="images">
+        	<!-- tools -->
+        	<div>
+				<form class="form-inline" role="form">
+				  <div class="form-group">
+				    <label class="control-label" for="albums">{{leaMsg . "Albums"}}:</label>
+				  </div>
+				  <div class="form-group">
+				    	<select class="form-control" id="albumsForList">
+				    		<option value="">{{leaMsg . "Default"}}</option>
+						</select>
+				  </div>
+				  <div class="form-group">
+				  	<input class="form-control" type="text" id="key" placeholder="{{leaMsg . "File title search"}}"/>
+				  </div>
+				  <div class="form-group">
+				  	&nbsp;&nbsp;<a href="javascript:;" title="refresh" id="refresh"><span class="fa fa-refresh"></span></a>
+				  </div>
+				</form>
+			</div>
+
+			<div id="imagePage">
+				<ul id="imageList" class="clearfix">
+				</ul>
+
+				<!-- pagination -->
+				<div id="paginationContainer">
+					<ul class="pagination">
+					</ul>
+				</div>
+
+				<div id="imageMask">
+					<div id="noImages">
+						<p>{{msg . "No Images"}}!</p>
+						<btn class="btn btn-default" id="goAddImageBtn">{{leaMsg . "Go to upload images"}}</btn>
+					</div>
+					<div id="loading">
+						loading....
+					</div>
+				</div>
+			</div>
+        </div>
+        <div class="tab-pane fade" id="uploadTab">
+            <div>
+               <form class="form-inline" role="form">
+				  <div class="form-group" id="albumSelect">
+					    <label class="control-label" for="albums">{{leaMsg . "Albums"}}:</label>
+					    
+				    	<select class="form-control" id="albumsForUpload">
+				    		<option value="">{{leaMsg . "Default"}}</option>
+						</select>
+
+						<a href="javascript:;" id="deleteAlbumBtn">{{leaMsg . "Delete"}}</a> | 
+						<a href="javascript:;" id="renameAlbumBtn">{{leaMsg . "Rename"}}</a> |
+						<a href="javascript:;" id="addAlbumBtn">{{leaMsg . "Add"}}</a> 
+				  </div>
+				  
+				  <!-- rename or add album -->
+				  <div class="form-group" style="display: none" id="addOrUpdateAlbumForm">
+				      <input type="text" class="form-control" style="width: 150px" id="albumName">
+				      <button class="btn btn-success" type="button" id="addOrUpdateAlbumBtn">{{leaMsg . "Add Album"}}</button>
+				      <button class="btn btn-default" type="button" id="cancelAlbumBtn">{{leaMsg . "Cancel"}}</button>
+				  </div>
+
+				  <div class="form-group">
+			        <span id="msg" class="alert alert-success" style="padding: 3px; display: none"></span>
+				  </div>
+				</form> 
+            </div>
+
+            <form id="upload" method="post" action="/file/uploadImageLeaui" enctype="multipart/form-data" style="margin-top: 5px;">
+                <div id="drop">
+                    <a class="btn btn-default">
+                        {{leaMsg . "Click to upload images Or Drop images to here"}}
+                    </a>
+                    <input type="file" name="file" multiple />
+                </div>
+                <ul id="upload-msg">
+                </ul>
+            </form>
+        </div>
+
+        <div class="tab-pane fade" id="url">
+        	<form class="form-inline" id="imageUrlForm" style="">
+        		<div class="form-group">
+				    <label class="control-label" for="imageUrl">{{leaMsg . "Image URL"}}:</label>
+				</div>
+				<div class="form-group">
+					<input type="text" class="form-control" id="imageUrl" size="51"/>
+				</div>
+				<div class="form-group">
+					<button class="btn btn-success" id="addImageUrlBtn">{{leaMsg . "Add Image"}}</button>
+				</div>
+				<div class="form-group">
+					<div class="alert alert-danger" id="msgForUrl" 
+        			style="display: none; padding: 5px; width: 150px;">
+        				{{leaMsg . "Can't load this url"}}
+        			</div>
+				</div>
+			</form>
+			</div>
+      </div>
+    </div>
+
+    <ul id="preview" class="clearfix">
+    </ul>
+
+	<!--
+    <div id="previewAttrs" style="margin-left: 10px">
+    	<form class="form-inline" role="form">
+		  <div class="form-group">
+	    	<input class="form-control" id="attrTitle" placeholder="title" size="20" disabled/>
+	    	<input class="form-control" id="attrWidth" placeholder="width" size="5" disabled/> X 
+	    	<input class="form-control" id="attrHeight" placeholder="height" size="5" disabled/>
+	    	<label><input type="checkbox" value="1"  id="attrConstrain" disabled/> Constrain proportions</label>
+		  </div>
+		</form>
+    </div>
+    -->
+</div>
+</body>
+
+<script>
+// javascript global configration
+var G = {};
+G.imageSrcPrefix = 'upload';
+G.perPageItems = 12;
+G.maxSelected = 1;
+var UrlPrefix = '{{.siteUrl}}';
+</script>
+
+<!--
+<script src="/js/jquery-1.9.0.min.js"></script>
+<script src="/js/bootstrap-min.js"></script>
+<script src="/js/plugins/libs-min/fileupload.js"></script>
+<script src="/js/jquery.pagination.js"></script>
+<script src="/public/album/js/main.js"></script>
+-->
+
+<script src="/public/album/js/main.all.js"></script>
+
+</html>
