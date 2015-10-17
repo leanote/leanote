@@ -73,15 +73,9 @@ func (c AdminSetting) DoDemo(demoUsername, demoPassword string) revel.Result {
 	return c.RenderJson(re)
 }
 
-// ToImage
-// 长微博的bin路径phantomJs
-func (c AdminSetting) ToImage() revel.Result {
-	c.RenderArgs["toImageBinPath"] = configService.GetGlobalStringConfig("toImageBinPath")
-	return c.RenderTemplate("admin/setting/toImage.html");
-}
-func (c AdminSetting) DoToImage(toImageBinPath string) revel.Result {
+func (c AdminSetting) ExportPdf(path string) revel.Result {
 	re := info.NewRe()
-	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "toImageBinPath", toImageBinPath)
+	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "exportPdfBinPath", path)
 	return c.RenderJson(re)
 }
 
