@@ -388,7 +388,6 @@ function switchEditor(isMarkdown) {
 }
 
 
-
 // editor 设置内容
 // 可能是tinymce还没有渲染成功
 var previewToken = "<div style='display: none'>FORTOKEN</div>"
@@ -411,27 +410,12 @@ function setEditorContent(content, isMarkdown, preview, callback) {
 			}
 		}
 		*/
-
-		$("#editorContent").html(content);
+		// $("#editorContent").html(content);
+		// 不能先setHtml, 因为在tinymce的setContent前要获取之前的content, destory ACE
 		if(typeof tinymce != "undefined" && tinymce.activeEditor) {
 			var editor = tinymce.activeEditor;
-			// console.log('set content');
-			LEA.s4 = new Date();
-			LEA.s4_1 = LEA.s4.getTime()-LEA.s1.getTime();
 			editor.setContent(content);
 			callback && callback();
-			/*
-			if(LeaAce.canAce() && LeaAce.isAce) {
-				try {
-					LeaAce.initAceFromContent(editor);
-				} catch(e) {
-					log(e);
-				}
-			} else {
-				// 为了在firefox下有正常的显示
-				$("#editorContent pre").removeClass("ace-tomorrow ace_editor");
-			}
-			*/
 			editor.undoManager.clear(); // 4-7修复BUG
 		} else {
 			// 等下再设置
@@ -464,8 +448,6 @@ function setEditorContent(content, isMarkdown, preview, callback) {
 		if(MD) {
 			MD.setContent(content);
 			callback && callback();
-			LEA.s4 = new Date();
-			LEA.s4_1 = LEA.s4.getTime()-LEA.s1.getTime()
 		} else {
 			clearIntervalForSetContent = setTimeout(function() {
 				setEditorContent(content, true, false, callback);
@@ -491,7 +473,16 @@ function isAceError(val) {
 }
 
 // 有tinymce得到的content有<html>包围
+// 总会出现<p>&nbsp;<br></p>, 原因, setContent('<p><br data-mce-bogus="1" /></p>') 会设置成 <p> <br></p>
+// 所以, 要在getContent时, 当是<p><br data-mce-bogus="1"></p>, 返回 <p><br/></p>
 function getEditorContent(isMarkdown) {
+	var content = _getEditorContent(isMarkdown);
+	if (content === '<p><br data-mce-bogus="1"></p>') {
+		return '<p><br></p>';
+	}
+	return content;
+}
+function _getEditorContent(isMarkdown) {
 	if(!isMarkdown) {
 		var editor = tinymce.activeEditor;
 		if(editor) {
