@@ -1357,6 +1357,7 @@ Note.deleteNoteTag = function(item, tag) {
 
 // readonly
 Note.readOnly = false; // 默认为false要好?
+LEA.readOnly = false;
 // 切换只读模式
 Note.toggleReadOnly = function() {
 	if(LEA.em && LEA.em.isWriting()) { // 写作模式下
@@ -1390,6 +1391,9 @@ Note.toggleReadOnly = function() {
 		$('#infoToolbar .updated-time').html(goNowToDatetime(note.UpdatedTime));
 	}
 	
+	Note.readOnly = true;
+	LEA.readOnly = true;
+	
 	if(note.readOnly) {
 		return;
 	}
@@ -1405,8 +1409,8 @@ Note.toggleReadOnly = function() {
 	Note.readOnly = true;
 };
 // 切换到编辑模式
-Note.toggleWriteable = function() {
-	var me = this;
+LEA.toggleWriteable = Note.toggleWriteable = function() {
+	var me = Note;
 
 	// $('#infoToolbar').hide();
 	$('#editor').removeClass('read-only');
@@ -1438,6 +1442,7 @@ Note.toggleWriteable = function() {
 
 	note.readOnly = false;
 	Note.readOnly = false;
+	LEA.readOnly = false;
 };
 
 Note.getPostUrl = function (note) {

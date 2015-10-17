@@ -571,7 +571,7 @@ function log(o) {
 						<!-- leaui image drop image to editor-->
 						<form id="upload" method="post" action="/file/uploadImageLeaui" enctype="multipart/form-data" style="margin-top: 5px;">
 			                <div id="drop">
-			                       Drop images to here
+			                       {{leaMsg . "Drop images to here"}}
 			                    <input type="file" name="file" multiple style="display: none"/>
 			                </div>
 			                <ul id="uploadMsg">

@@ -39973,7 +39973,7 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 				}]
 		});
 	}
-	
+
 	editor.addButton('leaui_image', {
 		icon: 'image',
 		tooltip: 'Insert/edit image',
@@ -39988,19 +39988,27 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 		context: 'insert',
 		prependToContext: true
 	});
-	
+
 	// 为解决在editor里拖动图片问题
 	// 2014/7/8 21:43 浮躁的一天终有收获
+	// 2015/10/16
     var dragStart = false;
     editor.on("dragstart", function(e) {
+    	// readonly时不让drag图片
+    	if (LEA.readOnly) {
+	    	e.preventDefault();
+	    	e.stopPropagation();
+    	}
     	dragStart = true;
     });
     editor.on("dragend", function(e) {
     	dragStart = false;
     });
 	editor.on("dragover", function(e) {
-		if(!dragStart) {
-    		$("body").trigger("dragover");
+	    if(dragStart) {
+    		// 表示编辑器内在拖动图片, 则停止冒泡
+    		e.preventDefault();
+	    	e.stopPropagation();
     	}
     });
 });
@@ -43215,26 +43223,27 @@ tinymce.PluginManager.add('leanote_code', function(editor, url) {
 		var num = e.which ? e.which : e.keyCode;
     	if (num == 9) { // tab pressed
     		if(!e.shiftKey) {
- 				// ed.execCommand('Indent');
-    			// TODO 如果当前在li, ul, ol下不执行!!
-    			// 如果在pre下就加tab
 	    		// var node = ed.selection.getNode();
 	    		/*
 				if(node.nodeName == "PRE") {
                     ed.execCommand('mceInsertHTML', false, '\x09'); // inserts tab
 				} else {
 				*/
+				// 如果是在li下的, 就不要控制
+				var node = ed.selection.getNode();
+				if (node && node.nodeName === 'LI') {
+					return true;
+				}
 				ed.insertContent("&nbsp;&nbsp;&nbsp;&nbsp;");
+	            e.preventDefault();
+	            e.stopPropagation();   			
+	            return false;
                 // ed.execCommand('mceInsertHTML', false, "&nbsp;&nbsp;&nbsp;&nbsp;"); // inserts 空格
 				// }
     		} else {
     			// delete 4 个空格
 				// ed.execCommand('Outdent');
     		}
-    		
-            e.preventDefault();
-            e.stopPropagation();   			
-            return false;
        }
 	});
 });/**

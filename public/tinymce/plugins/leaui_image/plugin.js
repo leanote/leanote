@@ -184,7 +184,7 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 				}]
 		});
 	}
-	
+
 	editor.addButton('leaui_image', {
 		icon: 'image',
 		tooltip: 'Insert/edit image',
@@ -199,19 +199,28 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 		context: 'insert',
 		prependToContext: true
 	});
-	
+
 	// 为解决在editor里拖动图片问题
 	// 2014/7/8 21:43 浮躁的一天终有收获
+	// 2015/10/16
+	// TODO 如果把编辑器内的图片拖到外面去, 还是会出现drop images to here
     var dragStart = false;
     editor.on("dragstart", function(e) {
+    	// readonly时不让drag图片
+    	if (LEA.readOnly) {
+	    	e.preventDefault();
+	    	e.stopPropagation();
+    	}
     	dragStart = true;
     });
     editor.on("dragend", function(e) {
     	dragStart = false;
     });
 	editor.on("dragover", function(e) {
-		if(!dragStart) {
-    		$("body").trigger("dragover");
+	    if(dragStart) {
+    		// 表示编辑器内在拖动图片, 则停止冒泡
+    		e.preventDefault();
+	    	e.stopPropagation();
     	}
     });
 });

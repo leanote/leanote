@@ -79,7 +79,7 @@ define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function(){
 			var imgElm;
 			// 先显示loading...
 			d.id = '__mcenew' + (i++);
-			d.src = "http://leanote.com/images/loading-24.gif";
+			d.src = "/images/loading-24.gif";
 			imgElm = dom.createHTML('img', d);
 			tinymce.activeEditor.insertContent(imgElm);
 			imgElm = dom.get(d.id);
@@ -147,7 +147,7 @@ define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function(){
 	        // This function is called when a file is added to the queue;
 	        // either via the browse button, or via drag/drop:
 	        add: function(e, data) {
-	            var tpl = $('<li><div class="alert alert-info"><img class="loader" src="/tinymce/plugins/leaui_image/public/images/ajax-loader.gif"> <a class="close" data-dismiss="alert">×</a></div></li>');
+	            var tpl = $('<li><div class="alert alert-info"><img class="loader" src="/public/album/images/ajax-loader.gif"> <a class="close" data-dismiss="alert">×</a></div></li>');
 	
 	            // Append the file name and file size
 	            tpl.find('div').append(data.files[0].name + ' <small>[<i>' + formatFileSize(data.files[0].size) + '</i>]</small>');
@@ -170,7 +170,7 @@ define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function(){
 	            } else {
 	                data.context.empty();
 	                var tpl = $('<li><div class="alert alert-danger"><a class="close" data-dismiss="alert">×</a></div></li>');
-	                tpl.find('div').append('<b>Error:</b> ' + data.files[0].name + ' <small>[<i>' + formatFileSize(data.files[0].size) + '</i>]</small> ' + data.result.Msg);
+	                tpl.find('div').append('<b>' + getMsg('Error') + ':</b> ' + data.files[0].name + ' <small>[<i>' + formatFileSize(data.files[0].size) + '</i>]</small> ' + data.result.Msg);
 	                data.context.append(tpl);
 	                setTimeout((function(tpl) {
 	                	return function() {
@@ -183,7 +183,7 @@ define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function(){
 	        fail: function(e, data) {
 	            data.context.empty();
 	            var tpl = $('<li><div class="alert alert-danger"><a class="close" data-dismiss="alert">×</a></div></li>');
-	            tpl.find('div').append('<b>Error:</b> ' + data.files[0].name + ' <small>[<i>' + formatFileSize(data.files[0].size) + '</i>]</small> ' + data.errorThrown);
+	            tpl.find('div').append('<b>' + getMsg('Error') + ':</b> ' + data.files[0].name + ' <small>[<i>' + formatFileSize(data.files[0].size) + '</i>]</small> ' + data.errorThrown);
 	            data.context.append(tpl);
 	            setTimeout((function(tpl) {
 	                	return function() {
@@ -224,7 +224,7 @@ define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function(){
 	    function hideUpload() {
 	    	$("#upload").css("z-index", 0).css("top", "auto").hide();
 	    }
-	    
+
 	    // drag css
 		$(document).bind('dragover', function (e) {
 		    var dropZone = $('#drop'),
@@ -247,14 +247,21 @@ define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function(){
 		    } while (node != null);
 		    if (found) {
 		        dropZone.addClass('hover');
+		        
+		        // 如果在只读状态, 转换之
+			    if (LEA.readOnly) {
+			    	LEA.toggleWriteable();
+			    }
+			    
 		    } else {
 		        dropZone.removeClass('hover');
 		    }
+		    
 		    window.dropZoneTimeout = setTimeout(function () {
 		        window.dropZoneTimeout = null;
 		        dropZone.removeClass('in hover');
 		        hideUpload();
-		    }, 100);
+		    }, 500);
 		});
 	};
 
