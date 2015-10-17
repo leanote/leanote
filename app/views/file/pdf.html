@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{.title}}</title>
+<link href="/css/bootstrap.css" rel="stylesheet">
+<link id="styleLink" href="/css/pdf.css" rel="stylesheet">
+<style>
+body {
+	margin-top: 30px;
+}
+table {
+    margin-bottom: 16px;
+}
+table th, table td {
+    padding: 6px 13px;
+    border: 1px solid #ddd;
+}
+table th {
+    font-weight: bold;
+}
+
+table tr {
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+}
+table tr:nth-child(2n) {
+    background-color: #f8f8f8;
+}
+.mce-item-table, .mce-item-table td, .mce-item-table th, .mce-item-table caption {
+	border: 1px solid #ddd;
+	border-collapse: collapse;
+	padding: 6px 13px;
+}
+</style>
+</head>
+<body>
+<div id="content">
+	<h1 class="title tex2jax_ignore">
+		{{if .blog.Title}}
+			{{.blog.Title}}
+		{{else}}
+			Untitled
+		{{end}}
+	</h1>
+	<div class="created-time">
+	<!--
+		{{ if .userBlog.Logo}}
+			<img src="{{.userBlog.Logo}}" id="logo">
+		{{else}}
+			<img src="{{$.siteUrl}}/images/blog/default_avatar.png" id="logo">
+		{{end}}
+		{{.userInfo.Username}}
+	-->
+		{{if .blog.Tags}}
+			<img src="{{$.siteUrl}}/images/blog/tag.png" id="tag">
+			{{blogTagsForExport $ .blog.Tags}}
+		{{end}}
+	</div>
+	
+	<div class="desc">
+		{{if .blog.IsMarkdown }}
+			<div id="markdownContent" style="display: none">
+				<!-- 用textarea装html, 防止得到的值失真 -->
+				<textarea>
+				{{.content | raw}}
+				</textarea>
+			</div>
+			<div id="parsedContent">
+			</div>
+		{{else}}
+				{{.content | raw}}
+		{{end}}
+	</div>
+</div>
+
+<!--
+<div id="footer">
+	<p class="split"></p>
+	<a href="http://leanote.com"><img src="{{.siteUrl}}/images/logo/leanote_icon_blue.png" id="leanote_logo"/></a>
+	<p>
+		<a href="http://leanote.com">Leanote</a>
+		<br />
+		<a href="http://leanote.com/service">Upgrade Account</a>
+	</p>
+</div>
+-->
+
+<script src="{{.siteUrl}}/js/jquery-1.9.0.min.js"></script>
+
+<link href="{{.siteUrl}}/public/mdeditor/editor/google-code-prettify/prettify.css" type="text/css" rel="stylesheet">
+<script src="{{.siteUrl}}/public/mdeditor/editor/google-code-prettify/prettify.js"></script>
+
+<script>
+function ok() {
+	setTimeout(function() {
+		window.status = 'done';
+	}, 0);
+}
+</script>
+
+{{if not .blog.IsMarkdown }}
+<script>
+$("pre").addClass("prettyprint");
+prettyPrint();
+ok();
+</script>
+{{end}}
+
+{{if .blog.IsMarkdown }}
+<script src="/public/libs/md2html/md2html_for_export.js"></script>
+<script>
+var content = $.trim($("#markdownContent textarea").val());
+md2Html(content, $("#parsedContent"), function(html) {
+    $("pre").addClass("prettyprint");
+    prettyPrint();
+    ok();
+});
+</script>
+{{end}}
+</body>
+</html>

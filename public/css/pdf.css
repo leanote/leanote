@@ -1,8 +1,4 @@
 @font-face {
-  font-family: Si;
-  src: url("/public/fonts/MSYH.TTF");
-}
-@font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 300;
@@ -28,14 +24,14 @@
 }
 *,
 body {
-  font-family: Si, 'Microsoft YaHei', 'WenQuanYi Micro Hei', 'Helvetica Neue', Arial, 'Hiragino Sans GB';
+  font-family: 'Microsoft YaHei', 'WenQuanYi Micro Hei', 'Helvetica Neue', Arial, 'Hiragino Sans GB';
   font-weight: 300;
   font-size: 14px;
 }
 h1,
 h2,
 h3 {
-  font-family: Si, 'Microsoft YaHei', 'WenQuanYi Micro Hei', 'Helvetica Neue', Arial, 'Hiragino Sans GB';
+  font-family: 'Microsoft YaHei', 'WenQuanYi Micro Hei', 'Helvetica Neue', Arial, 'Hiragino Sans GB';
 }
 * {
   font-size: 16px;

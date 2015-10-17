@@ -2,17 +2,20 @@ package controllers
 
 import (
 	"github.com/revel/revel"
-//	"encoding/json"
-	"gopkg.in/mgo.v2/bson"
-	. "github.com/leanote/leanote/app/lea"
+	//	"encoding/json"
 	"github.com/leanote/leanote/app/info"
+	. "github.com/leanote/leanote/app/lea"
+	"gopkg.in/mgo.v2/bson"
+	"os"
+	"os/exec"
+	"regexp"
 	"strings"
-//	"time"
-//	"github.com/leanote/leanote/app/types"
-//	"io/ioutil"
-//	"fmt"
-//	"bytes"
-//	"os"
+	"time"
+	"fmt"
+	//	"github.com/leanote/leanote/app/types"
+	//	"io/ioutil"
+	//	"bytes"
+	//	"os"
 )
 
 type Note struct {
@@ -291,6 +294,165 @@ func (c Note) SearchNote(key string) revel.Result {
 func (c Note) SearchNoteByTags(tags []string) revel.Result {
 	_, blogs := noteService.SearchNoteByTags(tags, c.GetUserId(), c.GetPage(), pageSize, "UpdatedTime", false)
 	return c.RenderJson(blogs)
+}
+
+// 生成PDF
+func (c Note) ToPdf(noteId, appKey string) revel.Result {
+	// 虽然传了cookie但是这里还是不能得到userId, 所以还是通过appKey来验证之
+	appKeyTrue, _ := revel.Config.String("app.secret")
+	if appKeyTrue != appKey {
+		return c.RenderText("error")
+	}
+	note := noteService.GetNoteById(noteId)
+	if note.NoteId == "" {
+		return c.RenderText("error")
+	}
+
+	noteUserId := note.UserId.Hex()
+	content := noteService.GetNoteContent(noteId, noteUserId)
+	userInfo := userService.GetUserInfo(noteUserId)
+
+	//------------------
+	// 将content的图片转换为base64
+	contentStr := content.Content
+	
+	siteUrlPattern := configService.GetSiteUrl()
+	if strings.Contains(siteUrlPattern, "https") {
+		siteUrlPattern = strings.Replace(siteUrlPattern, "https", "https*", 1)
+	} else {
+		siteUrlPattern = strings.Replace(siteUrlPattern, "http", "https*", 1)
+	}
+	
+	regImage, _ := regexp.Compile(`<img .*?(src=('|")` + siteUrlPattern + `/(file/outputImage|api/file/getImage)\?fileId=([a-z0-9A-Z]{24})("|'))`)
+
+	findsImage := regImage.FindAllStringSubmatch(contentStr, -1) // 查找所有的
+	//	[<img src="http://leanote.com/api/getImage?fileId=3354672e8d38f411286b000069" alt="" width="692" height="302" data-mce-src="http://leanote.com/file/outputImage?fileId=54672e8d38f411286b000069" src="http://leanote.com/file/outputImage?fileId=54672e8d38f411286b000069" " file/outputImage 54672e8d38f411286b000069 "]
+	for _, eachFind := range findsImage {
+		if len(eachFind) == 6 {
+			fileId := eachFind[4]
+			// 得到base64编码文件
+			fileBase64 := fileService.GetImageBase64(noteUserId, fileId)
+			if fileBase64 == "" {
+				continue
+			}
+
+			// 1
+			// src="http://leanote.com/file/outputImage?fileId=54672e8d38f411286b000069"
+			allFixed := strings.Replace(eachFind[0], eachFind[1], "src=\""+fileBase64+"\"", -1)
+			contentStr = strings.Replace(contentStr, eachFind[0], allFixed, -1)
+		}
+	}
+
+	// markdown
+	if note.IsMarkdown {
+		// ![enter image description here](url)
+		regImageMarkdown, _ := regexp.Compile(`!\[.*?\]\(` + siteUrlPattern + `/(file/outputImage|api/file/getImage)\?fileId=([a-z0-9A-Z]{24})\)`)
+		findsImageMarkdown := regImageMarkdown.FindAllStringSubmatch(contentStr, -1) // 查找所有的
+		for _, eachFind := range findsImageMarkdown {
+			if len(eachFind) == 3 {
+				fileId := eachFind[2]
+				// 得到base64编码文件
+				fileBase64 := fileService.GetImageBase64(noteUserId, fileId)
+				if fileBase64 == "" {
+					continue
+				}
+
+				// 1
+				// src="http://leanote.com/file/outputImage?fileId=54672e8d38f411286b000069"
+				allFixed := "![](" + fileBase64 + ")"
+				contentStr = strings.Replace(contentStr, eachFind[0], allFixed, -1)
+			}
+		}
+	}
+
+	if note.Tags != nil && len(note.Tags) > 0 && note.Tags[0] != "" {
+	} else {
+		note.Tags = nil
+	}
+	c.RenderArgs["blog"] = note
+	c.RenderArgs["content"] = contentStr
+	c.RenderArgs["userInfo"] = userInfo
+	userBlog := blogService.GetUserBlog(noteUserId)
+	c.RenderArgs["userBlog"] = userBlog
+
+	return c.RenderTemplate("file/pdf.html")
+}
+
+// 导出成PDF
+func (c Note) ExportPdf(noteId string) revel.Result {
+	re := info.NewRe()
+	userId := c.GetUserId()
+	note := noteService.GetNoteById(noteId)
+	if note.NoteId == "" {
+		re.Msg = "No Note"
+		return c.RenderText("error")
+	}
+
+	noteUserId := note.UserId.Hex()
+	// 是否有权限
+	if noteUserId != userId {
+		// 是否是有权限协作的
+		if !note.IsBlog && !shareService.HasReadPerm(noteUserId, userId, noteId) {
+			re.Msg = "No Perm"
+			return c.RenderText("error")
+		}
+	}
+
+	// path 判断是否需要重新生成之
+	guid := NewGuid()
+	fileUrlPath := "files/" + Digest3(noteUserId) + "/" + noteUserId + "/" + Digest2(guid) + "/images/pdf"
+	dir := revel.BasePath + "/" + fileUrlPath
+	if !MkdirAll(dir) {
+		return c.RenderText("error, no dir")
+	}
+	filename := guid + ".pdf"
+	path := dir + "/" + filename
+
+	// leanote.com的secret
+	appKey, _ := revel.Config.String("app.secretLeanote")
+	if appKey == "" {
+		appKey, _ = revel.Config.String("app.secret")
+	}
+	
+	// 生成之
+	binPath := configService.GetGlobalStringConfig("exportPdfBinPath")
+	// 默认路径
+	if binPath == "" {
+		binPath = "/usr/local/bin/wkhtmltopdf"
+	}
+
+	url := configService.GetSiteUrl() + "/note/toPdf?noteId=" + noteId + "&appKey=" + appKey
+	//	cc := binPath + " --no-stop-slow-scripts --javascript-delay 10000 \"" + url + "\"  \"" + path + "\"" //  \"" + cookieDomain + "\" \"" + cookieName + "\" \"" + cookieValue + "\""
+	//	cc := binPath + " \"" + url + "\"  \"" + path + "\"" //  \"" + cookieDomain + "\" \"" + cookieName + "\" \"" + cookieValue + "\""
+	// 等待--window-status为done的状态
+	// http://madalgo.au.dk/~jakobt/wkhtmltoxdoc/wkhtmltopdf_0.10.0_rc2-doc.html
+	// wkhtmltopdf参数大全
+	var cc string
+	if note.IsMarkdown {
+		cc = binPath + " --window-status done \"" + url + "\"  \"" + path + "\"" //  \"" + cookieDomain + "\" \"" + cookieName + "\" \"" + cookieValue + "\""
+	} else {
+		cc = binPath + " \"" + url + "\"  \"" + path + "\"" //  \"" + cookieDomain + "\" \"" + cookieName + "\" \"" + cookieValue + "\""
+	}
+
+	cmd := exec.Command("/bin/sh", "-c", cc)
+	_, err := cmd.Output()
+	if err != nil {
+		return c.RenderText("export pdf error. " + fmt.Sprintf("%v", err))
+	}
+	file, err := os.Open(path)
+	if err != nil {
+		return c.RenderText("export pdf error. " + fmt.Sprintf("%v", err))
+	}
+	// http://stackoverflow.com/questions/8588818/chrome-pdf-display-duplicate-headers-received-from-the-server
+	//	filenameReturn = strings.Replace(filenameReturn, ",", "-", -1)
+	filenameReturn := note.Title
+	filenameReturn = FixFilename(filenameReturn)
+	if filenameReturn == "" {
+		filenameReturn = "Untitled.pdf"
+	} else {
+		filenameReturn += ".pdf"
+	}
+	return c.RenderBinary(file, filenameReturn, revel.Attachment, time.Now()) // revel.Attachment
 }
 
 // 设置/取消Blog; 置顶

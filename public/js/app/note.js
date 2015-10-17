@@ -1096,6 +1096,12 @@ Note.download = function(url, params) {
 	$('<form target="mdImageManager" action="' + url + '" method="GET">' + inputs + '</form>').appendTo('body').submit().remove();
 };
 
+// 导出成PDF
+Note.exportPDF = function(target) {
+	var noteId = $(target).attr("noteId");
+	$('<form target="mdImageManager" action="/note/exportPdf" method="GET"><input name="noteId" value="' + noteId + '"/></form>').appendTo('body').submit().remove();
+};
+
 //--------------
 // read only
 
@@ -1406,7 +1412,6 @@ Note.toggleReadOnly = function() {
 	}
 
 	note.readOnly = true;
-	Note.readOnly = true;
 };
 // 切换到编辑模式
 LEA.toggleWriteable = Note.toggleWriteable = function() {
@@ -1504,6 +1509,9 @@ Note.initContextmenu = function() {
 			{ type: "splitLine" },
 			{ text: getMsg("publicAsBlog"), alias: 'set2Blog', faIcon: "fa-bold", action: Note.setNote2Blog },
 			{ text: getMsg("cancelPublic"), alias: 'unset2Blog', faIcon: "fa-undo", action: Note.setNote2Blog },
+			{ type: "splitLine" },
+			// { text: "分享到社区", alias: 'html2Image', icon: "", action: Note.html2Image},
+			{ text: getMsg("exportPdf"), alias: 'exportPDF', faIcon: "fa-file-pdf-o", action: Note.exportPDF},
 			{ type: "splitLine" },
 			{ text: getMsg("delete"), icon: "", faIcon: "fa-trash-o", action: Note.deleteNote },
 			{ text: getMsg("move"), alias: "move", faIcon: "fa-arrow-right",

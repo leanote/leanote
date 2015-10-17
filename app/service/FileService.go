@@ -1,14 +1,18 @@
 package service
 
 import (
+	"encoding/base64"
+	"fmt"
+	"github.com/leanote/leanote/app/db"
+	"github.com/leanote/leanote/app/info"
 	. "github.com/leanote/leanote/app/lea"
 	"github.com/revel/revel"
-	"github.com/leanote/leanote/app/info"
-	"github.com/leanote/leanote/app/db"
 	"gopkg.in/mgo.v2/bson"
-	"time"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"strings"
+	"time"
 )
 
 const DEFAULT_ALBUM_ID = "52d3e8ac99c37b7f0d000001"
@@ -113,6 +117,53 @@ func (this *FileService) DeleteImage(userId, fileId string) (bool, string) {
 // update image title
 func (this *FileService) UpdateImage(userId, fileId, title string) bool {
 	return db.UpdateByIdAndUserIdField(db.Files, fileId, userId, "Title", title)
+}
+
+func (this *FileService) GetFileBase64(userId, fileId string) (str string, mine string) {
+	defer func() { // 必须要先声明defer，否则不能捕获到panic异常
+		if err := recover(); err != nil {
+			fmt.Println(err) // 这里的err其实就是panic传入的内容，55
+		}
+	}()
+
+	path := this.GetFile(userId, fileId)
+
+	if path == "" {
+		return "", ""
+	}
+
+	path = revel.BasePath + "/" + strings.TrimLeft(path, "/")
+
+	ff, err := ioutil.ReadFile(path)
+	if err != nil {
+		return "", ""
+	}
+
+	e64 := base64.StdEncoding
+	maxEncLen := e64.EncodedLen(len(ff))
+	encBuf := make([]byte, maxEncLen)
+
+	e64.Encode(encBuf, ff)
+
+	mime := http.DetectContentType(ff)
+
+	str = string(encBuf)
+	return str, mime
+}
+
+// 得到图片base64, 图片要在之前添加data:image/png;base64,
+func (this *FileService) GetImageBase64(userId, fileId string) string {
+
+	str, mime := this.GetFileBase64(userId, fileId)
+	if str == "" {
+		return ""
+	}
+	switch mime {
+	case "image/gif", "image/jpeg", "image/pjpeg", "image/png", "image/tiff":
+		return fmt.Sprintf("data:%s;base64,%s", mime, str)
+	default:
+	}
+	return "data:image/png;base64," + str
 }
 
 // 获取文件路径
