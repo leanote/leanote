@@ -38,6 +38,8 @@ POST	/findPasswordUpdate							Auth.FindPasswordUpdate
 * /note/copySharedNote Note.CopySharedNote
 * /note/searchNoteByTags Note.SearchNoteByTags
 * /note/setNote2Blog Note.SetNote2Blog
+* /note/exportPdf Note.ExportPDF
+* /note/toPdf Note.ToPdf
 # pjax
 GET     /note/:noteId   	                        Note.Index
 

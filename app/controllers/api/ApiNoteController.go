@@ -9,6 +9,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+	"os/exec"
+	"os"
 	//	"github.com/leanote/leanote/app/types"
 	//	"io/ioutil"
 	//	"fmt"
@@ -580,3 +582,83 @@ func (c ApiNote) GetHistories(noteId string) revel.Result {
 	return c.RenderJson(re)
 }
 */
+
+// 0.2 新增
+// 导出成PDF
+// test localhost:9000/api/note/exportPdf?noteId=554f07bf05fcd15fa9000000&token=562211dc99c37ba6a7000001
+func (c ApiNote) ExportPdf(noteId string) revel.Result {
+	re := info.NewApiRe()
+	userId := c.getUserId()
+	if noteId == "" {
+		re.Msg = "noteNotExists"
+		return c.RenderJson(re)
+	}
+	
+	note := noteService.GetNoteById(noteId)
+	if note.NoteId == "" {
+		re.Msg = "noteNotExists"
+		return c.RenderJson(re)
+	}
+
+	noteUserId := note.UserId.Hex()
+	// 是否有权限
+	if noteUserId != userId {
+		// 是否是有权限协作的
+		if !note.IsBlog && !shareService.HasReadPerm(noteUserId, userId, noteId) {
+			re.Msg = "noteNotExists"
+			return c.RenderJson(re)
+		}
+	}
+
+	// path 判断是否需要重新生成之
+	guid := NewGuid()
+	fileUrlPath := "files/" + Digest3(noteUserId) + "/" + noteUserId + "/" + Digest2(guid) + "/images/pdf"
+	dir := revel.BasePath + "/" + fileUrlPath
+	if !MkdirAll(dir) {
+		re.Msg = "noDir"
+		return c.RenderJson(re)
+	}
+	filename := guid + ".pdf"
+	path := dir + "/" + filename
+
+	appKey, _ := revel.Config.String("app.secretLeanote")
+	if appKey == "" {
+		appKey, _ = revel.Config.String("app.secret")
+	}
+	
+	// 生成之
+	binPath := configService.GetGlobalStringConfig("exportPdfBinPath")
+	// 默认路径
+	if binPath == "" {
+		binPath = "/usr/local/bin/wkhtmltopdf"
+	}
+
+	url := configService.GetSiteUrl() + "/note/toPdf?noteId=" + noteId + "&appKey=" + appKey
+	var cc string
+	if(note.IsMarkdown) {
+		cc = binPath + " --window-status done \"" + url + "\"  \"" + path + "\"" //  \"" + cookieDomain + "\" \"" + cookieName + "\" \"" + cookieValue + "\""
+	} else {
+		cc = binPath + " \"" + url + "\"  \"" + path + "\"" //  \"" + cookieDomain + "\" \"" + cookieName + "\" \"" + cookieValue + "\""
+	}
+	
+	cmd := exec.Command("/bin/sh", "-c", cc)
+	_, err := cmd.Output()
+    if err != nil {
+		re.Msg = "sysError"
+		return c.RenderJson(re)
+	}
+	file, err := os.Open(path)
+	if err != nil {
+		re.Msg = "sysError"
+		return c.RenderJson(re)
+	}
+
+	filenameReturn := note.Title
+	filenameReturn = FixFilename(filenameReturn)
+	if filenameReturn == "" {
+		filenameReturn = "Untitled.pdf"
+	} else {
+		filenameReturn += ".pdf"
+	}
+    return c.RenderBinary(file, filenameReturn, revel.Attachment, time.Now()) // revel.Attachment
+}

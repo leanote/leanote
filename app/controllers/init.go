@@ -48,7 +48,7 @@ var commonUrl = map[string]map[string]bool{"Index": map[string]bool{"Index": tru
 	"FindPasswordUpdate": true,
 	"Suggestion":         true,
 },
-	"Note": map[string]bool{"ToImage": true},
+	"Note": map[string]bool{"ToPdf": true},
 	"Blog": map[string]bool{"Index": true,
 		"View":               true,
 		"AboutMe":            true,
