@@ -365,26 +365,27 @@ tinymce.PluginManager.add('leanote_code', function(editor, url) {
 		var num = e.which ? e.which : e.keyCode;
     	if (num == 9) { // tab pressed
     		if(!e.shiftKey) {
- 				// ed.execCommand('Indent');
-    			// TODO 如果当前在li, ul, ol下不执行!!
-    			// 如果在pre下就加tab
 	    		// var node = ed.selection.getNode();
 	    		/*
 				if(node.nodeName == "PRE") {
                     ed.execCommand('mceInsertHTML', false, '\x09'); // inserts tab
 				} else {
 				*/
+				// 如果是在li下的, 就不要控制
+				var node = ed.selection.getNode();
+				if (node && node.nodeName === 'LI') {
+					return true;
+				}
 				ed.insertContent("&nbsp;&nbsp;&nbsp;&nbsp;");
+	            e.preventDefault();
+	            e.stopPropagation();   			
+	            return false;
                 // ed.execCommand('mceInsertHTML', false, "&nbsp;&nbsp;&nbsp;&nbsp;"); // inserts 空格
 				// }
     		} else {
     			// delete 4 个空格
 				// ed.execCommand('Outdent');
     		}
-    		
-            e.preventDefault();
-            e.stopPropagation();   			
-            return false;
        }
 	});
 });
