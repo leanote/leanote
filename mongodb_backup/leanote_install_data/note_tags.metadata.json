@@ -1,0 +1,1 @@
+{"indexes":[{"v":1,"key":{"_id":1},"name":"_id_","ns":"leanote_bin_test.note_tags"},{"v":1,"key":{"UserId":1,"Tag":1},"name":"UserId_1_Tag_1","ns":"leanote_bin_test.note_tags","background":true},{"v":1,"key":{"UserId":1},"name":"UserId_1","ns":"leanote_bin_test.note_tags","background":true}]}

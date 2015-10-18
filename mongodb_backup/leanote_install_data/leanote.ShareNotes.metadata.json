@@ -1,0 +1,1 @@
+{"indexes":[{"v":1,"key":{"_id":1},"name":"_id_","ns":"leanote_bin_test.leanote.ShareNotes"},{"v":1,"unique":true,"key":{"UserId":1,"ToUserId":1,"NoteId":1},"name":"UserId_1_ToUserId_1_NoteId_1","ns":"leanote_bin_test.leanote.ShareNotes"}]}
