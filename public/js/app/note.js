@@ -1429,6 +1429,9 @@ LEA.toggleWriteable = Note.toggleWriteable = function() {
 		return;
 	}
 	
+	Note.readOnly = false;
+	LEA.readOnly = false;
+
 	if(!note.readOnly) {
 		return;
 	}
@@ -1446,8 +1449,6 @@ LEA.toggleWriteable = Note.toggleWriteable = function() {
 	}
 
 	note.readOnly = false;
-	Note.readOnly = false;
-	LEA.readOnly = false;
 };
 
 Note.getPostUrl = function (note) {

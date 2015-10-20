@@ -373,7 +373,7 @@ tinymce.PluginManager.add('leanote_code', function(editor, url) {
 				*/
 				// 如果是在li下的, 就不要控制
 				var node = ed.selection.getNode();
-				if (node && node.nodeName === 'LI') {
+				if (node && (node.nodeName == 'LI' || $(node.closest('li')).length > 0)) {
 					return true;
 				}
 				ed.insertContent("&nbsp;&nbsp;&nbsp;&nbsp;");
