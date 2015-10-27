@@ -15,6 +15,14 @@ Leanote, Not Just A Notepad!
 * Cooperation: Collaborate with friends to improve your skills.
 * Blog: Publish your knowledge and make Leanote your blog.
 
+**Other Features**
+
+* Support Markdown
+* Writting mode
+* Export note to PDF
+* Note batch operation
+* Custom theme for blog
+
 ## 2. Why we created Leanote
 To be honest, our inspiration comes from Evernote. We use Evernote to manage our knowledge everyday. But we find that:
 * Evernote's editor can't meet our needs, it does not have document navigation, it does not render code properly (as a programmer, syntax highlighted code rendering is a basic need), it cannot resize images and so forth
@@ -24,7 +32,14 @@ To be honest, our inspiration comes from Evernote. We use Evernote to manage our
 
 ## 3. How to install Leanote
 
+Leanote contains: Leanote Web & Server (this repository), [Desktop app](https://github.com/leanote/desktop-app), [iOS](https://github.com/leanote/leanote-ios), [Android](https://github.com/leanote/leanote-android). And all the products are open source!
+
+You can install Leanote on your server, and use Leanote App (Desktop, iOs, Android) to sync notes with your self-hosted server.
+
+Welcome to sign up on https://leanote.com, Leanote team provide a stable and reliable service for you.
+
 More information about how to install Leanote please see:
+
 * [Leanote binary distribution installation tutorial](https://github.com/leanote/leanote/wiki/leanote-binary-distribution-installation-tutorial)
 * [Leanote develop distribution installation tutorial](https://github.com/leanote/leanote/wiki/leanote-develop-distribution-installation-tutorial)
 
@@ -53,6 +68,7 @@ You are always welcomed!
 Support us, [donate us](http://leanote.org/#donate). And thanks [donators](http://leanote.leanote.com/post/leanote-donation-list).
 
 ## 9. Related projects
+
 * [Leanote Desktop App](https://github.com/leanote/desktop-app), [Download](http://app.leanote.com)
 * [Leanote iOS](https://github.com/leanote/leanote-ios), [Download From App Store](https://itunes.apple.com/en/app/leanote/id1022302858?mt=8)
 * [Leanote Android](https://github.com/Dminter/leanote-android-client), development phase
@@ -76,10 +92,18 @@ Leanote, 不只是笔记!
 
 **特性**
 
-* 知识管理: 通过Leanote来管理知识, Leanote有易操作的界面, 包含两款编辑器tinymce和markdown. 在Leanote, 你可以尽情享受写作.
+* 知识管理: 通过Leanote来管理知识, Leanote有易操作的界面, 包含两款编辑器富文本编辑器和Markdown编辑器. 在Leanote, 你可以尽情享受写作.
+* 博客: Leanote也可以作为你的博客, 将知识公开成博客, 让Leanote把你的知识传播的更远!
 * 分享: 你也可以通过分享知识给好友, 让好友拥有你的知识.
 * 协作: 在分享的同时也可以与好友一起协作知识.
-* 博客: Leanote也可以作为你的博客, 将知识公开成博客, 让Leanote把你的知识传播的更远!
+
+**一些其它特性**
+
+* 支持Markdown编辑
+* 写作模式
+* 支持PDF导出
+* 支持批量操作
+* 博客自定义主题, 实现高度定制化
 
 ## 2. 为什么我们要创建Leanote?
 说实话, 我们曾是evernote的忠实粉丝, 但是我们也发现evernote的不足:
@@ -89,7 +113,10 @@ Leanote, 不只是笔记!
 * 还有...
 
 ## 3.安装Leanote
-Leanote是一款私有云笔记, 你可以下载它安装在自己的服务器上, 当然也可以在 http://Leanote.com 上注册.
+
+Leanote云笔记产品包括: Leanote Web & Server(即本仓库), 桌面客户端, ios, android. 4端全部开源! 你可以下载它安装在自己的服务器上, Leanote的客户端可以连接自建的服务.
+
+欢迎在 https://leanote.com 上注册, Leanote团队为你提供稳定可靠的服务.
 
 这里详细整理了Leanote二进版和Leanote开发版的安装教程, 请移步至:
 
@@ -110,7 +137,8 @@ Leanote是一款私有云笔记, 你可以下载它安装在自己的服务器�
 更多文档请查看 [wiki](https://github.com/leanote/leanote/wiki).
 
 ## 6. 贡献者
-多谢 [贡献者](https://github.com/leanote/leanote/graphs/contributors) 的贡献, leanote因有你们而更完美!
+
+谢谢 [贡献者](https://github.com/leanote/leanote/graphs/contributors) 的贡献, Leanote因有你们而更完美!
 
 ## 7. 加入我们
 
