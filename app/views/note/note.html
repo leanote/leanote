@@ -83,6 +83,8 @@ function log(o) {
 						</a>
 						<span class="for-split"> - </span>
 						<span id="curNotebookForNewNote" notebookId=""></span>
+
+						<!--
 						<div class="dropdown" style="display: inline-block">
 							<a class="ios7-a dropdown-toggle"
 								id="listNotebookDropdownMenu" data-toggle="dropdown"> 
@@ -94,6 +96,8 @@ function log(o) {
 								</ul>
 							</div>
 						</div>
+						-->
+
 					</div>
 					
 					<!-- 只为新建别人的笔记 -->
@@ -104,12 +108,14 @@ function log(o) {
 							<span class="new-note-text-abbr">{{msg . "new"}}</span>
 						</a>
 						<span class="new-split">|</span>
-						<a id="newShareNoteMarkdownBtn" class="new-note" title="{{msg . "newMarkdown"}}">
+						<a id="newShareNoteMarkdownBtn" class="new-note new-markdown" title="{{msg . "newMarkdown"}}">
 							<span class="new-markdown-text">{{msg . "newMarkdown"}}</span>
 							<span class="new-markdown-text-abbr">Md</span>
 						</a>
 						<span class="for-split"> - </span>
 						<span id="curNotebookForNewSharedNote" notebookId="" userId=""></span>
+
+						<!--
 						<div class="dropdown" style="display: inline-block">
 							<a id="listShareNotebookDropdownMenu" class="ios7-a dropdown-toggle" data-toggle="dropdown"> 
 								<i class="fa fa-angle-down"></i>
@@ -118,6 +124,7 @@ function log(o) {
 								<ul id="notebookNavForNewSharedNote"></ul>
 							</div>
 						</div>
+						-->
 					</div>				
 				</div>
 				
@@ -420,12 +427,13 @@ function log(o) {
 					
 					<!-- 遮罩, 为了resize3Columns用 -->
 					<div id="noteMask" class="note-mask"></div>
-					<div id="noteMaskForLoading" class="note-mask">
+					<div id="noteMaskForLoading" class="note-mask"> <!-- z-index: 11 --> 
 						<img src="/images/loading-24.gif"/>
 						<br />
 						loading...
 					</div>
-					<div id="editorMask">
+					<!-- for tips -->
+					<div id="editorMask"> <!-- z-index: 10 --> 
 						{{msg . "noNoteNewNoteTips"}}
 						<br />
 						<br />
@@ -437,6 +445,16 @@ function log(o) {
 							{{msg . "canntNewNoteTips"}}
 						</div>
 					</div>
+
+					<div id="batchMask" class="note-mask"> <!-- z-index: 99 --> 
+						<div class="batch-ctn" id="batchCtn"></div>
+						<div class="batch-info">
+							{{leaMsg . "<span></span> notes selected"}}
+							<p><i class="fa fa-cog"></i></p>
+						</div>
+					</div>
+					
+
 					<div id="noteTop">
 						<!-- 左侧放tag, 右侧放按钮, 比如save, info, move, delete -->
 						<div id="tool" class="clearfix">
@@ -842,7 +860,6 @@ function log(o) {
 
 <script>
 var LEA = {};
-LEA.s1 = new Date();
 LEA.locale = "{{.locale}}";
 var UrlPrefix = '{{.siteUrl}}';
 var UserInfo = {{.userInfo|jsonJs}};
@@ -872,7 +889,6 @@ var tinyMCEPreInit = {base: '/public/tinymce', suffix: '.min'};
 
 
 <script src="/js/app.min.js"></script>
-
 <script>
 initPage();
 // 当tinymce.dev.js时, 请注释require
@@ -886,6 +902,5 @@ window.require = {
 
 
 <script src="/public/js/plugins/main.min.js"></script>
-
 </body>
 </html>
