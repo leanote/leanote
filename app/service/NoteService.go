@@ -664,11 +664,11 @@ func (this *NoteService) CopyNote(noteId, notebookId, userId string) info.Note {
 		note.NotebookId = bson.ObjectIdHex(notebookId)
 		
 		noteContent.NoteId = note.NoteId
-		this.AddNoteAndContent(note, noteContent, note.UserId);
-		
+		note = this.AddNoteAndContent(note, noteContent, note.UserId);
+
 		// 更新blog状态
 		isBlog := this.updateToNotebookBlog(note.NoteId.Hex(), notebookId, userId)
-		
+
 		// recount
 		notebookService.ReCountNotebookNumberNotes(notebookId)
 		
@@ -683,16 +683,15 @@ func (this *NoteService) CopyNote(noteId, notebookId, userId string) info.Note {
 // 复制别人的共享笔记给我
 // 将别人可用的图片转为我的图片, 复制图片
 func (this *NoteService) CopySharedNote(noteId, notebookId, fromUserId, myUserId string) info.Note {
-	// Log(shareService.HasSharedNote(noteId, myUserId) || shareService.HasSharedNotebook(noteId, myUserId, fromUserId))
 	// 判断是否共享了给我
-	if notebookService.IsMyNotebook(notebookId, myUserId) && 
-		(shareService.HasSharedNote(noteId, myUserId) || shareService.HasSharedNotebook(noteId, myUserId, fromUserId)) {
+	// Log(notebookService.IsMyNotebook(notebookId, myUserId))
+	if notebookService.IsMyNotebook(notebookId, myUserId) && shareService.HasReadPerm(fromUserId, myUserId, noteId) {
 		note := this.GetNote(noteId, fromUserId)
 		if note.NoteId == "" {
 			return info.Note{}
 		}
 		noteContent := this.GetNoteContent(noteId, fromUserId)
-		
+
 		// 重新生成noteId
 		note.NoteId = bson.NewObjectId();
 		note.NotebookId = bson.ObjectIdHex(notebookId)

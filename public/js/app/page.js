@@ -58,7 +58,7 @@ editorMode.prototype.changeMode = function(isWritingMode) {
 	} else {
 		this.normalMode();
 	}
-}
+};
 
 editorMode.prototype.resizeEditor = function() {
 	// css还没渲染完
@@ -93,13 +93,18 @@ editorMode.prototype.normalMode = function() {
 	
 	$("#noteList").width(UserInfo.NoteListWidth);
 	$("#note").css("left", UserInfo.NoteListWidth);
-}
+
+	this.isWritingMode = false;
+};
 
 editorMode.prototype.writtingMode = function() {
+	if (Note.inBatch) {
+		return;
+	}
 	if(this.$themeLink.attr('href').indexOf('writting-overwrite.css') == -1) {
 		this.$themeLink.attr("href", "/css/theme/writting-overwrite.css");
 	}
-	
+
 	/*
 	setTimeout(function() {
 		var $c = $("#editorContent_ifr").contents();
@@ -126,7 +131,9 @@ editorMode.prototype.writtingMode = function() {
 	
 	// 切换到写模式
 	Note.toggleWriteable();
-}
+
+	this.isWritingMode = true;
+};
 
 editorMode.prototype.getWritingCss = function() {
 	if(this.isWritingMode) {
@@ -681,8 +688,13 @@ function scrollTo(self, tagName, text) {
 	// 主题
 	$("#themeForm").on("click", "input", function(e) {
 		var val = $(this).val();
-		$("#themeLink").attr("href", "/css/theme/" + val + ".css");
-		
+		var preHref = $("#themeLink").attr("href"); // default.css?id=7
+		var arr = preHref.split('=');
+		var id = 1;
+		if (arr.length == 2) {
+			id = arr[1];
+		}
+		$("#themeLink").attr("href", "/css/theme/" + val + ".css?id=" + id);
 		ajaxPost("/user/updateTheme", {theme: val}, function(re) {
 			if(reIsOk(re)) {
 				UserInfo.Theme = val
@@ -799,6 +811,9 @@ function scrollTo(self, tagName, text) {
 	
 	if (UserInfo.LeftIsMin) {
 		minLeft(false);
+	}
+	else {
+		maxLeft(false);
 	}
 	
 	// end
@@ -1104,7 +1119,6 @@ LeaAce = {
 					return function() {
 						pre.find('.toggle-raw').remove();
 						var value = pre.html();
-						log(value);
 						value = value.replace(/ /g, "&nbsp;").replace(/\<br *\/*\>/gi,"\n").replace(/</g, '&lt;').replace(/>/g, '&gt;');
 						pre.html(value);
 						var id = pre.attr('id');

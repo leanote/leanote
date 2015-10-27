@@ -25,6 +25,12 @@ type TrashService struct {
 // 应该放在回收站里
 // 有trashService
 func (this *TrashService) DeleteNote(noteId, userId string) bool {
+	note := noteService.GetNote(noteId, userId);
+	// 如果是垃圾, 则彻底删除
+	if (note.IsTrash) {
+		return this.DeleteTrash(noteId, userId)
+	}
+
 	// 首先删除其共享
 	if shareService.DeleteShareNoteAll(noteId, userId) {
 		// 更新note isTrash = true
@@ -36,13 +42,15 @@ func (this *TrashService) DeleteNote(noteId, userId string) bool {
 			return true
 		}
 	}
+	
 	return false
 }
 
 // 删除别人共享给我的笔记
 // 先判断我是否有权限, 笔记是否是我创建的
-func (this *TrashService) DeleteSharedNote(noteId, userId, myUserId string) bool {
-	note := noteService.GetNote(noteId, userId)
+func (this *TrashService) DeleteSharedNote(noteId, myUserId string) bool {
+	note := noteService.GetNoteById(noteId)
+	userId := note.UserId.Hex()
 	if shareService.HasUpdatePerm(userId, myUserId, noteId) && note.CreatedUserId.Hex() == myUserId {
 		return db.UpdateByIdAndUserId(db.Notes, noteId, userId, bson.M{"$set": bson.M{"IsTrash": true, "Usn": userService.IncrUsn(userId)}})
 	}
