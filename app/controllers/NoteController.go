@@ -259,28 +259,59 @@ func (c Note) UpdateNoteOrContent(noteOrContent NoteOrContent) revel.Result {
 
 // 删除note/ 删除别人共享给我的笔记
 // userId 是note.UserId
-func (c Note) DeleteNote(noteId, userId string, isShared bool) revel.Result {
-	if(!isShared) {
-		return c.RenderJson(trashService.DeleteNote(noteId, c.GetUserId()));
+func (c Note) DeleteNote(noteIds []string, isShared bool) revel.Result {
+	if !isShared {
+		for _, noteId := range noteIds {
+			trashService.DeleteNote(noteId, c.GetUserId())
+		}
+		return c.RenderJson(true)
 	}
-	
-	return c.RenderJson(trashService.DeleteSharedNote(noteId, userId, c.GetUserId()));
+
+	for _, noteId := range noteIds {
+		trashService.DeleteSharedNote(noteId, c.GetUserId())
+	}
+
+	return c.RenderJson(true)
 }
-// 删除trash
+
+// 删除trash, 已弃用, 用DeleteNote
 func (c Note) DeleteTrash(noteId string) revel.Result {
-	return c.RenderJson(trashService.DeleteTrash(noteId, c.GetUserId()));
+	return c.RenderJson(trashService.DeleteTrash(noteId, c.GetUserId()))
 }
+
 // 移动note
-func (c Note) MoveNote(noteId, notebookId string) revel.Result {
-	return c.RenderJson(noteService.MoveNote(noteId, notebookId, c.GetUserId()));
+func (c Note) MoveNote(noteIds []string, notebookId string) revel.Result {
+	userId := c.GetUserId()
+	for _, noteId := range noteIds {
+		noteService.MoveNote(noteId, notebookId, userId)
+	}
+	return c.RenderJson(true)
 }
+
 // 复制note
-func (c Note) CopyNote(noteId, notebookId string) revel.Result {
-	return c.RenderJson(noteService.CopyNote(noteId, notebookId, c.GetUserId()));
+func (c Note) CopyNote(noteIds []string, notebookId string) revel.Result {
+	copyNotes := make([]info.Note, len(noteIds))
+	userId := c.GetUserId()
+	for i, noteId := range noteIds {
+		copyNotes[i] = noteService.CopyNote(noteId, notebookId, userId)
+	}
+	re := info.NewRe()
+	re.Ok = true
+	re.Item = copyNotes
+	return c.RenderJson(re)
 }
+
 // 复制别人共享的笔记给我
-func (c Note) CopySharedNote(noteId, notebookId, fromUserId string) revel.Result {
-	return c.RenderJson(noteService.CopySharedNote(noteId, notebookId, fromUserId, c.GetUserId()));
+func (c Note) CopySharedNote(noteIds []string, notebookId, fromUserId string) revel.Result {
+	copyNotes := make([]info.Note, len(noteIds))
+	userId := c.GetUserId()
+	for i, noteId := range noteIds {
+		copyNotes[i] = noteService.CopySharedNote(noteId, notebookId, fromUserId, userId)
+	}
+	re := info.NewRe()
+	re.Ok = true
+	re.Item = copyNotes
+	return c.RenderJson(re)
 }
 
 //------------
@@ -290,6 +321,7 @@ func (c Note) SearchNote(key string) revel.Result {
 	_, blogs := noteService.SearchNote(key, c.GetUserId(), c.GetPage(), pageSize, "UpdatedTime", false, false)
 	return c.RenderJson(blogs)
 }
+
 // 通过tags搜索
 func (c Note) SearchNoteByTags(tags []string) revel.Result {
 	_, blogs := noteService.SearchNoteByTags(tags, c.GetUserId(), c.GetPage(), pageSize, "UpdatedTime", false)
@@ -456,7 +488,9 @@ func (c Note) ExportPdf(noteId string) revel.Result {
 }
 
 // 设置/取消Blog; 置顶
-func (c Note) SetNote2Blog(noteId string, isBlog, isTop bool) revel.Result {
-	re := noteService.ToBlog(c.GetUserId(), noteId, isBlog, isTop)
-	return c.RenderJson(re)
+func (c Note) SetNote2Blog(noteIds []string, isBlog, isTop bool) revel.Result {
+	for _, noteId := range noteIds {
+		noteService.ToBlog(c.GetUserId(), noteId, isBlog, isTop)
+	}
+	return c.RenderJson(true)
 }

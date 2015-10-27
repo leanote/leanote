@@ -180,20 +180,22 @@ LEA.cmroot = 1;
             pos.left = (pos.left + width + mwidth > bwidth) ? (pos.left - mwidth < 0 ? 0 : pos.left - mwidth) : pos.left + width;
             pos.top = (pos.top + mheight > bheight) ? (pos.top - mheight + (width > 0 ? 25 : 0) < 0 ? 0 : pos.top - mheight + (width > 0 ? 25 : 0)) : pos.top;
             $(this).css(pos).show().css("max-height", bheight);
+
             showGroups.push(this.gidx);
         };
+
         //to hide menu
         var hideMenuPane = function() {
             var alias = null;
+
+            // console.log('showGroups: ' + showGroups.length)
             for (var i = showGroups.length - 1; i >= 0; i--) {
                 if (showGroups[i] == this.gidx)
                     break;
                 alias = showGroups.pop();
                 groups[alias].style.display = "none";
                 mitems[alias] && (mitems[alias].className = "b-m-item");
-                
-            } //Endfor
-            //CollectGarbage();
+            }
         };
         function applyRule(rule) {
         	/*
@@ -216,19 +218,17 @@ LEA.cmroot = 1;
 
         /* to show menu  */
         function showMenu(e, menutarget) {
+            // 先隐藏之前的
+            hideMenuPane();
+            removeContextmenuClass();
+
             target = menutarget;
             showMenuGroup.call(groups[cmroot], { left: e.pageX, top: e.pageY }, 0);
-            // life
-            if(!$(target).hasClass("item-active")) {
-	            $(target).addClass("contextmenu-hover");
+
+            // 在该target上添加contextmenu-hover
+            if(target && !$(target).hasClass("item-active")) {
+                $(target).addClass("contextmenu-hover");
             }
-            
-            // life , 之前是mousedown
-            $(document).one('click', function() {
-            	hideMenuPane();
-            	// life
-	            $(target).removeClass("contextmenu-hover");
-            })
         }
         
         // 初始化
@@ -263,7 +263,17 @@ LEA.cmroot = 1;
         var me = $(option.parent).on('contextmenu', option.children, function(e){ 
         	onShowMenu.call(this, e);
         });
-        
+
+        function removeContextmenuClass() {
+            Note.$itemList.find('li').removeClass('contextmenu-hover');
+        }
+
+        // life , 之前是document, 绑定document即使stopPro也会执行到这里
+        $('body').on('click', function(e) {
+            removeContextmenuClass();
+            hideMenuPane();
+        });
+
         //to apply rule
         if (option.rule) {
             applyRule(option.rule);

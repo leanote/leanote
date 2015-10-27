@@ -13,16 +13,16 @@ Note.interval = ""; // 定时器
 
 Note.itemIsBlog = '<div class="item-blog"><i class="fa fa-bold" title="blog"></i></div><div class="item-setting"><i class="fa fa-cog" title="setting"></i></div>';
 // for render
-Note.itemTplNoImg = '<li href="#" class="item ?" noteId="?">'
+Note.itemTplNoImg = '<li href="#" class="item ?" data-seq="?" noteId="?">'
 Note.itemTplNoImg += Note.itemIsBlog +'<div class="item-desc"><p class="item-title">?</p><p class="item-info"><i class="fa fa-book"></i> <span class="note-notebook">?</span> <i class="fa fa-clock-o"></i> <span class="updated-time">?</span></p><p class="desc">?</p></div></li>';
 
 // 有image
-Note.itemTpl = '<li href="#" class="item ? item-image" noteId="?"><div class="item-thumb" style=""><img src="?"/></div>'
+Note.itemTpl = '<li href="#" class="item ? item-image" data-seq="?" noteId="?"><div class="item-thumb" style=""><img src="?"/></div>'
 Note.itemTpl +=Note.itemIsBlog + '<div class="item-desc" style=""><p class="item-title">?</p><p class="item-info"><i class="fa fa-book"></i> <span class="note-notebook">?</span> <i class="fa fa-clock-o"></i> <span class="updated-time">?</span></p><p class="desc">?</p></div></li>';
 
 // for new
-Note.newItemTpl = '<li href="#" class="item item-active ?" fromUserId="?" noteId="?">'
-Note.newItemTpl += Note.itemIsBlog + '<div class="item-desc" style="right: 0px;"><p class="item-title">?</p><p class="item-text"><i class="fa fa-book"></i> <span class="note-notebook">?</span> <i class="fa fa-clock-o"></i> <span class="updated-time">?</span><br /><span class="desc">?</span></p></div></li>';
+Note.newItemTpl = '<li href="#" class="item item-active ?" data-seq="?" fromUserId="?" noteId="?">'
+Note.newItemTpl += Note.itemIsBlog + '<div class="item-desc" style="right: 0px;"><p class="item-title">?</p><p class="item-info"><i class="fa fa-book"></i> <span class="note-notebook">?</span> <i class="fa fa-clock-o"></i> <span class="updated-time">?</span></p><p class="desc">?</p></div></li>';
 
 Note.noteItemListO = $("#noteItemList");
 
@@ -73,6 +73,13 @@ Note.setNoteCache = function(content, clear) {
 	if(clear) {
 		Note.clearCacheByNotebookId(content.NotebookId);
 	}
+}
+
+Note.setCurNoteId = function (noteId) {
+	this.curNoteId = noteId;
+};
+Note.clearCurNoteId = function () {
+	this.curNoteId = null;
 }
 
 // 得到当前的笔记
@@ -482,11 +489,15 @@ Note.startUpdatePoolNoteInterval = function() {
 	}, 1000);
 };
 
-
 // 样式
-Note.selectTarget = function(target) {
+Note.clearSelect = function(target) {
 	$(".item").removeClass("item-active");
+}
+Note.selectTarget = function(target) {
+	this.clearSelect();
 	$(target).addClass("item-active");
+
+	// this.batch.reset();
 }
 
 // 改变note
@@ -494,7 +505,7 @@ Note.selectTarget = function(target) {
 // 1. 保存之前的note
 // 2. ajax得到现在的note
 Note.showContentLoading = function() {
-	$("#noteMaskForLoading").css("z-index", 99999);
+	$("#noteMaskForLoading").css("z-index", 11);
 };
 Note.hideContentLoading = function() {
 	$("#noteMaskForLoading").css("z-index", -1);
@@ -581,12 +592,15 @@ Note.contentAjax = null;
 Note.contentAjaxSeq = 1;
 Note.changeNote = function(selectNoteId, isShare, needSaveChanged, callback) {
 	var self = this;
-	
+	if (!selectNoteId) {
+		return;
+	}
+
 	// -1 停止定时器
 	Note.stopInterval();
-	
+
 	// 0
-	var target = $(tt('[noteId="?"]', selectNoteId))
+	var target = self.getTargetById(selectNoteId);
 	Note.selectTarget(target);
 	
 	// 1 之前的note, 判断是否已改变, 改变了就要保存之
@@ -603,7 +617,10 @@ Note.changeNote = function(selectNoteId, isShare, needSaveChanged, callback) {
 	
 	// 2 得到现在的
 	// ajax之
-	var cacheNote = Note.cache[selectNoteId];
+	var cacheNote = self.getNote(selectNoteId);
+	if (!cacheNote) {
+		return;
+	}
 	
 	// 判断是否是共享notes
 	if(!isShare) {
@@ -805,6 +822,9 @@ Note.hideEditorMask = function() {
 Note.renderNotesC = 0;
 Note.renderNotes = function(notes, forNewNote, isShared) {
 	var renderNotesC = ++Note.renderNotesC;
+
+	this.clearSeqForNew();
+	this.batch.reset();
 	
 	// 手机端不用
 	// slimScroll使得手机端滚动不流畅
@@ -860,24 +880,27 @@ Note.renderNotes = function(notes, forNewNote, isShared) {
 	}
 }
 Note._renderNotes = function(notes, forNewNote, isShared, tang) { // 第几趟
-	var baseClasses = "item-my";
-	if(isShared) {
-		baseClasses = "item-shared";
-	}
-	
 	var len = notes.length;
 	for(var i = (tang-1)*20; i < len && i < tang*20; ++i) {
-		var classes = baseClasses;
+		var note = notes[i];
+		note.Title = trimTitle(note.Title);
+
+		// 笔记作者不是我, 则是共享过来的
+		var classes = 'item-my';
+		Note.nowIsInShared = false;
+		if (isShared || note.UserId != UserInfo.UserId) {
+			classes = 'item-shared';
+			Note.nowIsInShared = true;
+		}
 		if(!forNewNote && i == 0) {
 			classes += " item-active";
 		}
-		var note = notes[i];
+
 		var tmp;
-		note.Title = trimTitle(note.Title);
 		if(note.ImgSrc) {
-			tmp = tt(Note.itemTpl, classes, note.NoteId, note.ImgSrc, note.Title, Notebook.getNotebookTitle(note.NotebookId), goNowToDatetime(note.UpdatedTime), note.Desc);
+			tmp = tt(Note.itemTpl, classes, i, note.NoteId, note.ImgSrc, note.Title, Notebook.getNotebookTitle(note.NotebookId), goNowToDatetime(note.UpdatedTime), note.Desc);
 		} else {
-			tmp = tt(Note.itemTplNoImg, classes, note.NoteId, note.Title, Notebook.getNotebookTitle(note.NotebookId), goNowToDatetime(note.UpdatedTime), note.Desc);
+			tmp = tt(Note.itemTplNoImg, classes, i, note.NoteId, note.Title, Notebook.getNotebookTitle(note.NotebookId), goNowToDatetime(note.UpdatedTime), note.Desc);
 		}
 		if(!note.IsBlog) {
 			tmp = $(tmp);
@@ -901,7 +924,15 @@ Note._renderNotes = function(notes, forNewNote, isShared, tang) { // 第几趟
 		}
 		*/
 	}
-} 
+};
+
+Note._seqForNew = 0;
+Note.clearSeqForNew = function () {
+	this._seqForNew = 0;
+};
+Note.newNoteSeq = function () {
+	return --this._seqForNew;
+};
 
 // 新建一个笔记
 // 要切换到当前的notebook下去新建笔记
@@ -938,9 +969,9 @@ Note.newNote = function(notebookId, isShare, fromUserId, isMarkdown) {
 	var notebookTitle = notebook ? notebook.Title : "";
 	var curDate = getCurDate();
 	if(isShare) {
-		newItem = tt(Note.newItemTpl, baseClasses, fromUserId, note.NoteId, note.Title, notebookTitle, curDate, "");
+		newItem = tt(Note.newItemTpl, baseClasses, this.newNoteSeq(), fromUserId, note.NoteId, note.Title, notebookTitle, curDate, "");
 	} else {
-		newItem = tt(Note.newItemTpl, baseClasses, "", note.NoteId, note.Title, notebookTitle, curDate, "");
+		newItem = tt(Note.newItemTpl, baseClasses, this.newNoteSeq(), "", note.NoteId, note.Title, notebookTitle, curDate, "");
 	}
 	
 	// notebook是否是Blog
@@ -1012,68 +1043,127 @@ Note.changeToNext = function(target) {
 	}
 	
 	Note.changeNote(next.attr("noteId"));
-}
+};
+
+// 要删除noteIds, 找下一个可以的
+Note.changeToNextSkipNotes = function(noteIds) {
+	var me = Note;
+	if (isEmpty(noteIds)) {
+		return;
+	}
+
+	// 全删除了
+	if (me.$itemList.find('li').length == noteIds.length) {
+		me.showEditorMask();
+		return;
+	}
+
+	// 如果只有一个笔记, 且当前活跃的又不是要删除的, 则不用change
+	if (noteIds.length == 1) {
+		var $actives = me.$itemList.find('.item-active');
+		if ($actives.length == 1 && $actives.attr('noteId') != noteIds[0]) {
+			return;
+		}
+	}
+
+	var $start = me.getTargetById(noteIds[0]);
+	var $next = $start.next();
+	var i = 1;
+	var len = noteIds.length;
+	var find = false;
+	while($next.length) {
+		// 超出了noteIds
+		if (i >= len) {
+			find = true;
+			break;
+		}
+		// 不在删除的列表中
+		if ($next.attr('noteId') != me.getTargetById(noteIds[i]).attr('noteId')) {
+			find = true;
+			break;
+		}
+
+		$next = $next.next();
+		i++;
+	}
+
+	// 找不到, 证明是要到前一个了
+	if (!find) {
+		$next = $start.prev();
+	}
+
+	if ($next) {
+		me.changeNote($next.attr("noteId"));
+	}
+};
 
 // 删除笔记
 // 1. 先隐藏, 成功后再移除DOM
 // 2. ajax之 noteId
 // Share.deleteSharedNote调用
 Note.deleteNote = function(target, contextmenuItem, isShared) {
+	var me = Note;
+
+	var noteIds;
+	if (me.inBatch) {
+		noteIds = me.getBatchNoteIds();
+	}
+	else {
+		noteIds = [$(target).attr('noteId')];
+	}
+	if (isEmpty(noteIds)) {
+		return;
+	}
+
 	// 如果删除的是已选中的, 赶紧设置curNoteId = null
-	if($(target).hasClass("item-active")) {
+	if(noteIds.length == 1 && $(target).hasClass("item-active")) {
 		// -1 停止定时器
 		Note.stopInterval();
 		// 不保存
-		Note.curNoteId = null;
+		me.clearCurNoteId();
 		// 清空信息
 		Note.clearNoteInfo();
 	}
-	
-	noteId = $(target).attr("noteId");
-	if(!noteId) {
-		return;
+
+	var $actives;
+	if(noteIds.length == 1) {
+		$actives = $(target);
 	}
+	else {
+		$actives = me.$itemList.find('.item-active');
+	}
+
 	// 1
-	$(target).hide();
-	
+	$actives.hide();
 	// 2
-	var note = Note.cache[noteId];
-	var url = "/note/deleteNote"
-	if(note.IsTrash) {
-		url = "/note/deleteTrash";
-	} else {
-		// 减少数量
-		Notebook.minusNotebookNumberNotes(note.NotebookId);
-	}
-	
-	ajaxGet(url, {noteId: noteId, userId: note.UserId, isShared: isShared}, function(ret) {
+	ajaxPost('/note/deleteNote', {noteIds: noteIds, isShared: isShared}, function(ret) {
 		if(ret) {
-			Note.changeToNext(target);
-			
-			$(target).remove();
-			
+			Note.changeToNextSkipNotes(noteIds);
+			$actives.remove();
+
 			// 删除缓存
-			if(note) {
-				Note.clearCacheByNotebookId(note.NotebookId);
-				delete Note.cache[noteId];
+			for (var i = 0; i < noteIds.length; ++i) {
+				var noteId = noteIds[i];
+				var note = me.getNote(noteId);
+				if (note) {
+					// 减少数量
+					Notebook.minusNotebookNumberNotes(note.NotebookId);
+					Note.clearCacheByNotebookId(note.NotebookId);
+					delete Note.cache[noteId];
+				}
 			}
-			
-			showMsg("删除成功!", 500);
-		} else {
-			// 弹出信息 popup 不用点确认的
-			$(target).show();
-			showMsg("删除失败!", 2000);
 		}
 	});
-	
-}
+
+	me.batch.reset();
+};
 
 // 显示共享信息
 Note.listNoteShareUserInfo = function(target) {
 	var noteId = $(target).attr("noteId");
 	showDialogRemote("/share/listNoteShareUserInfo", {noteId: noteId});
 }
-	
+
 // 共享笔记
 Note.shareNote = function(target) {
 	var title = $(target).find(".item-title").text();
@@ -1210,28 +1300,44 @@ Note.searchNote = function() {
 	// Note.lastSearch.abort();
 }
 
+Note.$itemList = $('#noteItemList');
+Note.getTargetById = function(noteId) {
+	return this.$itemList.find('li[noteId="' + noteId + '"]');
+};
+
 //----------
 //设为blog/unset
 Note.setNote2Blog = function(target) {
-	var noteId = $(target).attr("noteId");
-	var note = Note.cache[noteId];
-	var isBlog = true;
-	if(note.IsBlog != undefined) {
-		isBlog = !note.IsBlog;
+	Note._setBlog(target, true);
+};
+Note.unsetNote2Blog = function(target) {
+	Note._setBlog(target, false);
+};
+Note._setBlog = function(target, isBlog) {
+	var me = Note;
+	// 批量操作
+	var noteIds;
+	if (Note.inBatch) {
+		noteIds = me.getBatchNoteIds();
 	}
-
-	ajaxPost("/note/setNote2Blog", {noteId: noteId, isBlog: isBlog}, function(ret) {
+	else {
+		noteIds = [$(target).attr("noteId")];
+	}
+	ajaxPost("/note/setNote2Blog", {noteIds: noteIds, isBlog: isBlog}, function(ret) {
 		if(ret) {
-			// 标志添加/去掉
-			if(isBlog) {
-				$(target).find(".item-blog").show();
-			} else {
-				$(target).find(".item-blog").hide();
+			for (var i = 0; i < noteIds.length; ++i) {
+				var noteId = noteIds[i];
+				var $t = me.getTargetById(noteId);
+				if(isBlog) {
+					$t.find(".item-blog").show();
+				} else {
+					$t.find(".item-blog").hide();
+				}
+				me.setNoteCache({NoteId: noteId, IsBlog: isBlog}, false); // 不清空NotesByNotebookId缓存
 			}
-			Note.setNoteCache({NoteId: noteId, IsBlog: isBlog}, false); // 不清空NotesByNotebookId缓存
 		}
 	});
-}
+};
 
 // 设置notebook的blog状态
 // 当修改notebook是否是blog时调用
@@ -1255,86 +1361,150 @@ Note.setAllNoteBlogStatus = function(notebookId, isBlog) {
 			notes[i].IsBlog = isBlog;
 		}
 	}
-}
+};
 
 // 移动
 Note.moveNote = function(target, data) {
-	var noteId = $(target).attr("noteId");
-	var note = Note.cache[noteId];
-	var notebookId = data.notebookId;
-	
-	if(!note.IsTrash && note.NotebookId == notebookId) {
+	var me = Note;
+	// 批量操作
+	var noteIds;
+	if (Note.inBatch) {
+		noteIds = me.getBatchNoteIds();
+	}
+	else {
+		noteIds = [$(target).attr('noteId')];
+	}
+
+	// 当前在该笔记本下
+	var toNotebookId = data.notebookId;
+	if (Notebook.getCurNotebookId() == toNotebookId) {
 		return;
 	}
-	
-	// 修改数量
-	Notebook.incrNotebookNumberNotes(notebookId);
-	if(!note.IsTrash) {
-		Notebook.minusNotebookNumberNotes(note.NotebookId);
+
+	if (noteIds.length == 1) {
+		var note = me.getNote(noteIds[0]);
+		if(!note.IsTrash && note.NotebookId == toNotebookId) {
+			return;
+		}
 	}
 	
-	ajaxGet("/note/moveNote", {noteId: noteId, notebookId: notebookId}, function(ret) {
-		if(ret && ret.NoteId) {
-			if(note.IsTrash) {
-				Note.changeToNext(target);
-				$(target).remove();
-				Note.clearCacheByNotebookId(notebookId);
-			} else {
-				// 不是trash, 移动, 那么判断是当前是否是all下
-				// 不在all下, 就删除之
-				// 如果当前是active, 那么clearNoteInfo之
-				if(!Notebook.curActiveNotebookIsAll()) {
-					Note.changeToNext(target);
-					if($(target).hasClass("item-active")) {
-						Note.clearNoteInfo();
+	ajaxPost("/note/moveNote", {noteIds: noteIds, notebookId: toNotebookId}, function(ret) {
+		if(ret) {
+
+			me.clearCacheByNotebookId(toNotebookId);
+
+			for (var i = 0; i < noteIds.length; ++i) {
+				var noteId = noteIds[i];
+				var note = me.getNote(noteId);
+				if (note) {
+					// 修改笔记数量
+					if (note.NotebookId != toNotebookId) {
+						Notebook.incrNotebookNumberNotes(toNotebookId);
+						if (!note.IsTrash) {
+							Notebook.minusNotebookNumberNotes(note.NotebookId);
+						}
 					}
-					$(target).remove();
-				} else {
-					// 不移动, 那么要改变其notebook title
-					$(target).find(".note-notebook").html(Notebook.getNotebookTitle(notebookId));
+					else if (note.IsTrash) {
+						Notebook.incrNotebookNumberNotes(note.NotebookId);
+					}
+
+					me.clearCacheByNotebookId(note.NotebookId);
+
+					// 设置缓存
+					note.NotebookId = toNotebookId;
+					note.IsTrash = false;
+					note.UpdatedTime = new Date();
+					me.setNoteCache(note);
 				}
-				
-				// 重新清空cache 之前的和之后的
-				Note.clearCacheByNotebookId(note.NotebookId);
-				Note.clearCacheByNotebookId(notebookId);
 			}
-			
-			// 改变缓存
-			Note.setNoteCache(ret)
+
+			var $actives;
+			if(noteIds.length == 1) {
+				$actives = target;
+			}
+			else {
+				$actives = me.$itemList.find('.item-active');
+			}
+			// 不在all下, 就删除之
+			if(!Notebook.curActiveNotebookIsAll()) {
+				me.changeToNextSkipNotes(noteIds);
+				$actives.remove();
+			}
+			// 在all下, 不要删除
+			else {
+				// 不移动, 那么要改变其notebook title
+				$actives.find(".note-notebook").html(Notebook.getNotebookTitle(toNotebookId));
+
+				me.changeNote($actives.eq(0).attr('noteId'));
+			}
 		}
 	});
-}
+
+	// 重置, 因为可能移动后笔记下没笔记了
+	me.batch.reset();
+};
 
 // 复制
 // data是自动传来的, 是contextmenu数据 
 Note.copyNote = function(target, data, isShared) {
-	var noteId = $(target).attr("noteId");
-	var note = Note.cache[noteId];
-	var notebookId = data.notebookId;
-	
-	// trash不能复制, 不能复制给自己
-	if(note.IsTrash || note.NotebookId == notebookId) {
+	var me = Note;
+
+	var toNotebookId = data.notebookId;
+	var noteIds;
+	if (Note.inBatch) {
+		noteIds = me.getBatchNoteIds();
+	}
+	else {
+		noteIds = [$(target).attr('noteId')];
+	}
+
+	// 得到需要复制的
+	var needNoteIds = [];
+	for (var i = 0; i < noteIds.length; ++i) {
+		var noteId = noteIds[i];
+		var note = me.getNote(noteId);
+		if (note) {
+			// trash不能复制, 不能复制给自己
+			if (note.IsTrash || note.NotebookId == toNotebookId) {
+				continue;
+			}
+			needNoteIds.push(noteId);
+		}
+	}
+	if (needNoteIds.length == 0) {
 		return;
 	}
-	
+
 	var url = "/note/copyNote";
-	var data = {noteId: noteId, notebookId: notebookId};
+	var data = {noteIds: needNoteIds, notebookId: toNotebookId};
 	if(isShared) {
 		url = "/note/copySharedNote";
+		var note = me.getNote(needNoteIds[0]);
 		data.fromUserId = note.UserId;
 	}
-	
-	ajaxGet(url, data, function(ret) {
-		if(ret && ret.NoteId) {
+
+	ajaxPost(url, data, function(ret) {
+		if(reIsOk(ret)) {
+			var notes = ret.Item;
+			if (isEmpty(notes)) {
+				return;
+			}
+
 			// 重新清空cache 之后的
-			Note.clearCacheByNotebookId(notebookId);
-			// 改变缓存, 添加之
-			Note.setNoteCache(ret)
+			Note.clearCacheByNotebookId(toNotebookId);
+			for (var i = 0; i < notes.length; ++i) {
+				var note = notes[i];
+				if (!note.NoteId) {
+					continue;
+				}
+				// 改变缓存, 添加之
+				Note.setNoteCache(note);
+
+				// 增加数量
+				Notebook.incrNotebookNumberNotes(toNotebookId)
+			}
 		}
 	});
-	
-	// 增加数量
-	Notebook.incrNotebookNumberNotes(notebookId)
 };
 
 // 删除笔记标签
@@ -1428,10 +1598,10 @@ LEA.toggleWriteable = Note.toggleWriteable = function() {
 	if(!note) {
 		return;
 	}
-	
+
 	Note.readOnly = false;
 	LEA.readOnly = false;
-
+	
 	if(!note.readOnly) {
 		return;
 	}
@@ -1509,7 +1679,7 @@ Note.initContextmenu = function() {
 			{ text: getMsg("shareToFriends"), alias: 'shareToFriends', icon: "", faIcon: "fa-share-square-o", action: Note.listNoteShareUserInfo},
 			{ type: "splitLine" },
 			{ text: getMsg("publicAsBlog"), alias: 'set2Blog', faIcon: "fa-bold", action: Note.setNote2Blog },
-			{ text: getMsg("cancelPublic"), alias: 'unset2Blog', faIcon: "fa-undo", action: Note.setNote2Blog },
+			{ text: getMsg("cancelPublic"), alias: 'unset2Blog', faIcon: "fa-undo", action: Note.unsetNote2Blog },
 			{ type: "splitLine" },
 			// { text: "分享到社区", alias: 'html2Image', icon: "", action: Note.html2Image},
 			{ text: getMsg("exportPdf"), alias: 'exportPDF', faIcon: "fa-file-pdf-o", action: Note.exportPDF},
@@ -1532,42 +1702,50 @@ Note.initContextmenu = function() {
 		parent: "#noteItemList",
 		children: ".item-my",
 	}
-		
-	function menuAction(target) {
-		// $('#myModal').modal('show')
-		showDialog("dialogUpdateNotebook", {title: "修改笔记本", postShow: function() {
-		}});
-	}
+
 	function applyrule(menu) {
 		var noteId = $(this).attr("noteId");
-		var note = Note.cache[noteId];
-		if(!note) {
-			return;
-		}
+
 		// 要disable的items
 		var items = [];
-		
-		// 如果是trash, 什么都不能做
-		if(note.IsTrash) {
+
+		// 批量模式下不能分享, 导出pdf
+		if (Note.inBatch) {
 			items.push("shareToFriends");
-			items.push("shareStatus");
-			items.push("unset2Blog");
-			items.push("set2Blog");
-			items.push("copy");
-		} else {
-			// console.log('haha');
-			// console.log(note);
-			// 是否已公开为blog
-			if(!note.IsBlog) {
+			items.push('exportPDF');
+
+			// 如果在trash下
+			if(Notebook.curActiveNotebookIsTrash()) {
+				items.push("shareStatus");
 				items.push("unset2Blog");
-			} else {
 				items.push("set2Blog");
+				items.push("copy");
 			}
-			
-			// 移动与复制不能是本notebook下
-			var notebookTitle = Notebook.getNotebookTitle(note.NotebookId);
-			items.push("move." + notebookTitle);
-			items.push("copy." + notebookTitle);
+		} else {
+			var note = Note.getNote(noteId);
+			if(!note) {
+				return;
+			}
+
+			// 如果是trash, 什么都不能做
+			if(note.IsTrash || Notebook.curActiveNotebookIsTrash()) {
+				items.push("shareToFriends");
+				items.push("shareStatus");
+				items.push("unset2Blog");
+				items.push("set2Blog");
+				items.push("copy");
+			} else {
+				if(!note.IsBlog) {
+					items.push("unset2Blog");
+				} else {
+					items.push("set2Blog");
+				}
+
+				// 移动与复制不能是本notebook下
+				var notebookTitle = Notebook.getNotebookTitle(note.NotebookId);
+				items.push("move." + notebookTitle);
+				items.push("copy." + notebookTitle);
+			}
 		}
 
 		// diable 这里
@@ -1576,13 +1754,12 @@ Note.initContextmenu = function() {
             disable: true,
             items: items
         });
-	   
 	}
+
 	function beforeContextMenu() {
 	    return this.id != "target3";
 	}
 	
-	// 这里很慢!!
 	Note.contextmenu = $("#noteItemList .item-my").contextmenu(noteListMenu);
 }
 
@@ -1793,6 +1970,415 @@ var Attach = {
 	}
 };
 
+// 批量操作
+Note.inBatch = false;
+Note.getBatchNoteIds = function () {
+	var noteIds = [];
+	var items = Note.$itemList.find('.item-active');
+	for (var i = 0; i < items.length; ++i) {
+		noteIds.push(items.eq(i).attr('noteId'));
+	}
+	return noteIds;
+};
+Note.batch = {
+	$noteItemList: $("#noteItemList"),
+	
+	cancelInBatch: function () {
+		Note.inBatch = false;
+	},
+	setInBatch: function () {
+		Note.inBatch = true;
+	},
+
+	// 是否是多选, 至少选了2个
+	isInBatch: function () {
+		var me = this;
+		var items = me.$noteItemList.find('.item-active');
+		if (items.length >= 2) {
+			return true;
+		}
+		return false;
+	},
+
+	
+
+	// 得到开始的笔记
+	_startNoteO: null, // 开始选择的笔记
+	getStartNoteO: function () {
+		var me = this;
+		if (!me._startNoteO) {
+			me._startNoteO = me.getCurSelected();
+		}
+		return me._startNoteO;
+	},
+
+	// 清空以start开头已选择的
+	// 用于shift
+	_selectByStart: {}, // start.NoteId => [target1, target2]
+	clearByStart: function (noteId) {
+		var me = this;
+		if (!noteId) {
+			return;
+		}
+		var targets = this._selectByStart[noteId];
+		if (isEmpty(targets)) {
+			return;
+		}
+		for(var i = 0; i < targets.length; ++i) {
+			me.clearTarget(targets[i]);
+		}
+	},
+	selectTo: function ($to) {
+		var $start = this.getStartNoteO();
+		if (!$start) {
+			alert('nono start');
+		}
+
+		var startSeq = +$start.data('seq');
+		var toSeq = +$to.data('seq');
+
+		var $start2, $to2, startSeq2, toSeq2;
+		if (startSeq < toSeq) {
+			$start2 = $start;
+			$to2 = $to;
+			startSeq2 = startSeq;
+			toSeq2 = toSeq;
+		}
+		else {
+			$start2 = $to;
+			$to2 = $start;
+			startSeq2 = toSeq;
+			toSeq2 = startSeq;
+		}
+
+		// 先清空之
+		// 清空以$start为首的, 已选的笔记
+		var startNoteId = $start.attr('noteId');
+		this.clearByStart(startNoteId);
+
+		var $now = $start2;
+		this._selectByStart[startNoteId] = [];
+		for (var i = startSeq2; i <= toSeq2; ++i) {
+			this.selectTarget($now);
+			this._selectByStart[startNoteId].push($now);
+			$now = $now.next();
+		}
+	},
+
+	selectAll: function () {
+		this.$noteItemList.find('li').addClass('item-active');
+	},
+
+	clearAllSelect: function () {
+		Note.clearSelect();
+	},
+
+	selectTarget: function ($target) {
+		if ($target) {
+			$target.addClass('item-active');
+		}
+	},
+	clearTarget: function ($target) {
+		if ($target) {
+			$target.removeClass('item-active');
+		}
+	},
+
+	// multi操作
+	// 选择之某一
+	// 如果之前已选择了, 则取消选择
+	select: function ($target) {
+		var me = this;
+		// 之前已选中
+		if ($target.hasClass('item-active')) {
+			var isInBatch = this.isInBatch();
+			if (isInBatch) {
+				$target.removeClass('item-active');
+			}
+		}
+		else {
+			me._startNoteO = $target;
+			this.selectTarget($target);
+		}
+	},
+
+	// 得到当前选中的元素
+	getCurSelected: function () {
+		return this.$noteItemList.find('.item-active');
+	},
+
+	// 当重新render后
+	reset: function () {
+		this.cancelInBatch();
+		this._selectByStart = {};
+		this._startMove = false;
+		this._startNoteO = null;
+		this.clearRender();
+	},
+
+	// 可以多选
+	canBatch: function () {
+		return !LEA.em.isWritingMode;
+	},
+
+	init: function() {
+		var me = this;
+		me.$noteItemList.on("click", ".item", function(e) {
+			var $this = $(this);
+			var noteId = $this.attr("noteId");
+			if(!noteId) {
+				return;
+			}
+
+			var isMulti = false;
+			var isConti= false;
+			if (me.canBatch()) {
+				if (e.shiftKey) {
+					isConti = true;
+				}
+				else {
+					isMulti = e.metaKey || e.ctrlKey;
+				}
+			}
+
+			//----------
+			// 多选操作
+			//----------
+			
+			if (isMulti || isConti) {
+				Note.curChangedSaveIt();
+			}
+
+			// 多选
+			if (isMulti) {
+				me.select($this);
+				
+			// 连续选
+			} else if (isConti) {
+				// 选择 开始位置到结束位置
+				// 当前点击的是结束位置
+				me.selectTo($this);
+			}
+
+			//---------
+			// 单选
+			//---------
+
+			// 否则, 不是多选, 清空item-active
+			else {
+				Note.selectTarget($this);
+			}
+
+			me.finalFix();
+		});
+		
+		//----------
+
+		// 鼠标拖动开始
+		me._startMove = false;
+		me.$noteItemList.on("mousedown", ".item", function(e) {
+			if (!me.canBatch()) {
+				return;
+			}
+
+			// 右键
+			if (me.isContextMenu(e)) {
+				return;
+			}
+
+			if (!me._startMove && (e.metaKey || e.ctrlKey || e.shiftKey)) {
+				return;
+			}
+
+			me._startNoteO = $(this);
+			me._startMove = true;
+		});
+
+		// 鼠标正在拖动
+		me.$noteItemList.on("mousemove", ".item", function(e) {
+			if (me.canBatch() && me._startMove) {
+
+				Note.curChangedSaveIt();
+
+				me.clearAllSelect();
+
+				me.selectTo($(this));
+
+				me.finalFix(true);
+			}
+		});
+
+		var $body = $('body');
+		$body.on('mouseup', function() {
+			me._startMove = false;
+		});
+
+		// ctrl + all
+		$body.keydown(function (e) {
+			if (e.target && e.target.nodeName === 'BODY') {
+				if ((e.ctrlKey || e.metaKey) && e.which === 65) {
+					e.preventDefault();
+
+					if(me.canBatch()) {
+						Note.curChangedSaveIt();
+
+						me.selectAll();
+						me.finalFix();
+					}
+				}
+			}
+		});
+
+		// 不让拖动
+		me.$noteItemList.on("dragstart", function(e) {
+	    	e.preventDefault();
+	    	e.stopPropagation();
+    	});
+
+		me.initContextmenu();
+	},
+
+	initContextmenu: function () {
+		var me = this;
+
+		me.$batchMask.on('contextmenu', function (e) {
+			e.preventDefault();
+			!Note.nowIsInShared ? Note.contextmenu.showMenu(e) : Share.contextmenu.showMenu(e);
+		});
+
+		me.$batchMask.find('.batch-info .fa').click(function (e) {
+			e.preventDefault();
+			e.pageX -= 90;
+			e.pageY += 10;
+
+			// 这导致其它dropdown不能隐藏
+			e.stopPropagation();
+			// 所以
+			$(document).click();
+			!Note.nowIsInShared ? Note.contextmenu.showMenu(e) : Share.contextmenu.showMenu(e);
+		});
+	},
+
+	$body: $('body'),
+	finalFix: function (isMove) {
+		var me = this;
+		// 选择了几个? 如果 >= 2则是批量操作
+		if (me.isInBatch()) {
+			// 清空当前笔记, 不让自动保存
+			Note.clearCurNoteId();
+
+			me.$body.addClass('batch');
+			me.renderBatchNotes();
+
+			me.setInBatch();
+
+		// 单个处理
+		} else {
+			me.$body.removeClass('batch');
+			me.clearRender();
+			me.cancelInBatch();
+
+			// 为什么还要得到当前选中的, 因为有可能是取消选择
+			// 得到当前选中的
+			var $target = me.getCurSelected();
+			if ($target) {
+				var noteId = $target.attr('noteId');
+
+				if (!isMove) {
+					me._startNoteO = $target;
+				}
+
+				// 手机端处理
+				Mobile.changeNote(noteId);
+				// 当前的和所选的是一个, 不改变
+				if(Note.curNoteId != noteId) {
+					// 不用重定向到notebook
+					Note.changeNoteForPjax(noteId, true, false);
+				}
+			}
+		}
+	},
+
+	// 判断是否是右击
+	isContextMenu: function(evt) {
+		if((evt.which != undefined && evt.which==1) || evt.button == 1)
+			return false;
+		else if((evt.which != undefined && evt.which == 3) || evt.button == 2)
+			return true;
+		return false;
+	},
+
+	//==========
+	_notes: {},
+	clearRender: function () {
+		this._notes = {};
+		this.$batchCtn.html('');
+		this.hideMask();
+	},
+	showMask: function () {
+		this.$batchMask.css({'z-index': 99}).show();
+	},
+	hideMask: function () {
+		this.$batchMask.css({'z-index': -2}).hide();
+	},
+	renderBatchNotes: function () {
+		var me = this;
+		me.showMask();
+
+		var selectedTargets = me.$noteItemList.find('.item-active');
+		me.$batchNum.html(selectedTargets.length);
+
+		var ids = {};
+		for (var i = 0; i < selectedTargets.length; ++i) {
+			var noteId = selectedTargets.eq(i).attr('noteId');
+			me.addTo(noteId);
+			ids[noteId] = 1;
+		}
+		for (var noteId in me._notes) {
+			if (!ids[noteId]) {
+				var $tmp = me._notes[noteId];
+				$tmp.css({'margin-left': '-800px'/*, 'margin-top': '100px'*/});
+				setTimeout(function() {
+					$tmp.remove();
+				}, 500);
+				delete me._notes[noteId];
+			}
+		}
+	},
+	$batchMask: $('#batchMask'),
+	$batchCtn: $('#batchCtn'),
+	$batchNum: $('#batchMask .batch-info span'),
+	_i: 1,
+	getRotate: function () {
+		var me = this;
+		var time = me._i++;
+		var e =  time % 2 === 0 ? 1 : -1;
+		var rotate = e * Math.random() * 70;
+		var margins = [0, 10, 20, 30, 40];
+		var margin = e * margins[time % 5] * 3;
+		// if (e < 0) {
+			margin -= 80;
+		// }
+		return [e * Math.random() * 30, margin];
+	},
+	addTo: function(noteId) {
+		var me = this;
+		if (me._notes[noteId]) {
+			return;
+		}
+		var note = Note.getNote(noteId);
+		var title = note.Title || getMsg('unTitled');
+		var desc = note.Desc || '...';
+		var $note = $('<div class="batch-note"><div class="title">' + title + '</div><div class="content">' + desc + '</div></div>');
+		me._notes[noteId] = $note;
+		var rotate = me.getRotate();
+		me.$batchCtn.append($note);
+		setTimeout(function () {
+			$note.css({transform: 'rotate(' + rotate[0] + 'deg)', 'margin-left': rotate[1] + 'px'});
+		});
+	}
+};
+
 //------------------- 事件
 $(function() {
 	// 附件初始化
@@ -1807,24 +2393,8 @@ $(function() {
 			$(this).trigger("click");
 		}
 	});
-	$("#noteItemList").on("click", ".item", function(event) {
-		// 为什么要stop, 这会导致context, dropdown不隐藏
-		// event.stopPropagation();
-
-		var noteId = $(this).attr("noteId");
-		
-		// 手机端处理
-		Mobile.changeNote(noteId);
-		
-		if(!noteId) {
-			return;
-		}
-		// 当前的和所选的是一个, 不改变
-		if(Note.curNoteId != noteId) {
-			// 不用重定向到notebook
-			Note.changeNoteForPjax(noteId, true, false);
-		}
-	});
+	
+	Note.batch.init();
 
 	// 当前笔记可以已修改
 	$('#editorContent, #wmd-input, #noteTitle').on('keyup input', function() {
@@ -1892,7 +2462,7 @@ $(function() {
 	});
 
 	// blog
-	$("#noteItemList").on("click", ".item-blog", function(e) {
+	Note.$itemList.on("click", ".item-blog", function(e) {
 		e.preventDefault();
 		// 这导致其它dropdown不能隐藏
 		e.stopPropagation();
@@ -1908,7 +2478,7 @@ $(function() {
 	});
 
 	// note setting
-	$("#noteItemList").on("click", ".item-my .item-setting", function(e) {
+	Note.$itemList.on("click", ".item-my .item-setting", function(e) {
 		e.preventDefault();
 
 		// 这导致其它dropdown不能隐藏

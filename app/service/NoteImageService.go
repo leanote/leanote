@@ -73,17 +73,13 @@ func (this *NoteImageService) UpdateNoteImages(userId, noteId, imgSrc, content s
 
 // 复制图片, 把note的图片都copy给我, 且修改noteContent图片路径
 func (this *NoteImageService) CopyNoteImages(fromNoteId, fromUserId, newNoteId, content, toUserId string) string {
+	/* 弃用之
 	// 得到fromNoteId的noteImages, 如果为空, 则直接返回content
 	noteImages := []info.NoteImage{}
 	db.ListByQWithFields(db.NoteImages, bson.M{"NoteId": bson.ObjectIdHex(fromNoteId)}, []string{"ImageId"}, &noteImages)
-	
 	if len(noteImages) == 0 {
 		return content;
 	}
-	
-	// <img src="/file/outputImage?fileId=12323232" />
-	// 把fileId=1232替换成新的
-	replaceMap := map[string]string{}
 	for _, noteImage := range noteImages {
 		imageId := noteImage.ImageId.Hex()
 		ok, newImageId := fileService.CopyImage(fromUserId, imageId, toUserId)
@@ -91,20 +87,44 @@ func (this *NoteImageService) CopyNoteImages(fromNoteId, fromUserId, newNoteId, 
 			replaceMap[imageId] = newImageId
 		}
 	}
-	
-	if len(replaceMap) > 0 {
-		// 替换之
-		reg, _ := regexp.Compile("outputImage\\?fileId=([a-z0-9A-Z]{24})")
-		content = reg.ReplaceAllStringFunc(content, func(each string) string {
-			// each=outputImage?fileId=541bd2f599c37b4f3r000003
-			fileId := each[len(each)-24:] // 得到后24位, 也即id
-			if replaceFileId, ok := replaceMap[fileId]; ok {
+	*/
+
+	// 因为很多图片上传就会删除, 所以直接从内容中查看图片id进行复制
+
+	// <img src="/file/outputImage?fileId=12323232" />
+	// 把fileId=1232替换成新的
+	replaceMap := map[string]string{}
+
+	reg, _ := regexp.Compile("(outputImage|getImage)\\?fileId=([a-z0-9A-Z]{24})")
+	content = reg.ReplaceAllStringFunc(content, func(each string) string {
+		// each = outputImage?fileId=541bd2f599c37b4f3r000003
+		// each = getImage?fileId=541bd2f599c37b4f3r000003
+
+		fileId := each[len(each)-24:] // 得到后24位, 也即id
+		
+		if _, ok := replaceMap[fileId]; !ok {
+			if bson.IsObjectIdHex(fileId) {
+				ok2, newImageId := fileService.CopyImage(fromUserId, fileId, toUserId)
+				if ok2 {
+					replaceMap[fileId] = newImageId
+				} else {
+					replaceMap[fileId] = ""
+				}
+			} else {
+				replaceMap[fileId] = ""
+			}
+		}
+
+		replaceFileId := replaceMap[fileId]
+		if replaceFileId != "" {
+			if each[0] == 'o' {
 				return "outputImage?fileId=" + replaceFileId
 			}
-			return each
-		});
-	}
-	
+			return "getImage?fileId=" + replaceFileId
+		}
+		return each
+	});
+
 	return content;
 }
 

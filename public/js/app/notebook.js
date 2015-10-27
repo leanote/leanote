@@ -297,7 +297,7 @@ Notebook.cacheAllNotebooks = function(notebooks) {
 			self.cacheAllNotebooks(notebook.Subs);
 		}
 	}
-}
+};
 
 // 展开到笔记本
 Notebook.expandNotebookTo = function(notebookId, userId) {
@@ -332,8 +332,7 @@ Notebook.expandNotebookTo = function(notebookId, userId) {
 			break;
 		}
 	}
-}
-
+};
 
 // RenderNotebooks调用, 
 // nav 为了新建, 快速选择, 移动笔记
@@ -341,7 +340,7 @@ Notebook.expandNotebookTo = function(notebookId, userId) {
 Notebook.renderNav = function(nav) {
 	var self = this;
 	self.changeNav();
-}
+};
 
 // 搜索notebook
 Notebook.searchNotebookForAddNote = function(key) {
@@ -365,7 +364,7 @@ Notebook.searchNotebookForAddNote = function(key) {
 	} else {
 		$("#notebookNavForNewNote").html(self.everNavForNewNote);
 	}
-}
+};
 
 // 搜索notebook
 Notebook.searchNotebookForList = function(key) {
@@ -391,8 +390,7 @@ Notebook.searchNotebookForList = function(key) {
 		$notebookList.show();
 		$("#notebookNavForNewNote").html(self.everNavForNewNote);
 	}
-}
-
+};
 
 // 修改,添加,删除notebook后调用
 // 改变nav
@@ -422,7 +420,7 @@ Notebook.getChangedNotebooks = function(notebooks) {
 		navForNewNote += eachForNew;
 	}
 	return navForNewNote;
-}
+};
 
 Notebook.everNavForNewNote = "";
 Notebook.everNotebooks = [];
@@ -438,13 +436,9 @@ Notebook.changeNav = function() {
 	$("#notebookNavForNewNote").html(html);
 	
 	// 移动, 复制重新来, 因为nav变了, 移动至-----的notebook导航也变了
-	// 这里速度很慢
-	var t1 = (new Date()).getTime();
 	Note.initContextmenu();
 	Share.initContextmenu(Note.notebooksCopy);
-	var t2 = (new Date()).getTime();
-	log(t2-t1);
-}
+};
 
 /**
  * 我的共享notebooks	    
@@ -573,15 +567,18 @@ Notebook.changeNotebookNav = function(notebookId) {
 
 Notebook.isAllNotebookId = function(notebookId) {
 	return notebookId == Notebook.allNotebookId;
-}
+};
 Notebook.isTrashNotebookId = function(notebookId) {
 	return notebookId == Notebook.trashNotebookId;
-}
+};
 // 当前选中的笔记本是否是"所有"
 // called by Note
 Notebook.curActiveNotebookIsAll = function() {
-	return Notebook.isAllNotebookId($("#notebookList .active").attr("notebookId"));
-}
+	return Notebook.isAllNotebookId($("#notebookList .curSelectedNode").attr("notebookId"));
+};
+Notebook.curActiveNotebookIsTrash = function() {
+	return Notebook.isTrashNotebookId($("#notebookList .curSelectedNode").attr("notebookId"));
+};
 
 // 改变笔记本
 // 0. 改变样式

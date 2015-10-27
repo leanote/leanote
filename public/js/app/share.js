@@ -4,7 +4,7 @@
 
 // 默认共享notebook id
 Share.defaultNotebookId = "share0";
-Share.defaultNotebookTitle = getMsg("defaulthhare");
+Share.defaultNotebookTitle = getMsg("defaultShare");
 Share.sharedUserInfos = {}; // userId => {}
 
 // 在render时就创建, 以后复用之
@@ -19,12 +19,13 @@ Share.cache = {}; // note的cache
 Share.dialogIsNote = true;
 
 // 设置缓存 note
+// 弃用
 Share.setCache = function(note) {
 	if(!note || !note.NoteId) {
 		return;
 	}
 	Share.cache[note.NoteId] = note;
-}
+};
 
 /**
  * 我的共享notebooks	    
@@ -296,7 +297,6 @@ Share.changeNotebook = function(userId, notebookId, callback) {
 		// 
 		// 如果是特定笔记本下的notes, 那么传过来的没有权限信息, 此时权限由notebookId决定
 		if(param.notebookId) {
-			
 		}
 		if(callback) {
 			callback(ret);
@@ -381,10 +381,10 @@ Share.changeNotebookForNewNote = function(notebookId) {
 // 删除笔记, 我有权限, 且是我创建的笔记
 Share.deleteSharedNote = function(target, contextmenuItem) {
 	Note.deleteNote(target, contextmenuItem, true);
-}
+};
 Share.copySharedNote = function(target, contextmenuItem) {
 	Note.copyNote(target, contextmenuItem, true);
-}
+};
 
 Share.contextmenu = null;
 Share.initContextmenu = function(notebooksCopy) {
@@ -412,12 +412,13 @@ Share.initContextmenu = function(notebooksCopy) {
 	}
 	function applyrule(menu) {
 		var noteId = $(this).attr("noteId");
-		var note = Share.cache[noteId];
-		if(!note) {
-			return;
-		}
+		var note = Note.getNote(noteId);
 		var items = [];
-		if(!(note.Perm && note.CreatedUserId == UserInfo.UserId)) {
+		if(Note.inBatch || !note) {
+			items.push("delete");
+		}
+		// 批量操作时, 不让删除
+		if(note && !(note.Perm && note.CreatedUserId == UserInfo.UserId)) {
 			items.push("delete");
 		}
 		// 不是自己的创建的不能删除
@@ -426,7 +427,6 @@ Share.initContextmenu = function(notebooksCopy) {
             disable: true,
             items: items
         });		
-	   
 	}
 	
 	Share.contextmenu = $("#noteItemList .item-shared").contextmenu(noteListMenu);

@@ -230,7 +230,7 @@ unVerified=未验证
 verifiedNow=现在去验证
 resendVerifiedEmail=重新发送验证邮件
 # 分享
-defaulthhare=默认共享
+defaultShare=默认分享
 addShare=添加分享
 friendEmail=好友邮箱
 permission=权限
@@ -246,6 +246,7 @@ emailBodyRequired=邮件内容不能为空
 clickToCopy=点击复制
 sendSuccess=发送成功
 inviteEmailBody=Hi, 你好, 我是%s, %s非常好用, 快来注册吧!
+<span></span> notes selected=当前选中了 <span></span> 篇笔记
 
 # 历史记录
 historiesNum=leanote会保存笔记的最近<b>10</b>份历史记录
