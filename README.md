@@ -72,12 +72,9 @@ And also, you are welcome to join us.
 
 # Leanote
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/leanote/leanote?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![Build Status](https://travis-ci.org/leanote/leanote.svg)](https://travis-ci.org/leanote/leanote)
 ## 1. 介绍
 
 Leanote, 不只是笔记!
-![leanote.png](leanote.png "")
 
 **特性**
 
