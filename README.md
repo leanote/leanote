@@ -58,6 +58,7 @@ Thank you to all the [contributors](https://github.com/leanote/leanote/graphs/co
 this project. Your help is much appreciated.
 
 ## 7.Join us
+
 Please fork this repository and contribute back using [pull requests](https://github.com/leanote/leanote/pulls).
 
 If you find some problems or has some good ideas, please submit [issues](https://github.com/leanote/leanote/issues).
@@ -71,9 +72,9 @@ Support us, [donate us](http://leanote.org/#donate). And thanks [donators](http:
 
 * [Leanote Desktop App](https://github.com/leanote/desktop-app), [Download](http://app.leanote.com)
 * [Leanote iOS](https://github.com/leanote/leanote-ios), [Download From App Store](https://itunes.apple.com/en/app/leanote/id1022302858?mt=8)
-* [Leanote Android](https://github.com/Dminter/leanote-android-client), development phase
+* [Leanote Android](https://github.com/leanote/leanote-android), development phase
 
-And also, you are welcome to join us.
+Yare are welcome to join us.
 
 ## 9. Support & Join us
 
@@ -142,7 +143,7 @@ Leanote云笔记产品包括: Leanote Web & Server(即本仓库), 桌面客户�
 
 ## 7. 加入我们
 
-欢迎提交[pull requests](https://github.com/leanote/leanote/pulls) 到leanote.
+欢迎提交[pull requests](https://github.com/leanote/leanote/pulls) 到Leanote.
 
 有任何问题或建议, 欢迎提交[issue](https://github.com/leanote/leanote/issues).
 
@@ -154,7 +155,7 @@ Leanote还有很多问题, 如果你喜欢它, 欢迎加入我们一起完善Lea
 ## 9. 其它相关项目
 * [Leanote Desktop App](https://github.com/leanote/desktop-app), [下载地址](http://app.leanote.com)
 * [Leanote iOS](https://github.com/leanote/leanote-ios), [从App Store下载](https://itunes.apple.com/zn/app/leanote/id1022302858?mt=8)
-* [Leanote Android](https://github.com/Dminter/leanote-android-client), 开发阶段
+* [Leanote Android](https://github.com/leanote/leanote-android), 开发阶段
 
 欢迎加入我们!
 
