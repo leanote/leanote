@@ -1532,14 +1532,14 @@ Note.deleteNoteTag = function(item, tag) {
 };
 
 // readonly
-Note.readOnly = false; // 默认为false要好?
-LEA.readOnly = false;
+Note.readOnly = true; // 默认为false要好?
+LEA.readOnly = true;
 // 切换只读模式
-Note.toggleReadOnly = function() {
+Note.toggleReadOnly = function(needSave) {
 	if(LEA.em && LEA.em.isWriting()) { // 写作模式下
 		return Note.toggleWriteable();
 	}
-	
+
 	var me = this;
 	var note = me.getCurNote();
 
@@ -1567,12 +1567,13 @@ Note.toggleReadOnly = function() {
 		$('#infoToolbar .updated-time').html(goNowToDatetime(note.UpdatedTime));
 	}
 	
+	// 保存之
+	if (needSave) {
+		Note.curChangedSaveIt();
+	}
+	
 	Note.readOnly = true;
 	LEA.readOnly = true;
-	
-	if(note.readOnly) {
-		return;
-	}
 
 	if(!note.IsMarkdown) {
 		// 里面的pre也设为不可写
@@ -1580,8 +1581,6 @@ Note.toggleReadOnly = function() {
 			LeaAce.setAceReadOnly($(this), true);
 		});
 	}
-
-	note.readOnly = true;
 };
 // 切换到编辑模式
 LEA.toggleWriteable = Note.toggleWriteable = function() {
@@ -1601,10 +1600,6 @@ LEA.toggleWriteable = Note.toggleWriteable = function() {
 
 	Note.readOnly = false;
 	LEA.readOnly = false;
-	
-	if(!note.readOnly) {
-		return;
-	}
 
 	if(!note.IsMarkdown) {
 		// 里面的pre也设为不可写
@@ -1617,8 +1612,14 @@ LEA.toggleWriteable = Note.toggleWriteable = function() {
 			MD.onResize();
 		}
 	}
-
-	note.readOnly = false;
+};
+Note.toggleWriteableAndReadOnly = function () {
+	if (LEA.readOnly) {
+		Note.toggleWriteable();
+	}
+	else {
+		Note.toggleReadOnly(true);
+	}
 };
 
 Note.getPostUrl = function (note) {

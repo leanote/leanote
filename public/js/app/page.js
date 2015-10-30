@@ -487,8 +487,6 @@ function initEditor() {
 					e.preventDefault();
 					return;
 				}
-				// 这里就不要了, 避免两次updateNote
-				// Note.saveNote(e);
 
 				// 当输入的时候, 把当前raw删除掉
 				LeaAce.removeCurToggleRaw();
@@ -563,8 +561,26 @@ function initEditor() {
     	Note.curChangedSaveIt();
 	}
 
-	// 全局ctrl + s
-	$("body").on('keydown', Note.saveNote);
+	// 全局快捷键
+	// ctrl + s 保存
+	// ctrl+e 切换只读与可写
+	$('body').on('keydown', function (e) {
+		var num = e.which ? e.which : e.keyCode;
+		var ctrlOrMetaKey = e.ctrlKey || e.metaKey;
+	    if(ctrlOrMetaKey) {
+			// 保存
+		    if (num == 83 ) { // ctrl + s or command + s
+		    	Note.curChangedSaveIt();
+		    	e.preventDefault();
+		    	return false;
+		    }
+		    else if (num == 69) { // e
+		    	Note.toggleWriteableAndReadOnly();
+		    	e.preventDefault();
+		    	return false;
+		    }
+	    }
+	});
 }
 
 //-----------------------

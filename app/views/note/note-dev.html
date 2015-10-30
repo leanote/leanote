@@ -174,7 +174,7 @@ function log(o) {
 							
 							<li role="presentation" class="divider my-link writing-mobile-hide"></li>
 							<li role="presentation" class="my-link toggle-editor-mode writing-mobile-hide" >
-								<a href="#writing"><i class="fa fa-rocket"></i>
+								<a href="#writing" title="{{msg . "writingMode"}} ctrl/cmd+e"><i class="fa fa-rocket"></i>
 								{{msg . "writingMode"}}</a>
 							</li>
 							
@@ -571,7 +571,7 @@ function log(o) {
 							</div>
 							<!-- 查看信息 -->
 							<div id="infoToolbar" class="info-toolbar invisible">
-				              <a class="toolbar-update"><i class="fa fa-pencil"></i> <span class="lang">{{msg . "modify"}}</span></a>
+				              <a class="toolbar-update" title="{{msg . "modify"}} ctrl/cmd+e"><i class="fa fa-pencil"></i> <span class="lang">{{msg . "modify"}}</span></a>
 				              <span class="lang">{{msg . "created"}}</span>: <span class="created-time"></span>
 				              <span class="lang">{{msg . "updated"}}</span>: <span class="updated-time"></span>
 				            </div>
@@ -608,7 +608,7 @@ function log(o) {
 						        <div class="navbar navbar-default">
 						            <div class="navbar-inner" id="wmd-button-bar">
 						            	<div id="mdInfoToolbar" class="info-toolbar invisible">
-							              <a class="toolbar-update"><i class="fa fa-pencil"></i> <span class="lang">{{msg . "modify"}}</span></a>
+							              <a class="toolbar-update" title="{{msg . "modify"}} ctrl/cmd+e"><i class="fa fa-pencil"></i> <span class="lang">{{msg . "modify"}}</span></a>
 							              <span class="lang">{{msg . "created"}}</span>: <span class="created-time"></span>
 							              <span class="lang">{{msg . "updated"}}</span>: <span class="updated-time"></span>
 							            </div>
