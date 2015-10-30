@@ -204,7 +204,6 @@ function formSerializeDataToJson(formSerializeData) {
 	return $.extend(datas, arrObj);
 }
 
-
 // ajax请求返回结果后的操作
 // 用于ajaxGet(), ajaxPost()
 function _ajaxCallback(ret, successFunc, failureFunc) {
@@ -229,9 +228,9 @@ function _ajaxCallback(ret, successFunc, failureFunc) {
 	}
 }
 function _ajax(type, url, param, successFunc, failureFunc, async) {
-	log("-------------------ajax:");
-	log(url);
-	log(param);
+	// log("-------------------ajax:");
+	// log(url);
+	// log(param);
 	if(typeof async == "undefined") {
 		async = true;
 	} else {
@@ -279,9 +278,9 @@ function ajaxPost(url, param, successFunc, failureFunc, async) {
 	_ajax("POST", url, param, successFunc, failureFunc, async);
 }
 function ajaxPostJson(url, param, successFunc, failureFunc, async) {
-	log("-------------------ajaxPostJson:");
-	log(url);
-	log(param);
+	// log("-------------------ajaxPostJson:");
+	// log(url);
+	// log(param);
 	
 	// 默认是异步的
 	if(typeof async == "undefined") {
@@ -695,6 +694,13 @@ Date.prototype.format = function(fmt) { //author: meizz
 function goNowToDatetime(goNow) {
 	if(!goNow) {
 		return "";
+	}
+	if (typeof goNow == 'object') {
+		try {
+			return goNow.format("yyyy-M-d hh:mm:ss");
+		} catch(e) {
+			return getCurDate();
+		}
 	}
 	return goNow.substr(0, 10) + " " + goNow.substr(11, 8);
 }

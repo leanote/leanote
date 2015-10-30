@@ -558,7 +558,7 @@ function initEditor() {
 	
 	// 刷新时保存 参考autosave插件
 	window.onbeforeunload = function(e) {
-    	Note.curChangedSaveIt();
+    	Note.curChangedSaveIt(true);
 	}
 
 	// 全局快捷键
