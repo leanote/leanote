@@ -165,7 +165,7 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 									ajaxPost("/file/copyImage", {userId: UserInfo.UserId, fileId: fileId, toUserId: curNote.UserId}, function(re) {
 										if(reIsOk(re) && re.Id) {
 											var urlPrefix = UrlPrefix; // window.location.protocol + "//" + window.location.host;
-											data.src = urlPrefix + "/file/outputImage?fileId=" + re.Id;
+											data.src = urlPrefix + "/api/file/getImage?fileId=" + re.Id;
 										}
 										renderImage(data);
 									});
