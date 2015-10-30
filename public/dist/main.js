@@ -4605,287 +4605,6 @@ define("underscore", (function (global) {
     return crel;
 }));
 
-// Setup an empty localStorage or upgrade an existing one
-define('storage',[
-    "underscore"
-], function(_) {
-
-    function retrieveIndexArray(storeIndex) {
-        try {
-            return _.compact(localStorage[storeIndex].split(";"));
-        }
-        catch(e) {
-            localStorage[storeIndex] = ";";
-            return [];
-        }
-    }
-
-    var fileIndexList = retrieveIndexArray("file.list");
-    var currentFileIndex, settings;
-
-    // localStorage versioning
-    var version = localStorage.version;
-
-    if(version === undefined) {
-
-        // Not used anymore
-        localStorage.removeItem("sync.queue");
-        localStorage.removeItem("sync.current");
-        localStorage.removeItem("file.counter");
-
-        _.each(fileIndexList, function(fileIndex) {
-            localStorage[fileIndex + ".publish"] = ";";
-            var syncIndexList = retrieveIndexArray(fileIndex + ".sync");
-            _.each(syncIndexList, function(syncIndex) {
-                localStorage[syncIndex + ".contentCRC"] = "0";
-                // We store title CRC only for Google Drive synchronization
-                if(localStorage[syncIndex + ".etag"] !== undefined) {
-                    localStorage[syncIndex + ".titleCRC"] = "0";
-                }
-            });
-        });
-        version = "v1";
-    }
-
-    if(version == "v1") {
-        var gdriveLastChangeId = localStorage["sync.gdrive.lastChangeId"];
-        if(gdriveLastChangeId) {
-            localStorage["gdrive.lastChangeId"] = gdriveLastChangeId;
-            localStorage.removeItem("sync.gdrive.lastChangeId");
-        }
-        var dropboxLastChangeId = localStorage["sync.dropbox.lastChangeId"];
-        if(dropboxLastChangeId) {
-            localStorage["dropbox.lastChangeId"] = dropboxLastChangeId;
-            localStorage.removeItem("sync.dropbox.lastChangeId");
-        }
-
-        var PROVIDER_GDRIVE = "gdrive";
-        var PROVIDER_DROPBOX = "dropbox";
-        var SYNC_PROVIDER_GDRIVE = "sync." + PROVIDER_GDRIVE + ".";
-        var SYNC_PROVIDER_DROPBOX = "sync." + PROVIDER_DROPBOX + ".";
-        _.each(fileIndexList, function(fileIndex) {
-            var syncIndexList = retrieveIndexArray(fileIndex + ".sync");
-            _.each(syncIndexList, function(syncIndex) {
-                var syncAttributes = {};
-                if(syncIndex.indexOf(SYNC_PROVIDER_GDRIVE) === 0) {
-                    syncAttributes.provider = PROVIDER_GDRIVE;
-                    syncAttributes.id = syncIndex.substring(SYNC_PROVIDER_GDRIVE.length);
-                    syncAttributes.etag = localStorage[syncIndex + ".etag"];
-                    syncAttributes.contentCRC = localStorage[syncIndex + ".contentCRC"];
-                    syncAttributes.titleCRC = localStorage[syncIndex + ".titleCRC"];
-                }
-                else if(syncIndex.indexOf(SYNC_PROVIDER_DROPBOX) === 0) {
-                    syncAttributes.provider = PROVIDER_DROPBOX;
-                    syncAttributes.path = decodeURIComponent(syncIndex.substring(SYNC_PROVIDER_DROPBOX.length));
-                    syncAttributes.version = localStorage[syncIndex + ".version"];
-                    syncAttributes.contentCRC = localStorage[syncIndex + ".contentCRC"];
-                }
-                localStorage[syncIndex] = JSON.stringify(syncAttributes);
-                localStorage.removeItem(syncIndex + ".etag");
-                localStorage.removeItem(syncIndex + ".version");
-                localStorage.removeItem(syncIndex + ".contentCRC");
-                localStorage.removeItem(syncIndex + ".titleCRC");
-            });
-        });
-        version = "v2";
-    }
-
-    if(version == "v2") {
-        _.each(fileIndexList, function(fileIndex) {
-            if(!_.has(localStorage, fileIndex + ".sync")) {
-                localStorage.removeItem(fileIndex + ".title");
-                localStorage.removeItem(fileIndex + ".publish");
-                localStorage.removeItem(fileIndex + ".content");
-                localStorage["file.list"].replace(";" + fileIndex + ";", ";");
-            }
-        });
-        version = "v3";
-    }
-
-    if(version == "v3") {
-        currentFileIndex = localStorage["file.current"];
-        if(currentFileIndex !== undefined && localStorage["file.list"].indexOf(";" + currentFileIndex + ";") === -1) {
-            localStorage.removeItem("file.current");
-        }
-        version = "v4";
-    }
-
-    if(version == "v4") {
-        // Recreate GitHub token
-        localStorage.removeItem("githubToken");
-        version = "v5";
-    }
-
-    if(version == "v5") {
-        _.each(fileIndexList, function(fileIndex) {
-            var publishIndexList = retrieveIndexArray(fileIndex + ".publish");
-            _.each(publishIndexList, function(publishIndex) {
-                var publishAttributes = JSON.parse(localStorage[publishIndex]);
-                if(publishAttributes.provider == "gdrive") {
-                    // Change fileId to Id to be consistent with syncAttributes
-                    publishAttributes.id = publishAttributes.fileId;
-                    publishAttributes.fileId = undefined;
-                    localStorage[publishIndex] = JSON.stringify(publishAttributes);
-                }
-            });
-        });
-        version = "v6";
-    }
-
-    if(version == "v6") {
-        currentFileIndex = localStorage["file.current"];
-        if(currentFileIndex !== undefined) {
-            localStorage[currentFileIndex + ".selectTime"] = new Date().getTime();
-            localStorage.removeItem("file.current");
-        }
-        version = "v7";
-    }
-
-    if(version == "v7" || version == "v8" || version == "v9") {
-        if(_.has(localStorage, 'settings')) {
-            settings = JSON.parse(localStorage.settings);
-            delete settings.editorFontFamily;
-            delete settings.editorFontSize;
-            settings.template && (settings.template = settings.template.replace('http://benweet.github.io/stackedit/css/main-min.css', 'http://benweet.github.io/stackedit/res-min/themes/default.css'));
-            localStorage.settings = JSON.stringify(settings);
-        }
-        version = "v10";
-    }
-
-    if(version == "v10") {
-        if(_.has(localStorage, 'settings')) {
-            settings = JSON.parse(localStorage.settings);
-            ((settings.extensionSettings || {}).markdownExtra || {}).extensions && settings.extensionSettings.markdownExtra.extensions.push('smartypants');
-            settings.sshProxy == 'http://stackedit-ssh-proxy.herokuapp.com/' && (settings.sshProxy = 'https://stackedit-ssh-proxy.herokuapp.com/');
-            settings.template && (settings.template = settings.template.replace('http://benweet.github.io/stackedit/lib/', 'https://stackedit.io/libs/'));
-            settings.template && (settings.template = settings.template.replace('http://benweet.github.io/stackedit/', 'https://stackedit.io/'));
-            settings.pdfTemplate && (settings.pdfTemplate = settings.pdfTemplate.replace('http://benweet.github.io/stackedit/lib/', 'https://stackedit.io/libs/'));
-            settings.pdfTemplate && (settings.pdfTemplate = settings.pdfTemplate.replace('http://benweet.github.io/stackedit/', 'https://stackedit.io/'));
-            settings.defaultContent && (settings.defaultContent = settings.defaultContent.replace('http://benweet.github.io/stackedit/', 'https://stackedit.io/'));
-            settings.commitMsg && (settings.commitMsg = settings.commitMsg.replace('http://benweet.github.io/stackedit/', 'https://stackedit.io/'));
-            localStorage.settings = JSON.stringify(settings);
-        }
-        version = "v11";
-    }
-
-    if(version == "v11") {
-        // Force new theme by using themeV3 variable
-        localStorage.removeItem("theme");
-        if(_.has(localStorage, 'settings')) {
-            settings = JSON.parse(localStorage.settings);
-            // Force new font
-            delete settings.editorFontFamily;
-            delete settings.editorFontSize;
-            settings.template && (settings.template = settings.template.replace('https://stackedit.io/res-min/themes/default.css', 'https://stackedit.io/res-min/themes/base.css'));
-            settings.pdfTemplate && (settings.pdfTemplate = settings.pdfTemplate.replace('https://stackedit.io/res-min/themes/default.css', 'https://stackedit.io/res-min/themes/base.css'));
-            localStorage.settings = JSON.stringify(settings);
-        }
-        version = "v12";
-    }
-
-    if(version == "v12" || version == "v13") {
-        if(_.has(localStorage, 'settings')) {
-            settings = JSON.parse(localStorage.settings);
-            // Have to reset the font because of Monaco issue with ACE
-            delete settings.editorFontFamily;
-            localStorage.settings = JSON.stringify(settings);
-        }
-        version = "v14";
-    }
-
-    if(version == "v14") {
-        if(_.has(localStorage, 'settings')) {
-            settings = JSON.parse(localStorage.settings);
-            settings.template && (settings.template = settings.template.replace('https://stackedit.io/res-min/themes/default.css', 'https://stackedit.io/res-min/themes/base.css'));
-            settings.pdfTemplate && (settings.pdfTemplate = settings.pdfTemplate.replace('https://stackedit.io/res-min/themes/default.css', 'https://stackedit.io/res-min/themes/base.css'));
-            localStorage.settings = JSON.stringify(settings);
-        }
-        version = "v15";
-    }
-
-    if(version == "v15") {
-        localStorage.removeItem('gdrivePermissions');
-        if(_.has(localStorage, 'gdrive.lastChangeId')) {
-            localStorage['google.gdrive0.gdrive.lastChangeId'] = localStorage['gdrive.lastChangeId'];
-            localStorage.removeItem('gdrive.lastChangeId');
-        }
-        if(_.has(localStorage, 'settings')) {
-            settings = JSON.parse(localStorage.settings);
-            if(((settings.extensionSettings || {}).markdownExtra || {}).extensions) {
-                settings.extensionSettings.markdownExtra.extensions.push('newlines');
-                settings.extensionSettings.markdownExtra.extensions.push('strikethrough');
-            }
-            localStorage.settings = JSON.stringify(settings);
-        }
-        version = "v16";
-    }
-
-    if(version == "v16" || version == "v17") {
-        localStorage.removeItem('focusMode');
-        localStorage.removeItem('mode');
-        localStorage.removeItem('gdrive.state');
-        localStorage.removeItem('google.picasa0.permissions');
-        localStorage.removeItem('google.picasa0.userId');
-        if(_.has(localStorage, 'settings')) {
-            settings = JSON.parse(localStorage.settings);
-            delete settings.shortcuts;
-            delete settings.editorFontFamily;
-            delete settings.editorFontSize;
-            delete settings.maxWidth;
-            localStorage.settings = JSON.stringify(settings);
-        }
-        version = "v18";
-    }
-
-	if(version == 'v18') {
-		if(_.has(localStorage, 'settings')) {
-			settings = JSON.parse(localStorage.settings);
-			((settings.extensionSettings || {}).markdownExtra || {}).diagrams = true;
-			localStorage.settings = JSON.stringify(settings);
-		}
-		version = "v19";
-	}
-
-	if(version == 'v19') {
-		// Force new theme by using themeV4 variable
-		localStorage.removeItem("themeV3");
-		// Force welcome tour
-		localStorage.removeItem("welcomeTour");
-		if(_.has(localStorage, 'settings')) {
-			settings = JSON.parse(localStorage.settings);
-			// New web services
-			delete settings.pdfTemplate;
-			delete settings.pdfPageSize;
-			delete settings.sshProxy;
-			localStorage.settings = JSON.stringify(settings);
-		}
-		version = "v20";
-	}
-
-	if(version == 'v20') {
-		if(_.has(localStorage, 'settings')) {
-			settings = JSON.parse(localStorage.settings);
-			// Force use of text/plain
-			delete settings.markdownMimeType;
-			localStorage.settings = JSON.stringify(settings);
-		}
-		version = "v21";
-	}
-
-	if(version == "v21") {
-		if(_.has(localStorage, 'settings')) {
-			settings = JSON.parse(localStorage.settings);
-			settings.template && (settings.template = settings.template.replace('https://stackedit.io/libs/MathJax/', 'https://cdn.mathjax.org/mathjax/latest/'));
-			settings.pdfTemplate && (settings.pdfTemplate = settings.pdfTemplate.replace('/libs/MathJax/', '/res/bower-libs/MathJax/'));
-			localStorage.settings = JSON.stringify(settings);
-		}
-		version = "v22";
-	}
-
-	localStorage.version = version;
-    return localStorage;
-});
-
 /*!
  * XRegExp-All 3.0.0-pre
  * <http://xregexp.com/>
@@ -8834,772 +8553,15 @@ return XRegExp;
 }));
 
 
-// Domain Public by Eric Wendelin http://www.eriwen.com/ (2008)
-//                  Luke Smith http://lucassmith.name/ (2008)
-//                  Loic Dachary <loic@dachary.org> (2008)
-//                  Johan Euphrosine <proppy@aminche.com> (2008)
-//                  Oyvind Sean Kinsey http://kinsey.no/blog (2010)
-//                  Victor Homyakov <victor-homyakov@users.sourceforge.net> (2010)
-/*global module, exports, define, ActiveXObject*/
-(function(global, factory) {
-    if (typeof exports === 'object') {
-        // Node
-        module.exports = factory();
-    } else if (typeof define === 'function' && define.amd) {
-        // AMD
-        define('stacktrace',factory);
-    } else {
-        // Browser globals
-        global.printStackTrace = factory();
-    }
-}(this, function() {
-    /**
-     * Main function giving a function stack trace with a forced or passed in Error
-     *
-     * @cfg {Error} e The error to create a stacktrace from (optional)
-     * @cfg {Boolean} guess If we should try to resolve the names of anonymous functions
-     * @return {Array} of Strings with functions, lines, files, and arguments where possible
-     */
-    function printStackTrace(options) {
-        options = options || {guess: true};
-        var ex = options.e || null, guess = !!options.guess, mode = options.mode || null;
-        var p = new printStackTrace.implementation(), result = p.run(ex, mode);
-        return (guess) ? p.guessAnonymousFunctions(result) : result;
-    }
-
-    printStackTrace.implementation = function() {
-    };
-
-    printStackTrace.implementation.prototype = {
-        /**
-         * @param {Error} [ex] The error to create a stacktrace from (optional)
-         * @param {String} [mode] Forced mode (optional, mostly for unit tests)
-         */
-        run: function(ex, mode) {
-            ex = ex || this.createException();
-            mode = mode || this.mode(ex);
-            if (mode === 'other') {
-                return this.other(arguments.callee);
-            } else {
-                return this[mode](ex);
-            }
-        },
-
-        createException: function() {
-            try {
-                this.undef();
-            } catch (e) {
-                return e;
-            }
-        },
-
-        /**
-         * Mode could differ for different exception, e.g.
-         * exceptions in Chrome may or may not have arguments or stack.
-         *
-         * @return {String} mode of operation for the exception
-         */
-        mode: function(e) {
-            if (typeof window !== 'undefined' && window.navigator.userAgent.indexOf('PhantomJS') > -1) {
-                return 'phantomjs';
-            }
-
-            if (e['arguments'] && e.stack) {
-                return 'chrome';
-            }
-
-            if (e.stack && e.sourceURL) {
-                return 'safari';
-            }
-
-            if (e.stack && e.number) {
-                return 'ie';
-            }
-
-            if (e.stack && e.fileName) {
-                return 'firefox';
-            }
-
-            if (e.message && e['opera#sourceloc']) {
-                // e.message.indexOf("Backtrace:") > -1 -> opera9
-                // 'opera#sourceloc' in e -> opera9, opera10a
-                // !e.stacktrace -> opera9
-                if (!e.stacktrace) {
-                    return 'opera9'; // use e.message
-                }
-                if (e.message.indexOf('\n') > -1 && e.message.split('\n').length > e.stacktrace.split('\n').length) {
-                    // e.message may have more stack entries than e.stacktrace
-                    return 'opera9'; // use e.message
-                }
-                return 'opera10a'; // use e.stacktrace
-            }
-
-            if (e.message && e.stack && e.stacktrace) {
-                // e.stacktrace && e.stack -> opera10b
-                if (e.stacktrace.indexOf("called from line") < 0) {
-                    return 'opera10b'; // use e.stacktrace, format differs from 'opera10a'
-                }
-                // e.stacktrace && e.stack -> opera11
-                return 'opera11'; // use e.stacktrace, format differs from 'opera10a', 'opera10b'
-            }
-
-            if (e.stack && !e.fileName) {
-                // Chrome 27 does not have e.arguments as earlier versions,
-                // but still does not have e.fileName as Firefox
-                return 'chrome';
-            }
-
-            return 'other';
-        },
-
-        /**
-         * Given a context, function name, and callback function, overwrite it so that it calls
-         * printStackTrace() first with a callback and then runs the rest of the body.
-         *
-         * @param {Object} context of execution (e.g. window)
-         * @param {String} functionName to instrument
-         * @param {Function} callback function to call with a stack trace on invocation
-         */
-        instrumentFunction: function(context, functionName, callback) {
-            context = context || window;
-            var original = context[functionName];
-            context[functionName] = function instrumented() {
-                callback.call(this, printStackTrace().slice(4));
-                return context[functionName]._instrumented.apply(this, arguments);
-            };
-            context[functionName]._instrumented = original;
-        },
-
-        /**
-         * Given a context and function name of a function that has been
-         * instrumented, revert the function to it's original (non-instrumented)
-         * state.
-         *
-         * @param {Object} context of execution (e.g. window)
-         * @param {String} functionName to de-instrument
-         */
-        deinstrumentFunction: function(context, functionName) {
-            if (context[functionName].constructor === Function &&
-                context[functionName]._instrumented &&
-                context[functionName]._instrumented.constructor === Function) {
-                context[functionName] = context[functionName]._instrumented;
-            }
-        },
-
-        /**
-         * Given an Error object, return a formatted Array based on Chrome's stack string.
-         *
-         * @param e - Error object to inspect
-         * @return Array<String> of function calls, files and line numbers
-         */
-        chrome: function(e) {
-            return (e.stack + '\n')
-                .replace(/^[\s\S]+?\s+at\s+/, ' at ') // remove message
-                .replace(/^\s+(at eval )?at\s+/gm, '') // remove 'at' and indentation
-                .replace(/^([^\(]+?)([\n$])/gm, '{anonymous}() ($1)$2')
-                .replace(/^Object.<anonymous>\s*\(([^\)]+)\)/gm, '{anonymous}() ($1)')
-                .replace(/^(.+) \((.+)\)$/gm, '$1@$2')
-                .split('\n')
-                .slice(0, -1);
-        },
-
-        /**
-         * Given an Error object, return a formatted Array based on Safari's stack string.
-         *
-         * @param e - Error object to inspect
-         * @return Array<String> of function calls, files and line numbers
-         */
-        safari: function(e) {
-            return e.stack.replace(/\[native code\]\n/m, '')
-                .replace(/^(?=\w+Error\:).*$\n/m, '')
-                .replace(/^@/gm, '{anonymous}()@')
-                .split('\n');
-        },
-
-        /**
-         * Given an Error object, return a formatted Array based on IE's stack string.
-         *
-         * @param e - Error object to inspect
-         * @return Array<String> of function calls, files and line numbers
-         */
-        ie: function(e) {
-            return e.stack
-                .replace(/^\s*at\s+(.*)$/gm, '$1')
-                .replace(/^Anonymous function\s+/gm, '{anonymous}() ')
-                .replace(/^(.+)\s+\((.+)\)$/gm, '$1@$2')
-                .split('\n')
-                .slice(1);
-        },
-
-        /**
-         * Given an Error object, return a formatted Array based on Firefox's stack string.
-         *
-         * @param e - Error object to inspect
-         * @return Array<String> of function calls, files and line numbers
-         */
-        firefox: function(e) {
-            return e.stack.replace(/(?:\n@:0)?\s+$/m, '')
-                .replace(/^(?:\((\S*)\))?@/gm, '{anonymous}($1)@')
-                .split('\n');
-        },
-
-        opera11: function(e) {
-            var ANON = '{anonymous}', lineRE = /^.*line (\d+), column (\d+)(?: in (.+))? in (\S+):$/;
-            var lines = e.stacktrace.split('\n'), result = [];
-
-            for (var i = 0, len = lines.length; i < len; i += 2) {
-                var match = lineRE.exec(lines[i]);
-                if (match) {
-                    var location = match[4] + ':' + match[1] + ':' + match[2];
-                    var fnName = match[3] || "global code";
-                    fnName = fnName.replace(/<anonymous function: (\S+)>/, "$1").replace(/<anonymous function>/, ANON);
-                    result.push(fnName + '@' + location + ' -- ' + lines[i + 1].replace(/^\s+/, ''));
-                }
-            }
-
-            return result;
-        },
-
-        opera10b: function(e) {
-            // "<anonymous function: run>([arguments not available])@file://localhost/G:/js/stacktrace.js:27\n" +
-            // "printStackTrace([arguments not available])@file://localhost/G:/js/stacktrace.js:18\n" +
-            // "@file://localhost/G:/js/test/functional/testcase1.html:15"
-            var lineRE = /^(.*)@(.+):(\d+)$/;
-            var lines = e.stacktrace.split('\n'), result = [];
-
-            for (var i = 0, len = lines.length; i < len; i++) {
-                var match = lineRE.exec(lines[i]);
-                if (match) {
-                    var fnName = match[1] ? (match[1] + '()') : "global code";
-                    result.push(fnName + '@' + match[2] + ':' + match[3]);
-                }
-            }
-
-            return result;
-        },
-
-        /**
-         * Given an Error object, return a formatted Array based on Opera 10's stacktrace string.
-         *
-         * @param e - Error object to inspect
-         * @return Array<String> of function calls, files and line numbers
-         */
-        opera10a: function(e) {
-            // "  Line 27 of linked script file://localhost/G:/js/stacktrace.js\n"
-            // "  Line 11 of inline#1 script in file://localhost/G:/js/test/functional/testcase1.html: In function foo\n"
-            var ANON = '{anonymous}', lineRE = /Line (\d+).*script (?:in )?(\S+)(?:: In function (\S+))?$/i;
-            var lines = e.stacktrace.split('\n'), result = [];
-
-            for (var i = 0, len = lines.length; i < len; i += 2) {
-                var match = lineRE.exec(lines[i]);
-                if (match) {
-                    var fnName = match[3] || ANON;
-                    result.push(fnName + '()@' + match[2] + ':' + match[1] + ' -- ' + lines[i + 1].replace(/^\s+/, ''));
-                }
-            }
-
-            return result;
-        },
-
-        // Opera 7.x-9.2x only!
-        opera9: function(e) {
-            // "  Line 43 of linked script file://localhost/G:/js/stacktrace.js\n"
-            // "  Line 7 of inline#1 script in file://localhost/G:/js/test/functional/testcase1.html\n"
-            var ANON = '{anonymous}', lineRE = /Line (\d+).*script (?:in )?(\S+)/i;
-            var lines = e.message.split('\n'), result = [];
-
-            for (var i = 2, len = lines.length; i < len; i += 2) {
-                var match = lineRE.exec(lines[i]);
-                if (match) {
-                    result.push(ANON + '()@' + match[2] + ':' + match[1] + ' -- ' + lines[i + 1].replace(/^\s+/, ''));
-                }
-            }
-
-            return result;
-        },
-
-        phantomjs: function(e) {
-            var ANON = '{anonymous}', lineRE = /(\S+) \((\S+)\)/i;
-            var lines = e.stack.split('\n'), result = [];
-
-            for (var i = 1, len = lines.length; i < len; i++) {
-                lines[i] = lines[i].replace(/^\s+at\s+/gm, '');
-                var match = lineRE.exec(lines[i]);
-                if (match) {
-                    result.push(match[1] + '()@' + match[2]);
-                }
-                else {
-                    result.push(ANON + '()@' + lines[i]);
-                }
-            }
-
-            return result;
-        },
-
-        // Safari 5-, IE 9-, and others
-        other: function(curr) {
-            var ANON = '{anonymous}', fnRE = /function(?:\s+([\w$]+))?\s*\(/, stack = [], fn, args, maxStackSize = 10;
-            var slice = Array.prototype.slice;
-            while (curr && stack.length < maxStackSize) {
-                fn = fnRE.test(curr.toString()) ? RegExp.$1 || ANON : ANON;
-                try {
-                    args = slice.call(curr['arguments'] || []);
-                } catch (e) {
-                    args = ['Cannot access arguments: ' + e];
-                }
-                stack[stack.length] = fn + '(' + this.stringifyArguments(args) + ')';
-                try {
-                    curr = curr.caller;
-                } catch (e) {
-                    stack[stack.length] = 'Cannot access caller: ' + e;
-                    break;
-                }
-            }
-            return stack;
-        },
-
-        /**
-         * Given arguments array as a String, substituting type names for non-string types.
-         *
-         * @param {Arguments,Array} args
-         * @return {String} stringified arguments
-         */
-        stringifyArguments: function(args) {
-            var result = [];
-            var slice = Array.prototype.slice;
-            for (var i = 0; i < args.length; ++i) {
-                var arg = args[i];
-                if (arg === undefined) {
-                    result[i] = 'undefined';
-                } else if (arg === null) {
-                    result[i] = 'null';
-                } else if (arg.constructor) {
-                    // TODO constructor comparison does not work for iframes
-                    if (arg.constructor === Array) {
-                        if (arg.length < 3) {
-                            result[i] = '[' + this.stringifyArguments(arg) + ']';
-                        } else {
-                            result[i] = '[' + this.stringifyArguments(slice.call(arg, 0, 1)) + '...' + this.stringifyArguments(slice.call(arg, -1)) + ']';
-                        }
-                    } else if (arg.constructor === Object) {
-                        result[i] = '#object';
-                    } else if (arg.constructor === Function) {
-                        result[i] = '#function';
-                    } else if (arg.constructor === String) {
-                        result[i] = '"' + arg + '"';
-                    } else if (arg.constructor === Number) {
-                        result[i] = arg;
-                    } else {
-                        result[i] = '?';
-                    }
-                }
-            }
-            return result.join(',');
-        },
-
-        sourceCache: {},
-
-        /**
-         * @return {String} the text from a given URL
-         */
-        ajax: function(url) {
-            var req = this.createXMLHTTPObject();
-            if (req) {
-                try {
-                    req.open('GET', url, false);
-                    //req.overrideMimeType('text/plain');
-                    //req.overrideMimeType('text/javascript');
-                    req.send(null);
-                    //return req.status == 200 ? req.responseText : '';
-                    return req.responseText;
-                } catch (e) {
-                }
-            }
-            return '';
-        },
-
-        /**
-         * Try XHR methods in order and store XHR factory.
-         *
-         * @return {XMLHttpRequest} XHR function or equivalent
-         */
-        createXMLHTTPObject: function() {
-            var xmlhttp, XMLHttpFactories = [
-                function() {
-                    return new XMLHttpRequest();
-                }, function() {
-                    return new ActiveXObject('Msxml2.XMLHTTP');
-                }, function() {
-                    return new ActiveXObject('Msxml3.XMLHTTP');
-                }, function() {
-                    return new ActiveXObject('Microsoft.XMLHTTP');
-                }
-            ];
-            for (var i = 0; i < XMLHttpFactories.length; i++) {
-                try {
-                    xmlhttp = XMLHttpFactories[i]();
-                    // Use memoization to cache the factory
-                    this.createXMLHTTPObject = XMLHttpFactories[i];
-                    return xmlhttp;
-                } catch (e) {
-                }
-            }
-        },
-
-        /**
-         * Given a URL, check if it is in the same domain (so we can get the source
-         * via Ajax).
-         *
-         * @param url {String} source url
-         * @return {Boolean} False if we need a cross-domain request
-         */
-        isSameDomain: function(url) {
-            return typeof location !== "undefined" && url.indexOf(location.hostname) !== -1; // location may not be defined, e.g. when running from nodejs.
-        },
-
-        /**
-         * Get source code from given URL if in the same domain.
-         *
-         * @param url {String} JS source URL
-         * @return {Array} Array of source code lines
-         */
-        getSource: function(url) {
-            // TODO reuse source from script tags?
-            if (!(url in this.sourceCache)) {
-                this.sourceCache[url] = this.ajax(url).split('\n');
-            }
-            return this.sourceCache[url];
-        },
-
-        guessAnonymousFunctions: function(stack) {
-            for (var i = 0; i < stack.length; ++i) {
-                var reStack = /\{anonymous\}\(.*\)@(.*)/,
-                    reRef = /^(.*?)(?::(\d+))(?::(\d+))?(?: -- .+)?$/,
-                    frame = stack[i], ref = reStack.exec(frame);
-
-                if (ref) {
-                    var m = reRef.exec(ref[1]);
-                    if (m) { // If falsey, we did not get any file/line information
-                        var file = m[1], lineno = m[2], charno = m[3] || 0;
-                        if (file && this.isSameDomain(file) && lineno) {
-                            var functionName = this.guessAnonymousFunction(file, lineno, charno);
-                            stack[i] = frame.replace('{anonymous}', functionName);
-                        }
-                    }
-                }
-            }
-            return stack;
-        },
-
-        guessAnonymousFunction: function(url, lineNo, charNo) {
-            var ret;
-            try {
-                ret = this.findFunctionName(this.getSource(url), lineNo);
-            } catch (e) {
-                ret = 'getSource failed with url: ' + url + ', exception: ' + e.toString();
-            }
-            return ret;
-        },
-
-        findFunctionName: function(source, lineNo) {
-            // FIXME findFunctionName fails for compressed source
-            // (more than one function on the same line)
-            // function {name}({args}) m[1]=name m[2]=args
-            var reFunctionDeclaration = /function\s+([^(]*?)\s*\(([^)]*)\)/;
-            // {name} = function ({args}) TODO args capture
-            // /['"]?([0-9A-Za-z_]+)['"]?\s*[:=]\s*function(?:[^(]*)/
-            var reFunctionExpression = /['"]?([$_A-Za-z][$_A-Za-z0-9]*)['"]?\s*[:=]\s*function\b/;
-            // {name} = eval()
-            var reFunctionEvaluation = /['"]?([$_A-Za-z][$_A-Za-z0-9]*)['"]?\s*[:=]\s*(?:eval|new Function)\b/;
-            // Walk backwards in the source lines until we find
-            // the line which matches one of the patterns above
-            var code = "", line, maxLines = Math.min(lineNo, 20), m, commentPos;
-            for (var i = 0; i < maxLines; ++i) {
-                // lineNo is 1-based, source[] is 0-based
-                line = source[lineNo - i - 1];
-                commentPos = line.indexOf('//');
-                if (commentPos >= 0) {
-                    line = line.substr(0, commentPos);
-                }
-                // TODO check other types of comments? Commented code may lead to false positive
-                if (line) {
-                    code = line + code;
-                    m = reFunctionExpression.exec(code);
-                    if (m && m[1]) {
-                        return m[1];
-                    }
-                    m = reFunctionDeclaration.exec(code);
-                    if (m && m[1]) {
-                        //return m[1] + "(" + (m[2] || "") + ")";
-                        return m[1];
-                    }
-                    m = reFunctionEvaluation.exec(code);
-                    if (m && m[1]) {
-                        return m[1];
-                    }
-                }
-            }
-            return '(?)';
-        }
-    };
-
-    return printStackTrace;
-}));
-
-/* FileSaver.js
- * A saveAs() FileSaver implementation.
- * 2014-12-17
- *
- * By Eli Grey, http://eligrey.com
- * License: X11/MIT
- *   See https://github.com/eligrey/FileSaver.js/blob/master/LICENSE.md
- */
-
-/*global self */
-/*jslint bitwise: true, indent: 4, laxbreak: true, laxcomma: true, smarttabs: true, plusplus: true */
-
-/*! @source http://purl.eligrey.com/github/FileSaver.js/blob/master/FileSaver.js */
-
-var saveAs = saveAs
-  // IE 10+ (native saveAs)
-  || (typeof navigator !== "undefined" &&
-      navigator.msSaveOrOpenBlob && navigator.msSaveOrOpenBlob.bind(navigator))
-  // Everyone else
-  || (function(view) {
-	
-	// IE <10 is explicitly unsupported
-	if (typeof navigator !== "undefined" &&
-	    /MSIE [1-9]\./.test(navigator.userAgent)) {
-		return;
-	}
-	var
-		  doc = view.document
-		  // only get URL when necessary in case Blob.js hasn't overridden it yet
-		, get_URL = function() {
-			return view.URL || view.webkitURL || view;
-		}
-		, save_link = doc.createElementNS("http://www.w3.org/1999/xhtml", "a")
-		, can_use_save_link = "download" in save_link
-		, click = function(node) {
-			var event = doc.createEvent("MouseEvents");
-			event.initMouseEvent(
-				"click", true, false, view, 0, 0, 0, 0, 0
-				, false, false, false, false, 0, null
-			);
-			node.dispatchEvent(event);
-		}
-		, webkit_req_fs = view.webkitRequestFileSystem
-		, req_fs = view.requestFileSystem || webkit_req_fs || view.mozRequestFileSystem
-		, throw_outside = function(ex) {
-			(view.setImmediate || view.setTimeout)(function() {
-				throw ex;
-			}, 0);
-		}
-		, force_saveable_type = "application/octet-stream"
-		, fs_min_size = 0
-		// See https://code.google.com/p/chromium/issues/detail?id=375297#c7 and
-		// https://github.com/eligrey/FileSaver.js/commit/485930a#commitcomment-8768047
-		// for the reasoning behind the timeout and revocation flow
-		, arbitrary_revoke_timeout = 500 // in ms
-		, revoke = function(file) {
-			var revoker = function() {
-				if (typeof file === "string") { // file is an object URL
-					get_URL().revokeObjectURL(file);
-				} else { // file is a File
-					file.remove();
-				}
-			};
-			if (view.chrome) {
-				revoker();
-			} else {
-				setTimeout(revoker, arbitrary_revoke_timeout);
-			}
-		}
-		, dispatch = function(filesaver, event_types, event) {
-			event_types = [].concat(event_types);
-			var i = event_types.length;
-			while (i--) {
-				var listener = filesaver["on" + event_types[i]];
-				if (typeof listener === "function") {
-					try {
-						listener.call(filesaver, event || filesaver);
-					} catch (ex) {
-						throw_outside(ex);
-					}
-				}
-			}
-		}
-		, FileSaver = function(blob, name) {
-			// First try a.download, then web filesystem, then object URLs
-			var
-				  filesaver = this
-				, type = blob.type
-				, blob_changed = false
-				, object_url
-				, target_view
-				, dispatch_all = function() {
-					dispatch(filesaver, "writestart progress write writeend".split(" "));
-				}
-				// on any filesys errors revert to saving with object URLs
-				, fs_error = function() {
-					// don't create more object URLs than needed
-					if (blob_changed || !object_url) {
-						object_url = get_URL().createObjectURL(blob);
-					}
-					if (target_view) {
-						target_view.location.href = object_url;
-					} else {
-						var new_tab = view.open(object_url, "_blank");
-						if (new_tab == undefined && typeof safari !== "undefined") {
-							//Apple do not allow window.open, see http://bit.ly/1kZffRI
-							view.location.href = object_url
-						}
-					}
-					filesaver.readyState = filesaver.DONE;
-					dispatch_all();
-					revoke(object_url);
-				}
-				, abortable = function(func) {
-					return function() {
-						if (filesaver.readyState !== filesaver.DONE) {
-							return func.apply(this, arguments);
-						}
-					};
-				}
-				, create_if_not_found = {create: true, exclusive: false}
-				, slice
-			;
-			filesaver.readyState = filesaver.INIT;
-			if (!name) {
-				name = "download";
-			}
-			if (can_use_save_link) {
-				object_url = get_URL().createObjectURL(blob);
-				save_link.href = object_url;
-				save_link.download = name;
-				click(save_link);
-				filesaver.readyState = filesaver.DONE;
-				dispatch_all();
-				revoke(object_url);
-				return;
-			}
-			// Object and web filesystem URLs have a problem saving in Google Chrome when
-			// viewed in a tab, so I force save with application/octet-stream
-			// http://code.google.com/p/chromium/issues/detail?id=91158
-			// Update: Google errantly closed 91158, I submitted it again:
-			// https://code.google.com/p/chromium/issues/detail?id=389642
-			if (view.chrome && type && type !== force_saveable_type) {
-				slice = blob.slice || blob.webkitSlice;
-				blob = slice.call(blob, 0, blob.size, force_saveable_type);
-				blob_changed = true;
-			}
-			// Since I can't be sure that the guessed media type will trigger a download
-			// in WebKit, I append .download to the filename.
-			// https://bugs.webkit.org/show_bug.cgi?id=65440
-			if (webkit_req_fs && name !== "download") {
-				name += ".download";
-			}
-			if (type === force_saveable_type || webkit_req_fs) {
-				target_view = view;
-			}
-			if (!req_fs) {
-				fs_error();
-				return;
-			}
-			fs_min_size += blob.size;
-			req_fs(view.TEMPORARY, fs_min_size, abortable(function(fs) {
-				fs.root.getDirectory("saved", create_if_not_found, abortable(function(dir) {
-					var save = function() {
-						dir.getFile(name, create_if_not_found, abortable(function(file) {
-							file.createWriter(abortable(function(writer) {
-								writer.onwriteend = function(event) {
-									target_view.location.href = file.toURL();
-									filesaver.readyState = filesaver.DONE;
-									dispatch(filesaver, "writeend", event);
-									revoke(file);
-								};
-								writer.onerror = function() {
-									var error = writer.error;
-									if (error.code !== error.ABORT_ERR) {
-										fs_error();
-									}
-								};
-								"writestart progress write abort".split(" ").forEach(function(event) {
-									writer["on" + event] = filesaver["on" + event];
-								});
-								writer.write(blob);
-								filesaver.abort = function() {
-									writer.abort();
-									filesaver.readyState = filesaver.DONE;
-								};
-								filesaver.readyState = filesaver.WRITING;
-							}), fs_error);
-						}), fs_error);
-					};
-					dir.getFile(name, {create: false}, abortable(function(file) {
-						// delete file if it already exists
-						file.remove();
-						save();
-					}), abortable(function(ex) {
-						if (ex.code === ex.NOT_FOUND_ERR) {
-							save();
-						} else {
-							fs_error();
-						}
-					}));
-				}), fs_error);
-			}), fs_error);
-		}
-		, FS_proto = FileSaver.prototype
-		, saveAs = function(blob, name) {
-			return new FileSaver(blob, name);
-		}
-	;
-	FS_proto.abort = function() {
-		var filesaver = this;
-		filesaver.readyState = filesaver.DONE;
-		dispatch(filesaver, "abort");
-	};
-	FS_proto.readyState = FS_proto.INIT = 0;
-	FS_proto.WRITING = 1;
-	FS_proto.DONE = 2;
-
-	FS_proto.error =
-	FS_proto.onwritestart =
-	FS_proto.onprogress =
-	FS_proto.onwrite =
-	FS_proto.onabort =
-	FS_proto.onerror =
-	FS_proto.onwriteend =
-		null;
-
-	return saveAs;
-}(
-	   typeof self !== "undefined" && self
-	|| typeof window !== "undefined" && window
-	|| this.content
-));
-// `self` is undefined in Firefox for Android content script context
-// while `this` is nsIContentFrameMessageManager
-// with an attribute `content` that corresponds to the window
-
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = saveAs;
-} else if ((typeof define !== "undefined" && define !== null) && (define.amd != null)) {
-  define('FileSaver',[], function() {
-    return saveAs;
-  });
-}
-;
 define('utils',[
 	// "jquery",
 	"underscore",
-	"storage",
+	// "storage",
 	"crel",
 	"xregexp",
-	"stacktrace",
-	"FileSaver"
-], function( _, storage, crel, XRegExp, printStackTrace, saveAs) {
+	// "stacktrace",
+	// "FileSaver"
+], function( _, /*storage, */crel, XRegExp/*, printStackTrace, saveAs*/) {
 
 	var utils = {};
 
@@ -10047,9 +9009,10 @@ define('utils',[
 		});
 	};
 
+	/*
 	// Export data on disk
 	utils.saveAs = function(content, filename) {
-		if(saveAs !== undefined && !/constructor/i.test(window.HTMLElement) /* safari does not support saveAs */) {
+		if(saveAs !== undefined && !/constructor/i.test(window.HTMLElement)) {
 			if(_.isString(content)) {
 				content = new Blob([
 					content
@@ -10076,6 +9039,7 @@ define('utils',[
 			}
 		}
 	};
+	*/
 
 	// Time shared by others modules
 	utils.updateCurrentTime = function() {
@@ -10085,57 +9049,63 @@ define('utils',[
 
 	// Serialize sync/publish attributes and store it in the storage
 	utils.storeAttributes = function(attributes) {
-		var storeIndex = attributes.syncIndex || attributes.publishIndex;
-		// Don't store sync/publish index
-		var storedAttributes = _.omit(attributes, "syncIndex", "publishIndex", "provider");
-		// Store providerId instead of provider
-		storedAttributes.provider = attributes.provider.providerId;
-		storage[storeIndex] = JSON.stringify(storedAttributes);
+		// return;
+		// var storeIndex = attributes.syncIndex || attributes.publishIndex;
+		// // Don't store sync/publish index
+		// var storedAttributes = _.omit(attributes, "syncIndex", "publishIndex", "provider");
+		// // Store providerId instead of provider
+		// storedAttributes.provider = attributes.provider.providerId;
+		// storage[storeIndex] = JSON.stringify(storedAttributes);
 	};
 
 	// Retrieve/parse an index array from storage
 	utils.retrieveIndexArray = function(storeIndex) {
-		try {
-			return _.compact(storage[storeIndex].split(";"));
-		}
-		catch(e) {
-			storage[storeIndex] = ";";
-			return [];
-		}
+		return;
+		// try {
+		// 	return _.compact(storage[storeIndex].split(";"));
+		// }
+		// catch(e) {
+		// 	storage[storeIndex] = ";";
+		// 	return [];
+		// }
 	};
 
 	// Append an index to an array in storage
 	utils.appendIndexToArray = function(storeIndex, index) {
-		storage[storeIndex] += index + ";";
+		return;
+		// storage[storeIndex] += index + ";";
 	};
 
 	// Remove an index from an array in storage
 	utils.removeIndexFromArray = function(storeIndex, index) {
-		storage[storeIndex] = storage[storeIndex].replace(";" + index + ";", ";");
+		return;
+		// storage[storeIndex] = storage[storeIndex].replace(";" + index + ";", ";");
 	};
 
 	// Retrieve/parse an object from storage. Returns undefined if error.
 	utils.retrieveIgnoreError = function(storeIndex) {
+		/*
 		try {
 			return JSON.parse(storage[storeIndex]);
 		}
 		catch(e) {
 			return undefined;
 		}
+		*/
 	};
 
 	var eventList = [];
 	utils.logValue = function(value) {
-		eventList.unshift(value);
-		if(eventList.length > 5) {
-			eventList.pop();
-		}
+		// eventList.unshift(value);
+		// if(eventList.length > 5) {
+		// 	eventList.pop();
+		// }
 	};
 	utils.logStackTrace = function() {
-		eventList.unshift(printStackTrace());
-		if(eventList.length > 5) {
-			eventList.pop();
-		}
+		// eventList.unshift(printStackTrace());
+		// if(eventList.length > 5) {
+		// 	eventList.pop();
+		// }
 	};
 	utils.formatEventList = function() {
 		var result = [];
@@ -10610,99 +9580,8 @@ define('utils',[
 	return utils;
 });
 
-define('constants',[], function() {
-	var constants = {};
-	constants.VERSION = "4.5.0";
-	constants.MAIN_URL = "https://stackedit.io/";
-	constants.GOOGLE_ANALYTICS_ACCOUNT_ID = "UA-39556145-1";
-	constants.GOOGLE_API_KEY = "AIzaSyAeCU8CGcSkn0z9js6iocHuPBX4f_mMWkw";
-	constants.GOOGLE_DRIVE_APP_ID = "241271498917";
-	constants.DROPBOX_APP_KEY = "lq6mwopab8wskas";
-	constants.DROPBOX_APP_SECRET = "851fgnucpezy84t";
-	constants.DROPBOX_RESTRICTED_APP_KEY = "sw0hlixhr8q1xk0";
-	constants.DROPBOX_RESTRICTED_APP_SECRET = "1r808p2xygs6lbg";
-	constants.BITLY_ACCESS_TOKEN = "317e033bfd48cf31155a68a536b1860013b09c4c";
-	constants.DEFAULT_FILE_TITLE = "Title";
-	constants.DEFAULT_FOLDER_NAME = "New folder";
-	constants.GDRIVE_DEFAULT_FILE_TITLE = "New Markdown document";
-	constants.EDITOR_DEFAULT_PADDING = 35;
-	constants.CHECK_ONLINE_PERIOD = 120000;
-	constants.AJAX_TIMEOUT = 30000;
-	constants.ASYNC_TASK_DEFAULT_TIMEOUT = 60000;
-	constants.ASYNC_TASK_LONG_TIMEOUT = 180000;
-	constants.USER_IDLE_THRESHOLD = 300000;
-	constants.IMPORT_FILE_MAX_CONTENT_SIZE = 100000;
-	constants.IMPORT_IMG_MAX_CONTENT_SIZE = 10000000;
-	constants.COUCHDB_PAGE_SIZE = 25;
-	constants.TEMPORARY_FILE_INDEX = "file.tempIndex";
-	constants.WELCOME_DOCUMENT_TITLE = "Hello!";
-	constants.DOWNLOAD_IMPORT_URL = "/downloadImport";
-	constants.PICASA_IMPORT_IMG_URL = "/picasaImportImg";
-	constants.SSH_PUBLISH_URL = '/sshPublish';
-	constants.PDF_EXPORT_URL = "/pdfExport";
-	constants.COUCHDB_URL = 'https://stackedit.couchappy.com/documents';
-
-	// Site dependent
-	constants.BASE_URL = "http://localhost/";
-	constants.GOOGLE_CLIENT_ID = '241271498917-lev37kef013q85avc91am1gccg5g8lrb.apps.googleusercontent.com';
-	constants.GITHUB_CLIENT_ID = 'e47fef6055344579799d';
-	constants.GATEKEEPER_URL = "https://stackedit-gatekeeper-localhost.herokuapp.com/";
-	constants.TUMBLR_PROXY_URL = "https://stackedit-tumblr-proxy-local.herokuapp.com/";
-	constants.WORDPRESS_CLIENT_ID = '23361';
-	constants.WORDPRESS_PROXY_URL = "https://stackedit-io-wordpress-proxy.herokuapp.com/";
-
-	if(location.hostname.indexOf("stackedit.io") === 0) {
-		constants.BASE_URL = constants.MAIN_URL;
-		constants.GOOGLE_CLIENT_ID = '241271498917-t4t7d07qis7oc0ahaskbif3ft6tk63cd.apps.googleusercontent.com';
-		constants.GITHUB_CLIENT_ID = '710fc67886ab1ae8fee6';
-		constants.GATEKEEPER_URL = "https://stackedit-io-gatekeeper.herokuapp.com/";
-		constants.TUMBLR_PROXY_URL = "https://stackedit-io-tumblr-proxy.herokuapp.com/";
-	}
-	else if(location.hostname.indexOf("benweet.github.io") === 0) {
-		constants.BASE_URL = 'http://benweet.github.io/stackedit/';
-		constants.GOOGLE_CLIENT_ID = '241271498917-jpto9lls9fqnem1e4h6ppds9uob8rpvu.apps.googleusercontent.com';
-		constants.GITHUB_CLIENT_ID = 'fa0d09514da8377ee32e';
-		constants.GATEKEEPER_URL = "https://stackedit-gatekeeper.herokuapp.com/";
-		constants.TUMBLR_PROXY_URL = "https://stackedit-tumblr-proxy.herokuapp.com/";
-		constants.WORDPRESS_CLIENT_ID = '3185';
-		constants.WORDPRESS_PROXY_URL = "https://stackedit-wordpress-proxy.herokuapp.com/";
-	}
-	else if(location.hostname.indexOf("stackedit-beta.herokuapp.com") === 0) {
-		constants.BASE_URL = 'https://stackedit-beta.herokuapp.com/';
-		constants.GOOGLE_CLIENT_ID = '241271498917-9bbplknkt0ljv5gaudhoiogp13hd18be.apps.googleusercontent.com';
-		constants.GITHUB_CLIENT_ID = 'e9034ae191c3a8a1c5ed';
-		constants.GATEKEEPER_URL = "https://stackedit-beta-gatekeeper.herokuapp.com/";
-		constants.TUMBLR_PROXY_URL = "https://stackedit-beta-tumblr-proxy.herokuapp.com/";
-		constants.WORDPRESS_CLIENT_ID = '34786';
-		constants.WORDPRESS_PROXY_URL = "https://stackedit-beta-wordpress-proxy.herokuapp.com/";
-	}
-	else if(location.hostname.indexOf("benweet.insomnia247.nl") === 0) {
-		constants.BASE_URL = "http://benweet.insomnia247.nl/stackedit/";
-		constants.GOOGLE_CLIENT_ID = '241271498917-52hae7a08hv7ltenv7km8h7lghno9sk3.apps.googleusercontent.com';
-		constants.GITHUB_CLIENT_ID = 'd2943d6074b2d9c4a830';
-		constants.GATEKEEPER_URL = "https://stackedit-gatekeeper-insomnia.herokuapp.com/";
-		constants.TUMBLR_PROXY_URL = "https://stackedit-tumblr-proxy-beta.herokuapp.com/";
-	}
-
-	constants.THEME_LIST = {
-		"blue": "Blue",
-		"default": "Default",
-		"gray": "Gray",
-		"night": "Night",
-		"school": "School",
-		"solarized-light": "Solarized Light",
-		"solarized-dark": "Solarized Dark"
-	};
-
-	return constants;
-});
-
 define('settings',[
-	"underscore",
-	"constants",
-	"storage"
-], function(_, constants, storage) {
-
+], function(_, constants) {
 	var settings = {
 		layoutOrientation: "horizontal",
 		editMode: 'ltr',
@@ -10711,62 +9590,9 @@ define('settings',[
 		fontSizeRatio: 1,
 		maxWidthRatio: 1,
 		cursorFocusRatio: 0.5,
-		defaultContent: "\n\n\n> Written with [StackEdit](" + constants.MAIN_URL + ").",
-		commitMsg: "Published with " + constants.MAIN_URL,
-		conflictMode: 'merge',
-		markdownMimeType: 'text/plain',
-		gdriveMultiAccount: 1,
-		gdriveFullAccess: true,
-		dropboxFullAccess: true,
-		githubFullAccess: true,
-		template: [
-			'<!DOCTYPE html>',
-			'<html>',
-			'<head>',
-			'<meta charset="utf-8">',
-			'<meta name="viewport" content="width=device-width, initial-scale=1.0">',
-			'<title><%= documentTitle %></title>',
-			'<link rel="stylesheet" href="' + constants.MAIN_URL + 'res-min/themes/base.css" />',
-			'<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>',
-			'</head>',
-			'<body><div class="container"><%= documentHTML %></div></body>',
-			'</html>'
-		].join('\n'),
-		pdfTemplate: [
-			'<!DOCTYPE html>',
-			'<html>',
-			'<head>',
-			'<meta charset="utf-8">',
-			'<title><%= documentTitle %></title>',
-			'<link rel="stylesheet" href="http://localhost/res-min/themes/base.css" />',
-			'<script type="text/x-mathjax-config">',
-			'MathJax.Hub.Config({ messageStyle: "none" });',
-			'</script>',
-			'<script type="text/javascript" src="http://localhost/res/bower-libs/MathJax/MathJax.js?config=TeX-AMS_HTML"></script>',
-			'</head>',
-			'<body><%= documentHTML %></body>',
-			'</html>'
-		].join('\n'),
-		pdfOptions: [
-			'{',
-			'    "marginTop": 25,',
-			'    "marginRight": 25,',
-			'    "marginBottom": 25,',
-			'    "marginLeft": 25,',
-			'    "pageSize": "A4"',
-			'}'
-		].join('\n'),
-		couchdbUrl: constants.COUCHDB_URL,
+		defaultContent: "Leanote",
 		extensionSettings: {}
 	};
-
-	try {
-		_.extend(settings, JSON.parse(storage.settings));
-	}
-	catch(e) {
-		// Ignore parsing error
-	}
-
 	return settings;
 });
 
@@ -11748,2546 +10574,6 @@ define('classes/Extension',[],function() {
 
     return Extension;
 });
-
-/*
-Copyright (c) 2010 Jeremy Faivre
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is furnished
-to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
-(function(){
-/**
- * Exception class thrown when an error occurs during parsing.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- *
- * @api
- */
- 
-/**
- * Constructor.
- *
- * @param string	message	The error message
- * @param integer   parsedLine The line where the error occurred
- * @param integer   snippet	The snippet of code near the problem
- * @param string	parsedFile The file name where the error occurred
- */
-
-var YamlParseException = function(message, parsedLine, snippet, parsedFile){
-
-		this.rawMessage = message;
-		this.parsedLine = (parsedLine !== undefined) ? parsedLine : -1;
-		this.snippet = (snippet !== undefined) ? snippet : null;
-		this.parsedFile = (parsedFile !== undefined) ? parsedFile : null;
-
-		this.updateRepr();
-		
-		this.message = message;
-
-};
-YamlParseException.prototype =
-{
-
-	name: 'YamlParseException',
-	message: null,
-	
-	parsedFile: null,
-	parsedLine: -1,
-	snippet: null,
-	rawMessage: null,
-
-	isDefined: function(input)
-	{
-		return input != undefined && input != null;
-	},
-
-	/**
-	* Gets the snippet of code near the error.
-	*
-	* @return string The snippet of code
-	*/
-	getSnippet: function()
-	{
-		return this.snippet;
-	},
-
-	/**
-	* Sets the snippet of code near the error.
-	*
-	* @param string snippet The code snippet
-	*/
-	setSnippet: function(snippet)
-	{
-		this.snippet = snippet;
-
-		this.updateRepr();
-	},
-
-	/**
-	* Gets the filename where the error occurred.
-	*
-	* This method returns null if a string is parsed.
-	*
-	* @return string The filename
-	*/
-	getParsedFile: function()
-	{
-		return this.parsedFile;
-	},
-
-	/**
-	* Sets the filename where the error occurred.
-	*
-	* @param string parsedFile The filename
-	*/
-	setParsedFile: function(parsedFile)
-	{
-		this.parsedFile = parsedFile;
-
-		this.updateRepr();
-	},
-
-	/**
-	* Gets the line where the error occurred.
-	*
-	* @return integer The file line
-	*/
-	getParsedLine: function()
-	{
-		return this.parsedLine;
-	},
-
-	/**
-	* Sets the line where the error occurred.
-	*
-	* @param integer parsedLine The file line
-	*/
-	setParsedLine: function(parsedLine)
-	{
-		this.parsedLine = parsedLine;
-
-		this.updateRepr();
-	},
-
-	updateRepr: function()
-	{
-		this.message = this.rawMessage;
-
-		var dot = false;
-		if ('.' === this.message.charAt(this.message.length - 1)) {
-			this.message = this.message.substring(0, this.message.length - 1);
-			dot = true;
-		}
-
-		if (null !== this.parsedFile) {
-			this.message += ' in ' + JSON.stringify(this.parsedFile);
-		}
-
-		if (this.parsedLine >= 0) {
-			this.message += ' at line ' + this.parsedLine;
-		}
-
-		if (this.snippet) {
-			this.message += ' (near "' + this.snippet + '")';
-		}
-
-		if (dot) {
-			this.message += '.';
-		}
-	}
-}
-/**
- * Yaml offers convenience methods to parse and dump YAML.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- *
- * @api
- */
-
-var YamlRunningUnderNode = false;
-var Yaml = function(){};
-Yaml.prototype =
-{
-
-	/**
-	 * Parses YAML into a JS representation.
-	 *
-	 * The parse method, when supplied with a YAML stream (file),
-	 * will do its best to convert YAML in a file into a JS representation.
-	 *
-	 *	Usage:
-	 *	<code>
-	 *	 obj = yaml.parseFile('config.yml');
-	 *	</code>
-	 *
-	 * @param string input Path of YAML file
-	 *
-	 * @return array The YAML converted to a JS representation
-	 *
-	 * @throws YamlParseException If the YAML is not valid
-	 */
-	parseFile: function(file /* String */, callback /* Function */)
-	{
-		if ( callback == null )
-		{
-			var input = this.getFileContents(file);
-			var ret = null;
-			try
-			{
-				ret = this.parse(input);
-			}
-			catch ( e )
-			{
-				if ( e instanceof YamlParseException ) {
-					e.setParsedFile(file);
-				}
-				throw e;
-			}
-			return ret;
-		}
-		
-		this.getFileContents(file, function(data)
-		{
-			callback(new Yaml().parse(data));
-		});
-	},
-
-	/**
-	 * Parses YAML into a JS representation.
-	 *
-	 * The parse method, when supplied with a YAML stream (string),
-	 * will do its best to convert YAML into a JS representation.
-	 *
-	 *	Usage:
-	 *	<code>
-	 *	 obj = yaml.parse(...);
-	 *	</code>
-	 *
-	 * @param string input string containing YAML
-	 *
-	 * @return array The YAML converted to a JS representation
-	 *
-	 * @throws YamlParseException If the YAML is not valid
-	 */
-	parse: function(input /* String */)
-	{
-		var yaml = new YamlParser();
-
-		return yaml.parse(input);
-	},
-
-	/**
-	 * Dumps a JS representation to a YAML string.
-	 *
-	 * The dump method, when supplied with an array, will do its best
-	 * to convert the array into friendly YAML.
-	 *
-	 * @param array	 array JS representation
-	 * @param integer inline The level where you switch to inline YAML
-	 *
-	 * @return string A YAML string representing the original JS representation
-    *
-    * @api
-    */
-	dump: function(array, inline, spaces)
-	{
-		if ( inline == null ) inline = 2;
-
-		var yaml = new YamlDumper();
-		if (spaces) {
-		    yaml.numSpacesForIndentation = spaces;
-		}
-
-		return yaml.dump(array, inline);
-	},
-	
-	getXHR: function()
-	{
-		if ( window.XMLHttpRequest )
-			return new XMLHttpRequest();
-		 
-		if ( window.ActiveXObject )
-		{
-			var names = [
-			"Msxml2.XMLHTTP.6.0",
-			"Msxml2.XMLHTTP.3.0",
-			"Msxml2.XMLHTTP",
-			"Microsoft.XMLHTTP"
-			];
-			
-			for ( var i = 0; i < 4; i++ )
-			{
-				try{ return new ActiveXObject(names[i]); }
-				catch(e){}
-			}
-		}
-		return null;
-	},
-	
-	getFileContents: function(file, callback)
-	{
-	    if ( YamlRunningUnderNode )
-	    {
-	        var fs = require('fs');
-	        if ( callback == null )
-	        {
-	            var data = fs.readFileSync(file);
-	            if (data == null) return null;
-	            return ''+data;
-	        }
-	        else
-	        {
-	            fs.readFile(file, function(err, data)
-	            {
-	                if (err)
-	                    callback(null);
-	                else
-	                    callback(data);
-	            });
-	        }
-	    }
-	    else
-	    {
-    		var request = this.getXHR();
-		
-    		// Sync
-    		if ( callback == null )
-    		{
-    			request.open('GET', file, false);                  
-    			request.send(null);
-
-    			if ( request.status == 200 || request.status == 0 )
-    				return request.responseText;
-			
-    			return null;
-    		}
-		
-    		// Async
-    		request.onreadystatechange = function()
-    		{
-    			if ( request.readyState == 4 )
-    				if ( request.status == 200 || request.status == 0 )
-    					callback(request.responseText);
-    				else
-    					callback(null);
-    		};
-    		request.open('GET', file, true);                  
-    		request.send(null);
-	    }
-	}
-};
-
-var YAML =
-{
-	/*
-	 * @param integer inline The level where you switch to inline YAML
-	 */
-	 
-	stringify: function(input, inline, spaces)
-	{
-		return new Yaml().dump(input, inline, spaces);
-	},
-	
-	parse: function(input)
-	{
-		return new Yaml().parse(input);
-	},
-	
-	load: function(file, callback)
-	{
-		return new Yaml().parseFile(file, callback);
-	}
-};
-
-// Handle node.js case
-if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-        exports = module.exports = YAML;
-        YamlRunningUnderNode = true;
-        
-        // Add require handler
-        (function () {
-            var require_handler = function (module, filename) {
-                // fill in result
-                module.exports = YAML.load(filename);
-            };
-
-            // register require extensions only if we're on node.js
-            // hack for browserify
-            if ( undefined !== require.extensions ) {
-                require.extensions['.yml'] = require_handler;
-                require.extensions['.yaml'] = require_handler;
-            }
-        }());
-    }
-}
-
-// Handle browser case
-if ( typeof(window) != "undefined" )
-{
-    window.YAML = YAML;
-}
-
-/**
- * YamlInline implements a YAML parser/dumper for the YAML inline syntax.
- */
-var YamlInline = function(){};
-YamlInline.prototype =
-{
-	i: null,
-	
-	/**
-	 * Convert a YAML string to a JS object.
-	 *
-	 * @param string value A YAML string
-	 *
-	 * @return object A JS object representing the YAML string
-	 */
-	parse: function(value)
-	{
-		var result = null;
-		value = this.trim(value);
-
-		if ( 0 == value.length )
-		{
-			return '';
-		}
-
-		switch ( value.charAt(0) )
-		{
-			case '[':
-				result = this.parseSequence(value);
-				break;
-			case '{':
-				result = this.parseMapping(value);
-				break;
-			default:
-				result = this.parseScalar(value);
-		}
-
-		// some comment can end the scalar
-		if ( value.substr(this.i+1).replace(/^\s*#.*$/, '') != '' ) {
-		    console.log("oups "+value.substr(this.i+1));
-			throw new YamlParseException('Unexpected characters near "'+value.substr(this.i)+'".');
-		}
-
-		return result;
-	},
-
-	/**
-	 * Dumps a given JS variable to a YAML string.
-	 *
-	 * @param mixed value The JS variable to convert
-	 *
-	 * @return string The YAML string representing the JS object
-	 */
-	dump: function(value)
-	{
-		if ( undefined == value || null == value )
-			return 'null';	
-		if ( value instanceof Date)
-			return value.toISOString();
-		if ( typeof(value) == 'object')
-			return this.dumpObject(value);
-		if ( typeof(value) == 'boolean' )
-			return value ? 'true' : 'false';
-		if ( /^\d+$/.test(value) )
-			return typeof(value) == 'string' ? "'"+value+"'" : parseInt(value);
-		if ( this.isNumeric(value) )
-			return typeof(value) == 'string' ? "'"+value+"'" : parseFloat(value);
-		if ( typeof(value) == 'number' )
-			return value == Infinity ? '.Inf' : ( value == -Infinity ? '-.Inf' : ( isNaN(value) ? '.NAN' : value ) );
-		var yaml = new YamlEscaper();
-		if ( yaml.requiresDoubleQuoting(value) )
-			return yaml.escapeWithDoubleQuotes(value);
-		if ( yaml.requiresSingleQuoting(value) )
-			return yaml.escapeWithSingleQuotes(value);
-		if ( '' == value )
-			return '""';
-		if ( this.getTimestampRegex().test(value) )
-			return "'"+value+"'";
-		if ( this.inArray(value.toLowerCase(), ['null','~','true','false']) )
-			return "'"+value+"'";
-		// default
-			return value;
-	},
-
-	/**
-	 * Dumps a JS object to a YAML string.
-	 *
-	 * @param object value The JS array to dump
-	 *
-	 * @return string The YAML string representing the JS object
-	 */
-	dumpObject: function(value)
-	{
-		var keys = this.getKeys(value);
-		var output = null;
-		var i;
-		var len = keys.length;
-
-		// array
-		if ( value instanceof Array )
-			/*( 1 == len && '0' == keys[0] )
-			||
-			( len > 1 && this.reduceArray(keys, function(v,w){return Math.floor(v+w);}, 0) == len * (len - 1) / 2) )*/
-		{
-			output = [];
-			for ( i = 0; i < len; i++ )
-			{
-				output.push(this.dump(value[keys[i]]));
-			}
-
-			return '['+output.join(', ')+']';
-		}
-
-		// mapping
-		output = [];
-		for ( i = 0; i < len; i++ )
-		{
-			output.push(this.dump(keys[i])+': '+this.dump(value[keys[i]]));
-		}
-
-		return '{ '+output.join(', ')+' }';
-	},
-
-	/**
-	 * Parses a scalar to a YAML string.
-	 *
-	 * @param scalar scalar
-	 * @param string delimiters
-	 * @param object stringDelimiters
-	 * @param integer i
-	 * @param boolean evaluate
-	 *
-	 * @return string A YAML string
-	 *
-	 * @throws YamlParseException When malformed inline YAML string is parsed
-	 */
-	parseScalar: function(scalar, delimiters, stringDelimiters, i, evaluate)
-	{
-		if ( delimiters == undefined ) delimiters = null;
-		if ( stringDelimiters == undefined ) stringDelimiters = ['"', "'"];
-		if ( i == undefined ) i = 0;
-		if ( evaluate == undefined ) evaluate = true;
-		
-		var output = null;
-		var pos = null;
-		var matches = null;
-		
-		if ( this.inArray(scalar[i], stringDelimiters) )
-		{
-			// quoted scalar
-			output = this.parseQuotedScalar(scalar, i);
-			i = this.i;
-			if (null !== delimiters) {
-				var tmp = scalar.substr(i).replace(/^\s+/, '');
-				if (!this.inArray(tmp.charAt(0), delimiters)) {
-					throw new YamlParseException('Unexpected characters ('+scalar.substr(i)+').');
-				}
-			}
-		}
-		else
-		{
-			// "normal" string
-			if ( !delimiters )
-			{
-				output = (scalar+'').substring(i);
-				
-				i += output.length;
-
-				// remove comments
-				pos = output.indexOf(' #');
-				if ( pos != -1 )
-				{
-					output = output.substr(0, pos).replace(/\s+$/g,'');
-				}
-			}
-			else if ( matches = new RegExp('^(.+?)('+delimiters.join('|')+')').exec((scalar+'').substring(i)) )
-			{
-				output = matches[1];
-				i += output.length;
-			}
-			else
-			{
-				throw new YamlParseException('Malformed inline YAML string ('+scalar+').');
-			}
-			output = evaluate ? this.evaluateScalar(output) : output;
-		}
-
-		this.i = i;
-		
-		return output;
-	},
-
-	/**
-	 * Parses a quoted scalar to YAML.
-	 *
-	 * @param string	scalar
-	 * @param integer i
-	 *
-	 * @return string A YAML string
-	 *
-	 * @throws YamlParseException When malformed inline YAML string is parsed
-	 */
-	parseQuotedScalar: function(scalar, i)
-	{
-		var matches = null;
-		//var item = /^(.*?)['"]\s*(?:[,:]|[}\]]\s*,)/.exec((scalar+'').substring(i))[1];
-		
-		if ( !(matches = new RegExp('^'+YamlInline.REGEX_QUOTED_STRING).exec((scalar+'').substring(i))) )
-		{
-			throw new YamlParseException('Malformed inline YAML string ('+(scalar+'').substring(i)+').');
-		}
-
-		var output = matches[0].substr(1, matches[0].length - 2);
-		
-		var unescaper = new YamlUnescaper();
-
-		if ( '"' == (scalar+'').charAt(i) )
-		{
-			output = unescaper.unescapeDoubleQuotedString(output);
-		}
-		else
-		{
-			output = unescaper.unescapeSingleQuotedString(output);
-		}
-
-		i += matches[0].length;
-
-		this.i = i;
-		return output;
-	},
-
-	/**
-	 * Parses a sequence to a YAML string.
-	 *
-	 * @param string sequence
-	 * @param integer i
-	 *
-	 * @return string A YAML string
-	 *
-	 * @throws YamlParseException When malformed inline YAML string is parsed
-	 */
-	parseSequence: function(sequence, i)
-	{
-		if ( i == undefined ) i = 0;
-		
-		var output = [];
-		var len = sequence.length;
-		i += 1;
-
-		// [foo, bar, ...]
-		while ( i < len )
-		{
-			switch ( sequence.charAt(i) )
-			{
-				case '[':
-					// nested sequence
-					output.push(this.parseSequence(sequence, i));
-					i = this.i;
-					break;
-				case '{':
-					// nested mapping
-					output.push(this.parseMapping(sequence, i));
-					i = this.i;
-					break;
-				case ']':
-					this.i = i;
-					return output;
-				case ',':
-				case ' ':
-					break;
-				default:
-					var isQuoted = this.inArray(sequence.charAt(i), ['"', "'"]);
-					var value = this.parseScalar(sequence, [',', ']'], ['"', "'"], i);
-					i = this.i;
-					
-					if ( !isQuoted && (value+'').indexOf(': ') != -1 )
-					{
-						// embedded mapping?
-						try
-						{
-							value = this.parseMapping('{'+value+'}');
-						}
-						catch ( e )
-						{
-							if ( !(e instanceof YamlParseException ) ) throw e;
-							// no, it's not
-						}
-					}
-
-					output.push(value);
-
-					i--;
-			}
-
-			i++;
-		}
-
-		throw new YamlParseException('Malformed inline YAML string "'+sequence+'"');
-	},
-
-	/**
-	 * Parses a mapping to a YAML string.
-	 *
-	 * @param string mapping
-	 * @param integer i
-	 *
-	 * @return string A YAML string
-	 *
-	 * @throws YamlParseException When malformed inline YAML string is parsed
-	 */
-	parseMapping: function(mapping, i)
-	{
-		if ( i == undefined ) i = 0;
-		var output = {};
-		var len = mapping.length;
-		i += 1;
-		var done = false;
-		var doContinue = false;
-
-		// {foo: bar, bar:foo, ...}
-		while ( i < len )
-		{
-			doContinue = false;
-			
-			switch ( mapping.charAt(i) )
-			{
-				case ' ':
-				case ',':
-					i++;
-					doContinue = true;
-					break;
-				case '}':
-					this.i = i;
-					return output;
-			}
-			
-			if ( doContinue ) continue;
-
-			// key
-			var key = this.parseScalar(mapping, [':', ' '], ['"', "'"], i, false);
-			i = this.i;
-
-			// value
-			done = false;
-			while ( i < len )
-			{
-				switch ( mapping.charAt(i) )
-				{
-					case '[':
-						// nested sequence
-						output[key] = this.parseSequence(mapping, i);
-						i = this.i;
-						done = true;
-						break;
-					case '{':
-						// nested mapping
-						output[key] = this.parseMapping(mapping, i);
-						i = this.i;
-						done = true;
-						break;
-					case ':':
-					case ' ':
-						break;
-					default:
-						output[key] = this.parseScalar(mapping, [',', '}'], ['"', "'"], i);
-						i = this.i;
-						done = true;
-						i--;
-				}
-
-				++i;
-
-				if ( done )
-				{
-					doContinue = true;
-					break;
-				}
-			}
-			
-			if ( doContinue ) continue;
-		}
-
-		throw new YamlParseException('Malformed inline YAML string "'+mapping+'"');
-	},
-
-	/**
-	 * Evaluates scalars and replaces magic values.
-	 *
-	 * @param string scalar
-	 *
-	 * @return string A YAML string
-	 */
-	evaluateScalar: function(scalar)
-	{
-		scalar = this.trim(scalar);
-		
-		var raw = null;
-		var cast = null;
-
-		if (	( 'null' == scalar.toLowerCase() ) ||
-				( '' == scalar ) ||
-				( '~' == scalar ) )
-			return null;
-		if ( (scalar+'').indexOf('!str ') == 0 )
-			return (''+scalar).substring(5);
-		if ( (scalar+'').indexOf('! ') == 0 )
-			return parseInt(this.parseScalar((scalar+'').substr(2)));
-		if ( /^\d+$/.test(scalar) )
-		{
-			raw = scalar;
-			cast = parseInt(scalar);
-			return '0' == scalar.charAt(0) ? this.octdec(scalar) : (( ''+raw == ''+cast ) ? cast : raw);
-		}
-		if ( 'true' == (scalar+'').toLowerCase() )
-			return true;
-		if ( 'false' == (scalar+'').toLowerCase() )
-			return false;
-		if ( this.isNumeric(scalar) )
-			return '0x' == (scalar+'').substr(0, 2) ? this.hexdec(scalar) : parseFloat(scalar);
-		if ( scalar.toLowerCase() == '.inf' )
-			return Infinity;
-		if ( scalar.toLowerCase() == '.nan' )
-			return NaN;
-		if ( scalar.toLowerCase() == '-.inf' )
-			return -Infinity;
-		if ( /^(-|\+)?[0-9,]+(\.[0-9]+)?$/.test(scalar) )
-			return parseFloat(scalar.split(',').join(''));
-		if ( this.getTimestampRegex().test(scalar) )
-			return new Date(this.strtotime(scalar));
-		//else
-			return ''+scalar;
-	},
-
-	/**
-	 * Gets a regex that matches an unix timestamp
-	 *
-	 * @return string The regular expression
-	 */
-	getTimestampRegex: function()
-	{
-		return new RegExp('^'+
-		'([0-9][0-9][0-9][0-9])'+
-		'-([0-9][0-9]?)'+
-		'-([0-9][0-9]?)'+
-		'(?:(?:[Tt]|[ \t]+)'+
-		'([0-9][0-9]?)'+
-		':([0-9][0-9])'+
-		':([0-9][0-9])'+
-		'(?:\.([0-9]*))?'+
-		'(?:[ \t]*(Z|([-+])([0-9][0-9]?)'+
-		'(?::([0-9][0-9]))?))?)?'+
-		'$','gi');
-	},
-	
-	trim: function(str /* String */)
-	{
-		return (str+'').replace(/^\s+/,'').replace(/\s+$/,'');
-	},
-	
-	isNumeric: function(input)
-	{
-		return (input - 0) == input && input.length > 0 && input.replace(/\s+/g,'') != '';
-	},
-	
-	inArray: function(key, tab)
-	{
-		var i;
-		var len = tab.length;
-		for ( i = 0; i < len; i++ )
-		{
-			if ( key == tab[i] ) return true;
-		}
-		return false;
-	},
-	
-	getKeys: function(tab)
-	{
-		var ret = [];
-		
-		for ( var name in tab )
-		{
-			if ( tab.hasOwnProperty(name) )
-			{
-				ret.push(name);
-			}
-		}
-		
-		return ret;
-	},
-	
-	/*reduceArray: function(tab, fun)
-	{
-		var len = tab.length;
-		if (typeof fun != "function")
-			throw new YamlParseException("fun is not a function");
-		
-		// no value to return if no initial value and an empty array
-		if (len == 0 && arguments.length == 1)
-			throw new YamlParseException("empty array");
-		
-		var i = 0;
-		if (arguments.length >= 2)
-		{
-			var rv = arguments[1];
-		}
-		else
-		{
-			do
-			{
-				if (i in tab)
-				{
-					rv = tab[i++];
-					break;
-				}
-		
-				// if array contains no values, no initial value to return
-				if (++i >= len)
-					throw new YamlParseException("no initial value to return");
-			}
-			while (true);
-		}
-
-		for (; i < len; i++)
-		{
-			if (i in tab)
-				rv = fun.call(null, rv, tab[i], i, tab);
-		}
-
-		return rv;
-	},*/
-	
-	octdec: function(input)
-	{
-	    return parseInt((input+'').replace(/[^0-7]/gi, ''), 8);
-	},
-	
-	hexdec: function(input)
-	{
-		input = this.trim(input);
-		if ( (input+'').substr(0, 2) == '0x' ) input = (input+'').substring(2);
-	    return parseInt((input+'').replace(/[^a-f0-9]/gi, ''), 16);
-	},
-	
-	/**
-	 * @see http://phpjs.org/functions/strtotime
-	 * @note we need timestamp with msecs so /1000 removed
-	 * @note original contained binary | 0 (wtf?!) everywhere, which messes everything up 
-	 */
-	strtotime: function (h,b){var f,c,g,k,d="";h=(h+"").replace(/\s{2,}|^\s|\s$/g," ").replace(/[\t\r\n]/g,"");if(h==="now"){return b===null||isNaN(b)?new Date().getTime()||0:b||0}else{if(!isNaN(d=Date.parse(h))){return d||0}else{if(b){b=new Date(b)}else{b=new Date()}}}h=h.toLowerCase();var e={day:{sun:0,mon:1,tue:2,wed:3,thu:4,fri:5,sat:6},mon:["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"]};var a=function(i){var o=(i[2]&&i[2]==="ago");var n=(n=i[0]==="last"?-1:1)*(o?-1:1);switch(i[0]){case"last":case"next":switch(i[1].substring(0,3)){case"yea":b.setFullYear(b.getFullYear()+n);break;case"wee":b.setDate(b.getDate()+(n*7));break;case"day":b.setDate(b.getDate()+n);break;case"hou":b.setHours(b.getHours()+n);break;case"min":b.setMinutes(b.getMinutes()+n);break;case"sec":b.setSeconds(b.getSeconds()+n);break;case"mon":if(i[1]==="month"){b.setMonth(b.getMonth()+n);break}default:var l=e.day[i[1].substring(0,3)];if(typeof l!=="undefined"){var p=l-b.getDay();if(p===0){p=7*n}else{if(p>0){if(i[0]==="last"){p-=7}}else{if(i[0]==="next"){p+=7}}}b.setDate(b.getDate()+p);b.setHours(0,0,0,0)}}break;default:if(/\d+/.test(i[0])){n*=parseInt(i[0],10);switch(i[1].substring(0,3)){case"yea":b.setFullYear(b.getFullYear()+n);break;case"mon":b.setMonth(b.getMonth()+n);break;case"wee":b.setDate(b.getDate()+(n*7));break;case"day":b.setDate(b.getDate()+n);break;case"hou":b.setHours(b.getHours()+n);break;case"min":b.setMinutes(b.getMinutes()+n);break;case"sec":b.setSeconds(b.getSeconds()+n);break}}else{return false}break}return true};g=h.match(/^(\d{2,4}-\d{2}-\d{2})(?:\s(\d{1,2}:\d{2}(:\d{2})?)?(?:\.(\d+))?)?$/);if(g!==null){if(!g[2]){g[2]="00:00:00"}else{if(!g[3]){g[2]+=":00"}}k=g[1].split(/-/g);k[1]=e.mon[k[1]-1]||k[1];k[0]=+k[0];k[0]=(k[0]>=0&&k[0]<=69)?"20"+(k[0]<10?"0"+k[0]:k[0]+""):(k[0]>=70&&k[0]<=99)?"19"+k[0]:k[0]+"";return parseInt(this.strtotime(k[2]+" "+k[1]+" "+k[0]+" "+g[2])+(g[4]?g[4]:""),10)}var j="([+-]?\\d+\\s(years?|months?|weeks?|days?|hours?|min|minutes?|sec|seconds?|sun\\.?|sunday|mon\\.?|monday|tue\\.?|tuesday|wed\\.?|wednesday|thu\\.?|thursday|fri\\.?|friday|sat\\.?|saturday)|(last|next)\\s(years?|months?|weeks?|days?|hours?|min|minutes?|sec|seconds?|sun\\.?|sunday|mon\\.?|monday|tue\\.?|tuesday|wed\\.?|wednesday|thu\\.?|thursday|fri\\.?|friday|sat\\.?|saturday))(\\sago)?";g=h.match(new RegExp(j,"gi"));if(g===null){return false}for(f=0,c=g.length;f<c;f++){if(!a(g[f].split(" "))){return false}}return b.getTime()||0}
-	 
-};
-
-/*
- * @note uses only non-capturing sub-patterns (unlike PHP original)
- */
-YamlInline.REGEX_QUOTED_STRING = '(?:"(?:[^"\\\\]*(?:\\\\.[^"\\\\]*)*)"|\'(?:[^\']*(?:\'\'[^\']*)*)\')';
-
-
-/**
- * YamlParser parses YAML strings to convert them to JS objects
- * (port of Yaml Symfony Component)
- */
-var YamlParser = function(offset /* Integer */)
-{
-		this.offset = (offset !== undefined) ? offset : 0;
-};
-YamlParser.prototype =
-{
-	offset: 0,
-	lines: [],
-	currentLineNb: -1,
-	currentLine: '',
-	refs: {},
-	
-	/**
-	 * Parses a YAML string to a JS value.
-	 *
-	 * @param String value A YAML string
-	 *
-	 * @return mixed A JS value
-	 */
-	parse: function(value /* String */)
-	{
-		this.currentLineNb = -1;
-		this.currentLine = '';
-		this.lines = this.cleanup(value).split("\n");
-		
-		var data = null;
-      var context = null;
-      		
-		while ( this.moveToNextLine() )
-		{
-			if ( this.isCurrentLineEmpty() )
-			{
-				continue;
-			}
-			
-			// tab?
-			if ( this.currentLine.charAt(0) == '\t' )
-			{
-				throw new YamlParseException('A YAML file cannot contain tabs as indentation.', this.getRealCurrentLineNb() + 1, this.currentLine);
-			}
-			
-			var isRef = false;
-			var isInPlace = false;
-			var isProcessed = false;
-			var values = null;
-			var matches = null;
-			var c = null;
-			var parser = null;
-			var block = null;
-			var key = null;
-			var parsed = null;
-			var len = null;
-			var reverse = null;
-			
-			if ( values = /^\-((\s+)(.+?))?\s*$/.exec(this.currentLine) )
-			{
-
-				if (context && 'mapping' == context) {
-					throw new YamlParseException('You cannot define a sequence item when in a mapping', this.getRealCurrentLineNb() + 1, this.currentLine);
-				}
-				context = 'sequence';
-
-				if ( !this.isDefined(data) ) data = [];
-				//if ( !(data instanceof Array) ) throw new YamlParseException("Non array entry", this.getRealCurrentLineNb() + 1, this.currentLine);
-				
-				values = {leadspaces: values[2], value: values[3]};
-				
-				if ( this.isDefined(values.value) && ( matches = /^&([^ ]+) *(.*)/.exec(values.value) ) )
-				{
-					matches = {ref: matches[1], value: matches[2]};
-					isRef = matches.ref;
-					values.value = matches.value;
-				}
-				
-				// array
-				if ( !this.isDefined(values.value) || '' == this.trim(values.value) || values.value.replace(/^ +/,'').charAt(0) == '#' )
-				{
-					c = this.getRealCurrentLineNb() + 1;
-					parser = new YamlParser(c);
-					parser.refs = this.refs;
-					data.push(parser.parse(this.getNextEmbedBlock()));
-					this.refs = parser.refs;
-				}
-				else
-				{
-					if ( this.isDefined(values.leadspaces) && 
-						' ' == values.leadspaces && 
-						( matches = new RegExp('^('+YamlInline.REGEX_QUOTED_STRING+'|[^ \'"\{\[].*?) *\:(\\s+(.+?))?\\s*$').exec(values.value) ) 
-					) {
-						matches = {key: matches[1], value: matches[3]};
-						// this is a compact notation element, add to next block and parse
-						c = this.getRealCurrentLineNb();
-						parser = new YamlParser(c);
-						parser.refs = this.refs;
-						block = values.value;
-						
-						if ( !this.isNextLineIndented() )
-						{
-							block += "\n"+this.getNextEmbedBlock(this.getCurrentLineIndentation() + 2);
-						}
-
-						data.push(parser.parse(block));
-						this.refs = parser.refs;
-					}
-					else
-					{
-						data.push(this.parseValue(values.value));
-					}
-				}
-			}
-			else if ( values = new RegExp('^('+YamlInline.REGEX_QUOTED_STRING+'|[^ \'"\[\{].*?) *\:(\\s+(.+?))?\\s*$').exec(this.currentLine) )
-			{
-				if ( !this.isDefined(data) ) data = {};
-				if (context && 'sequence' == context) {
-					throw new YamlParseException('You cannot define a mapping item when in a sequence', this.getRealCurrentLineNb() + 1, this.currentLine);
-				}
-				context = 'mapping';				
-				//if ( data instanceof Array ) throw new YamlParseException("Non mapped entry", this.getRealCurrentLineNb() + 1, this.currentLine);
-				
-				values = {key: values[1], value: values[3]};
-				
-				try {
-					key = new YamlInline().parseScalar(values.key);
-				} catch (e) {
-					if ( e instanceof YamlParseException ) {
-						e.setParsedLine(this.getRealCurrentLineNb() + 1);
-						e.setSnippet(this.currentLine);
-					}
-					throw e;
-				}				
-				
-				
-				if ( '<<' == key )
-				{
-					if ( this.isDefined(values.value) && '*' == (values.value+'').charAt(0) )
-					{
-						isInPlace = values.value.substr(1);
-						if ( this.refs[isInPlace] == undefined )
-						{
-							throw new YamlParseException('Reference "'+value+'" does not exist', this.getRealCurrentLineNb() + 1, this.currentLine);
-						}
-					}
-					else
-					{
-						if ( this.isDefined(values.value) && values.value != '' )
-						{
-							value = values.value;
-						}
-						else
-						{
-							value = this.getNextEmbedBlock();
-						}
-						
-						c = this.getRealCurrentLineNb() + 1;
-						parser = new YamlParser(c);
-						parser.refs = this.refs;
-						parsed = parser.parse(value);
-						this.refs = parser.refs;
-				
-						var merged = [];
-						if ( !this.isObject(parsed) )
-						{
-							throw new YamlParseException("YAML merge keys used with a scalar value instead of an array", this.getRealCurrentLineNb() + 1, this.currentLine);
-						}
-						else if ( this.isDefined(parsed[0]) )
-						{
-							// Numeric array, merge individual elements
-							reverse = this.reverseArray(parsed);
-							len = reverse.length;
-							for ( var i = 0; i < len; i++ )
-							{
-								var parsedItem = reverse[i];
-								if ( !this.isObject(reverse[i]) )
-								{
-									throw new YamlParseException("Merge items must be arrays", this.getRealCurrentLineNb() + 1, this.currentLine);
-								}
-								merged = this.mergeObject(reverse[i], merged);
-							}
-						}
-						else
-						{
-							// Associative array, merge
-							merged = this.mergeObject(merged, parsed);
-						}
-				
-						isProcessed = merged;
-					}
-				}
-				else if ( this.isDefined(values.value) && (matches = /^&([^ ]+) *(.*)/.exec(values.value) ) )
-				{
-					matches = {ref: matches[1], value: matches[2]};
-					isRef = matches.ref;
-					values.value = matches.value;
-				}
-				
-				if ( isProcessed )
-				{
-					// Merge keys
-					data = isProcessed;
-				}
-				// hash
-				else if ( !this.isDefined(values.value) || '' == this.trim(values.value) || this.trim(values.value).charAt(0) == '#' )
-				{
-					// if next line is less indented or equal, then it means that the current value is null
-					if ( this.isNextLineIndented() && !this.isNextLineUnIndentedCollection() )
-					{
-						data[key] = null;
-					}
-					else
-					{
-						c = this.getRealCurrentLineNb() + 1;
-						parser = new YamlParser(c);
-						parser.refs = this.refs;
-						data[key] = parser.parse(this.getNextEmbedBlock());
-						this.refs = parser.refs;
-					}
-				}
-				else
-				{
-					if ( isInPlace )
-					{
-						data = this.refs[isInPlace];
-					}
-					else
-					{
-						data[key] = this.parseValue(values.value);
-					}
-				}
-			}
-			else
-			{
-				// 1-liner followed by newline
-				if ( 2 == this.lines.length && this.isEmpty(this.lines[1]) )
-				{
-					try {
-						value = new YamlInline().parse(this.lines[0]);
-					} catch (e) {
-						if ( e instanceof YamlParseException ) {
-							e.setParsedLine(this.getRealCurrentLineNb() + 1);
-							e.setSnippet(this.currentLine);
-						}
-						throw e;
-					}
-					
-					if ( this.isObject(value) )
-					{
-						var first = value[0];
-						if ( typeof(value) == 'string' && '*' == first.charAt(0) )
-						{
-							data = [];
-							len = value.length;
-							for ( var i = 0; i < len; i++ )
-							{
-								data.push(this.refs[value[i].substr(1)]);
-							}
-							value = data;
-						}
-					}
-				
-					return value;
-				}
-				
-				throw new YamlParseException('Unable to parse.', this.getRealCurrentLineNb() + 1, this.currentLine);
-			}
-		
-			if ( isRef )
-			{
-				if ( data instanceof Array )
-					this.refs[isRef] = data[data.length-1];
-				else
-				{
-					var lastKey = null;
-					for ( var k in data )
-					{
-						if ( data.hasOwnProperty(k) ) lastKey = k;
-					}
-					this.refs[isRef] = data[k];
-				}
-			}
-		}
-		
-		return this.isEmpty(data) ? null : data;
-	},
-
-	/**
-	 * Returns the current line number (takes the offset into account).
-	 *
-	 * @return integer The current line number
-	 */
-	getRealCurrentLineNb: function()
-	{
-		return this.currentLineNb + this.offset;
-	},
-
-	/**
-	 * Returns the current line indentation.
-	 *
-	 * @return integer The current line indentation
-	 */
-	getCurrentLineIndentation: function()
-	{
-		return this.currentLine.length - this.currentLine.replace(/^ +/g, '').length;
-	},
-
-	/**
-	 * Returns the next embed block of YAML.
-	 *
-	 * @param integer indentation The indent level at which the block is to be read, or null for default
-	 *
-	 * @return string A YAML string
-	 *
-	 * @throws YamlParseException When indentation problem are detected
-	 */
-	getNextEmbedBlock: function(indentation)
-	{
-		this.moveToNextLine();
-		var newIndent = null;
-		var indent = null;
-
-		if ( !this.isDefined(indentation) )
-		{
-			newIndent = this.getCurrentLineIndentation();
-			
-			var unindentedEmbedBlock = this.isStringUnIndentedCollectionItem(this.currentLine);
-
-			if ( !this.isCurrentLineEmpty() && 0 == newIndent && !unindentedEmbedBlock )
-			{
-				throw new YamlParseException('Indentation problem A', this.getRealCurrentLineNb() + 1, this.currentLine);
-			}
-		}
-		else
-		{
-			newIndent = indentation;
-		}
-
-		var data = [this.currentLine.substr(newIndent)];
-
-		var isUnindentedCollection = this.isStringUnIndentedCollectionItem(this.currentLine);
-
-		var continuationIndent = -1;
-		if (isUnindentedCollection === true) {
-			continuationIndent = 1 + /^\-((\s+)(.+?))?\s*$/.exec(this.currentLine)[2].length;
-		}
-
-		while ( this.moveToNextLine() )
-		{
-
-			if (isUnindentedCollection && !this.isStringUnIndentedCollectionItem(this.currentLine) && this.getCurrentLineIndentation() != continuationIndent) {
-				this.moveToPreviousLine();
-				break;
-			}
-
-			if ( this.isCurrentLineEmpty() )
-			{
-				if ( this.isCurrentLineBlank() )
-				{
-					data.push(this.currentLine.substr(newIndent));
-				}
-
-				continue;
-			}
-
-			indent = this.getCurrentLineIndentation();
-			var matches;
-			if ( matches = /^( *)$/.exec(this.currentLine) )
-			{
-				// empty line
-				data.push(matches[1]);
-			}
-			else if ( indent >= newIndent )
-			{
-				data.push(this.currentLine.substr(newIndent));
-			}
-			else if ( 0 == indent )
-			{
-				this.moveToPreviousLine();
-
-				break;
-			}
-			else
-			{
-				throw new YamlParseException('Indentation problem B', this.getRealCurrentLineNb() + 1, this.currentLine);
-			}
-		}
-
-		return data.join("\n");
-	},
-
-	/**
-	 * Moves the parser to the next line.
-	 *
-	 * @return Boolean
-	 */
-	moveToNextLine: function()
-	{
-		if ( this.currentLineNb >= this.lines.length - 1 )
-		{
-			return false;
-		}
-
-		this.currentLineNb++;
-		this.currentLine = this.lines[this.currentLineNb];
-
-		return true;
-	},
-
-	/**
-	 * Moves the parser to the previous line.
-	 */
-	moveToPreviousLine: function()
-	{
-		this.currentLineNb--;
-		this.currentLine = this.lines[this.currentLineNb];
-	},
-
-	/**
-	 * Parses a YAML value.
-	 *
-	 * @param string value A YAML value
-	 *
-	 * @return mixed A JS value
-	 *
-	 * @throws YamlParseException When reference does not exist
-	 */
-	parseValue: function(value)
-	{
-		if ( '*' == (value+'').charAt(0) )
-		{
-			if ( this.trim(value).charAt(0) == '#' )
-			{
-				value = (value+'').substr(1, value.indexOf('#') - 2);
-			}
-			else
-			{
-				value = (value+'').substr(1);
-			}
-
-			if ( this.refs[value] == undefined )
-			{
-				throw new YamlParseException('Reference "'+value+'" does not exist', this.getRealCurrentLineNb() + 1, this.currentLine);
-			}
-			return this.refs[value];
-		}
-
-		var matches = null;
-		if ( matches = /^(\||>)(\+|\-|\d+|\+\d+|\-\d+|\d+\+|\d+\-)?( +#.*)?$/.exec(value) )
-		{
-			matches = {separator: matches[1], modifiers: matches[2], comments: matches[3]};
-			var modifiers = this.isDefined(matches.modifiers) ? matches.modifiers : '';
-
-			return this.parseFoldedScalar(matches.separator, modifiers.replace(/\d+/g, ''), Math.abs(parseInt(modifiers)));
-		}
-		try {
-			return new YamlInline().parse(value);
-		} catch (e) {
-			if ( e instanceof YamlParseException ) {
-				e.setParsedLine(this.getRealCurrentLineNb() + 1);
-				e.setSnippet(this.currentLine);
-			}
-			throw e;
-		}
-	},
-
-	/**
-	 * Parses a folded scalar.
-	 *
-	 * @param	string	separator	 The separator that was used to begin this folded scalar (| or >)
-	 * @param	string	indicator	 The indicator that was used to begin this folded scalar (+ or -)
-	 * @param	integer indentation  The indentation that was used to begin this folded scalar
-	 *
-	 * @return string	The text value
-	 */
-	parseFoldedScalar: function(separator, indicator, indentation)
-	{
-		if ( indicator == undefined ) indicator = '';
-		if ( indentation == undefined ) indentation = 0;
-		
-		separator = '|' == separator ? "\n" : ' ';
-		var text = '';
-		var diff = null;
-
-		var notEOF = this.moveToNextLine();
-
-		while ( notEOF && this.isCurrentLineBlank() )
-		{
-			text += "\n";
-
-			notEOF = this.moveToNextLine();
-		}
-
-		if ( !notEOF )
-		{
-			return '';
-		}
-
-		var matches = null;
-		if ( !(matches = new RegExp('^('+(indentation ? this.strRepeat(' ', indentation) : ' +')+')(.*)$').exec(this.currentLine)) )
-		{
-			this.moveToPreviousLine();
-
-			return '';
-		}
-		
-		matches = {indent: matches[1], text: matches[2]};
-		
-		var textIndent = matches.indent;
-		var previousIndent = 0;
-
-		text += matches.text + separator;
-		while ( this.currentLineNb + 1 < this.lines.length )
-		{
-			this.moveToNextLine();
-			
-			if ( matches = new RegExp('^( {'+textIndent.length+',})(.+)$').exec(this.currentLine) )
-			{
-				matches = {indent: matches[1], text: matches[2]};
-				
-				if ( ' ' == separator && previousIndent != matches.indent )
-				{
-					text = text.substr(0, text.length - 1)+"\n";
-				}
-				
-				previousIndent = matches.indent;
-
-				diff = matches.indent.length - textIndent.length;
-				text += this.strRepeat(' ', diff) + matches.text + (diff != 0 ? "\n" : separator);
-			}
-			else if ( matches = /^( *)$/.exec(this.currentLine) )
-			{
-				text += matches[1].replace(new RegExp('^ {1,'+textIndent.length+'}','g'), '')+"\n";
-			}
-			else
-			{
-				this.moveToPreviousLine();
-
-				break;
-			}
-		}
-
-		if ( ' ' == separator )
-		{
-			// replace last separator by a newline
-			text = text.replace(/ (\n*)$/g, "\n$1");
-		}
-
-		switch ( indicator )
-		{
-			case '':
-				text = text.replace(/\n+$/g, "\n");
-				break;
-			case '+':
-				break;
-			case '-':
-				text = text.replace(/\n+$/g, '');
-				break;
-		}
-
-		return text;
-	},
-
-	/**
-	 * Returns true if the next line is indented.
-	 *
-	 * @return Boolean Returns true if the next line is indented, false otherwise
-	 */
-	isNextLineIndented: function()
-	{
-		var currentIndentation = this.getCurrentLineIndentation();
-		var notEOF = this.moveToNextLine();
-
-		while ( notEOF && this.isCurrentLineEmpty() )
-		{
-			notEOF = this.moveToNextLine();
-		}
-
-		if ( false == notEOF )
-		{
-			return false;
-		}
-
-		var ret = false;
-		if ( this.getCurrentLineIndentation() <= currentIndentation )
-		{
-			ret = true;
-		}
-
-		this.moveToPreviousLine();
-
-		return ret;
-	},
-
-	/**
-	 * Returns true if the current line is blank or if it is a comment line.
-	 *
-	 * @return Boolean Returns true if the current line is empty or if it is a comment line, false otherwise
-	 */
-	isCurrentLineEmpty: function()
-	{
-		return this.isCurrentLineBlank() || this.isCurrentLineComment();
-	},
-
-	/**
-	 * Returns true if the current line is blank.
-	 *
-	 * @return Boolean Returns true if the current line is blank, false otherwise
-	 */
-	isCurrentLineBlank: function()
-	{
-		return '' == this.trim(this.currentLine);
-	},
-
-	/**
-	 * Returns true if the current line is a comment line.
-	 *
-	 * @return Boolean Returns true if the current line is a comment line, false otherwise
-	 */
-	isCurrentLineComment: function()
-	{
-		//checking explicitly the first char of the trim is faster than loops or strpos
-		var ltrimmedLine = this.currentLine.replace(/^ +/g, '');
-		return ltrimmedLine.charAt(0) == '#';
-	},
-
-	/**
-	 * Cleanups a YAML string to be parsed.
-	 *
-	 * @param string value The input YAML string
-	 *
-	 * @return string A cleaned up YAML string
-	 */
-	cleanup: function(value)
-	{
-		value = value.split("\r\n").join("\n").split("\r").join("\n");
-
-		if ( !/\n$/.test(value) )
-		{
-			value += "\n";
-		}
-
-		// strip YAML header
-		var count = 0;
-		var regex = /^\%YAML[: ][\d\.]+.*\n/;
-		while ( regex.test(value) )
-		{
-			value = value.replace(regex, '');
-			count++;
-		}
-		this.offset += count;
-
-		// remove leading comments
-		regex = /^(#.*?\n)+/;
-		if ( regex.test(value) )
-		{
-			var trimmedValue = value.replace(regex, '');
-			
-			// items have been removed, update the offset
-			this.offset += this.subStrCount(value, "\n") - this.subStrCount(trimmedValue, "\n");
-			value = trimmedValue;
-		}
-
-		// remove start of the document marker (---)
-		regex = /^\-\-\-.*?\n/;
-		if ( regex.test(value) )
-		{
-			trimmedValue = value.replace(regex, '');
-			
-			// items have been removed, update the offset
-			this.offset += this.subStrCount(value, "\n") - this.subStrCount(trimmedValue, "\n");
-			value = trimmedValue;
-
-			// remove end of the document marker (...)
-			value = value.replace(/\.\.\.\s*$/g, '');
-		}
-
-		return value;
-	},
-
-	/**
-	 * Returns true if the next line starts unindented collection
-	 *
-	 * @return Boolean Returns true if the next line starts unindented collection, false otherwise
-	 */
-	isNextLineUnIndentedCollection: function()
-	{
-		var currentIndentation = this.getCurrentLineIndentation();
-		var notEOF = this.moveToNextLine();
-
-		while (notEOF && this.isCurrentLineEmpty()) {
-			notEOF = this.moveToNextLine();
-		}
-
-		if (false === notEOF) {
-			return false;
-		}
-
-		var ret = false;
-		if (
-			this.getCurrentLineIndentation() == currentIndentation
-			&&
-			this.isStringUnIndentedCollectionItem(this.currentLine)
-		) {
-			ret = true;
-		}
-
-		this.moveToPreviousLine();
-
-		return ret;
-	},
-
-	/**
-	 * Returns true if the string is unindented collection item
-	 *
-	 * @return Boolean Returns true if the string is unindented collection item, false otherwise
-	 */
-	isStringUnIndentedCollectionItem: function(string)
-	{
-		return (0 === this.currentLine.indexOf('- '));
-	},
-	
-	isObject: function(input)
-	{
-		return typeof(input) == 'object' && this.isDefined(input);
-	},
-	
-	isEmpty: function(input)
-	{
-		return input == undefined || input == null || input == '' || input == 0 || input == "0" || input == false;
-	},
-	
-	isDefined: function(input)
-	{
-		return input != undefined && input != null;
-	},
-	
-	reverseArray: function(input /* Array */)
-	{
-		var result = [];
-		var len = input.length;
-		for ( var i = len-1; i >= 0; i-- )
-		{
-			result.push(input[i]);
-		}
-		
-		return result;
-	},
-	
-	merge: function(a /* Object */, b /* Object */)
-	{
-		var c = {};
-		var i;
-		
-		for ( i in a )
-		{
-			if ( a.hasOwnProperty(i) )
-				if ( /^\d+$/.test(i) ) c.push(a);
-				else c[i] = a[i];
-		}
-		for ( i in b )
-		{
-			if ( b.hasOwnProperty(i) )
-				if ( /^\d+$/.test(i) ) c.push(b);
-				else c[i] = b[i];
-		}
-		
-		return c;
-	},
-	
-	strRepeat: function(str /* String */, count /* Integer */)
-	{
-		var i;
-		var result = '';
-		for ( i = 0; i < count; i++ ) result += str;
-		return result;
-	},
-	
-	subStrCount: function(string, subString, start, length)
-	{
-		var c = 0;
-		
-		string = '' + string;
-		subString = '' + subString;
-		
-		if ( start != undefined ) string = string.substr(start);
-		if ( length != undefined ) string = string.substr(0, length); 
-		
-		var len = string.length;
-		var sublen = subString.length;
-		for ( var i = 0; i < len; i++ )
-		{
-			if ( subString == string.substr(i, sublen) )
-				c++;
-				i += sublen - 1;
-		}
-		
-		return c;
-	},
-	
-	trim: function(str /* String */)
-	{
-		return (str+'').replace(/^ +/,'').replace(/ +$/,'');
-	}
-};
-/**
- * YamlEscaper encapsulates escaping rules for single and double-quoted
- * YAML strings.
- *
- * @author Matthew Lewinski <matthew@lewinski.org>
- */
-YamlEscaper = function(){};
-YamlEscaper.prototype =
-{
-	/**
-	 * Determines if a JS value would require double quoting in YAML.
-	 *
-	 * @param string value A JS value
-	 *
-	 * @return Boolean True if the value would require double quotes.
-	 */
-	requiresDoubleQuoting: function(value)
-	{
-		return new RegExp(YamlEscaper.REGEX_CHARACTER_TO_ESCAPE).test(value);
-	},
-
-	/**
-	 * Escapes and surrounds a JS value with double quotes.
-	 *
-	 * @param string value A JS value
-	 *
-	 * @return string The quoted, escaped string
-	 */
-	escapeWithDoubleQuotes: function(value)
-	{
-		value = value + '';
-		var len = YamlEscaper.escapees.length;
-		var maxlen = YamlEscaper.escaped.length;
-		var esc = YamlEscaper.escaped;
-		for (var i = 0; i < len; ++i)
-			if ( i >= maxlen ) esc.push('');
-
-		var ret = '';		
-		ret = value.replace(new RegExp(YamlEscaper.escapees.join('|'),'g'), function(str){
-			for(var i = 0; i < len; ++i){
-				if( str == YamlEscaper.escapees[i] )
-					return esc[i];
-			}
-		});
-		return '"' + ret + '"'; 
-	},
-
-	/**
-	 * Determines if a JS value would require single quoting in YAML.
-	 *
-	 * @param string value A JS value
-	 *
-	 * @return Boolean True if the value would require single quotes.
-	 */
-	requiresSingleQuoting: function(value)
-	{
-		return /[\s'":{}[\],&*#?]|^[-?|<>=!%@`]/.test(value);
-	},
-
-	/**
-	 * Escapes and surrounds a JS value with single quotes.
-	 *
-	 * @param string value A JS value
-	 *
-	 * @return string The quoted, escaped string
-	 */
-	escapeWithSingleQuotes : function(value)
-	{
-		return "'" + value.replace(/'/g, "''") + "'";
-	}
-};
-
-// Characters that would cause a dumped string to require double quoting.
-YamlEscaper.REGEX_CHARACTER_TO_ESCAPE = "[\\x00-\\x1f]|\xc2\x85|\xc2\xa0|\xe2\x80\xa8|\xe2\x80\xa9";
-
-// Mapping arrays for escaping a double quoted string. The backslash is
-// first to ensure proper escaping. 
-YamlEscaper.escapees = ['\\\\', '\\"', '"',
-									 "\x00",  "\x01",  "\x02",  "\x03",  "\x04",  "\x05",  "\x06",  "\x07",
-									 "\x08",  "\x09",  "\x0a",  "\x0b",  "\x0c",  "\x0d",  "\x0e",  "\x0f",
-									 "\x10",  "\x11",  "\x12",  "\x13",  "\x14",  "\x15",  "\x16",  "\x17",
-									 "\x18",  "\x19",  "\x1a",  "\x1b",  "\x1c",  "\x1d",  "\x1e",  "\x1f",
-									 "\xc2\x85", "\xc2\xa0", "\xe2\x80\xa8", "\xe2\x80\xa9"];
-YamlEscaper.escaped = ['\\"', '\\\\', '\\"',
-									 "\\0",   "\\x01", "\\x02", "\\x03", "\\x04", "\\x05", "\\x06", "\\a",
-									 "\\b",   "\\t",   "\\n",   "\\v",   "\\f",   "\\r",   "\\x0e", "\\x0f",
-									 "\\x10", "\\x11", "\\x12", "\\x13", "\\x14", "\\x15", "\\x16", "\\x17",
-									 "\\x18", "\\x19", "\\x1a", "\\e",   "\\x1c", "\\x1d", "\\x1e", "\\x1f",
-									 "\\N", "\\_", "\\L", "\\P"];
-/**
- * YamlUnescaper encapsulates unescaping rules for single and double-quoted
- * YAML strings.
- *
- * @author Matthew Lewinski <matthew@lewinski.org>
- */
-var YamlUnescaper = function(){};
-YamlUnescaper.prototype =
-{
-	/**
-	 * Unescapes a single quoted string.
-	 *
-	 * @param string value A single quoted string.
-	 *
-	 * @return string The unescaped string.
-	 */
-	unescapeSingleQuotedString: function(value)
-	{
-		return value.replace(/''/g, "'");
-	},
-
-	/**
-	 * Unescapes a double quoted string.
-	 *
-	 * @param string value A double quoted string.
-	 *
-	 * @return string The unescaped string.
-	 */
-	unescapeDoubleQuotedString: function(value)
-	{
-		var callback = function(m) {
-			return new YamlUnescaper().unescapeCharacter(m);
-		};
-
-		// evaluate the string
-		return value.replace(new RegExp(YamlUnescaper.REGEX_ESCAPED_CHARACTER, 'g'), callback);
-	},
-
-	/**
-	 * Unescapes a character that was found in a double-quoted string
-	 *
-	 * @param string value An escaped character
-	 *
-	 * @return string The unescaped character
-	 */
-	unescapeCharacter: function(value)
-	{
-		switch (value.charAt(1)) {
-			case '0':
-				return String.fromCharCode(0);
-			case 'a':
-				return String.fromCharCode(7);
-			case 'b':
-				return String.fromCharCode(8);
-			case 't':
-				return "\t";
-			case "\t":
-				return "\t";
-			case 'n':
-				return "\n";
-			case 'v':
-				return String.fromCharCode(11);
-			case 'f':
-				return String.fromCharCode(12);
-			case 'r':
-				return String.fromCharCode(13);
-			case 'e':
-				return "\x1b";
-			case ' ':
-				return ' ';
-			case '"':
-				return '"';
-			case '/':
-				return '/';
-			case '\\':
-				return '\\';
-			case 'N':
-				// U+0085 NEXT LINE
-				return "\x00\x85";
-			case '_':
-				// U+00A0 NO-BREAK SPACE
-				return "\x00\xA0";
-			case 'L':
-				// U+2028 LINE SEPARATOR
-				return "\x20\x28";
-			case 'P':
-				// U+2029 PARAGRAPH SEPARATOR
-				return "\x20\x29";
-			case 'x':
-				return this.pack('n', new YamlInline().hexdec(value.substr(2, 2)));
-			case 'u':
-				return this.pack('n', new YamlInline().hexdec(value.substr(2, 4)));
-			case 'U':
-				return this.pack('N', new YamlInline().hexdec(value.substr(2, 8)));
-		}
-	},
-	
-	/**
-	 * @see http://phpjs.org/functions/pack
-	 * @warning only modes used above copied
-	 */
-	 pack: function(B){var g=0,o=1,m="",l="",z=0,p=[],E,s,C,I,h,c;var d,b,x,H,u,e,A,q,D,t,w,a,G,F,y,v,f;while(g<B.length){E=B.charAt(g);s="";g++;while((g<B.length)&&(B.charAt(g).match(/[\d\*]/)!==null)){s+=B.charAt(g);g++}if(s===""){s="1"}switch(E){case"n":if(s==="*"){s=arguments.length-o}if(s>(arguments.length-o)){throw new Error("Warning:  pack() Type "+E+": too few arguments")}for(z=0;z<s;z++){m+=String.fromCharCode(arguments[o]>>8&255);m+=String.fromCharCode(arguments[o]&255);o++}break;case"N":if(s==="*"){s=arguments.length-o}if(s>(arguments.length-o)){throw new Error("Warning:  pack() Type "+E+": too few arguments")}for(z=0;z<s;z++){m+=String.fromCharCode(arguments[o]>>24&255);m+=String.fromCharCode(arguments[o]>>16&255);m+=String.fromCharCode(arguments[o]>>8&255);m+=String.fromCharCode(arguments[o]&255);o++}break;default:throw new Error("Warning:  pack() Type "+E+": unknown format code")}}if(o<arguments.length){throw new Error("Warning: pack(): "+(arguments.length-o)+" arguments unused")}return m}
-}
-
-// Regex fragment that matches an escaped character in a double quoted
-// string.
-// why escape quotes, ffs!
-YamlUnescaper.REGEX_ESCAPED_CHARACTER = '\\\\([0abt\tnvfre "\\/\\\\N_LP]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|U[0-9a-fA-F]{8})';
-
-/**
- * YamlDumper dumps JS variables to YAML strings.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- */
-var YamlDumper = function(){};
-YamlDumper.prototype =
-{
-	/**
-	 * Dumps a JS value to YAML.
-	 *
-	 * @param	mixed	 input	The JS value
-	 * @param	integer inline The level where you switch to inline YAML
-	 * @param	integer indent The level o indentation indentation (used internally)
-	 *
-	 * @return string	The YAML representation of the JS value
-	 */
-	dump: function(input, inline, indent)
-	{
-		if ( inline == null ) inline = 0;
-		if ( indent == null ) indent = 0;
-		var output = '';
-		var prefix = indent ? this.strRepeat(' ', indent) : '';
-		var yaml;
-		if (!this.numSpacesForIndentation) this.numSpacesForIndentation = 2;
-
-		if ( inline <= 0 || !this.isObject(input) || this.isEmpty(input) )
-		{
-			yaml = new YamlInline();
-			output += prefix + yaml.dump(input);
-		}
-		else
-		{
-			var isAHash = !this.arrayEquals(this.getKeys(input), this.range(0,input.length - 1));
-			var willBeInlined;
-			
-			for ( var key in input )
-			{
-				if ( input.hasOwnProperty(key) )
-				{
-					willBeInlined = inline - 1 <= 0 || !this.isObject(input[key]) || this.isEmpty(input[key]);
-					
-					if ( isAHash ) yaml = new YamlInline();
-					
-					output += 
-						prefix + '' +
-						(isAHash ? yaml.dump(key)+':' : '-') + '' +
-						(willBeInlined ? ' ' : "\n") + '' +
-						this.dump(input[key], inline - 1, (willBeInlined ? 0 : indent + this.numSpacesForIndentation)) + '' +
-						(willBeInlined ? "\n" : '');
-				}
-			}
-		}
-
-		return output;
-	},
-	
-	strRepeat: function(str /* String */, count /* Integer */)
-	{
-		var i;
-		var result = '';
-		for ( i = 0; i < count; i++ ) result += str;
-		return result;
-	},
-	
-	isObject: function(input)
-	{
-		return this.isDefined(input) && typeof(input) == 'object';
-	},
-	
-	isEmpty: function(input)
-	{
-		var ret = input == undefined || input == null || input == '' || input == 0 || input == "0" || input == false;
-		if ( !ret && typeof(input) == "object" && !(input instanceof Array)){
-			var propCount = 0;
-			for ( var key in input )
-				if ( input.hasOwnProperty(key) ) propCount++;
-			ret = !propCount;
-		}
-		return ret;
-	},
-	
-	isDefined: function(input)
-	{
-		return input != undefined && input != null;
-	},
-	
-	getKeys: function(tab)
-	{
-		var ret = [];
-		
-		for ( var name in tab )
-		{
-			if ( tab.hasOwnProperty(name) )
-			{
-				ret.push(name);
-			}
-		}
-		
-		return ret;
-	},
-	
-	range: function(start, end)
-	{
-		if ( start > end ) return [];
-		
-		var ret = [];
-		
-		for ( var i = start; i <= end; i++ )
-		{
-			ret.push(i);
-		}
-		
-		return ret;
-	},
-	
-	arrayEquals: function(a,b)
-	{
-		if ( a.length != b.length ) return false;
-		
-		var len = a.length;
-		
-		for ( var i = 0; i < len; i++ )
-		{
-			if ( a[i] != b[i] ) return false;
-		}
-		
-		return true;
-	}
-};
-})();
-
-define("yaml-js", (function (global) {
-    return function () {
-        var ret, fn;
-        return ret || global.YAML;
-    };
-}(this)));
-
-define('extensions/yamlFrontMatterParser',[
-    "underscore",
-    "classes/Extension",
-    "yaml-js",
-], function(_, Extension, YAML) {
-
-    var yamlFrontMatterParser = new Extension("yamlFrontMatterParser", "YAML front matter");
-
-    var eventMgr;
-    yamlFrontMatterParser.onEventMgrCreated = function(eventMgrParameter) {
-        eventMgr = eventMgrParameter;
-    };
-
-    var fileDesc;
-    yamlFrontMatterParser.onFileSelected = function(fileDescParam) {
-        fileDesc = fileDescParam;
-    };
-
-    var regex = /^(\s*-{3}\s*\n([\w\W]+?)\n\s*-{3}\s*?\n)?([\w\W]*)$/;
-
-    function parseFrontMatter(fileDescParam, content) {
-        if(fileDescParam !== fileDesc) {
-            return;
-        }
-        var results = regex.exec(content);
-        var frontMatter = results[1];
-        var yaml = results[2];
-
-        if(!yaml) {
-            fileDesc.frontMatter = undefined;
-        }
-        else if(!fileDesc.frontMatter || fileDesc.frontMatter._frontMatter != frontMatter) {
-            fileDesc.frontMatter = undefined;
-            try {
-                fileDesc.frontMatter = YAML.parse(yaml);
-                if(!_.isObject(fileDesc.frontMatter)) {
-                    fileDesc.frontMatter = undefined;
-                }
-                fileDesc.frontMatter._yaml = yaml;
-                fileDesc.frontMatter._frontMatter = frontMatter;
-            }
-            catch (e) {
-            }
-        }
-    }
-
-    yamlFrontMatterParser.onFileOpen = parseFrontMatter;
-    yamlFrontMatterParser.onContentChanged = parseFrontMatter;
-
-    return yamlFrontMatterParser;
-});
-
-/**
- * @license RequireJS text 2.0.13 Copyright (c) 2010-2014, The Dojo Foundation All Rights Reserved.
- * Available via the MIT or new BSD license.
- * see: http://github.com/requirejs/text for details
- */
-/*jslint regexp: true */
-/*global require, XMLHttpRequest, ActiveXObject,
-  define, window, process, Packages,
-  java, location, Components, FileUtils */
-
-define('text',['module'], function (module) {
-    
-
-    var text, fs, Cc, Ci, xpcIsWindows,
-        progIds = ['Msxml2.XMLHTTP', 'Microsoft.XMLHTTP', 'Msxml2.XMLHTTP.4.0'],
-        xmlRegExp = /^\s*<\?xml(\s)+version=[\'\"](\d)*.(\d)*[\'\"](\s)*\?>/im,
-        bodyRegExp = /<body[^>]*>\s*([\s\S]+)\s*<\/body>/im,
-        hasLocation = typeof location !== 'undefined' && location.href,
-        defaultProtocol = hasLocation && location.protocol && location.protocol.replace(/\:/, ''),
-        defaultHostName = hasLocation && location.hostname,
-        defaultPort = hasLocation && (location.port || undefined),
-        buildMap = {},
-        masterConfig = (module.config && module.config()) || {};
-
-    text = {
-        version: '2.0.13',
-
-        strip: function (content) {
-            //Strips <?xml ...?> declarations so that external SVG and XML
-            //documents can be added to a document without worry. Also, if the string
-            //is an HTML document, only the part inside the body tag is returned.
-            if (content) {
-                content = content.replace(xmlRegExp, "");
-                var matches = content.match(bodyRegExp);
-                if (matches) {
-                    content = matches[1];
-                }
-            } else {
-                content = "";
-            }
-            return content;
-        },
-
-        jsEscape: function (content) {
-            return content.replace(/(['\\])/g, '\\$1')
-                .replace(/[\f]/g, "\\f")
-                .replace(/[\b]/g, "\\b")
-                .replace(/[\n]/g, "\\n")
-                .replace(/[\t]/g, "\\t")
-                .replace(/[\r]/g, "\\r")
-                .replace(/[\u2028]/g, "\\u2028")
-                .replace(/[\u2029]/g, "\\u2029");
-        },
-
-        createXhr: masterConfig.createXhr || function () {
-            //Would love to dump the ActiveX crap in here. Need IE 6 to die first.
-            var xhr, i, progId;
-            if (typeof XMLHttpRequest !== "undefined") {
-                return new XMLHttpRequest();
-            } else if (typeof ActiveXObject !== "undefined") {
-                for (i = 0; i < 3; i += 1) {
-                    progId = progIds[i];
-                    try {
-                        xhr = new ActiveXObject(progId);
-                    } catch (e) {}
-
-                    if (xhr) {
-                        progIds = [progId];  // so faster next time
-                        break;
-                    }
-                }
-            }
-
-            return xhr;
-        },
-
-        /**
-         * Parses a resource name into its component parts. Resource names
-         * look like: module/name.ext!strip, where the !strip part is
-         * optional.
-         * @param {String} name the resource name
-         * @returns {Object} with properties "moduleName", "ext" and "strip"
-         * where strip is a boolean.
-         */
-        parseName: function (name) {
-            var modName, ext, temp,
-                strip = false,
-                index = name.lastIndexOf("."),
-                isRelative = name.indexOf('./') === 0 ||
-                             name.indexOf('../') === 0;
-
-            if (index !== -1 && (!isRelative || index > 1)) {
-                modName = name.substring(0, index);
-                ext = name.substring(index + 1);
-            } else {
-                modName = name;
-            }
-
-            temp = ext || modName;
-            index = temp.indexOf("!");
-            if (index !== -1) {
-                //Pull off the strip arg.
-                strip = temp.substring(index + 1) === "strip";
-                temp = temp.substring(0, index);
-                if (ext) {
-                    ext = temp;
-                } else {
-                    modName = temp;
-                }
-            }
-
-            return {
-                moduleName: modName,
-                ext: ext,
-                strip: strip
-            };
-        },
-
-        xdRegExp: /^((\w+)\:)?\/\/([^\/\\]+)/,
-
-        /**
-         * Is an URL on another domain. Only works for browser use, returns
-         * false in non-browser environments. Only used to know if an
-         * optimized .js version of a text resource should be loaded
-         * instead.
-         * @param {String} url
-         * @returns Boolean
-         */
-        useXhr: function (url, protocol, hostname, port) {
-            var uProtocol, uHostName, uPort,
-                match = text.xdRegExp.exec(url);
-            if (!match) {
-                return true;
-            }
-            uProtocol = match[2];
-            uHostName = match[3];
-
-            uHostName = uHostName.split(':');
-            uPort = uHostName[1];
-            uHostName = uHostName[0];
-
-            return (!uProtocol || uProtocol === protocol) &&
-                   (!uHostName || uHostName.toLowerCase() === hostname.toLowerCase()) &&
-                   ((!uPort && !uHostName) || uPort === port);
-        },
-
-        finishLoad: function (name, strip, content, onLoad) {
-            content = strip ? text.strip(content) : content;
-            if (masterConfig.isBuild) {
-                buildMap[name] = content;
-            }
-            onLoad(content);
-        },
-
-        load: function (name, req, onLoad, config) {
-            //Name has format: some.module.filext!strip
-            //The strip part is optional.
-            //if strip is present, then that means only get the string contents
-            //inside a body tag in an HTML string. For XML/SVG content it means
-            //removing the <?xml ...?> declarations so the content can be inserted
-            //into the current doc without problems.
-
-            // Do not bother with the work if a build and text will
-            // not be inlined.
-            if (config && config.isBuild && !config.inlineText) {
-                onLoad();
-                return;
-            }
-
-            masterConfig.isBuild = config && config.isBuild;
-
-            var parsed = text.parseName(name),
-                nonStripName = parsed.moduleName +
-                    (parsed.ext ? '.' + parsed.ext : ''),
-                url = req.toUrl(nonStripName),
-                useXhr = (masterConfig.useXhr) ||
-                         text.useXhr;
-
-            // Do not load if it is an empty: url
-            if (url.indexOf('empty:') === 0) {
-                onLoad();
-                return;
-            }
-
-            //Load the text. Use XHR if possible and in a browser.
-            if (!hasLocation || useXhr(url, defaultProtocol, defaultHostName, defaultPort)) {
-                text.get(url, function (content) {
-                    text.finishLoad(name, parsed.strip, content, onLoad);
-                }, function (err) {
-                    if (onLoad.error) {
-                        onLoad.error(err);
-                    }
-                });
-            } else {
-                //Need to fetch the resource across domains. Assume
-                //the resource has been optimized into a JS module. Fetch
-                //by the module name + extension, but do not include the
-                //!strip part to avoid file system issues.
-                req([nonStripName], function (content) {
-                    text.finishLoad(parsed.moduleName + '.' + parsed.ext,
-                                    parsed.strip, content, onLoad);
-                });
-            }
-        },
-
-        write: function (pluginName, moduleName, write, config) {
-            if (buildMap.hasOwnProperty(moduleName)) {
-                var content = text.jsEscape(buildMap[moduleName]);
-                write.asModule(pluginName + "!" + moduleName,
-                               "define(function () { return '" +
-                                   content +
-                               "';});\n");
-            }
-        },
-
-        writeFile: function (pluginName, moduleName, req, write, config) {
-            var parsed = text.parseName(moduleName),
-                extPart = parsed.ext ? '.' + parsed.ext : '',
-                nonStripName = parsed.moduleName + extPart,
-                //Use a '.js' file name so that it indicates it is a
-                //script that can be loaded across domains.
-                fileName = req.toUrl(parsed.moduleName + extPart) + '.js';
-
-            //Leverage own load() method to load plugin value, but only
-            //write out values that do not have the strip argument,
-            //to avoid any potential issues with ! in file names.
-            text.load(nonStripName, req, function (value) {
-                //Use own write() method to construct full module value.
-                //But need to create shell that translates writeFile's
-                //write() to the right interface.
-                var textWrite = function (contents) {
-                    return write(fileName, contents);
-                };
-                textWrite.asModule = function (moduleName, contents) {
-                    return write.asModule(moduleName, fileName, contents);
-                };
-
-                text.write(pluginName, nonStripName, textWrite, config);
-            }, config);
-        }
-    };
-
-    if (masterConfig.env === 'node' || (!masterConfig.env &&
-            typeof process !== "undefined" &&
-            process.versions &&
-            !!process.versions.node &&
-            !process.versions['node-webkit'])) {
-        //Using special require.nodeRequire, something added by r.js.
-        fs = require.nodeRequire('fs');
-
-        text.get = function (url, callback, errback) {
-            try {
-                var file = fs.readFileSync(url, 'utf8');
-                //Remove BOM (Byte Mark Order) from utf8 files if it is there.
-                if (file[0] === '\uFEFF') {
-                    file = file.substring(1);
-                }
-                callback(file);
-            } catch (e) {
-                if (errback) {
-                    errback(e);
-                }
-            }
-        };
-    } else if (masterConfig.env === 'xhr' || (!masterConfig.env &&
-            text.createXhr())) {
-        text.get = function (url, callback, errback, headers) {
-            var xhr = text.createXhr(), header;
-            xhr.open('GET', url, true);
-
-            //Allow plugins direct access to xhr headers
-            if (headers) {
-                for (header in headers) {
-                    if (headers.hasOwnProperty(header)) {
-                        xhr.setRequestHeader(header.toLowerCase(), headers[header]);
-                    }
-                }
-            }
-
-            //Allow overrides specified in config
-            if (masterConfig.onXhr) {
-                masterConfig.onXhr(xhr, url);
-            }
-
-            xhr.onreadystatechange = function (evt) {
-                var status, err;
-                //Do not explicitly handle errors, those should be
-                //visible via console output in the browser.
-                if (xhr.readyState === 4) {
-                    status = xhr.status || 0;
-                    if (status > 399 && status < 600) {
-                        //An http 4xx or 5xx error. Signal an error.
-                        err = new Error(url + ' HTTP status: ' + status);
-                        err.xhr = xhr;
-                        if (errback) {
-                            errback(err);
-                        }
-                    } else {
-                        callback(xhr.responseText);
-                    }
-
-                    if (masterConfig.onXhrComplete) {
-                        masterConfig.onXhrComplete(xhr, url);
-                    }
-                }
-            };
-            xhr.send(null);
-        };
-    } else if (masterConfig.env === 'rhino' || (!masterConfig.env &&
-            typeof Packages !== 'undefined' && typeof java !== 'undefined')) {
-        //Why Java, why is this so awkward?
-        text.get = function (url, callback) {
-            var stringBuffer, line,
-                encoding = "utf-8",
-                file = new java.io.File(url),
-                lineSeparator = java.lang.System.getProperty("line.separator"),
-                input = new java.io.BufferedReader(new java.io.InputStreamReader(new java.io.FileInputStream(file), encoding)),
-                content = '';
-            try {
-                stringBuffer = new java.lang.StringBuffer();
-                line = input.readLine();
-
-                // Byte Order Mark (BOM) - The Unicode Standard, version 3.0, page 324
-                // http://www.unicode.org/faq/utf_bom.html
-
-                // Note that when we use utf-8, the BOM should appear as "EF BB BF", but it doesn't due to this bug in the JDK:
-                // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4508058
-                if (line && line.length() && line.charAt(0) === 0xfeff) {
-                    // Eat the BOM, since we've already found the encoding on this file,
-                    // and we plan to concatenating this buffer with others; the BOM should
-                    // only appear at the top of a file.
-                    line = line.substring(1);
-                }
-
-                if (line !== null) {
-                    stringBuffer.append(line);
-                }
-
-                while ((line = input.readLine()) !== null) {
-                    stringBuffer.append(lineSeparator);
-                    stringBuffer.append(line);
-                }
-                //Make sure we return a JavaScript string and not a Java string.
-                content = String(stringBuffer.toString()); //String
-            } finally {
-                input.close();
-            }
-            callback(content);
-        };
-    } else if (masterConfig.env === 'xpconnect' || (!masterConfig.env &&
-            typeof Components !== 'undefined' && Components.classes &&
-            Components.interfaces)) {
-        //Avert your gaze!
-        Cc = Components.classes;
-        Ci = Components.interfaces;
-        Components.utils['import']('resource://gre/modules/FileUtils.jsm');
-        xpcIsWindows = ('@mozilla.org/windows-registry-key;1' in Cc);
-
-        text.get = function (url, callback) {
-            var inStream, convertStream, fileObj,
-                readData = {};
-
-            if (xpcIsWindows) {
-                url = url.replace(/\//g, '\\');
-            }
-
-            fileObj = new FileUtils.File(url);
-
-            //XPCOM, you so crazy
-            try {
-                inStream = Cc['@mozilla.org/network/file-input-stream;1']
-                           .createInstance(Ci.nsIFileInputStream);
-                inStream.init(fileObj, 1, 0, false);
-
-                convertStream = Cc['@mozilla.org/intl/converter-input-stream;1']
-                                .createInstance(Ci.nsIConverterInputStream);
-                convertStream.init(inStream, "utf-8", inStream.available(),
-                Ci.nsIConverterInputStream.DEFAULT_REPLACEMENT_CHARACTER);
-
-                convertStream.readString(inStream.available(), readData);
-                convertStream.close();
-                inStream.close();
-                callback(readData.value);
-            } catch (e) {
-                throw new Error((fileObj && fileObj.path || '') + ': ' + e);
-            }
-        };
-    }
-    return text;
-});
-
-define('text!html/markdownExtraSettingsBlock.html',[],function () { return '<p>Adds extra features to the original Markdown syntax.</p>\n<div class="form-horizontal">\n\t<div class="form-group">\n\t\t<label class="col-sm-4 control-label" for="input-markdownextra-tables">Tables</label>\n\t\t<div class="col-sm-7">\n\t\t\t<div class="checkbox">\n\t\t\t\t<input type="checkbox" id="input-markdownextra-tables">\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class="form-group">\n\t\t<label class="col-sm-4 control-label"\n\t\t\tfor="input-markdownextra-deflist">Definition lists</label>\n\t\t<div class="col-sm-7">\n\t\t\t<div class="checkbox">\n\t\t\t\t<input type="checkbox" id="input-markdownextra-deflist">\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class="form-group">\n\t\t<label class="col-sm-4 control-label"\n\t\t\tfor="input-markdownextra-attrlist">Special attributes</label>\n\t\t<div class="col-sm-7">\n\t\t\t<div class="checkbox">\n\t\t\t\t<input type="checkbox" id="input-markdownextra-attrlist">\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class="form-group">\n\t\t<label class="col-sm-4 control-label"\n\t\t\tfor="input-markdownextra-footnotes">Footnotes</label>\n\t\t<div class="col-sm-7">\n\t\t\t<div class="checkbox">\n\t\t\t\t<input type="checkbox" id="input-markdownextra-footnotes">\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class="form-group">\n\t\t<label class="col-sm-4 control-label"\n\t\t\tfor="input-markdownextra-comments">Comments</label>\n\t\t<div class="col-sm-7">\n\t\t\t<div class="checkbox">\n\t\t\t\t<input type="checkbox" id="input-markdownextra-comments">\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class="form-group">\n\t\t<label class="col-sm-4 control-label"\n\t\t\tfor="input-markdownextra-smartypants">SmartyPants</label>\n\t\t<div class="col-sm-7">\n\t\t\t<div class="checkbox">\n\t\t\t\t<input type="checkbox" id="input-markdownextra-smartypants">\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class="form-group">\n\t\t<label class="col-sm-4 control-label"\n\t\t\tfor="input-markdownextra-newlines">GFM newlines</label>\n\t\t<div class="col-sm-7">\n\t\t\t<div class="checkbox">\n\t\t\t\t<input type="checkbox" id="input-markdownextra-newlines">\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class="form-group">\n\t\t<label class="col-sm-4 control-label"\n\t\t\tfor="input-markdownextra-intraword">GFM intra-word stars/underscores</label>\n\t\t<div class="col-sm-7">\n\t\t\t<div class="checkbox">\n\t\t\t\t<input type="checkbox" id="input-markdownextra-intraword">\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class="form-group">\n\t\t<label class="col-sm-4 control-label"\n\t\t\tfor="input-markdownextra-strikethrough">GFM strikethrough</label>\n\t\t<div class="col-sm-7">\n\t\t\t<div class="checkbox">\n\t\t\t\t<input type="checkbox" id="input-markdownextra-strikethrough">\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class="form-group">\n\t\t<label class="col-sm-4 control-label"\n\t\t\tfor="input-markdownextra-fencedcodegfm">GFM fenced code\n\t\t\tblocks</label>\n\t\t<div class="col-sm-7">\n\t\t\t<div class="checkbox">\n\t\t\t\t<input type="checkbox" id="input-markdownextra-fencedcodegfm">\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t<div class="form-group">\n\t\t<label class="col-sm-4 control-label"\n\t\t\tfor="input-markdownextra-highlighter">Syntax highlighter</label>\n\t\t<div class="col-sm-7">\n\t\t\t<select id="input-markdownextra-highlighter" class="form-control"><option>None</option>\n\t\t\t\t<option value="prettify">Prettify</option>\n\t\t\t\t<option value="highlight">Highlight.js</option>\n\t\t\t</select>\n\t\t</div>\n\t</div>\n</div>\n<span class="help-block pull-right"><a target="_blank"\n\thref="https://github.com/jmcmanus/pagedown-extra">More info</a></span>';});
 
 // Copyright (C) 2006 Google Inc.
 //
@@ -18252,15 +14538,15 @@ define('extensions/markdownExtra',[
 	"utils",
 	"logger",
 	"classes/Extension",
-	"text!html/markdownExtraSettingsBlock.html",
+	// "ext!html/markdownExtraSettingsBlock.html",
 	'google-code-prettify',
 	// 'highlightjs',
 	'crel',
 	'pagedownExtra'
-], function( _, utils, logger, Extension, markdownExtraSettingsBlockHTML, prettify) {
+], function( _, utils, logger, Extension, prettify) {
 
 	var markdownExtra = new Extension("markdownExtra", "Markdown Extra", true);
-	markdownExtra.settingsBlock = markdownExtraSettingsBlockHTML;
+	// markdownExtra.settingsBlock = markdownExtraSettingsBlockHTML;
 	markdownExtra.defaultConfig = {
 		extensions: [
 			"fenced_code_gfm",
@@ -18275,41 +14561,6 @@ define('extensions/markdownExtra',[
 		intraword: true,
 		comments: true,
 		highlighter: "highlight"
-	};
-
-	markdownExtra.onLoadSettings = function() {
-		function hasExtension(extensionName) {
-			return _.some(markdownExtra.config.extensions, function(extension) {
-				return extension == extensionName;
-			});
-		}
-
-		utils.setInputChecked("#input-markdownextra-fencedcodegfm", hasExtension("fenced_code_gfm"));
-		utils.setInputChecked("#input-markdownextra-tables", hasExtension("tables"));
-		utils.setInputChecked("#input-markdownextra-deflist", hasExtension("def_list"));
-		utils.setInputChecked("#input-markdownextra-attrlist", hasExtension("attr_list"));
-		utils.setInputChecked("#input-markdownextra-footnotes", hasExtension("footnotes"));
-		utils.setInputChecked("#input-markdownextra-smartypants", hasExtension("smartypants"));
-		utils.setInputChecked("#input-markdownextra-strikethrough", hasExtension("strikethrough"));
-		utils.setInputChecked("#input-markdownextra-newlines", hasExtension("newlines"));
-		utils.setInputChecked("#input-markdownextra-intraword", markdownExtra.config.intraword);
-		utils.setInputChecked("#input-markdownextra-comments", markdownExtra.config.comments);
-		utils.setInputValue("#input-markdownextra-highlighter", markdownExtra.config.highlighter);
-	};
-
-	markdownExtra.onSaveSettings = function(newConfig) {
-		newConfig.extensions = [];
-		utils.getInputChecked("#input-markdownextra-fencedcodegfm") && newConfig.extensions.push("fenced_code_gfm");
-		utils.getInputChecked("#input-markdownextra-tables") && newConfig.extensions.push("tables");
-		utils.getInputChecked("#input-markdownextra-deflist") && newConfig.extensions.push("def_list");
-		utils.getInputChecked("#input-markdownextra-attrlist") && newConfig.extensions.push("attr_list");
-		utils.getInputChecked("#input-markdownextra-footnotes") && newConfig.extensions.push("footnotes");
-		utils.getInputChecked("#input-markdownextra-smartypants") && newConfig.extensions.push("smartypants");
-		utils.getInputChecked("#input-markdownextra-strikethrough") && newConfig.extensions.push("strikethrough");
-		utils.getInputChecked("#input-markdownextra-newlines") && newConfig.extensions.push("newlines");
-		newConfig.intraword = utils.getInputChecked("#input-markdownextra-intraword");
-		newConfig.comments = utils.getInputChecked("#input-markdownextra-comments");
-		newConfig.highlighter = utils.getInputValue("#input-markdownextra-highlighter");
 	};
 
 	var eventMgr;
@@ -18372,16 +14623,13 @@ define('extensions/markdownExtra',[
 	return markdownExtra;
 });
 
-define('text!html/mathJaxSettingsBlock.html',[],function () { return '<p>Allows StackEdit to interpret LaTeX mathematical expressions.</p>\n<div class="form-horizontal">\n    <div class="form-group">\n        <label class="col-sm-4 control-label"\n            for="input-mathjax-config-tex">TeX configuration</label>\n        <div class="col-sm-7">\n            <input type="text" id="input-mathjax-config-tex" class="form-control">\n        </div>\n    </div>\n    <div class="form-group">\n        <label class="col-sm-4 control-label"\n            for="input-mathjax-config-tex2jax">tex2jax configuration</label>\n        <div class="col-sm-7">\n            <input type="text" id="input-mathjax-config-tex2jax" class="form-control">\n        </div>\n    </div>\n</div>\n<span class="help-block pull-right"><a target="_blank" href="http://docs.mathjax.org/en/latest/options/index.html">More info</a></span>';});
-
-define('text!libs/mathjax_config.js',[],function () { return 'MathJax.Hub.Config({\n\tskipStartupTypeset: true,\n    "HTML-CSS": {\n        preferredFont: "TeX",\n        availableFonts: [\n            "STIX",\n            "TeX"\n        ],\n        linebreaks: {\n            automatic: true\n        },\n        EqnChunk: 10,\n        imageFont: null\n    },\n    tex2jax: <%= tex2jax || \'{ inlineMath: [["$","$"],["\\\\\\\\\\\\\\\\(","\\\\\\\\\\\\\\\\)"]], displayMath: [["$$","$$"],["\\\\\\\\[","\\\\\\\\]"]], processEscapes: true }\' %>,\n    TeX: $.extend({\n        noUndefined: {\n            attributes: {\n                mathcolor: "red",\n                mathbackground: "#FFEEEE",\n                mathsize: "90%"\n            }\n        },\n        Safe: {\n            allow: {\n                URLs: "safe",\n                classes: "safe",\n                cssIDs: "safe",\n                styles: "safe",\n                fontsize: "all"\n            }\n        }\n    }, <%= tex %>),\n    messageStyle: "none"\n});\n';});
-
 define('libs/mathjax_init',[
     "settings",
-    "text!libs/mathjax_config.js"
-], function(settings, mathjaxConfigJS) {
+    // "ext!libs/mathjax_config.js"
+], function(settings/*, mathjaxConfigJS*/) {
     var script = document.createElement('script');
     script.type = 'text/x-mathjax-config';
+    var mathjaxConfigJS = 'MathJax.Hub.Config({\n\tskipStartupTypeset: true,\n    "HTML-CSS": {\n        preferredFont: "TeX",\n        availableFonts: [\n            "STIX",\n            "TeX"\n        ],\n        linebreaks: {\n            automatic: true\n        },\n        EqnChunk: 10,\n        imageFont: null\n    },\n    tex2jax: <%= tex2jax || \'{ inlineMath: [["$","$"],["\\\\\\\\\\\\\\\\(","\\\\\\\\\\\\\\\\)"]], displayMath: [["$$","$$"],["\\\\\\\\[","\\\\\\\\]"]], processEscapes: true }\' %>,\n    TeX: $.extend({\n        noUndefined: {\n            attributes: {\n                mathcolor: "red",\n                mathbackground: "#FFEEEE",\n                mathsize: "90%"\n            }\n        },\n        Safe: {\n            allow: {\n                URLs: "safe",\n                classes: "safe",\n                cssIDs: "safe",\n                styles: "safe",\n                fontsize: "all"\n            }\n        }\n    }, <%= tex %>),\n    messageStyle: "none"\n});\n';
     script.innerHTML = _.template(mathjaxConfigJS, {
         tex: settings.extensionSettings.mathJax ? settings.extensionSettings.mathJax.tex : 'undefined',
         tex2jax: settings.extensionSettings.mathJax ? settings.extensionSettings.mathJax.tex2jax : undefined
@@ -18392,26 +14640,26 @@ define('libs/mathjax_init',[
 define('extensions/mathJax',[
 	"utils",
 	"classes/Extension",
-	"text!html/mathJaxSettingsBlock.html",
+	// "ext!html/mathJaxSettingsBlock.html",
 	"mathjax"
-], function(utils, Extension, mathJaxSettingsBlockHTML) {
+], function(utils, Extension) {
 
 	var mathJax = new Extension("mathJax", "MathJax", true);
-	mathJax.settingsBlock = mathJaxSettingsBlockHTML;
+	// mathJax.settingsBlock = mathJaxSettingsBlockHTML;
 	mathJax.defaultConfig = {
 		tex    : "{}",
 		tex2jax: '{ inlineMath: [["$","$"],["\\\\\\\\(","\\\\\\\\)"]], displayMath: [["$$","$$"],["\\\\[","\\\\]"]], processEscapes: true }'
 	};
 
-	mathJax.onLoadSettings = function() {
-		utils.setInputValue("#input-mathjax-config-tex", mathJax.config.tex);
-		utils.setInputValue("#input-mathjax-config-tex2jax", mathJax.config.tex2jax);
-	};
+	// mathJax.onLoadSettings = function() {
+	// 	utils.setInputValue("#input-mathjax-config-tex", mathJax.config.tex);
+	// 	utils.setInputValue("#input-mathjax-config-tex2jax", mathJax.config.tex2jax);
+	// };
 
-	mathJax.onSaveSettings = function(newConfig, event) {
-		newConfig.tex = utils.getInputJsValue("#input-mathjax-config-tex", event);
-		newConfig.tex2jax = utils.getInputJsValue("#input-mathjax-config-tex2jax", event);
-	};
+	// mathJax.onSaveSettings = function(newConfig, event) {
+	// 	newConfig.tex = utils.getInputJsValue("#input-mathjax-config-tex", event);
+	// 	newConfig.tex2jax = utils.getInputJsValue("#input-mathjax-config-tex2jax", event);
+	// };
 
 	/*jshint ignore:start */
 	mathJax.onPagedownConfigure = function(editorObject) {
@@ -18676,18 +14924,16 @@ define('extensions/mathJax',[
 
 	return mathJax;
 });
-define('text!html/partialRenderingSettingsBlock.html',[],function () { return '<p>Renders modified sections only.</p>\n<blockquote>\n\t<p><b>Note:</b> Document sections are based on title elements (h1, h2...). Therefore if\n\tyour document does not contain any title, performance will not be increased.</p>\n</blockquote>';});
-
 define('extensions/partialRendering',[
 	"underscore",
 	"crel",
 	"extensions/markdownExtra",
 	"classes/Extension",
-	"text!html/partialRenderingSettingsBlock.html",
-], function(_, crel, markdownExtra, Extension, partialRenderingSettingsBlockHTML) {
+	// "ext!html/partialRenderingSettingsBlock.html",
+], function(_, crel, markdownExtra, Extension) {
 
 	var partialRendering = new Extension("partialRendering", "Partial Rendering", true);
-	partialRendering.settingsBlock = partialRenderingSettingsBlockHTML;
+	// partialRendering.settingsBlock = partialRenderingSettingsBlockHTML;
 
 	var converter;
 	var doFootnotes = false;
@@ -19042,572 +15288,6 @@ define('extensions/markdownSectionParser',[
 
     return markdownSectionParser;
 });
-
-define('extensions/workingIndicator',[
-    // "jquery",
-    "underscore",
-    "crel",
-    "classes/Extension"
-], function (_, crel, Extension) {
-
-    var workingIndicator = new Extension("workingIndicator", "Working Indicator");
-
-    var keyframeTemlate = [
-        '@<%= prefix %>keyframes <%= name %> {',
-        '    0% { opacity:<%= z %>; }',
-        '    <%= start %>.01% { opacity:<%= alpha %>; }',
-        '    <%= start %>.02% { opacity:1; }',
-        '    <%= ((start + trail) % 100) %>.01% { opacity:<%= alpha %>; }',
-        '    100% { opacity:<%= z %>; }',
-        '}'
-    ].join('\n');
-
-    var $bodyElt;
-    var $workingIndicatorElt;
-    workingIndicator.onAsyncRunning = function (isRunning) {
-        $bodyElt.toggleClass("working", isRunning);
-        $workingIndicatorElt.toggleClass("hide", !isRunning);
-    };
-
-    workingIndicator.onReady = function () {
-        var styleContent = '';
-
-        function addKeyframe(params) {
-            params.z = Math.max(1 - (1-params.alpha) / params.trail * (100-params.start), params.alpha);
-            styleContent += _.template(keyframeTemlate, _.extend({
-                prefix: ''
-            }, params));
-            styleContent += _.template(keyframeTemlate, _.extend({
-                prefix: '-webkit-'
-            }, params));
-        }
-        $bodyElt = $(document.body);
-        $workingIndicatorElt = $('<div class="hide">');
-        $('.working-indicator').append($workingIndicatorElt);
-        for (var i = 0; i < 3; i++) {
-            var name = 'working-indicator-bar' + i;
-            addKeyframe({
-                name: name,
-                alpha: 0.25,
-                start: 20 * i,
-                trail: 50
-            });
-            var animation = name + ' 0.7s linear infinite';
-            $workingIndicatorElt.append($('<div class="bar">').css({
-                'animation': animation,
-                '-webkit-animation': animation,
-            }));
-        }
-        var styleElt = crel('style', {
-            type : 'text/css'
-        });
-        document.head.appendChild(styleElt);
-        styleElt.innerHTML = styleContent;
-    };
-
-    return workingIndicator;
-});
-
-/**
- * jGrowl 1.2.13
- *
- * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
- * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
- *
- * Written by Stan Lemon <stosh1985@gmail.com>
- * Last updated: 2013.02.22
- *
- * jGrowl is a jQuery plugin implementing unobtrusive userland notifications.  These
- * notifications function similarly to the Growl Framework available for
- * Mac OS X (http://growl.info).
- *
- * To Do:
- * - Move library settings to containers and allow them to be changed per container
- *
- * Changes in 1.2.13
- * - Fixed clearing interval when the container shuts down
- *
- * Changes in 1.2.12
- * - Added compressed versions using UglifyJS and Sqwish
- * - Improved README with configuration options explanation
- * - Added a source map
- *
- * Changes in 1.2.11
- * - Fix artifacts left behind by the shutdown method and text-cleanup
- *
- * Changes in 1.2.10
- * - Fix beforeClose to be called in click event
- *
- * Changes in 1.2.9
- * - Fixed BC break in jQuery 2.0 beta
- *
- * Changes in 1.2.8
- * - Fixes for jQuery 1.9 and the MSIE6 check, note that with jQuery 2.0 support
- *   jGrowl intends to drop support for IE6 altogether
- *
- * Changes in 1.2.6
- * - Fixed js error when a notification is opening and closing at the same time
- *
- * Changes in 1.2.5
- * - Changed wrapper jGrowl's options usage to "o" instead of $.jGrowl.defaults
- * - Added themeState option to control 'highlight' or 'error' for jQuery UI
- * - Ammended some CSS to provide default positioning for nested usage.
- * - Changed some CSS to be prefixed with jGrowl- to prevent namespacing issues
- * - Added two new options - openDuration and closeDuration to allow
- *   better control of notification open and close speeds, respectively
- *   Patch contributed by Jesse Vincet.
- * - Added afterOpen callback.  Patch contributed by Russel Branca.
- *
- * Changes in 1.2.4
- * - Fixed IE bug with the close-all button
- * - Fixed IE bug with the filter CSS attribute (special thanks to gotwic)
- * - Update IE opacity CSS
- * - Changed font sizes to use "em", and only set the base style
- *
- * Changes in 1.2.3
- * - The callbacks no longer use the container as context, instead they use the actual notification
- * - The callbacks now receive the container as a parameter after the options parameter
- * - beforeOpen and beforeClose now check the return value, if it's false - the notification does
- *   not continue.  The open callback will also halt execution if it returns false.
- * - Fixed bug where containers would get confused
- * - Expanded the pause functionality to pause an entire container.
- *
- * Changes in 1.2.2
- * - Notification can now be theme rolled for jQuery UI, special thanks to Jeff Chan!
- *
- * Changes in 1.2.1
- * - Fixed instance where the interval would fire the close method multiple times.
- * - Added CSS to hide from print media
- * - Fixed issue with closer button when div { position: relative } is set
- * - Fixed leaking issue with multiple containers.  Special thanks to Matthew Hanlon!
- *
- * Changes in 1.2.0
- * - Added message pooling to limit the number of messages appearing at a given time.
- * - Closing a notification is now bound to the notification object and triggered by the close button.
- *
- * Changes in 1.1.2
- * - Added iPhone styled example
- * - Fixed possible IE7 bug when determining if the ie6 class shoudl be applied.
- * - Added template for the close button, so that it's content could be customized.
- *
- * Changes in 1.1.1
- * - Fixed CSS styling bug for ie6 caused by a mispelling
- * - Changes height restriction on default notifications to min-height
- * - Added skinned examples using a variety of images
- * - Added the ability to customize the content of the [close all] box
- * - Added jTweet, an example of using jGrowl + Twitter
- *
- * Changes in 1.1.0
- * - Multiple container and instances.
- * - Standard $.jGrowl() now wraps $.fn.jGrowl() by first establishing a generic jGrowl container.
- * - Instance methods of a jGrowl container can be called by $.fn.jGrowl(methodName)
- * - Added glue preferenced, which allows notifications to be inserted before or after nodes in the container
- * - Added new log callback which is called before anything is done for the notification
- * - Corner's attribute are now applied on an individual notification basis.
- *
- * Changes in 1.0.4
- * - Various CSS fixes so that jGrowl renders correctly in IE6.
- *
- * Changes in 1.0.3
- * - Fixed bug with options persisting across notifications
- * - Fixed theme application bug
- * - Simplified some selectors and manipulations.
- * - Added beforeOpen and beforeClose callbacks
- * - Reorganized some lines of code to be more readable
- * - Removed unnecessary this.defaults context
- * - If corners plugin is present, it's now customizable.
- * - Customizable open animation.
- * - Customizable close animation.
- * - Customizable animation easing.
- * - Added customizable positioning (top-left, top-right, bottom-left, bottom-right, center)
- *
- * Changes in 1.0.2
- * - All CSS styling is now external.
- * - Added a theme parameter which specifies a secondary class for styling, such
- *   that notifications can be customized in appearance on a per message basis.
- * - Notification life span is now customizable on a per message basis.
- * - Added the ability to disable the global closer, enabled by default.
- * - Added callbacks for when a notification is opened or closed.
- * - Added callback for the global closer.
- * - Customizable animation speed.
- * - jGrowl now set itself up and tears itself down.
- *
- * Changes in 1.0.1:
- * - Removed dependency on metadata plugin in favor of .data()
- * - Namespaced all events
- */
-(function($) {
-	/** Compatibility holdover for 1.9 to check IE6 **/
-	var $ie6 = (function(){
-		return false === $.support.boxModel && $.support.objectAll && $.support.leadingWhitespace;
-	})();
-
-	/** jGrowl Wrapper - Establish a base jGrowl Container for compatibility with older releases. **/
-	$.jGrowl = function( m , o ) {
-		// To maintain compatibility with older version that only supported one instance we'll create the base container.
-		if ( $('#jGrowl').size() == 0 )
-			$('<div id="jGrowl"></div>').addClass( (o && o.position) ? o.position : $.jGrowl.defaults.position ).appendTo('body');
-
-		// Create a notification on the container.
-		$('#jGrowl').jGrowl(m,o);
-	};
-
-
-	/** Raise jGrowl Notification on a jGrowl Container **/
-	$.fn.jGrowl = function( m , o ) {
-		if ( $.isFunction(this.each) ) {
-			var args = arguments;
-
-			return this.each(function() {
-				/** Create a jGrowl Instance on the Container if it does not exist **/
-				if ( $(this).data('jGrowl.instance') == undefined ) {
-					$(this).data('jGrowl.instance', $.extend( new $.fn.jGrowl(), { notifications: [], element: null, interval: null } ));
-					$(this).data('jGrowl.instance').startup( this );
-				}
-
-				/** Optionally call jGrowl instance methods, or just raise a normal notification **/
-				if ( $.isFunction($(this).data('jGrowl.instance')[m]) ) {
-					$(this).data('jGrowl.instance')[m].apply( $(this).data('jGrowl.instance') , $.makeArray(args).slice(1) );
-				} else {
-					$(this).data('jGrowl.instance').create( m , o );
-				}
-			});
-		};
-	};
-
-	$.extend( $.fn.jGrowl.prototype , {
-
-		/** Default JGrowl Settings **/
-		defaults: {
-			pool:				0,
-			header:				'',
-			group:				'',
-			sticky:				false,
-			position: 			'top-right',
-			glue:				'after',
-			theme:				'default',
-			themeState:			'highlight',
-			corners:			'10px',
-			check:				250,
-			life:				3000,
-			closeDuration: 		'normal',
-			openDuration: 		'normal',
-			easing: 			'swing',
-			closer: 			true,
-			closeTemplate: 		'&times;',
-			closerTemplate: 	'<div>[ close all ]</div>',
-			log:				function() {},
-			beforeOpen:			function() {},
-			afterOpen:			function() {},
-			open:				function() {},
-			beforeClose: 		function() {},
-			close:				function() {},
-			animateOpen: 		{
-				opacity:	 'show'
-			},
-			animateClose: 		{
-				opacity:	 'hide'
-			}
-		},
-
-		notifications: [],
-
-		/** jGrowl Container Node **/
-		element:	 null,
-
-		/** Interval Function **/
-		interval:   null,
-
-		/** Create a Notification **/
-		create:	 function( message , o ) {
-			var o = $.extend({}, this.defaults, o);
-
-			/* To keep backward compatibility with 1.24 and earlier, honor 'speed' if the user has set it */
-			if (typeof o.speed !== 'undefined') {
-				o.openDuration = o.speed;
-				o.closeDuration = o.speed;
-			}
-
-			this.notifications.push({ message: message , options: o });
-
-			o.log.apply( this.element , [this.element,message,o] );
-		},
-
-		render:		 function( notification ) {
-			var self = this;
-			var message = notification.message;
-			var o = notification.options;
-
-			// Support for jQuery theme-states, if this is not used it displays a widget header
-			o.themeState = (o.themeState == '') ? '' : 'ui-state-' + o.themeState;
-
-			var notification = $('<div/>')
-				.addClass('jGrowl-notification ' + o.themeState + ' ui-corner-all' + ((o.group != undefined && o.group != '') ? ' ' + o.group : ''))
-				.append($('<div/>').addClass('jGrowl-close').html(o.closeTemplate))
-				.append($('<div/>').addClass('jGrowl-header').html(o.header))
-				.append($('<div/>').addClass('jGrowl-message').html(message))
-				.data("jGrowl", o).addClass(o.theme).children('div.jGrowl-close').bind("click.jGrowl", function() {
-					$(this).parent().trigger('jGrowl.beforeClose');
-				})
-				.parent();
-
-
-			/** Notification Actions **/
-			$(notification).bind("mouseover.jGrowl", function() {
-				$('div.jGrowl-notification', self.element).data("jGrowl.pause", true);
-			}).bind("mouseout.jGrowl", function() {
-				$('div.jGrowl-notification', self.element).data("jGrowl.pause", false);
-			}).bind('jGrowl.beforeOpen', function() {
-				if ( o.beforeOpen.apply( notification , [notification,message,o,self.element] ) !== false ) {
-					$(this).trigger('jGrowl.open');
-				}
-			}).bind('jGrowl.open', function() {
-				if ( o.open.apply( notification , [notification,message,o,self.element] ) !== false ) {
-					if ( o.glue == 'after' ) {
-						$('div.jGrowl-notification:last', self.element).after(notification);
-					} else {
-						$('div.jGrowl-notification:first', self.element).before(notification);
-					}
-
-					$(this).animate(o.animateOpen, o.openDuration, o.easing, function() {
-						// Fixes some anti-aliasing issues with IE filters.
-						if ($.support.opacity === false)
-							this.style.removeAttribute('filter');
-
-						if ( $(this).data("jGrowl") !== null ) // Happens when a notification is closing before it's open.
-							$(this).data("jGrowl").created = new Date();
-
-						$(this).trigger('jGrowl.afterOpen');
-					});
-				}
-			}).bind('jGrowl.afterOpen', function() {
-				o.afterOpen.apply( notification , [notification,message,o,self.element] );
-			}).bind('jGrowl.beforeClose', function() {
-				if ( o.beforeClose.apply( notification , [notification,message,o,self.element] ) !== false )
-					$(this).trigger('jGrowl.close');
-			}).bind('jGrowl.close', function() {
-				// Pause the notification, lest during the course of animation another close event gets called.
-				$(this).data('jGrowl.pause', true);
-				$(this).animate(o.animateClose, o.closeDuration, o.easing, function() {
-					if ( $.isFunction(o.close) ) {
-						if ( o.close.apply( notification , [notification,message,o,self.element] ) !== false )
-							$(this).remove();
-					} else {
-						$(this).remove();
-					}
-				});
-			}).trigger('jGrowl.beforeOpen');
-
-			/** Optional Corners Plugin **/
-			if ( o.corners != '' && $.fn.corner != undefined ) $(notification).corner( o.corners );
-
-			/** Add a Global Closer if more than one notification exists **/
-			if ( $('div.jGrowl-notification:parent', self.element).size() > 1 &&
-				 $('div.jGrowl-closer', self.element).size() == 0 && this.defaults.closer !== false ) {
-				$(this.defaults.closerTemplate).addClass('jGrowl-closer ' + this.defaults.themeState + ' ui-corner-all').addClass(this.defaults.theme)
-					.appendTo(self.element).animate(this.defaults.animateOpen, this.defaults.speed, this.defaults.easing)
-					.bind("click.jGrowl", function() {
-						$(this).siblings().trigger("jGrowl.beforeClose");
-
-						if ( $.isFunction( self.defaults.closer ) ) {
-							self.defaults.closer.apply( $(this).parent()[0] , [$(this).parent()[0]] );
-						}
-					});
-			};
-		},
-
-		/** Update the jGrowl Container, removing old jGrowl notifications **/
-		update:	 function() {
-			$(this.element).find('div.jGrowl-notification:parent').each( function() {
-				if ( $(this).data("jGrowl") != undefined && $(this).data("jGrowl").created !== undefined &&
-					 ($(this).data("jGrowl").created.getTime() + parseInt($(this).data("jGrowl").life))  < (new Date()).getTime() &&
-					 $(this).data("jGrowl").sticky !== true &&
-					 ($(this).data("jGrowl.pause") == undefined || $(this).data("jGrowl.pause") !== true) ) {
-
-					// Pause the notification, lest during the course of animation another close event gets called.
-					$(this).trigger('jGrowl.beforeClose');
-				}
-			});
-
-			if ( this.notifications.length > 0 &&
-				 (this.defaults.pool == 0 || $(this.element).find('div.jGrowl-notification:parent').size() < this.defaults.pool) )
-				this.render( this.notifications.shift() );
-
-			if ( $(this.element).find('div.jGrowl-notification:parent').size() < 2 ) {
-				$(this.element).find('div.jGrowl-closer').animate(this.defaults.animateClose, this.defaults.speed, this.defaults.easing, function() {
-					$(this).remove();
-				});
-			}
-		},
-
-		/** Setup the jGrowl Notification Container **/
-		startup:	function(e) {
-			this.element = $(e).addClass('jGrowl').append('<div class="jGrowl-notification"></div>');
-			this.interval = setInterval( function() {
-				$(e).data('jGrowl.instance').update();
-			}, parseInt(this.defaults.check));
-
-			if ($ie6) {
-				$(this.element).addClass('ie6');
-			}
-		},
-
-		/** Shutdown jGrowl, removing it and clearing the interval **/
-		shutdown:   function() {
-			$(this.element).removeClass('jGrowl')
-				.find('div.jGrowl-notification').trigger('jGrowl.close')
-				.parent().empty()
-
-			clearInterval(this.interval);
-		},
-
-		close:	 function() {
-			$(this.element).find('div.jGrowl-notification').each(function(){
-				$(this).trigger('jGrowl.beforeClose');
-			});
-		}
-	});
-
-	/** Reference the Defaults Object for compatibility with older versions of jGrowl **/
-	$.jGrowl.defaults = $.fn.jGrowl.prototype.defaults;
-
-})(jQuery);
-define("jgrowl", (function (global) {
-    return function () {
-        var ret, fn;
-        return ret || global.jQuery.jGrowl;
-    };
-}(this)));
-
-define('text!html/notificationsSettingsBlock.html',[],function () { return '<p>Shows notification messages in the bottom-right corner of the\n\tscreen.</p>\n<div class="form-horizontal">\n\t<div class="form-group">\n\t\t<label class="col-sm-4 control-label" for="input-notifications-timeout">Timeout</label>\n\t\t<div class="col-sm-7 form-inline">\n\t\t\t<input type="text" id="input-notifications-timeout"\n\t\t\t\tclass="col-sm-5 form-control"> <span class="help-inline">ms</span>\n\t\t</div>\n\t</div>\n</div>';});
-
-define('extensions/notifications',[
-    // "jquery",
-    "underscore",
-    "utils",
-    "logger",
-    "classes/Extension",
-    "jgrowl",
-    "text!html/notificationsSettingsBlock.html",
-], function(_, utils, logger, Extension, jGrowl, notificationsSettingsBlockHTML) {
-
-    var notifications = new Extension("notifications", "Notifications");
-    notifications.settingsBlock = notificationsSettingsBlockHTML;
-    notifications.defaultConfig = {
-        timeout: 8000
-    };
-
-    notifications.onLoadSettings = function() {
-        utils.setInputValue("#input-notifications-timeout", notifications.config.timeout);
-    };
-
-    notifications.onSaveSettings = function(newConfig, event) {
-        newConfig.timeout = utils.getInputIntValue("#input-notifications-timeout", event, 1, 60000);
-    };
-
-    var isInit = false;
-    function init() {
-        if(isInit === false) {
-            // jGrowl configuration
-            jGrowl.defaults.life = notifications.config.timeout;
-            jGrowl.defaults.closer = false;
-            jGrowl.defaults.closeTemplate = '';
-            jGrowl.defaults.position = 'bottom-right';
-            isInit = true;
-        }
-    }
-
-    function showMessage(message, iconClass, options) {
-        logger.info(message);
-        init();
-        if(!message) {
-            return;
-        }
-        var endOfMsg = message.indexOf("|");
-        if(endOfMsg !== -1) {
-            message = message.substring(0, endOfMsg);
-            if(!message) {
-                return;
-            }
-        }
-        options = options || {};
-        iconClass = iconClass || "icon-info-circled";
-        jGrowl("<i class='icon-white " + iconClass + "'></i> " + _.escape(message).replace(/\n/g, '<br/>'), options);
-    }
-
-    var isReady = false;
-    var $offlineStatusElt;
-    var $extensionButtonsElt;
-    notifications.onReady = function() {
-        isReady = true;
-        $offlineStatusElt = $('.navbar .offline-status');
-        $extensionButtonsElt = $('.navbar .extension-buttons');
-        updateOnlineStatus();
-    };
-
-    notifications.onMessage = function(message) {
-        showMessage(message);
-    };
-
-    notifications.onError = function(error) {
-        logger.error(error);
-        if(_.isString(error)) {
-            showMessage(error, "icon-attention");
-        }
-        else if(_.isObject(error)) {
-            showMessage(error.message, "icon-attention");
-        }
-    };
-
-    var isOffline = false;
-    function updateOnlineStatus() {
-        if(isReady === false) {
-            return;
-        }
-        $offlineStatusElt.toggleClass('hide', !isOffline);
-        $extensionButtonsElt.toggleClass('hide', isOffline);
-    }
-    notifications.onOfflineChanged = function(isOfflineParam) {
-        isOffline = isOfflineParam;
-        updateOnlineStatus();
-        if(isOffline === true) {
-            showMessage("You are offline.", "icon-attention-circled msg-offline");
-        }
-        else {
-            showMessage("You are back online!", "icon-signal");
-        }
-    };
-
-    notifications.onSyncImportSuccess = function(fileDescList, provider) {
-        var titles = _.map(fileDescList, function(fileDesc) {
-            return fileDesc.title;
-        }).join(", ");
-        showMessage(titles + ' imported successfully from ' + provider.providerName + '.');
-    };
-
-    notifications.onSyncExportSuccess = function(fileDesc, syncAttributes) {
-        showMessage('"' + fileDesc.title + '" will now be synchronized on ' + syncAttributes.provider.providerName + '.');
-    };
-
-    notifications.onSyncRemoved = function(fileDesc, syncAttributes) {
-        showMessage(syncAttributes.provider.providerName + " synchronized location has been removed.");
-    };
-
-    notifications.onPublishSuccess = function(fileDesc) {
-        showMessage('"' + fileDesc.title + '" successfully published.');
-    };
-
-    notifications.onNewPublishSuccess = function(fileDesc, publishAttributes) {
-        showMessage('"' + fileDesc.title + '" is now published on ' + publishAttributes.provider.providerName + '.');
-    };
-
-    notifications.onPublishRemoved = function(fileDesc, publishAttributes) {
-        showMessage(publishAttributes.provider.providerName + " publish location has been removed.");
-    };
-
-    return notifications;
-});
-define('text!html/umlDiagramsSettingsBlock.html',[],function () { return '<p>Creates UML diagrams from plain text description.</p>\n\n<div class="form-horizontal">\n    <div class="form-group">\n        <label class="col-sm-4 control-label" for="textarea-umldiagram-flowchart-options">Flow charts options (JSON)\n        </label>\n        <div class="col-sm-7">\n            <textarea id="textarea-umldiagram-flowchart-options" class="form-control"></textarea>\n        </div>\n    </div>\n</div>\n<br>\n<p>Sequence diagrams:</p>\n<pre><div class="help-block pull-right"><a target="_blank" href="http://bramp.github.io/js-sequence-diagrams/">More info</a></div><code>```sequence\nAlice->Bob: Hello Bob, how are you?\nBob-->Alice: I am good thanks!\n```</code>\n</pre>\n\n<p>Flow charts:</p>\n<pre><div class="help-block pull-right"><a target="_blank" href="http://adrai.github.io/flowchart.js/">More info</a></div><code>```flow\nst=>start: Start\ne=>end\nop=>operation: My Operation\ncond=>condition: Yes or No?\nst->op->cond\ncond(yes)->e\ncond(no)->op\n```</code>\n</pre>\n<blockquote>\n    <p><b>Note:</b> Markdown Extra extension has to be enabled with GFM fenced code blocks option.</p>\n</blockquote>\n';});
 
 // ┌────────────────────────────────────────────────────────────────────┐ \\
 // │ Raphaël 2.1.1 - JavaScript Vector Library                          │ \\
@@ -29167,14 +24847,14 @@ define('extensions/umlDiagrams',[
 	"utils",
 	"logger",
 	"classes/Extension",
-	"text!html/umlDiagramsSettingsBlock.html",
+	// "ext!html/umlDiagramsSettingsBlock.html",
 	'crel',
 	'Diagram',
 	'flow-chart'
-], function(_, utils, logger, Extension, umlDiagramsSettingsBlockHTML, crel, Diagram, flowChart) {
+], function(_, utils, logger, Extension, crel, Diagram, flowChart) {
 
 	var umlDiagrams = new Extension("umlDiagrams", "UML Diagrams", true);
-	umlDiagrams.settingsBlock = umlDiagramsSettingsBlockHTML;
+	// umlDiagrams.settingsBlock = umlDiagramsSettingsBlockHTML;
 	umlDiagrams.defaultConfig = {
 		flowchartOptions: [
 			'{',
@@ -29185,13 +24865,13 @@ define('extensions/umlDiagrams',[
 		].join('\n')
 	};
 
-	umlDiagrams.onLoadSettings = function() {
-		utils.setInputValue("#textarea-umldiagram-flowchart-options", umlDiagrams.config.flowchartOptions);
-	};
+	// umlDiagrams.onLoadSettings = function() {
+	// 	utils.setInputValue("#textarea-umldiagram-flowchart-options", umlDiagrams.config.flowchartOptions);
+	// };
 
-	umlDiagrams.onSaveSettings = function(newConfig, event) {
-		newConfig.flowchartOptions = utils.getInputJSONValue("#textarea-umldiagram-flowchart-options", event);
-	};
+	// umlDiagrams.onSaveSettings = function(newConfig, event) {
+	// 	newConfig.flowchartOptions = utils.getInputJSONValue("#textarea-umldiagram-flowchart-options", event);
+	// };
 
 	umlDiagrams.onPagedownConfigure = function(editor) {
 		var previewContentsElt = document.getElementById('preview-contents');
@@ -29230,35 +24910,33 @@ define('extensions/umlDiagrams',[
 	return umlDiagrams;
 });
 
-define('text!html/tocSettingsBlock.html',[],function () { return '<p>Generates a table of contents when a [TOC] marker is found.</p>\n<div class="form-horizontal">\n\t<div class="form-group">\n\t\t<label class="col-sm-4 control-label" for="input-toc-marker">Marker\n\t\t\tRegExp</label>\n\t\t<div class="col-sm-7">\n\t\t\n\t\t\t<input type="text" id="input-toc-marker" class="col-sm-4 form-control">\n\t\t</div>\n\t</div>\n\t<div class="form-group">\n\t\t<label class="col-sm-4 control-label" for="input-toc-maxdepth">Max depth</label>\n\t\t<div class="col-sm-7 form-inline">\n\t\t\t<input type="text" id="input-toc-maxdepth"\n\t\t\t\tclass="col-sm-5 form-control" placeholder="6">\n\t\t</div>\n\t</div>\n\t<div class="form-group">\n        <label class="col-sm-4 control-label" for="input-toc-button">Button over preview</label>\n        <div class="col-sm-7">\n        <div class="checkbox">\n            <input type="checkbox" id="input-toc-button">\n            </div>\n        </div>\n    </div>\n\t\n</div>';});
-
 define('extensions/toc',[
     // "jquery",
     "underscore",
     "utils",
     "classes/Extension",
-    "text!html/tocSettingsBlock.html",
-], function(_, utils, Extension, tocSettingsBlockHTML) {
+    // "ext!html/tocSettingsBlock.html",
+], function(_, utils, Extension) {
 
     var toc = new Extension("toc", "Table of Contents", true);
-    toc.settingsBlock = tocSettingsBlockHTML;
+    // toc.settingsBlock = tocSettingsBlockHTML;
     toc.defaultConfig = {
         marker: "\\[(TOC|toc)\\]",
         maxDepth: 6,
         button: true,
     };
 
-    toc.onLoadSettings = function() {
-        utils.setInputValue("#input-toc-marker", toc.config.marker);
-        utils.setInputValue("#input-toc-maxdepth", toc.config.maxDepth);
-        utils.setInputChecked("#input-toc-button", toc.config.button);
-    };
+    // toc.onLoadSettings = function() {
+    //     utils.setInputValue("#input-toc-marker", toc.config.marker);
+    //     utils.setInputValue("#input-toc-maxdepth", toc.config.maxDepth);
+    //     utils.setInputChecked("#input-toc-button", toc.config.button);
+    // };
 
-    toc.onSaveSettings = function(newConfig, event) {
-        newConfig.marker = utils.getInputRegExpValue("#input-toc-marker", event);
-        newConfig.maxDepth = utils.getInputIntValue("#input-toc-maxdepth");
-        newConfig.button = utils.getInputChecked("#input-toc-button");
-    };
+    // toc.onSaveSettings = function(newConfig, event) {
+    //     newConfig.marker = utils.getInputRegExpValue("#input-toc-marker", event);
+    //     newConfig.maxDepth = utils.getInputIntValue("#input-toc-maxdepth");
+    //     newConfig.button = utils.getInputChecked("#input-toc-button");
+    // };
 
     /*
     toc.onCreatePreviewButton = function() {
@@ -29407,7 +25085,7 @@ define('extensions/emailConverter',[
 ], function(Extension) {
 
     var emailConverter = new Extension("emailConverter", "Markdown Email", true);
-    emailConverter.settingsBlock = '<p>Converts email addresses in the form &lt;email@example.com&gt; into clickable links.</p>';
+    // emailConverter.settingsBlock = '<p>Converts email addresses in the form &lt;email@example.com&gt; into clickable links.</p>';
 
     emailConverter.onPagedownConfigure = function(editor) {
         editor.getConverter().hooks.chain("postConversion", function(text) {
@@ -29420,17 +25098,15 @@ define('extensions/emailConverter',[
     return emailConverter;
 });
 
-define('text!html/scrollSyncSettingsBlock.html',[],function () { return '<p>Binds together editor and preview scrollbars.</p>\n<blockquote>\n\t<p><b>Note:</b> The mapping between Markdown and HTML is based on the\n\tposition of the title elements (h1, h2...) in the page. Therefore if\n\tyour document does not contain any title, the mapping will be linear and\n\tconsequently less accurate.</p>\n</blockquote>';});
-
 define('extensions/scrollSync',[
 	// "jquery",
 	"underscore",
-	"classes/Extension",
-	"text!html/scrollSyncSettingsBlock.html"
-], function(_, Extension, scrollSyncSettingsBlockHTML) {
+	"classes/Extension"
+	// "ext!html/scrollSyncSettingsBlock.html"
+], function(_, Extension) {
 
 	var scrollSync = new Extension("scrollSync", "Scroll Sync", true, true);
-	scrollSync.settingsBlock = scrollSyncSettingsBlockHTML;
+	// scrollSync.settingsBlock = scrollSyncSettingsBlockHTML;
 
 	var sectionList;
 	scrollSync.onSectionsCreated = function(sectionListParam) {
@@ -29443,17 +25119,28 @@ define('extensions/scrollSync',[
 	var htmlSectionList = [];
 	var lastEditorScrollTop;
 	var lastPreviewScrollTop;
+
+	// 创建sections
+	// mdSectionList 和 htmlSectionList
+	// 两者一一对应, 知道各自offsetTop
 	var buildSections = _.debounce(function() {
+		// 编辑区
 		mdSectionList = [];
 		var mdSectionOffset;
 		var scrollHeight;
+
 		_.each(editorElt.querySelectorAll(".wmd-input-section"), function(delimiterElt) {
 			if(mdSectionOffset === undefined) {
 				// Force start to 0 for the first section
 				mdSectionOffset = 0;
 				return;
 			}
-			delimiterElt = delimiterElt.firstChild;
+			// life
+			// 因为如果左侧是纯文本编辑, delimiterElt.firstChild就是文本
+			if (delimiterElt.firstChild && delimiterElt.firstChild.nodeName != '#text') {
+				delimiterElt = delimiterElt.firstChild;
+			}
+
 			// Consider div scroll position
 			var newSectionOffset = delimiterElt.offsetTop;
 			mdSectionList.push({
@@ -29463,6 +25150,7 @@ define('extensions/scrollSync',[
 			});
 			mdSectionOffset = newSectionOffset;
 		});
+
 		// Last section
 		scrollHeight = editorElt.scrollHeight;
 		mdSectionList.push({
@@ -29471,6 +25159,7 @@ define('extensions/scrollSync',[
 			height: scrollHeight - mdSectionOffset
 		});
 
+		// 预览区相对应
 		// Find corresponding sections in the preview
 		htmlSectionList = [];
 		var htmlSectionOffset;
@@ -29556,10 +25245,14 @@ define('extensions/scrollSync',[
 		tick();
 	}
 
+	// 同步预览
 	var doScrollSync = _.throttle(function() {
-		if(!isPreviewVisible || mdSectionList.length === 0 || mdSectionList.length !== htmlSectionList.length) {
+		if(!isPreviewVisible 
+			|| mdSectionList.length === 0 
+			|| mdSectionList.length !== htmlSectionList.length) {
 			return;
 		}
+
 		var editorScrollTop = editorElt.scrollTop;
 		editorScrollTop < 0 && (editorScrollTop = 0);
 		var previewScrollTop = previewElt.scrollTop;
@@ -29628,7 +25321,6 @@ define('extensions/scrollSync',[
 	scrollSync.onReady = function() {
 		previewElt = document.querySelector(".preview-container");
 		editorElt = document.querySelector("#wmd-input");
-
 		$(previewElt).scroll(function() {
 			if(isPreviewMoving === false && scrollAdjust === false) {
 				isScrollPreview = true;
@@ -29693,27 +25385,19 @@ define('extensions/scrollSync',[
 	return scrollSync;
 });
 
-define('text!extensions/shortcutsDefaultMapping.settings',[],function () { return '{\n    \'mod+b\': bindPagedownButton(\'bold\'),\n    \'mod+i\': bindPagedownButton(\'italic\'),\n    \'mod+l\': bindPagedownButton(\'link\'),\n    \'mod+q\': bindPagedownButton(\'quote\'),\n    \'mod+k\': bindPagedownButton(\'code\'),\n    \'mod+g\': bindPagedownButton(\'image\'),\n    \'mod+o\': bindPagedownButton(\'olist\'),\n    \'mod+u\': bindPagedownButton(\'ulist\'),\n    \'mod+h\': bindPagedownButton(\'heading\'),\n    \'mod+r\': bindPagedownButton(\'hr\'),\n    \'mod+z\': bindPagedownButton(\'undo\'),\n    \'mod+y\': bindPagedownButton(\'redo\'),\n    \'mod+shift+z\': bindPagedownButton(\'redo\'),\n    \'mod+m\': function(evt) {\n        $(\'.button-open-discussion\').click();\n        evt.preventDefault();\n    },\n    \'= = > space\': function() {\n        expand(\'==> \', \'⇒ \');\n    },\n    \'< = = space\': function() {\n        expand(\'<== \', \'⇐ \');\n    },\n    \'S t a c k E d i t\': function() {\n        eventMgr.onMessage("You are stunned!!! Aren\'t you?");\n    }\n}\n';});
-
-define('text!html/shortcutsSettingsBlock.html',[],function () { return '<p>Maps keyboard shortcuts to JavaScript functions.</p>\n<div class="form-horizontal">\n\t<div class="form-group">\n\t\t<label class="col-sm-3 control-label" for="textarea-shortcuts-mapping">Mapping\n\t\t\t<a href="#" class="tooltip-shortcuts-extension">(?)</a>\n\t\t</label>\n\t\t<div class="col-sm-8">\n\t\t\t<textarea id="textarea-shortcuts-mapping" class="form-control"></textarea>\n\t\t</div>\n\t</div>\n</div>\n';});
-
-define('text!html/tooltipSettingsShortcutsExtension.html',[],function () { return 'You can create expanding macros like this:\n<br />\n<br />\n\'- - > space\': function() {\n<br />\n\texpand(\'--> \', \'→ \');\n<br />\n}\n<br />\n<br />\n<a target="_blank"\n\thref="http://craig.is/killing/mice">More\n\tinfo</a>\n<br />\n<br />\n<b class="text-danger"><i class="icon-attention"></i> Careful! This is subject to malicious code. Don\'t copy/paste untrusted content.</b>\n';});
-
+// 什么原因会停止scroll或定位不准, 有resize的时候, offset都变了, 但是scrollSync插件里面的没变, 所以需要buildSection
+// 什么时候buildSections ?
+// scrollSync.onPreviewFinished, scrollSync.onLayoutResize
+;
 define('extensions/shortcuts',[
 	// "jquery",
 	"underscore",
 	"utils",
 	"mousetrap",
-	"classes/Extension",
-	"text!extensions/shortcutsDefaultMapping.settings",
-	"text!html/shortcutsSettingsBlock.html",
-	"text!html/tooltipSettingsShortcutsExtension.html"
-], function(_, utils, mousetrap, Extension, shortcutsDefaultMapping, shortcutsSettingsBlockHTML, tooltipSettingsShortcutsExtensionHTML) {
-
+	"classes/Extension"
+], function(_, utils, mousetrap, Extension, shortcutsDefaultMapping) {
 	var shortcuts = new Extension("shortcuts", "Shortcuts", true, true);
-	shortcuts.settingsBlock = shortcutsSettingsBlockHTML;
 	shortcuts.defaultConfig = {
-		mapping: shortcutsDefaultMapping
 	};
 
 	var eventMgr;
@@ -29723,23 +25407,6 @@ define('extensions/shortcuts',[
 		eventMgr.addListener('onPagedownConfigure', function(pagedownEditorParam) {
 			pagedownEditor = pagedownEditorParam;
 		});
-	};
-
-	shortcuts.onLoadSettings = function() {
-		utils.setInputValue("#textarea-shortcuts-mapping", shortcuts.config.mapping);
-	};
-
-	shortcuts.onSaveSettings = function(newConfig, event) {
-		newConfig.code = utils.getInputValue("#textarea-shortcuts-mapping");
-		try {
-			/*jshint evil: true */
-			eval('var test = ' + newConfig.code);
-		}
-		catch(e) {
-			eventMgr.onError(e);
-			// Mark the textarea as error
-			utils.getInputTextValue("#textarea-shortcuts-mapping", event, /^$/);
-		}
 	};
 
 	/*jshint unused:false */
@@ -29757,7 +25424,6 @@ define('extensions/shortcuts',[
 	}
 
 	/*
-	
     'mod+b': bindPagedownButton('bold'),
     'mod+i': bindPagedownButton('italic'),
     'mod+l': bindPagedownButton('link'),
@@ -29797,8 +25463,34 @@ define('extensions/shortcuts',[
 			};
 
 			var shortcutMap;
-			/*jshint evil: true */
-			eval('shortcutMap = ' + shortcuts.config.mapping);
+            var shortcutMap = {
+                    'mod+b': bindPagedownButton('bold'),
+                    'mod+i': bindPagedownButton('italic'),
+                    'mod+l': bindPagedownButton('link'),
+                    'mod+q': bindPagedownButton('quote'),
+                    'mod+k': bindPagedownButton('code'),
+                    'mod+g': bindPagedownButton('image'),
+                    'mod+o': bindPagedownButton('olist'),
+                    'mod+u': bindPagedownButton('ulist'),
+                    'mod+h': bindPagedownButton('heading'),
+                    'mod+r': bindPagedownButton('hr'),
+                    'mod+z': bindPagedownButton('undo'),
+                    'mod+y': bindPagedownButton('redo'),
+                    'mod+shift+z': bindPagedownButton('redo'),
+                    'mod+m': function(evt) {
+                        $('.button-open-discussion').click();
+                        evt.preventDefault();
+                    },
+                    '= = > space': function() {
+                        expand('==> ', '⇒ ');
+                    },
+                    '< = = space': function() {
+                        expand('<== ', '⇐ ');
+                    },
+                    'S t a c k E d i t': function() {
+                        eventMgr.onMessage("You are stunned!!! Aren't you?");
+                    }
+                };
 			_.each(shortcutMap, function(func, shortcut) {
 				mousetrap.bind(shortcut, func);
 			});
@@ -29809,15 +25501,10 @@ define('extensions/shortcuts',[
 	};
 
 	shortcuts.onReady = function() {
-		// utils.createTooltip(".tooltip-shortcuts-extension", tooltipSettingsShortcutsExtensionHTML);
 	};
 
 	return shortcuts;
 });
-
-define('text!html/findReplace.html',[],function () { return '<button type="button" class="close button-find-replace-dismiss">×</button>\n<div class="form-inline">\n    <div class="form-group">\n        <label for="input-find-replace-search-for">Search for</label>\n        <input class="form-control" id="input-find-replace-search-for" placeholder="Search for">\n    </div>\n    <div class="form-group">\n        <label for="input-find-replace-replace-with">Replace with</label>\n        <input class="form-control" id="input-find-replace-replace-with" placeholder="Replace with">\n    </div>\n</div>\n<div class="pull-right">\n    <div class="help-block text-right">\n        <span class="found-counter">0</span> found\n    </div>\n    <div>\n        <button type="button" class="btn btn-primary search-button">Search</button>\n        <button type="button" class="btn btn-default replace-button">Replace</button>\n        <button type="button" class="btn btn-default replace-all-button">All</button>\n    </div>\n</div>\n<div class="pull-left">\n    <div class="checkbox">\n        <label>\n            <input type="checkbox" class="checkbox-case-sensitive"> Case sensitive\n        </label>\n    </div>\n    <div class="checkbox">\n        <label>\n            <input type="checkbox" class="checkbox-regexp"> Regular expression\n        </label>\n    </div>\n</div>\n';});
-
-define('text!html/findReplaceSettingsBlock.html',[],function () { return '<p>Helps find and replace text in the current document.</p>\n<div class="form-horizontal">\n\t<div class="form-group">\n\t\t<label class="col-sm-5 control-label"\n\t\t\tfor="input-find-replace-shortcut">Shortcut <a href="http://craig.is/killing/mice#keys" target="_blank">(?)</a></label>\n\t\t<div class="col-sm-6">\n\t\t\t<input type="text" id="input-find-replace-shortcut"\n\t\t\t\tclass="form-control">\n\t\t</div>\n\t</div>\n</div>';});
 
 define('extensions/findReplace',[
 	// "jquery",
@@ -29827,23 +25514,25 @@ define('extensions/findReplace',[
 	"classes/Extension",
 	"mousetrap",
 	"rangy",
-	"text!html/findReplace.html",
-	"text!html/findReplaceSettingsBlock.html"
-], function(_, crel, utils, Extension, mousetrap, rangy, findReplaceHTML, findReplaceSettingsBlockHTML) {
+	// "ext!html/findReplace.html",
+	// "ext!html/findReplaceSettingsBlock.html"
+], function(_, crel, utils, Extension, mousetrap, rangy) {
+
+	var findReplaceHTML = '<button type="button" class="close button-find-replace-dismiss">×</button>\n<div class="form-inline">\n    <div class="form-group">\n        <label for="input-find-replace-search-for">Search for</label>\n        <input class="form-control" id="input-find-replace-search-for" placeholder="Search for">\n    </div>\n    <div class="form-group">\n        <label for="input-find-replace-replace-with">Replace with</label>\n        <input class="form-control" id="input-find-replace-replace-with" placeholder="Replace with">\n    </div>\n</div>\n<div class="pull-right">\n    <div class="help-block text-right">\n        <span class="found-counter">0</span> found\n    </div>\n    <div>\n        <button type="button" class="btn btn-primary search-button">Search</button>\n        <button type="button" class="btn btn-default replace-button">Replace</button>\n        <button type="button" class="btn btn-default replace-all-button">All</button>\n    </div>\n</div>\n<div class="pull-left">\n    <div class="checkbox">\n        <label>\n            <input type="checkbox" class="checkbox-case-sensitive"> Case sensitive\n        </label>\n    </div>\n    <div class="checkbox">\n        <label>\n            <input type="checkbox" class="checkbox-regexp"> Regular expression\n        </label>\n    </div>\n</div>\n';
 
 	var findReplace = new Extension("findReplace", 'Find and Replace', true, true);
-	findReplace.settingsBlock = findReplaceSettingsBlockHTML;
+	// findReplace.settingsBlock = findReplaceSettingsBlockHTML;
 	findReplace.defaultConfig = {
 		findReplaceShortcut: 'mod+f'
 	};
 
-	findReplace.onLoadSettings = function() {
-		utils.setInputValue("#input-find-replace-shortcut", findReplace.config.findReplaceShortcut);
-	};
+	// findReplace.onLoadSettings = function() {
+	// 	utils.setInputValue("#input-find-replace-shortcut", findReplace.config.findReplaceShortcut);
+	// };
 
-	findReplace.onSaveSettings = function(newConfig, event) {
-		newConfig.findReplaceShortcut = utils.getInputTextValue("#input-find-replace-shortcut", event);
-	};
+	// findReplace.onSaveSettings = function(newConfig, event) {
+	// 	newConfig.findReplaceShortcut = utils.getInputTextValue("#input-find-replace-shortcut", event);
+	// };
 
 	var editor;
 	findReplace.onEditorCreated = function(editorParam) {
@@ -30084,19 +25773,17 @@ define('extensions/findReplace',[
 	return findReplace;
 });
 
-define('text!html/htmlSanitizerSettingsBlock.html',[],function () { return '<p>Prevents cross-site-scripting attacks (XSS).</p>\n<p class="alert alert-danger"><i class="icon-attention"></i> <b>Careful:</b> Disable at your own risk!</p>\n';});
-
 define('extensions/htmlSanitizer',[
 	// "jquery",
 	"underscore",
 	"utils",
 	"logger",
 	"classes/Extension",
-	"text!html/htmlSanitizerSettingsBlock.html"
-], function(_, utils, logger, Extension, htmlSanitizerSettingsBlockHTML) {
+	// "ext!html/htmlSanitizerSettingsBlock.html"
+], function(_, utils, logger, Extension) {
 
 	var htmlSanitizer = new Extension("htmlSanitizer", "HTML Sanitizer", true);
-	htmlSanitizer.settingsBlock = htmlSanitizerSettingsBlockHTML;
+	// htmlSanitizer.settingsBlock = htmlSanitizerSettingsBlockHTML;
 
 	var buf;
 	htmlSanitizer.onPagedownConfigure = function(editor) {
@@ -30642,7 +26329,7 @@ define('eventMgr',[
 	"logger",
 	"classes/Extension",
 	"settings",
-	"extensions/yamlFrontMatterParser",
+	// "extensions/yamlFrontMatterParser",
 	"extensions/markdownSectionParser",
 	"extensions/partialRendering",
 	// "extensions/buttonMarkdownSyntax",
@@ -30657,8 +26344,8 @@ define('eventMgr',[
 	// "extensions/documentSelector",
 	// "extensions/documentPanel",
 	// "extensions/documentManager",
-	"extensions/workingIndicator",
-	"extensions/notifications",
+	// "extensions/workingIndicator",
+	// "extensions/notifications",
 	"extensions/umlDiagrams",
 	"extensions/markdownExtra",
 	"extensions/toc",
@@ -30854,6 +26541,7 @@ define('eventMgr',[
 	addEventHook("onTweet");
 
 
+	// onPreviewFinished 触发 scrollSync
 	var onPreviewFinished = createEventHook("onPreviewFinished");
 	var onAsyncPreviewListenerList = getExtensionListenerList("onAsyncPreview");
 	var previewContentsElt;
@@ -30877,6 +26565,8 @@ define('eventMgr',[
 			});
 		}
 
+		// recursiveCall(onAsyncPreviewListenerList);
+		// 加载图片后才会触发onPreviewFinished, 因为offsetTop()会有影响, 所以, 必须要在图片加载完成才触发
 		recursiveCall(onAsyncPreviewListenerList.concat([
 			function(callback) {
 				// We assume some images are loading asynchronously after the preview
@@ -30958,6 +26648,7 @@ define('eventMgr',[
 	eventMgr.onEventMgrCreated(eventMgr);
 	return eventMgr;
 });
+
 
 /**
  * Prism: Lightweight, robust, elegant syntax highlighting
@@ -31134,6 +26825,7 @@ var _ = self.Prism = {
 		}
 	},
 	
+    // 这里啊, 把一堆好好的文本替换成恶心的东西
 	highlight: function (text, grammar, language) {
 		return Token.stringify(_.tokenize(text, grammar), language);
 	},
@@ -31278,9 +26970,8 @@ Token.stringify = function(o, language, parent) {
 	for (var name in env.attributes) {
 		attributes += name + '="' + (env.attributes[name] || '') + '"';
 	}
-	
+
 	return '<' + env.tag + ' class="' + env.classes.join(' ') + '" ' + attributes + '>' + env.content + '</' + env.tag + '>';
-	
 };
 
 if (!self.document) {
@@ -33519,1243 +29210,6 @@ define("diff_match_patch_uncompressed", (function (global) {
     };
 }(this)));
 
-!function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define('jsondiffpatch',e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.jsondiffpatch=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-
-process.nextTick = (function () {
-    var canSetImmediate = typeof window !== 'undefined'
-    && window.setImmediate;
-    var canPost = typeof window !== 'undefined'
-    && window.postMessage && window.addEventListener
-    ;
-
-    if (canSetImmediate) {
-        return function (f) { return window.setImmediate(f) };
-    }
-
-    if (canPost) {
-        var queue = [];
-        window.addEventListener('message', function (ev) {
-            var source = ev.source;
-            if ((source === window || source === null) && ev.data === 'process-tick') {
-                ev.stopPropagation();
-                if (queue.length > 0) {
-                    var fn = queue.shift();
-                    fn();
-                }
-            }
-        }, true);
-
-        return function nextTick(fn) {
-            queue.push(fn);
-            window.postMessage('process-tick', '*');
-        };
-    }
-
-    return function nextTick(fn) {
-        setTimeout(fn, 0);
-    };
-})();
-
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-}
-
-// TODO(shtylman)
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-
-},{}],2:[function(_dereq_,module,exports){
-
-var Pipe = _dereq_('../pipe').Pipe;
-
-var Context = function Context(){
-};
-
-Context.prototype.setResult = function(result) {
-	this.result = result;
-	this.hasResult = true;
-	return this;
-};
-
-Context.prototype.exit = function() {
-	this.exiting = true;
-	return this;
-};
-
-Context.prototype.switchTo = function(next, pipe) {
-	if (typeof next === 'string' || next instanceof Pipe) {
-		this.nextPipe = next;
-	} else {
-		this.next = next;
-		if (pipe) {
-			this.nextPipe = pipe;
-		}
-	}
-	return this;
-};
-
-Context.prototype.push = function(child, name) {
-	child.parent = this;
-	if (typeof name !== 'undefined') {
-		child.childName = name;
-	}
-	child.root = this.root || this;
-	child.options = child.options || this.options;
-	if (!this.children) {
-		this.children = [child];
-		this.nextAfterChildren = this.next || null;
-		this.next = child;
-	} else {
-		this.children[this.children.length - 1].next = child;
-		this.children.push(child);
-	}
-	child.next = this;
-	return this;
-};
-
-exports.Context = Context;
-},{"../pipe":15}],3:[function(_dereq_,module,exports){
-
-var Context = _dereq_('./context').Context;
-
-var DiffContext = function DiffContext(left, right){
-    this.left = left;
-    this.right = right;
-    this.pipe = 'diff';
-};
-
-DiffContext.prototype = new Context();
-
-exports.DiffContext = DiffContext;
-},{"./context":2}],4:[function(_dereq_,module,exports){
-
-var Context = _dereq_('./context').Context;
-
-var PatchContext = function PatchContext(left, delta){
-    this.left = left;
-    this.delta = delta;
-    this.pipe = 'patch';
-};
-
-PatchContext.prototype = new Context();
-
-exports.PatchContext = PatchContext;
-},{"./context":2}],5:[function(_dereq_,module,exports){
-
-var Context = _dereq_('./context').Context;
-
-var ReverseContext = function ReverseContext(delta){
-    this.delta = delta;
-    this.pipe = 'reverse';
-};
-
-ReverseContext.prototype = new Context();
-
-exports.ReverseContext = ReverseContext;
-},{"./context":2}],6:[function(_dereq_,module,exports){
-
-// use as 2nd parameter for JSON.parse to revive Date instances
-module.exports = function dateReviver(key, value) {
-    var a;
-    if (typeof value === 'string') {
-        a = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)(Z|([+\-])(\d{2}):(\d{2}))$/.exec(value);
-        if (a) {
-            return new Date(Date.UTC(+a[1], +a[2] - 1, +a[3], +a[4], +a[5], +a[6]));
-        }
-    }
-    return value;
-};
-},{}],7:[function(_dereq_,module,exports){
-
-var Processor = _dereq_('./processor').Processor;
-var Pipe = _dereq_('./pipe').Pipe;
-var DiffContext = _dereq_('./contexts/diff').DiffContext;
-var PatchContext = _dereq_('./contexts/patch').PatchContext;
-var ReverseContext = _dereq_('./contexts/reverse').ReverseContext;
-
-var trivial = _dereq_('./filters/trivial');
-var nested = _dereq_('./filters/nested');
-var arrays = _dereq_('./filters/arrays');
-var dates = _dereq_('./filters/dates');
-var texts = _dereq_('./filters/texts');
-
-var DiffPatcher = function DiffPatcher(options){
-    this.processor = new Processor(options);
-    this.processor.pipe(new Pipe('diff').append(
-        nested.collectChildrenDiffFilter,
-        trivial.diffFilter,
-        dates.diffFilter,
-        texts.diffFilter,
-        nested.objectsDiffFilter,
-        arrays.diffFilter
-        ).shouldHaveResult());
-    this.processor.pipe(new Pipe('patch').append(
-        nested.collectChildrenPatchFilter,
-        arrays.collectChildrenPatchFilter,
-        trivial.patchFilter,
-        texts.patchFilter,
-        nested.patchFilter,
-        arrays.patchFilter
-        ).shouldHaveResult());
-    this.processor.pipe(new Pipe('reverse').append(
-        nested.collectChildrenReverseFilter,
-        arrays.collectChildrenReverseFilter,
-        trivial.reverseFilter,
-        texts.reverseFilter,
-        nested.reverseFilter,
-        arrays.reverseFilter
-        ).shouldHaveResult());
-};
-
-DiffPatcher.prototype.options = function() {
-    return this.processor.options.apply(this.processor, arguments);
-};
-
-DiffPatcher.prototype.diff = function(left, right) {
-    return this.processor.process(new DiffContext(left, right));
-};
-
-DiffPatcher.prototype.patch = function(left, delta) {
-    return this.processor.process(new PatchContext(left, delta));
-};
-
-DiffPatcher.prototype.reverse = function(delta) {
-    return this.processor.process(new ReverseContext(delta));
-};
-
-DiffPatcher.prototype.unpatch = function(right, delta) {
-    return this.patch(right, this.reverse(delta));
-};
-
-exports.DiffPatcher = DiffPatcher;
-
-},{"./contexts/diff":3,"./contexts/patch":4,"./contexts/reverse":5,"./filters/arrays":9,"./filters/dates":10,"./filters/nested":12,"./filters/texts":13,"./filters/trivial":14,"./pipe":15,"./processor":16}],8:[function(_dereq_,module,exports){
-(function (process){
-
-var DiffPatcher = _dereq_('./diffpatcher').DiffPatcher;
-exports.DiffPatcher = DiffPatcher;
-
-exports.create = function(options){
-	return new DiffPatcher(options);
-};
-
-exports.dateReviver = _dereq_('./date-reviver');
-
-var defaultInstance;
-
-exports.diff = function() {
-	if (!defaultInstance) {
-		defaultInstance = new DiffPatcher();
-	}
-	return defaultInstance.diff.apply(defaultInstance, arguments);
-};
-
-exports.patch = function() {
-	if (!defaultInstance) {
-		defaultInstance = new DiffPatcher();
-	}
-	return defaultInstance.patch.apply(defaultInstance, arguments);
-};
-
-exports.unpatch = function() {
-	if (!defaultInstance) {
-		defaultInstance = new DiffPatcher();
-	}
-	return defaultInstance.unpatch.apply(defaultInstance, arguments);
-};
-
-exports.reverse = function() {
-	if (!defaultInstance) {
-		defaultInstance = new DiffPatcher();
-	}
-	return defaultInstance.reverse.apply(defaultInstance, arguments);
-};
-
-var inNode = typeof process !== 'undefined' && typeof process.execPath === 'string';
-if (inNode) {
-	var formatters = _dereq_('./formatters' + '/index');
-	exports.formatters = formatters;
-	// shortcut for console
-	exports.console = formatters.console;
-} else {
-	exports.homepage = 'https://github.com/benjamine/jsondiffpatch';
-	exports.version = '0.1.5';
-}
-
-}).call(this,_dereq_("/home/sheila/proj/JsonDiffPatch/node_modules/gulp-browserify/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js"))
-},{"./date-reviver":6,"./diffpatcher":7,"/home/sheila/proj/JsonDiffPatch/node_modules/gulp-browserify/node_modules/browserify/node_modules/insert-module-globals/node_modules/process/browser.js":1}],9:[function(_dereq_,module,exports){
-
-var DiffContext = _dereq_('../contexts/diff').DiffContext;
-var PatchContext = _dereq_('../contexts/patch').PatchContext;
-var ReverseContext = _dereq_('../contexts/reverse').ReverseContext;
-
-var lcs = _dereq_('./lcs');
-
-var ARRAY_MOVE = 3;
-
-var isArray = (typeof Array.isArray === 'function') ?
-    // use native function
-    Array.isArray :
-    // use instanceof operator
-    function(a) {
-        return a instanceof Array;
-    };
-
-var arrayIndexOf = typeof Array.prototype.indexOf === 'function' ?
-    function(array, item) {
-        return array.indexOf(item);
-    } : function(array, item) {
-        var length = array.length;
-        for (var i = 0; i < length; i++) {
-            if (array[i] === item) {
-                return i;
-            }
-        }
-        return -1;
-    };
-
-var diffFilter = function arraysDiffFilter(context){
-    if (!context.leftIsArray) { return; }
-
-    var objectHash = context.options && context.options.objectHash;
-
-    var match = function(array1, array2, index1, index2, context) {
-        var value1 = array1[index1];
-        var value2 = array2[index2];
-        if (value1 === value2) {
-            return true;
-        }
-        if (typeof value1 !== 'object' || typeof value2 !== 'object') {
-            return false;
-        }
-        if (!objectHash) { return false; }
-        var hash1, hash2;
-        if (typeof index1 === 'number') {
-            context.hashCache1 = context.hashCache1 || [];
-            hash1 = context.hashCache1[index1];
-            if (typeof hash1 === 'undefined') {
-                context.hashCache1[index1] = hash1 = objectHash(value1, index1);
-            }
-        } else {
-            hash1 = objectHash(value1);
-        }
-        if (typeof hash1 === 'undefined') {
-            return false;
-        }
-        if (typeof index2 === 'number') {
-            context.hashCache2 = context.hashCache2 || [];
-            hash2 = context.hashCache2[index2];
-            if (typeof hash2 === 'undefined') {
-                context.hashCache2[index2] = hash2 = objectHash(value2, index2);
-            }
-        } else {
-            hash2 = objectHash(value2);
-        }
-        if (typeof hash2 === 'undefined') {
-            return false;
-        }
-        return hash1 === hash2;
-    };
-
-    var matchContext = {};
-    var commonHead = 0, commonTail = 0, index, index1, index2;
-    var array1 = context.left;
-    var array2 = context.right;
-    var len1 = array1.length;
-    var len2 = array2.length;
-
-    var child;
-
-    // separate common head
-    while (commonHead < len1 && commonHead < len2 &&
-        match(array1, array2, commonHead, commonHead, matchContext)) {
-        index = commonHead;
-        child = new DiffContext(context.left[index], context.right[index]);
-        context.push(child, index);
-        commonHead++;
-    }
-    // separate common tail
-    while (commonTail + commonHead < len1 && commonTail + commonHead < len2 &&
-        match(array1, array2, len1 - 1 - commonTail, len2 - 1 - commonTail, matchContext)) {
-        index1 = len1 - 1 - commonTail;
-        index2 = len2 - 1 - commonTail;
-        child = new DiffContext(context.left[index1], context.right[index2]);
-        context.push(child, index2);
-        commonTail++;
-    }
-    var result;
-    if (commonHead + commonTail === len1) {
-        if (len1 === len2) {
-            // arrays are identical
-            context.setResult(undefined).exit();
-            return;
-        }
-        // trivial case, a block (1 or more consecutive items) was added
-        result = result || { _t: 'a' };
-        for (index = commonHead; index < len2 - commonTail; index++) {
-            result[index] = [array2[index]];
-        }
-        context.setResult(result).exit();
-        return;
-    }
-    if (commonHead + commonTail === len2) {
-        // trivial case, a block (1 or more consecutive items) was removed
-        result = result || { _t: 'a' };
-        for (index = commonHead; index < len1 - commonTail; index++) {
-            result['_'+index] = [array1[index], 0, 0];
-        }
-        context.setResult(result).exit();
-        return;
-    }
-    // reset hash cache
-    matchContext = {};
-    // diff is not trivial, find the LCS (Longest Common Subsequence)
-    var trimmed1 = array1.slice(commonHead, len1 - commonTail);
-    var trimmed2 = array2.slice(commonHead, len2 - commonTail);
-    var seq = lcs.get(
-        trimmed1, trimmed2,
-        match,
-        matchContext
-    );
-    var removedItems = [];
-    result = result || { _t: 'a' };
-    for (index = commonHead; index < len1 - commonTail; index++) {
-        if (arrayIndexOf(seq.indices1, index - commonHead) < 0) {
-            // removed
-            result['_'+index] = [array1[index], 0, 0];
-            removedItems.push(index);
-        }
-    }
-
-    var detectMove = true;
-    if (context.options && context.options.arrays && context.options.arrays.detectMove === false) {
-        detectMove = false;
-    }
-    var includeValueOnMove = false;
-    if (context.options && context.options.arrays && context.options.arrays.includeValueOnMove) {
-        includeValueOnMove = true;
-    }
-
-    var removedItemsLength = removedItems.length;
-    for (index = commonHead; index < len2 - commonTail; index++) {
-        var indexOnArray2 = arrayIndexOf(seq.indices2, index - commonHead);
-        if (indexOnArray2 < 0) {
-            // added, try to match with a removed item and register as position move
-            var isMove = false;
-            if (detectMove && removedItemsLength > 0) {
-                for (index1 = 0; index1 < removedItemsLength; index1++) {
-                    if (match(trimmed1, trimmed2, removedItems[index1] - commonHead,
-                        index - commonHead, matchContext)) {
-                        // store position move as: [originalValue, newPosition, ARRAY_MOVE]
-                        result['_' + removedItems[index1]].splice(1, 2, index, ARRAY_MOVE);
-                        if (!includeValueOnMove) {
-                            // don't include moved value on diff, to save bytes
-                            result['_' + removedItems[index1]][0] = '';
-                        }
-
-                        index1 = removedItems[index1];
-                        index2 = index;
-                        child = new DiffContext(context.left[index1], context.right[index2]);
-                        context.push(child, index2);
-                        removedItems.splice(index1, 1);
-                        isMove = true;
-                        break;
-                    }
-                }
-            }
-            if (!isMove) {
-                // added
-                result[index] = [array2[index]];
-            }
-        } else {
-            // match, do inner diff
-            index1 = seq.indices1[indexOnArray2] + commonHead;
-            index2 = seq.indices2[indexOnArray2] + commonHead;
-            child = new DiffContext(context.left[index1], context.right[index2]);
-            context.push(child, index2);
-        }
-    }
-
-    context.setResult(result).exit();
-
-};
-diffFilter.filterName = 'arrays';
-
-var compare = {
-    numerically: function(a, b) {
-        return a - b;
-    },
-    numericallyBy: function(name) {
-        return function(a, b) {
-            return a[name] - b[name];
-        };
-    }
-};
-
-var patchFilter = function nestedPatchFilter(context) {
-    if (!context.nested) { return; }
-    if (context.delta._t !== 'a') { return; }
-    var index, index1;
-
-    var delta = context.delta;
-    var array = context.left;
-
-    // first, separate removals, insertions and modifications
-    var toRemove = [];
-    var toInsert = [];
-    var toModify = [];
-    for (index in delta) {
-        if (index !== '_t') {
-            if (index[0] === '_') {
-                // removed item from original array
-                if (delta[index][2] === 0 || delta[index][2] === ARRAY_MOVE) {
-                    toRemove.push(parseInt(index.slice(1), 10));
-                } else {
-                    throw new Error('only removal or move can be applied at original array indices' +
-                        ', invalid diff type: ' + delta[index][2]);
-                }
-            } else {
-                if (delta[index].length === 1) {
-                    // added item at new array
-                    toInsert.push({
-                        index: parseInt(index, 10),
-                        value: delta[index][0]
-                    });
-                } else {
-                    // modified item at new array
-                    toModify.push({
-                        index: parseInt(index, 10),
-                        delta: delta[index]
-                    });
-                }
-            }
-        }
-    }
-
-    // remove items, in reverse order to avoid sawing our own floor
-    toRemove = toRemove.sort(compare.numerically);
-    for (index = toRemove.length - 1; index >= 0; index--) {
-        index1 = toRemove[index];
-        var indexDiff = delta['_' + index1];
-        var removedValue = array.splice(index1, 1)[0];
-        if (indexDiff[2] === ARRAY_MOVE) {
-            // reinsert later
-            toInsert.push({
-                index: indexDiff[1],
-                value: removedValue
-            });
-        }
-    }
-
-    // insert items, in reverse order to avoid moving our own floor
-    toInsert = toInsert.sort(compare.numericallyBy('index'));
-    var toInsertLength = toInsert.length;
-    for (index = 0; index < toInsertLength; index++) {
-        var insertion = toInsert[index];
-        array.splice(insertion.index, 0, insertion.value);
-    }
-
-    // apply modifications
-    var toModifyLength = toModify.length;
-    var child;
-    if (toModifyLength > 0) {
-        for (index = 0; index < toModifyLength; index++) {
-            var modification = toModify[index];
-            child = new PatchContext(context.left[modification.index], modification.delta);
-            context.push(child, modification.index);
-        }
-    }
-
-    if (!context.children) {
-        context.setResult(context.left).exit();
-        return;
-    }
-    context.exit();
-};
-patchFilter.filterName = 'arrays';
-
-var collectChildrenPatchFilter = function collectChildrenPatchFilter(context) {
-    if (!context || !context.children) { return; }
-    if (context.delta._t !== 'a') { return; }
-    var length = context.children.length;
-    var child;
-    for (var index = 0; index < length; index++) {
-        child = context.children[index];
-        context.left[child.childName] = child.result;
-    }
-    context.setResult(context.left).exit();
-};
-collectChildrenPatchFilter.filterName = 'arraysCollectChildren';
-
-var reverseFilter = function arraysReverseFilter(context) {
-    if (!context.nested) {
-        if (context.delta[2] === ARRAY_MOVE) {
-            context.newName = '_' + context.delta[1];
-            context.setResult([context.delta[0], parseInt(context.childName.substr(1), 10), ARRAY_MOVE]).exit();
-        }
-        return;
-    }
-    if (context.delta._t !== 'a') { return; }
-    var name, child;
-    for (name in context.delta) {
-        if (name === '_t') { continue; }
-        child = new ReverseContext(context.delta[name]);
-        context.push(child, name);
-    }
-    context.exit();
-};
-reverseFilter.filterName = 'arrays';
-
-var reverseArrayDeltaIndex = function(delta, index, itemDelta) {
-    var newIndex = index;
-    if (typeof index === 'string' && index[0] === '_') {
-        newIndex = parseInt(index.substr(1), 10);
-    } else {
-        var uindex = '_' + index;
-        if (isArray(itemDelta) && itemDelta[2] === 0) {
-            newIndex = uindex;
-        } else {
-            for (var index2 in delta) {
-                var itemDelta2 = delta[index2];
-                if (isArray(itemDelta2) && itemDelta2[2] === ARRAY_MOVE && itemDelta2[1].toString() === index) {
-                    newIndex = index2.substr(1);
-                }
-            }
-        }
-    }
-    return newIndex;
-};
-
-var collectChildrenReverseFilter = function collectChildrenReverseFilter(context) {
-    if (!context || !context.children) { return; }
-    if (context.delta._t !== 'a') { return; }
-    var length = context.children.length;
-    var child;
-    var delta = { _t: 'a' };
-    for (var index = 0; index < length; index++) {
-        child = context.children[index];
-        var name = child.newName;
-        if (typeof name === 'undefined') {
-            name = reverseArrayDeltaIndex(context.delta, child.childName, child.result);
-        }
-        if (delta[name] !== child.result) {
-            delta[name] = child.result;
-        }
-    }
-    context.setResult(delta).exit();
-};
-collectChildrenReverseFilter.filterName = 'arraysCollectChildren';
-
-exports.diffFilter = diffFilter;
-exports.patchFilter = patchFilter;
-exports.collectChildrenPatchFilter = collectChildrenPatchFilter;
-exports.reverseFilter = reverseFilter;
-exports.collectChildrenReverseFilter = collectChildrenReverseFilter;
-},{"../contexts/diff":3,"../contexts/patch":4,"../contexts/reverse":5,"./lcs":11}],10:[function(_dereq_,module,exports){
-var diffFilter = function datesDiffFilter(context) {
-    if (context.left instanceof Date) {
-        if (context.right instanceof Date) {
-            if (context.left.getTime() !== context.right.getTime()) {
-                context.setResult([context.left, context.right]);
-            } else {
-                context.setResult(undefined);
-            }
-        } else {
-            context.setResult([context.left, context.right]);
-        }
-        context.exit();
-    } else if (context.right instanceof Date) {
-        context.setResult([context.left, context.right]).exit();
-    }
-};
-diffFilter.filterName = 'dates';
-
-exports.diffFilter = diffFilter;
-},{}],11:[function(_dereq_,module,exports){
-/*
-
-LCS implementation that supports arrays or strings
-
-reference: http://en.wikipedia.org/wiki/Longest_common_subsequence_problem
-
-*/
-
-var defaultMatch = function(array1, array2, index1, index2) {
-    return array1[index1] === array2[index2];
-};
-
-var lengthMatrix = function(array1, array2, match, context) {
-    var len1 = array1.length;
-    var len2 = array2.length;
-    var x, y;
-
-    // initialize empty matrix of len1+1 x len2+1
-    var matrix = [len1 + 1];
-    for (x = 0; x < len1 + 1; x++) {
-        matrix[x] = [len2 + 1];
-        for (y = 0; y < len2 + 1; y++) {
-            matrix[x][y] = 0;
-        }
-    }
-    matrix.match = match;
-    // save sequence lengths for each coordinate
-    for (x = 1; x < len1 + 1; x++) {
-        for (y = 1; y < len2 + 1; y++) {
-            if (match(array1, array2, x - 1, y - 1, context)) {
-                matrix[x][y] = matrix[x - 1][y - 1] + 1;
-            } else {
-                matrix[x][y] = Math.max(matrix[x - 1][y], matrix[x][y - 1]);
-            }
-        }
-    }
-    return matrix;
-};
-
-var backtrack = function(matrix, array1, array2, index1, index2, context) {
-    if (index1 === 0 || index2 === 0) {
-        return {
-            sequence: [],
-            indices1: [],
-            indices2: []
-        };
-    }
-
-    if (matrix.match(array1, array2, index1 - 1, index2 - 1, context)) {
-        var subsequence = backtrack(matrix, array1, array2, index1 - 1, index2 - 1, context);
-        subsequence.sequence.push(array1[index1 - 1]);
-        subsequence.indices1.push(index1 - 1);
-        subsequence.indices2.push(index2 - 1);
-        return subsequence;
-    }
-
-    if (matrix[index1][index2 - 1] > matrix[index1 - 1][index2]) {
-        return backtrack(matrix, array1, array2, index1, index2 - 1, context);
-    } else {
-        return backtrack(matrix, array1, array2, index1 - 1, index2, context);
-    }
-};
-
-var get = function(array1, array2, match, context) {
-    context = context || {};
-    var matrix = lengthMatrix(array1, array2, match || defaultMatch, context);
-    var result = backtrack(matrix, array1, array2, array1.length, array2.length, context);
-    if (typeof array1 === 'string' && typeof array2 === 'string') {
-        result.sequence = result.sequence.join('');
-    }
-    return result;
-};
-
-exports.get = get;
-
-},{}],12:[function(_dereq_,module,exports){
-
-var DiffContext = _dereq_('../contexts/diff').DiffContext;
-var PatchContext = _dereq_('../contexts/patch').PatchContext;
-var ReverseContext = _dereq_('../contexts/reverse').ReverseContext;
-
-var collectChildrenDiffFilter = function collectChildrenDiffFilter(context) {
-    if (!context || !context.children) { return; }
-    var length = context.children.length;
-    var child;
-    var result = context.result;
-    for (var index = 0; index < length; index++) {
-        child = context.children[index];
-        if (typeof child.result === 'undefined') {
-            continue;
-        }
-        result = result || {};
-        result[child.childName] = child.result;
-    }
-    if (result && context.leftIsArray) {
-        result._t = 'a';
-    }
-    context.setResult(result).exit();
-};
-collectChildrenDiffFilter.filterName = 'collectChildren';
-
-var objectsDiffFilter = function objectsDiffFilter(context) {
-    if (context.leftIsArray || context.leftType !== 'object') { return; }
-
-    var name, child;
-    for (name in context.left) {
-        child = new DiffContext(context.left[name], context.right[name]);
-        context.push(child, name);
-    }
-    for (name in context.right) {
-        if (typeof context.left[name] === 'undefined') {
-            child = new DiffContext(undefined, context.right[name]);
-            context.push(child, name);
-        }
-    }
-
-    if (!context.children || context.children.length === 0) {
-        context.setResult(undefined).exit();
-        return;
-    }
-    context.exit();
-};
-objectsDiffFilter.filterName = 'objects';
-
-var patchFilter = function nestedPatchFilter(context) {
-    if (!context.nested) { return; }
-    if (context.delta._t) { return; }
-    var name, child;
-    for (name in context.delta) {
-        child = new PatchContext(context.left[name], context.delta[name]);
-        context.push(child, name);
-    }
-    context.exit();
-};
-patchFilter.filterName = 'objects';
-
-var collectChildrenPatchFilter = function collectChildrenPatchFilter(context) {
-    if (!context || !context.children) { return; }
-    if (context.delta._t) { return; }
-    var length = context.children.length;
-    var child;
-    for (var index = 0; index < length; index++) {
-        child = context.children[index];
-        if (context.left[child.childName] !== child.result) {
-            context.left[child.childName] = child.result;
-        }
-    }
-    context.setResult(context.left).exit();
-};
-collectChildrenPatchFilter.filterName = 'collectChildren';
-
-var reverseFilter = function nestedReverseFilter(context) {
-    if (!context.nested) { return; }
-    if (context.delta._t) { return; }
-    var name, child;
-    for (name in context.delta) {
-        child = new ReverseContext(context.delta[name]);
-        context.push(child, name);
-    }
-    context.exit();
-};
-reverseFilter.filterName = 'objects';
-
-var collectChildrenReverseFilter = function collectChildrenReverseFilter(context) {
-    if (!context || !context.children) { return; }
-    if (context.delta._t) { return; }
-    var length = context.children.length;
-    var child;
-    var delta = {};
-    for (var index = 0; index < length; index++) {
-        child = context.children[index];
-        if (delta[child.childName] !== child.result) {
-            delta[child.childName] = child.result;
-        }
-    }
-    context.setResult(delta).exit();
-};
-collectChildrenReverseFilter.filterName = 'collectChildren';
-
-exports.collectChildrenDiffFilter = collectChildrenDiffFilter;
-exports.objectsDiffFilter = objectsDiffFilter;
-exports.patchFilter = patchFilter;
-exports.collectChildrenPatchFilter = collectChildrenPatchFilter;
-exports.reverseFilter = reverseFilter;
-exports.collectChildrenReverseFilter = collectChildrenReverseFilter;
-},{"../contexts/diff":3,"../contexts/patch":4,"../contexts/reverse":5}],13:[function(_dereq_,module,exports){
-/* global diff_match_patch */
-var TEXT_DIFF = 2;
-var DEFAULT_MIN_LENGTH = 60;
-var cachedDiffPatch = null;
-
-var getDiffMatchPatch = function(){
-    /*jshint camelcase: false */
-
-    if (!cachedDiffPatch) {
-        var instance;
-        if (typeof diff_match_patch !== 'undefined') {
-            // already loaded, probably a browser
-            instance = new diff_match_patch();
-        } else if (typeof _dereq_ === 'function') {
-            var dmp = _dereq_('../../external/diff_match_patch_uncompressed');
-            instance = new dmp.diff_match_patch();
-        }
-        if (!instance) {
-            var error = new Error('text diff_match_patch library not found');
-            error.diff_match_patch_not_found = true;
-            throw error;
-        }
-        cachedDiffPatch = {
-            diff: function(txt1, txt2){
-                return instance.patch_toText(instance.patch_make(txt1, txt2));
-            },
-            patch: function(txt1, patch){
-                var results = instance.patch_apply(instance.patch_fromText(patch), txt1);
-                for (var i = 0; i < results[1].length; i++) {
-                    if (!results[1][i]) {
-                        var error = new Error('text patch failed');
-                        error.textPatchFailed = true;
-                    }
-                }
-                return results[0];
-            }
-        };
-    }
-    return cachedDiffPatch;
-};
-
-var diffFilter = function textsDiffFilter(context) {
-    if (context.leftType !== 'string') { return; }
-    var minLength = (context.options && context.options.textDiff &&
-        context.options.textDiff.minLength) || DEFAULT_MIN_LENGTH;
-    if (context.left.length < minLength ||
-        context.right.length < minLength) {
-        context.setResult([context.left, context.right]).exit();
-        return;
-    }
-    // large text, use a text-diff algorithm
-    var diff = getDiffMatchPatch().diff;
-    context.setResult([diff(context.left, context.right), 0, TEXT_DIFF]).exit();
-};
-diffFilter.filterName = 'texts';
-
-var patchFilter = function textsPatchFilter(context) {
-    if (context.nested) { return; }
-    if (context.delta[2] !== TEXT_DIFF) { return; }
-
-    // text-diff, use a text-patch algorithm
-    var patch = getDiffMatchPatch().patch;
-    context.setResult(patch(context.left, context.delta[0])).exit();
-};
-patchFilter.filterName = 'texts';
-
-var textDeltaReverse = function(delta){
-    var i, l, lines, line, lineTmp, header = null,
-    headerRegex = /^@@ +\-(\d+),(\d+) +\+(\d+),(\d+) +@@$/,
-    lineHeader, lineAdd, lineRemove;
-    lines = delta.split('\n');
-    for (i = 0, l = lines.length; i<l; i++) {
-        line = lines[i];
-        var lineStart = line.slice(0,1);
-        if (lineStart==='@'){
-            header = headerRegex.exec(line);
-            lineHeader = i;
-            lineAdd = null;
-            lineRemove = null;
-
-            // fix header
-            lines[lineHeader] = '@@ -' + header[3] + ',' + header[4] + ' +' + header[1] + ',' + header[2] + ' @@';
-        } else if (lineStart === '+'){
-            lineAdd = i;
-            lines[i] = '-' + lines[i].slice(1);
-            if (lines[i-1].slice(0,1)==='+') {
-                // swap lines to keep default order (-+)
-                lineTmp = lines[i];
-                lines[i] = lines[i-1];
-                lines[i-1] = lineTmp;
-            }
-        } else if (lineStart === '-'){
-            lineRemove = i;
-            lines[i] = '+' + lines[i].slice(1);
-        }
-    }
-    return lines.join('\n');
-};
-
-var reverseFilter = function textsReverseFilter(context) {
-    if (context.nested) { return; }
-    if (context.delta[2] !== TEXT_DIFF) { return; }
-
-    // text-diff, use a text-diff algorithm
-    context.setResult([textDeltaReverse(context.delta[0]), 0, TEXT_DIFF]).exit();
-};
-reverseFilter.filterName = 'texts';
-
-exports.diffFilter = diffFilter;
-exports.patchFilter = patchFilter;
-exports.reverseFilter = reverseFilter;
-},{}],14:[function(_dereq_,module,exports){
-
-var isArray = (typeof Array.isArray === 'function') ?
-    // use native function
-    Array.isArray :
-    // use instanceof operator
-    function(a) {
-        return a instanceof Array;
-    };
-
-var diffFilter = function trivialMatchesDiffFilter(context) {
-    if (context.left === context.right) {
-        context.setResult(undefined).exit();
-        return;
-    }
-    if (typeof context.left === 'undefined') {
-        if (typeof context.right === 'function') {
-            throw new Error('functions are not supported');
-        }
-        context.setResult([context.right]).exit();
-        return;
-    }
-    if (typeof context.right === 'undefined') {
-        context.setResult([context.left, 0, 0]).exit();
-        return;
-    }
-    if (typeof context.left === 'function' || typeof context.right === 'function' ) {
-        throw new Error('functions are not supported');
-    }
-    context.leftType = context.left === null ? 'null' : typeof context.left;
-    context.rightType = context.right === null ? 'null' : typeof context.right;
-    if (context.leftType !== context.rightType) {
-        context.setResult([context.left, context.right]).exit();
-        return;
-    }
-    if (context.leftType === 'boolean' || context.leftType === 'number') {
-        context.setResult([context.left, context.right]).exit();
-        return;
-    }
-    if (context.leftType === 'object') {
-        context.leftIsArray = isArray(context.left);
-    }
-    if (context.rightType === 'object') {
-        context.rightIsArray = isArray(context.right);
-    }
-    if (context.leftIsArray !== context.rightIsArray) {
-        context.setResult([context.left, context.right]).exit();
-        return;
-    }
-};
-diffFilter.filterName = 'trivial';
-
-var patchFilter = function trivialMatchesPatchFilter(context) {
-    if (typeof context.delta === 'undefined') {
-        context.setResult(context.left).exit();
-        return;
-    }
-    context.nested = !isArray(context.delta);
-    if (context.nested) { return; }
-    if (context.delta.length === 1) {
-        context.setResult(context.delta[0]).exit();
-        return;
-    }
-    if (context.delta.length === 2) {
-        context.setResult(context.delta[1]).exit();
-        return;
-    }
-    if (context.delta.length === 3 && context.delta[2] === 0) {
-        context.setResult(undefined).exit();
-        return;
-    }
-};
-patchFilter.filterName = 'trivial';
-
-var reverseFilter = function trivialReferseFilter(context) {
-    if (typeof context.delta === 'undefined') {
-        context.setResult(context.delta).exit();
-        return;
-    }
-    context.nested = !isArray(context.delta);
-    if (context.nested) { return; }
-    if (context.delta.length === 1) {
-        context.setResult([context.delta[0], 0, 0]).exit();
-        return;
-    }
-    if (context.delta.length === 2) {
-        context.setResult([context.delta[1], context.delta[0]]).exit();
-        return;
-    }
-    if (context.delta.length === 3 && context.delta[2] === 0) {
-        context.setResult([context.delta[0]]).exit();
-        return;
-    }
-};
-reverseFilter.filterName = 'trivial';
-
-exports.diffFilter = diffFilter;
-exports.patchFilter = patchFilter;
-exports.reverseFilter = reverseFilter;
-
-},{}],15:[function(_dereq_,module,exports){
-
-var Pipe = function Pipe(name){
-    this.name = name;
-    this.filters = [];
-};
-
-Pipe.prototype.process = function(input) {
-    if (!this.processor) {
-        throw new Error('add this pipe to a processor before using it');
-    }
-    var debug = this.debug;
-    var length = this.filters.length;
-    var context = input;
-    for (var index = 0; index < length; index++) {
-        var filter = this.filters[index];
-        if (debug) {
-            this.log('filter: ' + filter.filterName);
-        }
-        filter(context);
-        if (typeof context === 'object' && context.exiting) {
-            context.exiting = false;
-            break;
-        }
-    }
-    if (!context.next && this.resultCheck) {
-        this.resultCheck(context);
-    }
-};
-
-Pipe.prototype.log = function(msg) {
-    console.log('[jsondiffpatch] ' + this.name + ' pipe, ' + msg);
-};
-
-Pipe.prototype.append = function() {
-    this.filters.push.apply(this.filters, arguments);
-    return this;
-};
-
-Pipe.prototype.prepend = function() {
-    this.filters.unshift.apply(this.filters, arguments);
-    return this;
-};
-
-Pipe.prototype.indexOf = function(filterName) {
-    if (!filterName) {
-        throw new Error('a filter name is required');
-    }
-    for (var index = 0; index < this.filters.length; index++) {
-        var filter = this.filters[index];
-        if (filter.filterName === filterName) {
-            return index;
-        }
-    }
-    throw new Error('filter not found: ' + filterName);
-};
-
-Pipe.prototype.list = function() {
-    var names = [];
-    for (var index = 0; index < this.filters.length; index++) {
-        var filter = this.filters[index];
-        names.push(filter.filterName);
-    }
-    return names;
-};
-
-Pipe.prototype.after = function(filterName) {
-    var index = this.indexOf(filterName);
-    var params = Array.prototype.slice.call(arguments, 1);
-    if (!params.length) {
-        throw new Error('a filter is required');
-    }
-    params.unshift(index + 1, 0);
-    Array.prototype.splice.apply(this.filters, params);
-    return this;
-};
-
-Pipe.prototype.before = function(filterName) {
-    var index = this.indexOf(filterName);
-    var params = Array.prototype.slice.call(arguments, 1);
-    if (!params.length) {
-        throw new Error('a filter is required');
-    }
-    params.unshift(index, 0);
-    Array.prototype.splice.apply(this.filters, params);
-    return this;
-};
-
-Pipe.prototype.clear = function() {
-    this.filters.length = 0;
-    return this;
-};
-
-Pipe.prototype.shouldHaveResult = function(should) {
-    if (should === false) {
-        this.resultCheck = null;
-        return;
-    }
-    if (this.resultCheck) { return; }
-    var pipe = this;
-    this.resultCheck = function(context) {
-        if (!context.hasResult) {
-            console.log(context);
-            var error = new Error(pipe.name + ' failed');
-            error.noResult = true;
-            throw error;
-        }
-    };
-    return this;
-};
-
-exports.Pipe = Pipe;
-},{}],16:[function(_dereq_,module,exports){
-
-var Processor = function Processor(options){
-	this.selfOptions = options;
-	this.pipes = {};
-};
-
-Processor.prototype.options = function(options) {
-	if (options) {
-		this.selfOptions = options;
-	}
-	return this.selfOptions;
-};
-
-Processor.prototype.pipe = function(name, pipe) {
-	if (typeof name === 'string') {
-		if (typeof pipe === 'undefined') {
-			return this.pipes[name];
-		} else {
-			this.pipes[name] = pipe;
-		}
-	}
-	if (name && name.name) {
-		pipe = name;
-		if (pipe.processor === this) { return pipe; }
-		this.pipes[pipe.name] = pipe;
-	}
-	pipe.processor = this;
-	return pipe;
-};
-
-Processor.prototype.process = function(input, pipe) {
-	var context = input;
-	context.options = this.options();
-	var nextPipe = pipe || input.pipe || 'default';
-	var lastPipe, lastContext;
-	while (nextPipe) {
-		if (typeof context.nextAfterChildren !== 'undefined') {
-			// children processed and coming back to parent
-			context.next = context.nextAfterChildren;
-			context.nextAfterChildren = null;
-		}
-
-		if (typeof nextPipe === 'string') {
-			nextPipe = this.pipe(nextPipe);
-		}
-		nextPipe.process(context);
-		lastContext = context;
-		lastPipe = nextPipe;
-		nextPipe = null;
-		if (context) {
-			if (context.next) {
-				context = context.next;
-				nextPipe = lastContext.nextPipe || context.pipe || lastPipe;
-			}
-		}
-	}
-	return context.hasResult ? context.result : undefined;
-};
-
-exports.Processor = Processor;
-
-},{}]},{},[8])
-(8)
-});
 /*
  * Copyright 2012 The Polymer Authors. All rights reserved.
  * Use of this source code is governed by a BSD-style
@@ -35759,12 +30213,12 @@ define('editor',[
 	'eventMgr',
 	'prism-core',
 	'diff_match_patch_uncompressed',
-	'jsondiffpatch',
+	// 'jsondiffpatch',
 	'crel',
 	'rangy',
 	'MutationObservers',
 	'libs/prism-markdown'
-], function( _, utils, settings, eventMgr, Prism, diff_match_patch, jsondiffpatch, crel, rangy) {
+], function( _, utils, settings, eventMgr, Prism, diff_match_patch, crel, rangy) {
 
 	var editor = {};
 	var scrollTop = 0;
@@ -35799,12 +30253,17 @@ define('editor',[
 		pagedownEditor = pagedownEditorParam;
 	});
 
+	// 这里, onSectionsCreated, highlightSections, 预览
+	// 但输入中文也有这个事件, 但isComposing=1
 	var isComposing = 0;
 	eventMgr.addListener('onSectionsCreated', function(newSectionList) {
-		if(!isComposing) {
+		// console.trace('onSectionsCreated ==> ' + isComposing);
+		// isComposing = 0;
+		// if(!isComposing) {
+			// 总执行这个
 			updateSectionList(newSectionList);
 			highlightSections();
-		}
+		// }
 		if(fileChanged === true) {
 			// Refresh preview synchronously
 			pagedownEditor.refreshPreview();
@@ -35854,6 +30313,7 @@ define('editor',[
 	editor.watcher = watcher;
 
 	var diffMatchPatch = new diff_match_patch();
+	/*
 	var jsonDiffPatch = jsondiffpatch.create({
 		objectHash: function(obj) {
 			return JSON.stringify(obj);
@@ -35865,6 +30325,7 @@ define('editor',[
 			minLength: 9999999
 		}
 	});
+	*/
 
 	function SelectionMgr() {
 		var self = this;
@@ -35925,7 +30386,9 @@ define('editor',[
 			}
 			offsetList = this.findOffsets(offsetList);
 			var startOffset = _.isObject(start) ? start : offsetList[startIndex];
+
 			range.setStart(startOffset.container, startOffset.offsetInContainer);
+
 			var endOffset = startOffset;
 			if(end && end != start) {
 				endOffset = _.isObject(end) ? end : offsetList[endIndex];
@@ -35933,10 +30396,21 @@ define('editor',[
 			range.setEnd(endOffset.container, endOffset.offsetInContainer);
 			return range;
 		};
+
+		// scroll 自动滚动
 		var adjustScroll;
 		var debouncedUpdateCursorCoordinates = utils.debounce(function() {
 			$inputElt.toggleClass('has-selection', this.selectionStart !== this.selectionEnd);
-			var coordinates = this.getCoordinates(this.selectionEnd, this.selectionEndContainer, this.selectionEndOffset);
+			// console.log('auto scroll');
+
+			try {
+				var coordinates = this.getCoordinates(this.selectionEnd, this.selectionEndContainer, this.selectionEndOffset);
+			}
+			catch(e) {
+				console.error(e);
+				return;
+			}
+
 			if(this.cursorY !== coordinates.y) {
 				this.cursorY = coordinates.y;
 				eventMgr.onCursorCoordinates(coordinates.x, coordinates.y);
@@ -36360,6 +30834,7 @@ define('editor',[
 				selectionMgr.setSelectionStartEnd(selectionStart, selectionEnd);
 				selectionMgr.updateSelectionRange();
 				selectionMgr.updateCursorCoordinates(true);
+				/*
 				var discussionListJSON = fileDesc.discussionListJSON;
 				if(discussionListJSON != state.discussionListJSON) {
 					var oldDiscussionList = fileDesc.discussionList;
@@ -36380,6 +30855,7 @@ define('editor',[
 					});
 					commentsChanged && eventMgr.onCommentsChanged(fileDesc);
 				}
+				*/
 			});
 
 			selectionStartBefore = selectionStart;
@@ -36478,15 +30954,17 @@ define('editor',[
 			undoMgr.currentMode = undoMgr.currentMode || 'typing';
 			var discussionList = _.values(fileDesc.discussionList);
 			fileDesc.newDiscussion && discussionList.push(fileDesc.newDiscussion);
-			var updateDiscussionList = adjustCommentOffsets(textContent, newTextContent, discussionList);
+			// var updateDiscussionList = adjustCommentOffsets(textContent, newTextContent, discussionList);
 			textContent = newTextContent;
-			if(updateDiscussionList === true) {
-				fileDesc.discussionList = fileDesc.discussionList; // Write discussionList in localStorage
-			}
+			// if(updateDiscussionList === true) {
+			// 	fileDesc.discussionList = fileDesc.discussionList; // Write discussionList in localStorage
+			// }
 			fileDesc.content = textContent;
 			selectionMgr.saveSelectionState();
 			eventMgr.onContentChanged(fileDesc, textContent);
-			updateDiscussionList && eventMgr.onCommentsChanged(fileDesc);
+
+			// updateDiscussionList && eventMgr.onCommentsChanged(fileDesc);
+
 			undoMgr.saveState();
 			triggerSpellCheck();
 		}
@@ -36505,6 +30983,7 @@ define('editor',[
 		}
 	}
 
+	/*
 	function adjustCommentOffsets(oldTextContent, newTextContent, discussionList) {
 		if(!discussionList.length) {
 			return;
@@ -36553,6 +31032,8 @@ define('editor',[
 	}
 
 	editor.adjustCommentOffsets = adjustCommentOffsets;
+	*
+	*/
 
 	// 入口
 	editor.init = function() {
@@ -36653,6 +31134,7 @@ define('editor',[
 						}
 						break;
 					case 13:
+						// console.log('newline');
 						action('newline');
 						evt.preventDefault();
 						break;
@@ -36661,13 +31143,20 @@ define('editor',[
 					clearNewline = false;
 				}
 			})
+			// 当浏览器有非直接的文字输入时, compositionstart事件会以同步模式触发.
 			.on('compositionstart', function() {
+				// console.trace('compositionstart !!!!!');
 				isComposing++;
 			})
-			.on('compositionend', function() {
-				setTimeout(function() {
+			// 当浏览器是直接的文字输入时, compositionend会以同步模式触发.
+			// 中文输入完成后, 比如按空格时触发
+			// 为什么要异步-- ?
+			.on('compositionend', function(e) {
+				// console.log('compositionend !!')
+				// console.log(e);
+				// setTimeout(function() {
 					isComposing--;
-				}, 0);
+				// }, 0);
 			})
 			.on('mouseup', _.bind(selectionMgr.saveSelectionState, selectionMgr, true, false))
 			.on('paste', function(evt) {
@@ -36896,6 +31385,7 @@ define('editor',[
 			}
 			addTrailingLfNode();
 			selectionMgr.updateSelectionRange();
+			// console.trace('.updateCursorCoordinates')
 			selectionMgr.updateCursorCoordinates();
 		});
 	}
@@ -36925,15 +31415,19 @@ define('editor',[
 	// 实现编辑器下预览
 	function highlight(section) {
 		var text = escape(section.text);
+
 		if(!window.viewerMode) {
 			// log("pre")
 			// log(text);
 			// # lif
+			// 如果想以纯文本显示, 请注释之
 			text = Prism.highlight(text, Prism.languages.md);
 			// log('after');
 			// <span class="token h1" ><span class="token md md-hash" >#</span> lif</span>
 			// log(text);
 		}
+
+		// 以下必须需要, 因为scrollSync需要wmd-input-section
 		var frontMatter = section.textWithFrontMatter.substring(0, section.textWithFrontMatter.length - section.text.length);
 		if(frontMatter.length) {
 			// Front matter highlighting
@@ -38460,7 +32954,6 @@ define('editor',[
         }
 
         function makeSpritedButtonRow() {
-
             var buttonBar = panels.buttonBar;
 
             var normalYShift = "0px";
@@ -38488,17 +32981,10 @@ define('editor',[
                 buttonRow.appendChild(button);
                 return button;
             };
-            var makeSpacer = function (num) {
-                var spacer = document.createElement("li");
-                spacer.className = "wmd-spacer wmd-spacer" + num;
-                spacer.id = "wmd-spacer" + num + postfix;
-                buttonRow.appendChild(spacer);
-                xPosition += 25;
-            }
 
             buttons.bold = makeButton("wmd-bold-button", getString("bold"), "0px", bindCommand("doBold"));
             buttons.italic = makeButton("wmd-italic-button", getString("italic"), "-20px", bindCommand("doItalic"));
-            makeSpacer(1);
+            // makeSpacer(1);
             buttons.link = makeButton("wmd-link-button", getString("link"), "-40px", bindCommand(function (chunk, postProcessing) {
                 return this.doLinkOrImage(chunk, postProcessing, false);
             }));
@@ -38507,7 +32993,7 @@ define('editor',[
             buttons.image = makeButton("wmd-image-button", getString("image"), "-100px", bindCommand(function (chunk, postProcessing) {
                 return this.doLinkOrImage(chunk, postProcessing, true);
             }));
-            makeSpacer(2);
+            // makeSpacer(2);
             buttons.olist = makeButton("wmd-olist-button", getString("olist"), "-120px", bindCommand(function (chunk, postProcessing) {
                 this.doList(chunk, postProcessing, true);
             }));
@@ -38516,7 +33002,7 @@ define('editor',[
             }));
             buttons.heading = makeButton("wmd-heading-button", getString("heading"), "-160px", bindCommand("doHeading"));
             buttons.hr = makeButton("wmd-hr-button", getString("hr"), "-180px", bindCommand("doHorizontalRule"));
-            makeSpacer(3);
+            // makeSpacer(3);
             buttons.undo = makeButton("wmd-undo-button", getString("undo"), "-200px", null);
             buttons.undo.execute = function (manager) { if (manager) manager.undo(); };
 
@@ -39307,13 +33793,13 @@ define('core',[
 	"crel",
 	"editor",
 	// "layout",
-	"constants",
+	// "constants",
 	"utils",
-	"storage",
+	// "storage",
 	"settings",
 	"eventMgr",
 	'pagedown'
-], function( _, crel, editor, constants, utils, storage, settings, eventMgr) {
+], function( _, crel, editor, utils, settings, eventMgr) {
 
 	var core = {};
 
@@ -39569,171 +34055,6 @@ define('core',[
 
 	return core;
 });
-
-/*
- * Require-CSS RequireJS css! loader plugin
- * 0.1.2
- * Guy Bedford 2013
- * MIT
- */
-
-/*
- *
- * Usage:
- *  require(['css!./mycssFile']);
- *
- * Tested and working in (up to latest versions as of March 2013):
- * Android
- * iOS 6
- * IE 6 - 10
- * Chome 3 - 26
- * Firefox 3.5 - 19
- * Opera 10 - 12
- * 
- * browserling.com used for virtual testing environment
- *
- * Credit to B Cavalier & J Hann for the IE 6 - 9 method,
- * refined with help from Martin Cermak
- * 
- * Sources that helped along the way:
- * - https://developer.mozilla.org/en-US/docs/Browser_detection_using_the_user_agent
- * - http://www.phpied.com/when-is-a-stylesheet-really-loaded/
- * - https://github.com/cujojs/curl/blob/master/src/curl/plugin/css.js
- *
- */
-
-define('css/css',[],function() {
-  if (typeof window == 'undefined')
-    return { load: function(n, r, load){ load() } };
-
-  var head = document.getElementsByTagName('head')[0];
-
-  var engine = window.navigator.userAgent.match(/Trident\/([^ ;]*)|AppleWebKit\/([^ ;]*)|Opera\/([^ ;]*)|rv\:([^ ;]*)(.*?)Gecko\/([^ ;]*)|MSIE\s([^ ;]*)/) || 0;
-
-  // use <style> @import load method (IE < 9, Firefox < 18)
-  var useImportLoad = false;
-  
-  // set to false for explicit <link> load checking when onload doesn't work perfectly (webkit)
-  var useOnload = true;
-
-  // trident / msie
-  if (engine[1] || engine[7])
-    useImportLoad = parseInt(engine[1]) < 6 || parseInt(engine[7]) <= 9;
-  // webkit
-  else if (engine[2])
-    useOnload = false;
-  // gecko
-  else if (engine[4])
-    useImportLoad = parseInt(engine[4]) < 18;
-  
-  //main api object
-  var cssAPI = {};
-
-  cssAPI.pluginBuilder = './css-builder';
-
-  // <style> @import load method
-  var curStyle, curSheet;
-  var createStyle = function () {
-    curStyle = document.createElement('style');
-    head.appendChild(curStyle);
-    curSheet = curStyle.styleSheet || curStyle.sheet;
-  }
-  var ieCnt = 0;
-  var ieLoads = [];
-  var ieCurCallback;
-  
-  var createIeLoad = function(url) {
-    ieCnt++;
-    if (ieCnt == 32) {
-      createStyle();
-      ieCnt = 0;
-    }
-    curSheet.addImport(url);
-    curStyle.onload = function(){ processIeLoad() };
-  }
-  var processIeLoad = function() {
-    ieCurCallback();
- 
-    var nextLoad = ieLoads.shift();
- 
-    if (!nextLoad) {
-      ieCurCallback = null;
-      return;
-    }
- 
-    ieCurCallback = nextLoad[1];
-    createIeLoad(nextLoad[0]);
-  }
-  var importLoad = function(url, callback) {
-    if (!curSheet || !curSheet.addImport)
-      createStyle();
-
-    if (curSheet && curSheet.addImport) {
-      // old IE
-      if (ieCurCallback) {
-        ieLoads.push([url, callback]);
-      }
-      else {
-        createIeLoad(url);
-        ieCurCallback = callback;
-      }
-    }
-    else {
-      // old Firefox
-      curStyle.textContent = '@import "' + url + '";';
-
-      var loadInterval = setInterval(function() {
-        try {
-          curStyle.sheet.cssRules;
-          clearInterval(loadInterval);
-          callback();
-        } catch(e) {}
-      }, 10);
-    }
-  }
-
-  // <link> load method
-  var linkLoad = function(url, callback) {
-    var link = document.createElement('link');
-    link.type = 'text/css';
-    link.rel = 'stylesheet';
-    if (useOnload)
-      link.onload = function() {
-        link.onload = function() {};
-        // for style dimensions queries, a short delay can still be necessary
-        setTimeout(callback, 7);
-      }
-    else
-      var loadInterval = setInterval(function() {
-        for (var i = 0; i < document.styleSheets.length; i++) {
-          var sheet = document.styleSheets[i];
-          if (sheet.href == link.href) {
-            clearInterval(loadInterval);
-            return callback();
-          }
-        }
-      }, 10);
-    link.href = url;
-    head.appendChild(link);
-  }
-
-  cssAPI.normalize = function(name, normalize) {
-    if (name.substr(name.length - 4, 4) == '.css')
-      name = name.substr(0, name.length - 4);
-
-    return normalize(name);
-  }
-
-  cssAPI.load = function(cssId, req, load, config) {
-
-    (useImportLoad ? importLoad : linkLoad)(req.toUrl(cssId + '.css'), load);
-
-  }
-
-  return cssAPI;
-});
-
-define('css', ['css/css'], function (main) { return main; });
 
 /**
  * @license CSS Class Applier module for Rangy.
@@ -40456,6 +34777,7 @@ define("rangy-cssclassapplier", function(){});
 requirejs.config({
 	waitSeconds: 0,
 	packages: [
+		/*
 		{
 			name: 'css',
 			location: 'bower-libs/require-css',
@@ -40466,6 +34788,7 @@ requirejs.config({
 			location: 'bower-libs/require-less',
 			main: 'less'
 		}
+		*/
 	],
 	paths: {
 		// jquery: 'bower-libs/jquery/jquery',
@@ -40477,33 +34800,26 @@ requirejs.config({
 		toMarkdown: 'bower-libs/to-markdown/src/to-markdown',
 		text: 'bower-libs/requirejs-text/text',
 		mathjax: 'libs/MathJax/MathJax.js?config=TeX-AMS_HTML',
-		bootstrap: 'bower-libs/bootstrap/dist/js/bootstrap',
+		// bootstrap: 'bower-libs/bootstrap/dist/js/bootstrap',
 		requirejs: 'bower-libs/requirejs/require',
 		'google-code-prettify': 'bower-libs/google-code-prettify/src/prettify',
 		highlightjs: 'libs/highlight/highlight.pack',
 		'jquery-waitforimages': 'bower-libs/waitForImages/src/jquery.waitforimages',
-		'jquery-ui': 'bower-libs/jquery-ui/ui/jquery-ui',
-		'jquery-ui-core': 'bower-libs/jquery-ui/ui/jquery.ui.core',
-		'jquery-ui-widget': 'bower-libs/jquery-ui/ui/jquery.ui.widget',
-		'jquery-ui-mouse': 'bower-libs/jquery-ui/ui/jquery.ui.mouse',
-		'jquery-ui-draggable': 'bower-libs/jquery-ui/ui/jquery.ui.draggable',
-		'jquery-ui-effect': 'bower-libs/jquery-ui/ui/jquery.ui.effect',
-		'jquery-ui-effect-slide': 'bower-libs/jquery-ui/ui/jquery.ui.effect-slide',
-		FileSaver: 'bower-libs/FileSaver/FileSaver',
-		stacktrace: 'bower-libs/stacktrace/stacktrace',
-		'requirejs-text': 'bower-libs/requirejs-text/text',
-		'bootstrap-tour': 'bower-libs/bootstrap-tour/build/js/bootstrap-tour',
+		// FileSaver: 'bower-libs/FileSaver/FileSaver',
+		// stacktrace: 'bower-libs/stacktrace/stacktrace',
+		// 'requirejs-text': 'bower-libs/requirejs-text/text',
+		// 'bootstrap-tour': 'bower-libs/bootstrap-tour/build/js/bootstrap-tour',
 		css_browser_selector: 'bower-libs/css_browser_selector/css_browser_selector',
 		'pagedown-extra': 'bower-libs/pagedown-extra/node-pagedown-extra',
 		pagedownExtra: 'bower-libs/pagedown-extra/Markdown.Extra',
 		pagedown: 'libs/Markdown.Editor',
-		'require-css': 'bower-libs/require-css/css',
+		// 'require-css': 'bower-libs/require-css/css',
 		xregexp: 'bower-libs/xregexp/xregexp-all',
-		yaml: 'bower-libs/yaml.js/bin/yaml',
-		'yaml.js': 'bower-libs/yaml.js',
-		'yaml-js': 'bower-libs/yaml.js/bin/yaml',
-		css: 'bower-libs/require-css/css',
-		'css-builder': 'bower-libs/require-css/css-builder',
+		// yaml: 'bower-libs/yaml.js/bin/yaml',
+		// 'yaml.js': 'bower-libs/yaml.js',
+		// 'yaml-js': 'bower-libs/yaml.js/bin/yaml',
+		// css: 'bower-libs/require-css/css',
+		// 'css-builder': 'bower-libs/require-css/css-builder',
 		normalize: 'bower-libs/require-css/normalize',
 		prism: 'bower-libs/prism/prism',
 		'prism-core': 'bower-libs/prism/components/prism-core',
@@ -40513,18 +34829,16 @@ requirejs.config({
 		'rangy-cssclassapplier': 'bower-libs/rangy/rangy-cssclassapplier',
 		diff_match_patch: 'bower-libs/google-diff-match-patch-js/diff_match_patch',
 		diff_match_patch_uncompressed: 'bower-libs/google-diff-match-patch-js/diff_match_patch_uncompressed',
-		jsondiffpatch: 'bower-libs/jsondiffpatch/build/bundle',
+		// jsondiffpatch: 'bower-libs/jsondiffpatch/build/bundle',
 		hammerjs: 'bower-libs/hammerjs/hammer',
 		Diagram: 'bower-libs/js-sequence-diagrams/src/sequence-diagram',
 		'diagram-grammar': 'bower-libs/js-sequence-diagrams/build/diagram-grammar',
 		raphael: 'bower-libs/raphael/raphael',
 		'flow-chart': 'bower-libs/flowchart/release/flowchart.amd-1.3.4.min',
 		flowchart: 'bower-libs/flowchart/release/flowchart-1.3.4.min',
-		monetizejs: 'bower-libs/monetizejs/src/monetize',
-		'to-markdown': 'bower-libs/to-markdown/src/to-markdown',
+		// monetizejs: 'bower-libs/monetizejs/src/monetize',
 		waitForImages: 'bower-libs/waitForImages/dist/jquery.waitforimages',
-		MathJax: '../libs/MathJax/MathJax',
-		alertify: 'bower-libs/alertify.js/lib/alertify'
+		MathJax: '../libs/MathJax/MathJax'
 	},
 	shim: {
 		underscore: {
@@ -40542,9 +34856,9 @@ requirejs.config({
 		diff_match_patch_uncompressed: {
 			exports: 'diff_match_patch'
 		},
-		jsondiffpatch: [
-			'diff_match_patch_uncompressed'
-		],
+		// jsondiffpatch: [
+		// 	'diff_match_patch_uncompressed'
+		// ],
 		rangy: {
 			exports: 'rangy'
 		},
@@ -40554,9 +34868,9 @@ requirejs.config({
 		mousetrap: {
 			exports: 'Mousetrap'
 		},
-		'yaml-js': {
-			exports: 'YAML'
-		},
+		// 'yaml-js': {
+		// 	exports: 'YAML'
+		// },
 		'prism-core': {
 			exports: 'Prism'
 		},
@@ -40570,38 +34884,22 @@ requirejs.config({
 			'bower-libs/prism/components/prism-markup',
 			'libs/prism-latex'
 		],
-		'bootstrap-record': [
-			'mousetrap'
-		],
-		toMarkdown: {
-			deps: [
-				
-			],
-			exports: 'toMarkdown'
-		},
-		stacktrace: {
-			exports: 'printStackTrace'
-		},
-		FileSaver: {
-			exports: 'saveAs'
-		},
+		// 'bootstrap-record': [
+		// 	'mousetrap'
+		// ],
+		// stacktrace: {
+		// 	exports: 'printStackTrace'
+		// },
+		// FileSaver: {
+		// 	exports: 'saveAs'
+		// },
 		MutationObservers: [
 			'WeakMap'
 		],
 		highlightjs: {
 			exports: 'hljs'
 		},
-		'bootstrap-tour': {
-			deps: [
-				'bootstrap'
-			],
-			exports: 'Tour'
-		},
-		bootstrap: [
-			
-		],
 		'jquery-waitforimages': [
-			
 		],
 		pagedown: [
 			'libs/Markdown.Converter'
@@ -40624,20 +34922,12 @@ requirejs.config({
 
 window.viewerMode = false;
 // Keep the theme in a global variable
-window.theme = 'default';
-var themeModule = "less!themes/" + window.theme;
-/*
-if(window.baseDir.indexOf('-min') !== -1) {
-	themeModule = "css!themes/" + window.theme;
-}
-*/
+// window.theme = 'default';
 
 window.getMsg || (getMsg = function(msg) {
 	return msg;
 });
 
-// RequireJS entry point. By requiring synchronizer, publisher, sharing and
-// media-importer, we are actually loading all the modules
 require([
 	// "jquery",
 	"rangy",
@@ -40647,13 +34937,10 @@ require([
 	// "publisher",
 	// "sharing",
 	// "mediaImporter",
-	"css",
+	// "css",
 	"rangy-cssclassapplier"
 	// ,themeModule // 生产模式
 ], function( rangy, core) {
-	if(window.noStart) {
-		return;
-	}
 	$(function() {
 		rangy.init();
 		// Here, all the modules are loaded and the DOM is ready
