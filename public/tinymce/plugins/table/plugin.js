@@ -80,7 +80,7 @@
 		}
 	}
 
-// Included from: js/tinymce/plugins/table/classes/TableGrid.js
+// Included from: /Users/life/leanote2/public/tinymce/plugins/table/classes/TableGrid.js
 
 /**
  * TableGrid.js
@@ -947,7 +947,7 @@ define("tinymce/tableplugin/TableGrid", [
 	};
 });
 
-// Included from: js/tinymce/plugins/table/classes/Quirks.js
+// Included from: /Users/life/leanote2/public/tinymce/plugins/table/classes/Quirks.js
 
 /**
  * Quirks.js
@@ -1322,7 +1322,7 @@ define("tinymce/tableplugin/Quirks", [
 	};
 });
 
-// Included from: js/tinymce/plugins/table/classes/CellSelection.js
+// Included from: /Users/life/leanote2/public/tinymce/plugins/table/classes/CellSelection.js
 
 /**
  * CellSelection.js
@@ -1501,7 +1501,7 @@ define("tinymce/tableplugin/CellSelection", [
 	};
 });
 
-// Included from: js/tinymce/plugins/table/classes/Dialogs.js
+// Included from: /Users/life/leanote2/public/tinymce/plugins/table/classes/Dialogs.js
 
 /**
  * Dialogs.js
@@ -2328,7 +2328,7 @@ define("tinymce/tableplugin/Dialogs", [
 	};
 });
 
-// Included from: js/tinymce/plugins/table/classes/Plugin.js
+// Included from: /Users/life/leanote2/public/tinymce/plugins/table/classes/Plugin.js
 
 /**
  * Plugin.js

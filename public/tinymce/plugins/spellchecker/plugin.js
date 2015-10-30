@@ -80,7 +80,7 @@
 		}
 	}
 
-// Included from: js/tinymce/plugins/spellchecker/classes/DomTextMatcher.js
+// Included from: /Users/life/leanote2/public/tinymce/plugins/spellchecker/classes/DomTextMatcher.js
 
 /**
  * DomTextMatcher.js
@@ -553,7 +553,7 @@ define("tinymce/spellcheckerplugin/DomTextMatcher", [], function() {
 	};
 });
 
-// Included from: js/tinymce/plugins/spellchecker/classes/Plugin.js
+// Included from: /Users/life/leanote2/public/tinymce/plugins/spellchecker/classes/Plugin.js
 
 /**
  * Plugin.js

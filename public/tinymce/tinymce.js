@@ -82,7 +82,7 @@
 		}
 	}
 
-// Included from: js/tinymce/classes/dom/EventUtils.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/dom/EventUtils.js
 
 /**
  * EventUtils.js
@@ -648,7 +648,7 @@ define("tinymce/dom/EventUtils", [], function() {
 	return EventUtils;
 });
 
-// Included from: js/tinymce/classes/dom/Sizzle.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/dom/Sizzle.js
 
 /**
  * Sizzle.js
@@ -2689,7 +2689,7 @@ if ( !assert(function( div ) {
 return Sizzle;
 });
 
-// Included from: js/tinymce/classes/Env.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/Env.js
 
 /**
  * Env.js
@@ -2837,7 +2837,7 @@ define("tinymce/Env", [], function() {
 	};
 });
 
-// Included from: js/tinymce/classes/util/Tools.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/util/Tools.js
 
 /**
  * Tools.js
@@ -3360,7 +3360,7 @@ define("tinymce/util/Tools", [
 	};
 });
 
-// Included from: js/tinymce/classes/dom/DomQuery.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/dom/DomQuery.js
 
 /**
  * DomQuery.js
@@ -4931,7 +4931,7 @@ define("tinymce/dom/DomQuery", [
 	return DomQuery;
 });
 
-// Included from: js/tinymce/classes/html/Styles.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/html/Styles.js
 
 /**
  * Styles.js
@@ -5297,7 +5297,7 @@ define("tinymce/html/Styles", [], function() {
 	};
 });
 
-// Included from: js/tinymce/classes/dom/TreeWalker.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/dom/TreeWalker.js
 
 /**
  * TreeWalker.js
@@ -5393,7 +5393,7 @@ define("tinymce/dom/TreeWalker", [], function() {
 	};
 });
 
-// Included from: js/tinymce/classes/dom/Range.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/dom/Range.js
 
 /**
  * Range.js
@@ -6173,7 +6173,7 @@ define("tinymce/dom/Range", [
 	return Range;
 });
 
-// Included from: js/tinymce/classes/html/Entities.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/html/Entities.js
 
 /**
  * Entities.js
@@ -6440,7 +6440,7 @@ define("tinymce/html/Entities", [
 	return Entities;
 });
 
-// Included from: js/tinymce/classes/dom/StyleSheetLoader.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/dom/StyleSheetLoader.js
 
 /**
  * StyleSheetLoader.js
@@ -6632,7 +6632,7 @@ define("tinymce/dom/StyleSheetLoader", [
 	};
 });
 
-// Included from: js/tinymce/classes/dom/DOMUtils.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/dom/DOMUtils.js
 
 /**
  * DOMUtils.js
@@ -8470,7 +8470,7 @@ define("tinymce/dom/DOMUtils", [
 	return DOMUtils;
 });
 
-// Included from: js/tinymce/classes/dom/ScriptLoader.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/dom/ScriptLoader.js
 
 /**
  * ScriptLoader.js
@@ -8728,7 +8728,7 @@ define("tinymce/dom/ScriptLoader", [
 	return ScriptLoader;
 });
 
-// Included from: js/tinymce/classes/AddOnManager.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/AddOnManager.js
 
 /**
  * AddOnManager.js
@@ -8996,7 +8996,7 @@ define("tinymce/AddOnManager", [
  * });
  */
 
-// Included from: js/tinymce/classes/dom/RangeUtils.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/dom/RangeUtils.js
 
 /**
  * RangeUtils.js
@@ -9539,7 +9539,7 @@ define("tinymce/dom/RangeUtils", [
 	return RangeUtils;
 });
 
-// Included from: js/tinymce/classes/NodeChange.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/NodeChange.js
 
 /**
  * NodeChange.js
@@ -9695,7 +9695,7 @@ define("tinymce/NodeChange", [
 	};
 });
 
-// Included from: js/tinymce/classes/html/Node.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/html/Node.js
 
 /**
  * Node.js
@@ -10194,7 +10194,7 @@ define("tinymce/html/Node", [], function() {
 	return Node;
 });
 
-// Included from: js/tinymce/classes/html/Schema.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/html/Schema.js
 
 /**
  * Schema.js
@@ -11199,7 +11199,7 @@ define("tinymce/html/Schema", [
 	};
 });
 
-// Included from: js/tinymce/classes/html/SaxParser.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/html/SaxParser.js
 
 /**
  * SaxParser.js
@@ -11676,7 +11676,7 @@ define("tinymce/html/SaxParser", [
 	return SaxParser;
 });
 
-// Included from: js/tinymce/classes/html/DomParser.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/html/DomParser.js
 
 /**
  * DomParser.js
@@ -12483,7 +12483,7 @@ define("tinymce/html/DomParser", [
 	};
 });
 
-// Included from: js/tinymce/classes/html/Writer.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/html/Writer.js
 
 /**
  * Writer.js
@@ -12685,7 +12685,7 @@ define("tinymce/html/Writer", [
 	};
 });
 
-// Included from: js/tinymce/classes/html/Serializer.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/html/Serializer.js
 
 /**
  * Serializer.js
@@ -12844,7 +12844,7 @@ define("tinymce/html/Serializer", [
 	};
 });
 
-// Included from: js/tinymce/classes/dom/Serializer.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/dom/Serializer.js
 
 /**
  * Serializer.js
@@ -13249,7 +13249,7 @@ define("tinymce/dom/Serializer", [
 	};
 });
 
-// Included from: js/tinymce/classes/dom/TridentSelection.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/dom/TridentSelection.js
 
 /**
  * TridentSelection.js
@@ -13758,7 +13758,7 @@ define("tinymce/dom/TridentSelection", [], function() {
 	return Selection;
 });
 
-// Included from: js/tinymce/classes/util/VK.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/util/VK.js
 
 /**
  * VK.js
@@ -13798,7 +13798,7 @@ define("tinymce/util/VK", [
 	};
 });
 
-// Included from: js/tinymce/classes/dom/ControlSelection.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/dom/ControlSelection.js
 
 /**
  * ControlSelection.js
@@ -14394,7 +14394,7 @@ define("tinymce/dom/ControlSelection", [
 	};
 });
 
-// Included from: js/tinymce/classes/dom/BookmarkManager.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/dom/BookmarkManager.js
 
 /**
  * BookmarkManager.js
@@ -14786,7 +14786,7 @@ define("tinymce/dom/BookmarkManager", [
 	return BookmarkManager;
 });
 
-// Included from: js/tinymce/classes/dom/Selection.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/dom/Selection.js
 
 /**
  * Selection.js
@@ -15783,7 +15783,7 @@ define("tinymce/dom/Selection", [
 	return Selection;
 });
 
-// Included from: js/tinymce/classes/dom/ElementUtils.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/dom/ElementUtils.js
 
 /**
  * ElementUtils.js
@@ -15903,7 +15903,7 @@ define("tinymce/dom/ElementUtils", [
 	return ElementUtils;
 });
 
-// Included from: js/tinymce/classes/fmt/Preview.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/fmt/Preview.js
 
 /**
  * Preview.js
@@ -16057,7 +16057,7 @@ define("tinymce/fmt/Preview", [
 	};
 });
 
-// Included from: js/tinymce/classes/Formatter.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/Formatter.js
 
 /**
  * Formatter.js
@@ -18380,7 +18380,7 @@ define("tinymce/Formatter", [
 	};
 });
 
-// Included from: js/tinymce/classes/UndoManager.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/UndoManager.js
 
 /**
  * UndoManager.js
@@ -18798,7 +18798,7 @@ define("tinymce/UndoManager", [
 	};
 });
 
-// Included from: js/tinymce/classes/EnterKey.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/EnterKey.js
 
 /**
  * EnterKey.js
@@ -19482,7 +19482,7 @@ define("tinymce/EnterKey", [
 	};
 });
 
-// Included from: js/tinymce/classes/ForceBlocks.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ForceBlocks.js
 
 /**
  * ForceBlocks.js
@@ -19617,7 +19617,7 @@ define("tinymce/ForceBlocks", [], function() {
 	};
 });
 
-// Included from: js/tinymce/classes/EditorCommands.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/EditorCommands.js
 
 /**
  * EditorCommands.js
@@ -20782,7 +20782,7 @@ define("tinymce/EditorCommands", [
 	};
 });
 
-// Included from: js/tinymce/classes/util/URI.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/util/URI.js
 
 /**
  * URI.js
@@ -21180,7 +21180,7 @@ define("tinymce/util/URI", [
 	return URI;
 });
 
-// Included from: js/tinymce/classes/util/Class.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/util/Class.js
 
 /**
  * Class.js
@@ -21348,7 +21348,7 @@ define("tinymce/util/Class", [
 	return Class;
 });
 
-// Included from: js/tinymce/classes/util/EventDispatcher.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/util/EventDispatcher.js
 
 /**
  * EventDispatcher.js
@@ -21645,7 +21645,7 @@ define("tinymce/util/EventDispatcher", [
 	return Dispatcher;
 });
 
-// Included from: js/tinymce/classes/ui/Selector.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Selector.js
 
 /**
  * Selector.js
@@ -22017,7 +22017,7 @@ define("tinymce/ui/Selector", [
 	return Selector;
 });
 
-// Included from: js/tinymce/classes/ui/Collection.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Collection.js
 
 /**
  * Collection.js
@@ -22450,7 +22450,7 @@ define("tinymce/ui/Collection", [
 	return Collection;
 });
 
-// Included from: js/tinymce/classes/ui/DomUtils.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/DomUtils.js
 
 /**
  * DOMUtils.js
@@ -22554,7 +22554,7 @@ define("tinymce/ui/DomUtils", [
 	};
 });
 
-// Included from: js/tinymce/classes/ui/Control.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Control.js
 
 /**
  * Control.js
@@ -24036,7 +24036,7 @@ define("tinymce/ui/Control", [
 	return Control;
 });
 
-// Included from: js/tinymce/classes/ui/Factory.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Factory.js
 
 /**
  * Factory.js
@@ -24144,7 +24144,7 @@ define("tinymce/ui/Factory", [], function() {
 	};
 });
 
-// Included from: js/tinymce/classes/ui/KeyboardNavigation.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/KeyboardNavigation.js
 
 /**
  * KeyboardNavigation.js
@@ -24545,7 +24545,7 @@ define("tinymce/ui/KeyboardNavigation", [
 	};
 });
 
-// Included from: js/tinymce/classes/ui/Container.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Container.js
 
 /**
  * Container.js
@@ -25043,7 +25043,7 @@ define("tinymce/ui/Container", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/DragHelper.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/DragHelper.js
 
 /**
  * DragHelper.js
@@ -25181,7 +25181,7 @@ define("tinymce/ui/DragHelper", [
 	};
 });
 
-// Included from: js/tinymce/classes/ui/Scrollable.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Scrollable.js
 
 /**
  * Scrollable.js
@@ -25333,7 +25333,7 @@ define("tinymce/ui/Scrollable", [
 	};
 });
 
-// Included from: js/tinymce/classes/ui/Panel.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Panel.js
 
 /**
  * Panel.js
@@ -25403,7 +25403,7 @@ define("tinymce/ui/Panel", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/Movable.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Movable.js
 
 /**
  * Movable.js
@@ -25606,7 +25606,7 @@ define("tinymce/ui/Movable", [
 	};
 });
 
-// Included from: js/tinymce/classes/ui/Resizable.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Resizable.js
 
 /**
  * Resizable.js
@@ -25677,7 +25677,7 @@ define("tinymce/ui/Resizable", [
 	};
 });
 
-// Included from: js/tinymce/classes/ui/FloatPanel.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/FloatPanel.js
 
 /**
  * FloatPanel.js
@@ -26080,7 +26080,7 @@ define("tinymce/ui/FloatPanel", [
 	return FloatPanel;
 });
 
-// Included from: js/tinymce/classes/ui/Window.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Window.js
 
 /**
  * Window.js
@@ -26467,7 +26467,7 @@ define("tinymce/ui/Window", [
 	return Window;
 });
 
-// Included from: js/tinymce/classes/ui/MessageBox.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/MessageBox.js
 
 /**
  * MessageBox.js
@@ -26672,7 +26672,7 @@ define("tinymce/ui/MessageBox", [
 	return MessageBox;
 });
 
-// Included from: js/tinymce/classes/WindowManager.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/WindowManager.js
 
 /**
  * WindowManager.js
@@ -26916,7 +26916,7 @@ define("tinymce/WindowManager", [
 	};
 });
 
-// Included from: js/tinymce/classes/util/Quirks.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/util/Quirks.js
 
 /**
  * Quirks.js
@@ -28472,7 +28472,7 @@ define("tinymce/util/Quirks", [
 	};
 });
 
-// Included from: js/tinymce/classes/util/Observable.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/util/Observable.js
 
 /**
  * Observable.js
@@ -28604,7 +28604,7 @@ define("tinymce/util/Observable", [
 	};
 });
 
-// Included from: js/tinymce/classes/EditorObservable.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/EditorObservable.js
 
 /**
  * EditorObservable.js
@@ -28811,7 +28811,7 @@ define("tinymce/EditorObservable", [
 	return EditorObservable;
 });
 
-// Included from: js/tinymce/classes/Shortcuts.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/Shortcuts.js
 
 /**
  * Shortcuts.js
@@ -28985,7 +28985,7 @@ define("tinymce/Shortcuts", [
 	};
 });
 
-// Included from: js/tinymce/classes/Editor.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/Editor.js
 
 /**
  * Editor.js
@@ -31098,7 +31098,7 @@ define("tinymce/Editor", [
 	return Editor;
 });
 
-// Included from: js/tinymce/classes/util/I18n.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/util/I18n.js
 
 /**
  * I18n.js
@@ -31216,7 +31216,7 @@ define("tinymce/util/I18n", [], function() {
 	};
 });
 
-// Included from: js/tinymce/classes/FocusManager.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/FocusManager.js
 
 /**
  * FocusManager.js
@@ -31483,7 +31483,7 @@ define("tinymce/FocusManager", [
 	return FocusManager;
 });
 
-// Included from: js/tinymce/classes/EditorManager.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/EditorManager.js
 
 /**
  * EditorManager.js
@@ -32140,7 +32140,7 @@ define("tinymce/EditorManager", [
 	return EditorManager;
 });
 
-// Included from: js/tinymce/classes/LegacyInput.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/LegacyInput.js
 
 /**
  * LegacyInput.js
@@ -32219,7 +32219,7 @@ define("tinymce/LegacyInput", [
 	});
 });
 
-// Included from: js/tinymce/classes/util/XHR.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/util/XHR.js
 
 /**
  * XHR.js
@@ -32324,7 +32324,7 @@ define("tinymce/util/XHR", [
 	return XHR;
 });
 
-// Included from: js/tinymce/classes/util/JSON.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/util/JSON.js
 
 /**
  * JSON.js
@@ -32436,7 +32436,7 @@ define("tinymce/util/JSON", [], function() {
 	};
 });
 
-// Included from: js/tinymce/classes/util/JSONRequest.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/util/JSONRequest.js
 
 /**
  * JSONRequest.js
@@ -32549,7 +32549,7 @@ define("tinymce/util/JSONRequest", [
 	return JSONRequest;
 });
 
-// Included from: js/tinymce/classes/util/JSONP.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/util/JSONP.js
 
 /**
  * JSONP.js
@@ -32590,7 +32590,7 @@ define("tinymce/util/JSONP", [
 	};
 });
 
-// Included from: js/tinymce/classes/util/LocalStorage.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/util/LocalStorage.js
 
 /**
  * LocalStorage.js
@@ -32806,7 +32806,7 @@ define("tinymce/util/LocalStorage", [], function() {
 	return LocalStorage;
 });
 
-// Included from: js/tinymce/classes/Compat.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/Compat.js
 
 /**
  * Compat.js
@@ -32893,7 +32893,7 @@ define("tinymce/Compat", [
  * @namespace tinymce.util
  */
 
-// Included from: js/tinymce/classes/ui/Layout.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Layout.js
 
 /**
  * Layout.js
@@ -33010,7 +33010,7 @@ define("tinymce/ui/Layout", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/AbsoluteLayout.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/AbsoluteLayout.js
 
 /**
  * AbsoluteLayout.js
@@ -33076,7 +33076,7 @@ define("tinymce/ui/AbsoluteLayout", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/Tooltip.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Tooltip.js
 
 /**
  * Tooltip.js
@@ -33165,7 +33165,7 @@ define("tinymce/ui/Tooltip", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/Widget.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Widget.js
 
 /**
  * Widget.js
@@ -33325,7 +33325,7 @@ define("tinymce/ui/Widget", [
 	return Widget;
 });
 
-// Included from: js/tinymce/classes/ui/Button.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Button.js
 
 /**
  * Button.js
@@ -33498,7 +33498,7 @@ define("tinymce/ui/Button", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/ButtonGroup.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/ButtonGroup.js
 
 /**
  * ButtonGroup.js
@@ -33563,7 +33563,7 @@ define("tinymce/ui/ButtonGroup", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/Checkbox.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Checkbox.js
 
 /**
  * Checkbox.js
@@ -33685,7 +33685,7 @@ define("tinymce/ui/Checkbox", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/ComboBox.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/ComboBox.js
 
 /**
  * ComboBox.js
@@ -34020,7 +34020,7 @@ define("tinymce/ui/ComboBox", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/ColorBox.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/ColorBox.js
 
 /**
  * ColorBox.js
@@ -34095,7 +34095,7 @@ define("tinymce/ui/ColorBox", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/PanelButton.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/PanelButton.js
 
 /**
  * PanelButton.js
@@ -34212,7 +34212,7 @@ define("tinymce/ui/PanelButton", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/ColorButton.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/ColorButton.js
 
 /**
  * ColorButton.js
@@ -34333,7 +34333,7 @@ define("tinymce/ui/ColorButton", [
 	});
 });
 
-// Included from: js/tinymce/classes/util/Color.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/util/Color.js
 
 /**
  * Color.js
@@ -34571,7 +34571,7 @@ define("tinymce/util/Color", [], function() {
 	return Color;
 });
 
-// Included from: js/tinymce/classes/ui/ColorPicker.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/ColorPicker.js
 
 /**
  * ColorPicker.js
@@ -34780,7 +34780,7 @@ define("tinymce/ui/ColorPicker", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/Path.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Path.js
 
 /**
  * Path.js
@@ -34923,7 +34923,7 @@ define("tinymce/ui/Path", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/ElementPath.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/ElementPath.js
 
 /**
  * ElementPath.js
@@ -35005,7 +35005,7 @@ define("tinymce/ui/ElementPath", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/FormItem.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/FormItem.js
 
 /**
  * FormItem.js
@@ -35064,7 +35064,7 @@ define("tinymce/ui/FormItem", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/Form.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Form.js
 
 /**
  * Form.js
@@ -35238,7 +35238,7 @@ define("tinymce/ui/Form", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/FieldSet.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/FieldSet.js
 
 /**
  * FieldSet.js
@@ -35300,7 +35300,7 @@ define("tinymce/ui/FieldSet", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/FilePicker.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/FilePicker.js
 
 /**
  * FilePicker.js
@@ -35388,7 +35388,7 @@ define("tinymce/ui/FilePicker", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/FitLayout.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/FitLayout.js
 
 /**
  * FitLayout.js
@@ -35439,7 +35439,7 @@ define("tinymce/ui/FitLayout", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/FlexLayout.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/FlexLayout.js
 
 /**
  * FlexLayout.js
@@ -35688,7 +35688,7 @@ define("tinymce/ui/FlexLayout", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/FlowLayout.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/FlowLayout.js
 
 /**
  * FlowLayout.js
@@ -35733,7 +35733,7 @@ define("tinymce/ui/FlowLayout", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/FormatControls.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/FormatControls.js
 
 /**
  * FormatControls.js
@@ -36275,7 +36275,7 @@ define("tinymce/ui/FormatControls", [
 	}
 });
 
-// Included from: js/tinymce/classes/ui/GridLayout.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/GridLayout.js
 
 /**
  * GridLayout.js
@@ -36511,7 +36511,7 @@ define("tinymce/ui/GridLayout", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/Iframe.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Iframe.js
 
 /**
  * Iframe.js
@@ -36598,7 +36598,7 @@ define("tinymce/ui/Iframe", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/Label.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Label.js
 
 /**
  * Label.js
@@ -36726,7 +36726,7 @@ define("tinymce/ui/Label", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/Toolbar.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Toolbar.js
 
 /**
  * Toolbar.js
@@ -36783,7 +36783,7 @@ define("tinymce/ui/Toolbar", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/MenuBar.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/MenuBar.js
 
 /**
  * MenuBar.js
@@ -36819,7 +36819,7 @@ define("tinymce/ui/MenuBar", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/MenuButton.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/MenuButton.js
 
 /**
  * MenuButton.js
@@ -37082,7 +37082,7 @@ define("tinymce/ui/MenuButton", [
 	return MenuButton;
 });
 
-// Included from: js/tinymce/classes/ui/ListBox.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/ListBox.js
 
 /**
  * ListBox.js
@@ -37253,7 +37253,7 @@ define("tinymce/ui/ListBox", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/MenuItem.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/MenuItem.js
 
 /**
  * MenuItem.js
@@ -37578,7 +37578,7 @@ define("tinymce/ui/MenuItem", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/Menu.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Menu.js
 
 /**
  * Menu.js
@@ -37721,7 +37721,7 @@ define("tinymce/ui/Menu", [
 	return Menu;
 });
 
-// Included from: js/tinymce/classes/ui/Radio.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Radio.js
 
 /**
  * Radio.js
@@ -37753,7 +37753,7 @@ define("tinymce/ui/Radio", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/ResizeHandle.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/ResizeHandle.js
 
 /**
  * ResizeHandle.js
@@ -37842,7 +37842,7 @@ define("tinymce/ui/ResizeHandle", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/Spacer.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Spacer.js
 
 /**
  * Spacer.js
@@ -37884,7 +37884,7 @@ define("tinymce/ui/Spacer", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/SplitButton.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/SplitButton.js
 
 /**
  * SplitButton.js
@@ -38022,7 +38022,7 @@ define("tinymce/ui/SplitButton", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/StackLayout.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/StackLayout.js
 
 /**
  * StackLayout.js
@@ -38055,7 +38055,7 @@ define("tinymce/ui/StackLayout", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/TabPanel.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/TabPanel.js
 
 /**
  * TabPanel.js
@@ -38235,7 +38235,7 @@ define("tinymce/ui/TabPanel", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/TextBox.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/TextBox.js
 
 /**
  * TextBox.js
@@ -38452,7 +38452,7 @@ define("tinymce/ui/TextBox", [
 	});
 });
 
-// Included from: js/tinymce/classes/ui/Throbber.js
+// Included from: /Users/life/leanote2/public/tinymce/classes/ui/Throbber.js
 
 /**
  * Throbber.js

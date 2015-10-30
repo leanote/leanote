@@ -17,16 +17,16 @@
 <link href="/css/font-awesome-4.2.0/css/font-awesome-min.css" rel="stylesheet" />
 <link href="/css/zTreeStyle/zTreeStyle-min.css" rel="stylesheet" />
 <!-- mdeditor -->
-<link href="/public/dist/themes/default-min.css" rel="stylesheet" />
+<link href="/public/dist/themes/default.css" rel="stylesheet" />
 <!-- context-menu -->
-<link rel="stylesheet" href="/js/contextmenu/css/contextmenu-min.css" type="text/css" />
+<link rel="stylesheet" href="/js/contextmenu/css/contextmenu-min.css?id=1" type="text/css" />
 
 <script>
 var hash = location.hash;
 if(hash.indexOf("writing") >= 0) {
-	var files = '<link rel="stylesheet" href="/css/theme/writting-overwrite.css" type="text/css" id="themeLink" />';
+	var files = '<link rel="stylesheet" href="/css/theme/writting-overwrite.css?id=3" type="text/css" id="themeLink" />';
 } else {
-	var files ='<link rel="stylesheet" href="/css/theme/{{if .userInfo.Theme}}{{.userInfo.Theme}}{{else}}default{{end}}.css?t=4" type="text/css" id="themeLink" />';
+	var files ='<link rel="stylesheet" href="/css/theme/{{if .userInfo.Theme}}{{.userInfo.Theme}}{{else}}default{{end}}.css?id=7" type="text/css" id="themeLink" />';
 }
 document.write(files);
 </script>
@@ -174,7 +174,7 @@ function log(o) {
 							
 							<li role="presentation" class="divider my-link writing-mobile-hide"></li>
 							<li role="presentation" class="my-link toggle-editor-mode writing-mobile-hide" >
-								<a href="#writing"><i class="fa fa-rocket"></i>
+								<a href="#writing" title="{{msg . "writingMode"}} ctrl/cmd+e"><i class="fa fa-rocket"></i>
 								{{msg . "writingMode"}}</a>
 							</li>
 							
@@ -427,6 +427,7 @@ function log(o) {
 					
 					<!-- 遮罩, 为了resize3Columns用 -->
 					<div id="noteMask" class="note-mask"></div>
+					<!-- for loading -->
 					<div id="noteMaskForLoading" class="note-mask"> <!-- z-index: 11 --> 
 						<img src="/images/loading-24.gif"/>
 						<br />
@@ -571,7 +572,7 @@ function log(o) {
 							</div>
 							<!-- 查看信息 -->
 							<div id="infoToolbar" class="info-toolbar invisible">
-				              <a class="toolbar-update"><i class="fa fa-pencil"></i> <span class="lang">{{msg . "modify"}}</span></a>
+				              <a class="toolbar-update" title="{{msg . "modify"}} ctrl/cmd+e"><i class="fa fa-pencil"></i> <span class="lang">{{msg . "modify"}}</span></a>
 				              <span class="lang">{{msg . "created"}}</span>: <span class="created-time"></span>
 				              <span class="lang">{{msg . "updated"}}</span>: <span class="updated-time"></span>
 				            </div>
@@ -608,7 +609,7 @@ function log(o) {
 						        <div class="navbar navbar-default">
 						            <div class="navbar-inner" id="wmd-button-bar">
 						            	<div id="mdInfoToolbar" class="info-toolbar invisible">
-							              <a class="toolbar-update"><i class="fa fa-pencil"></i> <span class="lang">{{msg . "modify"}}</span></a>
+							              <a class="toolbar-update" title="{{msg . "modify"}} ctrl/cmd+e"><i class="fa fa-pencil"></i> <span class="lang">{{msg . "modify"}}</span></a>
 							              <span class="lang">{{msg . "created"}}</span>: <span class="created-time"></span>
 							              <span class="lang">{{msg . "updated"}}</span>: <span class="updated-time"></span>
 							            </div>

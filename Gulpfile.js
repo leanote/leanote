@@ -306,8 +306,8 @@ gulp.task('minifycss', function() {
 });
 
 // tinymce
-// !! You must has tinymce_dev on public/
-var tinymceBase = base + '/tinymce_dev';
+// please set the right path on your own env
+var tinymceBase = '/Users/life/leanote/leanote-tools/tinymce_4.1.9_leanote_public';
 gulp.task('tinymce', function() {
     // 先清理
     fs.unlink(tinymceBase + '/js/tinymce/tinymce.dev.js');
@@ -317,7 +317,7 @@ gulp.task('tinymce', function() {
 
     var cp = require('child_process');
 
-    var bundleCmd = 'grunt bundle --themes leanote --plugins autolink,link,leaui_image,leaui_mind,lists,hr,paste,searchreplace,leanote_nav,leanote_code,tabfocus,table,directionality,textcolor';
+    var bundleCmd = 'grunt bundle --themes leanote --plugins autolink,link,leaui_image,lists,hr,paste,searchreplace,leanote_nav,leanote_code,tabfocus,table,directionality,textcolor';
     // build
     cp.exec('grunt minify', {cwd: tinymceBase}, function(err, stdout, stderr) {
         console.log('stdout: ' + stdout);
