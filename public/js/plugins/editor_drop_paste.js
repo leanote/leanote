@@ -1,7 +1,19 @@
 // for editor.
 // drag image to editor
 var urlPrefix = UrlPrefix; // window.location.protocol + "//" + window.location.host;
-define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function(){
+define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function() {
+
+	// 在toggle成pre或ace时
+	// 最后没有元素, 或者元素不是p, 则在最后插入之
+	function insertPIfNotExists() {
+		var children = $('#editorContent').children();
+		var lastChild = children && children.length > 0 ? children[children.length - 1] : null;
+		if (!lastChild || lastChild.tagName != 'P') {
+			$('#editorContent').append('<p><br data-mce-bogus="1"></p>');
+		}
+	}
+
+	// 粘贴图片的进度控制
 	function Process(editor) {
 		var id = '__mcenew' + (new Date()).getTime();
 		var str = '<div contenteditable="false" id="' + id + '" class="leanote-image-container">' + 
@@ -13,7 +25,10 @@ define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function(){
 				'</div>' + 
 			'</div>';
 		this.containerStr = str;
+		
 		editor.insertContent(str);
+		insertPIfNotExists();
+		
 		var container = $('#' + id);
 		this.container = container;
 		this.id = id;
@@ -111,7 +126,7 @@ define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function(){
 					ajaxPost("/file/copyImage", {userId: UserInfo.UserId, fileId: fileId, toUserId: curNote.UserId}, function(re) {
 						if(reIsOk(re) && re.Id) {
 							var urlPrefix = window.location.protocol + "//" + window.location.host;
-							data.src = urlPrefix + "/file/outputImage?fileId=" + re.Id;
+							data.src = urlPrefix + "/api/file/getImage?fileId=" + re.Id;
 						}
 						renderImage(data);
 					});
@@ -147,7 +162,7 @@ define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function(){
 	        // This function is called when a file is added to the queue;
 	        // either via the browse button, or via drag/drop:
 	        add: function(e, data) {
-	            var tpl = $('<li><div class="alert alert-info"><img class="loader" src="/public/album/images/ajax-loader.gif"> <a class="close" data-dismiss="alert">×</a></div></li>');
+	            var tpl = $('<li><div class="alert alert-info"><img class="loader" src="/images/ajax-loader.gif"> <a class="close" data-dismiss="alert">×</a></div></li>');
 	
 	            // Append the file name and file size
 	            tpl.find('div').append(data.files[0].name + ' <small>[<i>' + formatFileSize(data.files[0].size) + '</i>]</small>');
@@ -165,7 +180,7 @@ define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function(){
 	            if (data.result.Ok == true) {
 	                data.context.remove();
 	                // life
-	                var data2 = {src: urlPrefix + "/file/outputImage?fileId=" + data.result.Id}
+	                var data2 = {src: urlPrefix + "/api/file/getImage?fileId=" + data.result.Id}
 	                insertImage(data2);
 	            } else {
 	                data.context.empty();
@@ -355,7 +370,7 @@ define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function(){
 			    		}
 			    		// 这里, 如果图片宽度过大, 这里设置成500px
 						var urlPrefix = UrlPrefix; // window.location.protocol + "//" + window.location.host;
-						var src = urlPrefix + "/file/outputImage?fileId=" + re.Id;
+						var src = urlPrefix + "/api/file/getImage?fileId=" + re.Id;
 						getImageSize(src, function(wh) {
 							// life 4/25
 							if(wh && wh.width) {
@@ -379,7 +394,7 @@ define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function(){
 		    		// 这里, 如果图片宽度过大, 这里设置成500px
 		    		var re = data.result;
 					var urlPrefix = UrlPrefix; // window.location.protocol + "//" + window.location.host;
-					var src = urlPrefix + "/file/outputImage?fileId=" + re.Id;
+					var src = urlPrefix + "/api/file/getImage?fileId=" + re.Id;
 
 					if(curNote && !curNote.IsMarkdown) {
 						data.process.replace(src);
