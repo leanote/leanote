@@ -1,7 +1,6 @@
-
 @bgColor: #fff;
 @headerBgColor: #fff;
-@fontFamily:  'Open Sans', '微软雅黑', Arial, Tahoma, sans-serif;
+@fontFamily: Helvetica, Tahoma, Arial, Hiragino Sans GB, "Microsoft YaHei", "微软雅黑", "Micro Hei", SimSun, "宋体", Heiti, "黑体", sans-serif;
 @aWhiteColor: #fff;
 @aBlackColor: #000;
 @borderColor: #EBEFF2;
@@ -14,6 +13,7 @@
 @titleColor: #5AD4A0;
 
 // font
+/*
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
@@ -38,16 +38,17 @@
   font-weight: 400;
   src: local('Open Sans Italic'), local('OpenSans-Italic'), url('../../fonts/open-sans2/xjAJXh38I15wypJXxuGMBobN6UDyHWBl620a-IRfuBk.woff') format('woff');
 }
+*/
 /* leanote */
 @font-face {
-    font-family: 'leanoteregular';
-    src: url('../../fonts/leanote/leanote-regular-webfont.eot');
-    src: url('../../fonts/leanote/leanote-regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../../fonts/leanote/leanote-regular-webfont.woff') format('woff'),
-         url('../../fonts/leanote/leanote-regular-webfont.ttf') format('truetype'),
-         url('../../fonts/leanote/leanote-regular-webfont.svg#leanoteregular') format('svg');
-    font-weight: normal;
-    font-style: normal;
+	font-family: 'leanote';
+	src:url('../../fonts/leanote-font2/leanote.eot?-vcf23i');
+	src:url('../../fonts/leanote-font2/leanote.eot?#iefix-vcf23i') format('embedded-opentype'),
+		url('../../fonts/leanote-font2/leanote.ttf?-vcf23i') format('truetype'),
+		url('../../fonts/leanote-font2/leanote.woff?-vcf23i') format('woff'),
+		url('../../fonts/leanote-font2/leanote.svg?-vcf23i#leanote') format('svg');
+	font-weight: normal;
+	font-style: normal;
 }
 
 @selectionBg: @aBlackColor;
@@ -128,7 +129,11 @@ a {
 #logo {
 	display: block;
 	.logo-icon {
-		font-family: "leanoteregular";
+		font-family: 'leanote' !important;
+		font-style: normal;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;
 		font-size: 32px;
 		display: block;
 		float: left;
@@ -139,7 +144,7 @@ a {
 		line-height: 50px;
 	}
 	.logo-icon:before {
-		content: "b";
+		content: "\e601";
 	}
 }
 
@@ -4857,4 +4862,10 @@ body.container {
 	outline: none;
 	border-bottom: 1px solid #eee;
 	background: #fffbcc;
+}
+.form-tips {
+	color: #929292;
+}
+.a {
+	color: #23527c;
 }
