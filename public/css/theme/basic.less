@@ -195,9 +195,10 @@ h1, h2, h3 {
 	z-index: 1;
 	background-color: #fff;
     bottom: 5px; 
-    #md-section-helper, #wmd-input {
+    #md-section-helper,
+    #wmd-input {
 		font-size: 14px;
-		line-height: 22px;			
+		line-height: 22px;
     }
 }
 // 前面的38影响了dropdown
@@ -225,7 +226,6 @@ h1, h2, h3 {
 	margin-top: 8px;
 	padding: 0 5px;
 }
-
 
 .noteSplit {
   position: absolute;
@@ -914,8 +914,6 @@ h1, h2, h3 {
     opacity: none;
 }
 
-#right-column {
-}
 .preview-container {
     overflow: auto;
 }
@@ -1419,28 +1417,6 @@ top: 4px;
 	}
 	.info-toolbar {
 		display: block;
-	}
-}
-
-#mdEditor.read-only {
-	.info-toolbar {
-		display: block;
-	}
-	.wmd-button-bar-inner,
-	#mdSplitter2, // 拖动
-	.btn-info // 拖动
-	{
-		display: none;
-	}
-	#left-column {
-		// display: none;
-		visibility: hidden;
-	}
-	#right-column {
-		left: 0 !important;
-	}
-	.preview-container {
-		left: 10px;
 	}
 }
 
