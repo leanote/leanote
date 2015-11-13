@@ -1,22 +1,22 @@
 package service
 
 import (
-	"github.com/leanote/leanote/app/info"
 	"github.com/leanote/leanote/app/db"
+	"github.com/leanote/leanote/app/info"
 	. "github.com/leanote/leanote/app/lea"
 	"gopkg.in/mgo.v2/bson"
 	"regexp"
-//	"time"
+	//	"time"
 )
 
 type NoteImageService struct {
 }
 
 // 通过id, userId得到noteIds
-func (this *NoteImageService) GetNoteIds(imageId string) ([]bson.ObjectId) {
+func (this *NoteImageService) GetNoteIds(imageId string) []bson.ObjectId {
 	noteImages := []info.NoteImage{}
-	db.ListByQWithFields(db.NoteImages, bson.M{"ImageId": bson.ObjectIdHex(imageId)}, []string{"NoteId"}, &noteImages)	
-	
+	db.ListByQWithFields(db.NoteImages, bson.M{"ImageId": bson.ObjectIdHex(imageId)}, []string{"NoteId"}, &noteImages)
+
 	if noteImages != nil && len(noteImages) > 0 {
 		noteIds := make([]bson.ObjectId, len(noteImages))
 		cnt := len(noteImages)
@@ -25,7 +25,7 @@ func (this *NoteImageService) GetNoteIds(imageId string) ([]bson.ObjectId) {
 		}
 		return noteIds
 	}
-	
+
 	return nil
 }
 
@@ -67,7 +67,7 @@ func (this *NoteImageService) UpdateNoteImages(userId, noteId, imgSrc, content s
 			}
 		}
 	}
-	
+
 	return true
 }
 
@@ -101,7 +101,7 @@ func (this *NoteImageService) CopyNoteImages(fromNoteId, fromUserId, newNoteId, 
 		// each = getImage?fileId=541bd2f599c37b4f3r000003
 
 		fileId := each[len(each)-24:] // 得到后24位, 也即id
-		
+
 		if _, ok := replaceMap[fileId]; !ok {
 			if bson.IsObjectIdHex(fileId) {
 				ok2, newImageId := fileService.CopyImage(fromUserId, fileId, toUserId)
@@ -123,25 +123,25 @@ func (this *NoteImageService) CopyNoteImages(fromNoteId, fromUserId, newNoteId, 
 			return "getImage?fileId=" + replaceFileId
 		}
 		return each
-	});
+	})
 
-	return content;
+	return content
 }
 
-// 
+//
 func (this *NoteImageService) getImagesByNoteIds(noteIds []bson.ObjectId) map[string][]info.File {
 	noteNoteImages := []info.NoteImage{}
 	db.ListByQ(db.NoteImages, bson.M{"NoteId": bson.M{"$in": noteIds}}, &noteNoteImages)
-	
+
 	// 得到imageId, 再去files表查所有的Files
 	imageIds := []bson.ObjectId{}
-	
+
 	// 图片1 => N notes
 	imageIdNotes := map[string][]string{} // imageId => [noteId1, noteId2, ...]
 	for _, noteImage := range noteNoteImages {
 		imageId := noteImage.ImageId
 		imageIds = append(imageIds, imageId)
-		
+
 		imageIdHex := imageId.Hex()
 		noteId := noteImage.NoteId.Hex()
 		if notes, ok := imageIdNotes[imageIdHex]; ok {
@@ -150,11 +150,11 @@ func (this *NoteImageService) getImagesByNoteIds(noteIds []bson.ObjectId) map[st
 			imageIdNotes[imageIdHex] = []string{noteId}
 		}
 	}
-	
+
 	// 得到所有files
 	files := []info.File{}
 	db.ListByQ(db.Files, bson.M{"_id": bson.M{"$in": imageIds}}, &files)
-	
+
 	// 建立note->file关联
 	noteImages := make(map[string][]info.File)
 	for _, file := range files {

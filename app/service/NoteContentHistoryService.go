@@ -1,11 +1,11 @@
 package service
 
 import (
-	"github.com/leanote/leanote/app/info"
 	"github.com/leanote/leanote/app/db"
-//	. "github.com/leanote/leanote/app/lea"
+	"github.com/leanote/leanote/app/info"
+	//	. "github.com/leanote/leanote/app/lea"
 	"gopkg.in/mgo.v2/bson"
-//	"time"
+	//	"time"
 )
 
 // 历史记录
@@ -22,7 +22,7 @@ func (this *NoteContentHistoryService) AddHistory(noteId, userId string, eachHis
 	if eachHistory.Content == "" {
 		return
 	}
-	
+
 	// 先查是否存在历史记录, 没有则添加之
 	history := info.NoteContentHistory{}
 	db.GetByIdAndUserId(db.NoteContentHistories, noteId, userId, &history)
@@ -38,8 +38,8 @@ func (this *NoteContentHistoryService) AddHistory(noteId, userId string, eachHis
 		}
 		newHistory := []info.EachHistory{eachHistory}
 		newHistory = append(newHistory, history.Histories...) // 在开头加了, 最近的在最前
-	  	history.Histories = newHistory 
-		
+		history.Histories = newHistory
+
 		// 更新之
 		db.UpdateByIdAndUserId(db.NoteContentHistories, noteId, userId, history)
 	}
@@ -48,13 +48,13 @@ func (this *NoteContentHistoryService) AddHistory(noteId, userId string, eachHis
 
 // 新建历史
 func (this *NoteContentHistoryService) newHistory(noteId, userId string, eachHistory info.EachHistory) {
-	history := info.NoteContentHistory{NoteId: bson.ObjectIdHex(noteId), 
-		UserId: bson.ObjectIdHex(userId), 
+	history := info.NoteContentHistory{NoteId: bson.ObjectIdHex(noteId),
+		UserId:    bson.ObjectIdHex(userId),
 		Histories: []info.EachHistory{eachHistory},
 	}
-	
+
 	// 保存之
-	db.Insert(db.NoteContentHistories, history) 
+	db.Insert(db.NoteContentHistories, history)
 }
 
 // 列表展示

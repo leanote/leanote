@@ -1,19 +1,19 @@
 package lea
 
 import (
-	"fmt"
-	"regexp"
+	"bytes"
 	"crypto/md5"
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/hex"
-	"io"
-	"gopkg.in/mgo.v2/bson"
-	"time"
-	"strings"
+	"fmt"
 	"github.com/PuerkitoBio/goquery"
-	"bytes"
-	math_rand "math/rand" 
+	"gopkg.in/mgo.v2/bson"
+	"io"
+	math_rand "math/rand"
+	"regexp"
+	"strings"
+	"time"
 )
 
 // 字符串
@@ -31,14 +31,14 @@ func Digest3(str string) string {
 	for _, k := range str {
 		b += k
 	}
-	return fmt.Sprintf("%d", b % 1000)
+	return fmt.Sprintf("%d", b%1000)
 }
 func Digest2(str string) string {
 	var b rune = 0
 	for _, k := range str {
 		b += k
 	}
-	return fmt.Sprintf("%d", b % 100)
+	return fmt.Sprintf("%d", b%100)
 }
 
 // Guid
@@ -77,7 +77,7 @@ func Substr(str string, start, length int) string {
 func substr(str string, start, length int, isRune bool) string {
 	rs := []rune(str)
 	rs2 := []byte(str)
-	
+
 	rl := len(rs)
 	if !isRune {
 		rl = len(rs2)
@@ -161,7 +161,7 @@ func SubStringHTMLToRaw(param string, length int) string {
 			continue
 		} else if temp == '>' {
 			isCode = false
-			resultRune[n] = ' ';
+			resultRune[n] = ' '
 
 			n++
 			if n >= length {
@@ -170,7 +170,7 @@ func SubStringHTMLToRaw(param string, length int) string {
 			continue
 		}
 		if !isCode {
-			resultRune[n] = temp;
+			resultRune[n] = temp
 			// s += string(temp)
 			n++
 			if n >= length {
@@ -192,13 +192,13 @@ func fixHtml(result string) string {
 
 	// 把<div class=xxx的class=xxx去掉
 	tempResult = ReplaceAll(tempResult, "<(/?[a-zA-Z]+)[^<>]*>", "<$1>")
-	
+
 	// 3 只能用正则,+stack来去有结束的
 	// golang的正则暂不支持back reference, 以后可以用它来去掉重复的标签
 	p, _ := regexp.Compile("<(/?[a-zA-Z]+)[^<>]*>") // 得到所有的<div>, </div>...
 	strs := p.FindAllString(tempResult, -1)
 
-//	fmt.Println(strs)
+	//	fmt.Println(strs)
 	stack := make([]string, len(strs))
 	stackP := -1
 	for _, each := range strs {
@@ -215,14 +215,14 @@ func fixHtml(result string) string {
 	// 补全tag
 	if stackP != -1 {
 		fmt.Println(stack[0 : stackP+1])
-		
+
 		for _, each := range stack[0 : stackP+1] {
 			if each[1] != '/' {
 				result += "</" + each[1:]
 			}
 		}
 	}
-	
+
 	return result
 }
 
@@ -241,10 +241,10 @@ func SubStringHTML(param string, length int, end string) string {
 	} else {
 		// 1
 		n := 0
-		var temp rune // 中文问题, 用rune来解决
+		var temp rune   // 中文问题, 用rune来解决
 		isCode := false //是不是HTML代码
 		isHTML := false //是不是HTML特殊字符,如&nbsp;
-		var i = 0;
+		var i = 0
 		for ; i < lenStr; i++ {
 			temp = rStr[i]
 			if temp == '<' {
@@ -281,11 +281,11 @@ func SubStringHTML(param string, length int, end string) string {
 		html, _ := dom.Html()
 		html = strings.Replace(html, "<html><head></head><body>", "", 1)
 		html = strings.Replace(html, "</body></html>", "", 1)
-		
+
 		// TODO 把style="float: left"去掉
 		return html
-		
-	// 如果有错误, 则使用自己的方法补全, 有风险
+
+		// 如果有错误, 则使用自己的方法补全, 有风险
 	} else {
 		return fixHtml(result)
 	}
@@ -305,7 +305,7 @@ func IsGoodPwd(pwd string) (bool, string) {
 // 是否是email
 func IsEmail(email string) bool {
 	if email == "" {
-		return false;
+		return false
 	}
 	ok, _ := regexp.MatchString(`^([a-zA-Z0-9]+[_|\_|\.|\-]?)*[_a-z\-A-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.|\-]?)*[a-zA-Z0-9\-]+\.[0-9a-zA-Z]{2,6}$`, email)
 	return ok
@@ -314,7 +314,7 @@ func IsEmail(email string) bool {
 // 是否只包含数字, 字母 -, _
 func IsUsername(username string) bool {
 	if username == "" {
-		return false;
+		return false
 	}
 	ok, _ := regexp.MatchString(`[^0-9a-zA-Z_\-]`, username)
 	return !ok
@@ -351,15 +351,15 @@ func RandomPwd(num int) string {
 		chars[j] = byte(i)
 		j++
 	}
-	j--;
-	
+	j--
+
 	str := ""
 	math_rand.Seed(time.Now().UnixNano())
 	for i := 0; i < num; i++ {
 		x := math_rand.Intn(j)
 		str += string(chars[x])
 	}
-	
+
 	return str
 }
 
@@ -379,14 +379,14 @@ func InArray(arr []string, str string) bool {
 func FixFilename(filename string) string {
 	if filename != "" {
 		// 把特殊字段给替换掉
-//		str := `life "%&()+,/:;<>=?@\|`
+		//		str := `life "%&()+,/:;<>=?@\|`
 		// . == \\.
 		// $ === \\$
 		reg, _ := regexp.Compile("\\.|/|#|\\$|!|\\^|\\*|'| |\"|%|&|\\(|\\)|\\+|\\,|/|:|;|<|>|=|\\?|@|\\||\\\\")
 		filename = reg.ReplaceAllString(filename, "-")
 		filename = strings.Trim(filename, "-") // 左右单独的-去掉
 		// 把空格替换成-
-//		filename = strings.Replace(filename, " ", "-", -1)
+		//		filename = strings.Replace(filename, " ", "-", -1)
 		for strings.Index(filename, "--") >= 0 { // 防止出现连续的--
 			filename = strings.Replace(filename, "--", "-", -1)
 		}

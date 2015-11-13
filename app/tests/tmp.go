@@ -1,3 +1,4 @@
 package tests
+
 func a() {
 }

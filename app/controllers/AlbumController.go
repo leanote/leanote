@@ -16,7 +16,7 @@ type Album struct {
 
 // 图片管理, iframe
 func (c Album) Index() revel.Result {
-	c.SetLocale();
+	c.SetLocale()
 	return c.RenderTemplate("album/index.html")
 }
 

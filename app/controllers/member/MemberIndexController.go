@@ -14,13 +14,13 @@ type MemberIndex struct {
 func (c MemberIndex) Index() revel.Result {
 	c.SetUserInfo()
 	c.RenderArgs["title"] = "Leanote Member Center"
-	
+
 	c.RenderArgs["countNote"] = noteService.CountNote(c.GetUserId())
 	c.RenderArgs["countBlog"] = noteService.CountBlog(c.GetUserId())
-	
+
 	c.SetLocale()
-	
-	return c.RenderTemplate("member/index.html");
+
+	return c.RenderTemplate("member/index.html")
 }
 
 // 模板
@@ -33,5 +33,5 @@ func (c MemberIndex) T(t string) revel.Result {
 }
 
 func (c MemberIndex) GetView(view string) revel.Result {
-	return c.RenderTemplate("admin/" + view);
+	return c.RenderTemplate("admin/" + view)
 }

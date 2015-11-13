@@ -18,7 +18,7 @@ const (
 
 // 过期时间
 const (
-	PwdOverHours = 2.0
+	PwdOverHours         = 2.0
 	ActiveEmailOverHours = 48.0
 	UpdateEmailOverHours = 2.0
 )

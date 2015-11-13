@@ -9,17 +9,17 @@ import (
 
 type BlogItem struct {
 	Note
-	Abstract string 
-	Content string // 可能是content的一部分, 截取. 点击more后就是整个信息了
-	HasMore bool   // 是否是否还有
-	User    User   // 用户信息
+	Abstract string
+	Content  string // 可能是content的一部分, 截取. 点击more后就是整个信息了
+	HasMore  bool   // 是否是否还有
+	User     User   // 用户信息
 }
 
 type UserBlogBase struct {
 	Logo     string `Logo`
 	Title    string `Title`    // 标题
 	SubTitle string `SubTitle` // 副标题
-//	AboutMe  string `AboutMe`  // 关于我
+	//	AboutMe  string `AboutMe`  // 关于我
 }
 
 type UserBlogComment struct {
@@ -49,32 +49,32 @@ type UserBlog struct {
 	Style string `Style` // 风格
 	Css   string `Css`   // 自定义css
 
-	ThemeId bson.ObjectId `ThemeId,omitempty` // 主题Id
-	ThemePath string `bson:"ThemePath" json:"-"` // 不存值, 从Theme中获取, 相对路径 public/
+	ThemeId   bson.ObjectId `ThemeId,omitempty`         // 主题Id
+	ThemePath string        `bson:"ThemePath" json:"-"` // 不存值, 从Theme中获取, 相对路径 public/
 
 	CateIds []string            `CateIds,omitempty` // 分类Id, 排序好的
-	Singles   []map[string]string `Singles,omitempty`   // 单页, 排序好的, map包含: ["Title"], ["SingleId"]
-	
-	PerPageSize int `PerPageSize,omitempty`
-	SortField string `SortField` // 排序字段
-	IsAsc bool `IsAsc,omitempty` // 排序类型, 降序, 升序, 默认是false, 表示降序
+	Singles []map[string]string `Singles,omitempty` // 单页, 排序好的, map包含: ["Title"], ["SingleId"]
+
+	PerPageSize int    `PerPageSize,omitempty`
+	SortField   string `SortField`       // 排序字段
+	IsAsc       bool   `IsAsc,omitempty` // 排序类型, 降序, 升序, 默认是false, 表示降序
 
 	SubDomain string `SubDomain` // 二级域名
 	Domain    string `Domain`    // 自定义域名
-	
+
 }
 
 // 博客统计信息
 type BlogStat struct {
-	NoteId        bson.ObjectId `bson:"_id,omitempty"` 
-	ReadNum    int `ReadNum,omitempty`    // 阅读次数 2014/9/28
-	LikeNum    int `LikeNum,omitempty`    // 点赞次数 2014/9/28
-	CommentNum int `CommentNum,omitempty` // 评论次数 2014/9/28
+	NoteId     bson.ObjectId `bson:"_id,omitempty"`
+	ReadNum    int           `ReadNum,omitempty`    // 阅读次数 2014/9/28
+	LikeNum    int           `LikeNum,omitempty`    // 点赞次数 2014/9/28
+	CommentNum int           `CommentNum,omitempty` // 评论次数 2014/9/28
 }
 
 // 单页
 type BlogSingle struct {
-	SingleId      bson.ObjectId `bson:"_id,omitempty"`
+	SingleId    bson.ObjectId `bson:"_id,omitempty"`
 	UserId      bson.ObjectId `UserId`
 	Title       string        `Title`
 	UrlTitle    string        `UrlTitle` // 2014/11/11
@@ -117,12 +117,12 @@ type BlogCommentPublic struct {
 }
 
 type BlogUrls struct {
-	IndexUrl string
-	CateUrl string
-	SearchUrl string
-	SingleUrl string
-	PostUrl string
-	ArchiveUrl string
-	TagsUrl string
+	IndexUrl    string
+	CateUrl     string
+	SearchUrl   string
+	SingleUrl   string
+	PostUrl     string
+	ArchiveUrl  string
+	TagsUrl     string
 	TagPostsUrl string
 }

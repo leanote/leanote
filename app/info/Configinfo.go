@@ -10,9 +10,9 @@ type Config struct {
 	ConfigId    bson.ObjectId       `bson:"_id"`
 	UserId      bson.ObjectId       `UserId`
 	Key         string              `Key`
-	ValueStr    string              `ValueStr,omitempty` // "1"
-	ValueArr    []string            `ValueArr,omitempty` // ["1","b","c"]
-	ValueMap    map[string]string   `ValueMap,omitempty` // {"a":"bb", "CC":"xx"}
+	ValueStr    string              `ValueStr,omitempty`    // "1"
+	ValueArr    []string            `ValueArr,omitempty`    // ["1","b","c"]
+	ValueMap    map[string]string   `ValueMap,omitempty`    // {"a":"bb", "CC":"xx"}
 	ValueArrMap []map[string]string `ValueArrMap,omitempty` // [{"a":"B"}, {}, {}]
 	IsArr       bool                `IsArr`                 // 是否是数组
 	IsMap       bool                `IsMap`                 // 是否是Map

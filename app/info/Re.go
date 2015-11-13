@@ -1,14 +1,13 @@
 package info
 
-import (
-)
+import ()
 
 // controller ajax返回
 type Re struct {
-	Ok bool
+	Ok   bool
 	Code int
-	Msg string
-	Id string
+	Msg  string
+	Id   string
 	List interface{}
 	Item interface{}
 }

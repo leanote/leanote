@@ -19,9 +19,9 @@ type Notebook struct {
 	IsBlog           bool          `IsBlog,omitempty`                  // 是否是Blog 2013/12/29 新加
 	CreatedTime      time.Time     `CreatedTime,omitempty`
 	UpdatedTime      time.Time     `UpdatedTime,omitempty`
-	
+
 	// 2015/1/15, 更新序号
-	Usn int `Usn` // UpdateSequenceNum 
+	Usn       int  `Usn` // UpdateSequenceNum
 	IsDeleted bool `IsDeleted`
 }
 

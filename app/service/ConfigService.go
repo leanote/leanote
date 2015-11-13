@@ -1,32 +1,33 @@
 package service
 
 import (
+	"fmt"
+	"github.com/leanote/leanote/app/db"
 	"github.com/leanote/leanote/app/info"
 	. "github.com/leanote/leanote/app/lea"
-	"github.com/leanote/leanote/app/db"
-	"gopkg.in/mgo.v2/bson"
 	"github.com/revel/revel"
-	"time"
+	"gopkg.in/mgo.v2/bson"
 	"os"
 	"os/exec"
-	"fmt"
-	"strings"
 	"strconv"
+	"strings"
+	"time"
 )
 
 // 配置服务
 // 只是全局的, 用户的配置没有
 type ConfigService struct {
-	adminUserId string
-	siteUrl string
+	adminUserId   string
+	siteUrl       string
 	adminUsername string
 	// 全局的
-	GlobalAllConfigs map[string]interface{}
+	GlobalAllConfigs    map[string]interface{}
 	GlobalStringConfigs map[string]string
-	GlobalArrayConfigs map[string][]string
-	GlobalMapConfigs map[string]map[string]string
+	GlobalArrayConfigs  map[string][]string
+	GlobalMapConfigs    map[string]map[string]string
 	GlobalArrMapConfigs map[string][]map[string]string
 }
+
 // appStart时 将全局的配置从数据库中得到作为全局
 func (this *ConfigService) InitGlobalConfigs() bool {
 	this.GlobalAllConfigs = map[string]interface{}{}
@@ -34,22 +35,22 @@ func (this *ConfigService) InitGlobalConfigs() bool {
 	this.GlobalArrayConfigs = map[string][]string{}
 	this.GlobalMapConfigs = map[string]map[string]string{}
 	this.GlobalArrMapConfigs = map[string][]map[string]string{}
-	
+
 	this.adminUsername, _ = revel.Config.String("adminUsername")
 	if this.adminUsername == "" {
 		this.adminUsername = "admin"
 	}
 	this.siteUrl, _ = revel.Config.String("site.url")
-	
+
 	userInfo := userService.GetUserInfoByAny(this.adminUsername)
 	if userInfo.UserId == "" {
 		return false
 	}
 	this.adminUserId = userInfo.UserId.Hex()
-	
+
 	configs := []info.Config{}
 	db.ListByQ(db.Configs, bson.M{"UserId": userInfo.UserId}, &configs)
-	
+
 	for _, config := range configs {
 		if config.IsArr {
 			this.GlobalArrayConfigs[config.Key] = config.ValueArr
@@ -65,12 +66,12 @@ func (this *ConfigService) InitGlobalConfigs() bool {
 			this.GlobalAllConfigs[config.Key] = config.ValueStr
 		}
 	}
-	
+
 	return true
 }
 
 func (this *ConfigService) GetSiteUrl() string {
-	return this.siteUrl;
+	return this.siteUrl
 }
 func (this *ConfigService) GetAdminUsername() string {
 	return this.adminUsername
@@ -84,15 +85,15 @@ func (this *ConfigService) updateGlobalConfig(userId, key string, value interfac
 	// 判断是否存在
 	if _, ok := this.GlobalAllConfigs[key]; !ok {
 		// 需要添加
-		config := info.Config{ConfigId: bson.NewObjectId(), 
-			UserId: bson.ObjectIdHex(userId),
-			Key: key,
-			IsArr: isArr,
-			IsMap: isMap,
-			IsArrMap: isArrMap,
+		config := info.Config{ConfigId: bson.NewObjectId(),
+			UserId:      bson.ObjectIdHex(userId),
+			Key:         key,
+			IsArr:       isArr,
+			IsMap:       isMap,
+			IsArrMap:    isArrMap,
 			UpdatedTime: time.Now(),
 		}
-		if(isArr) {
+		if isArr {
 			v, _ := value.([]string)
 			config.ValueArr = v
 			this.GlobalArrayConfigs[key] = v
@@ -113,7 +114,7 @@ func (this *ConfigService) updateGlobalConfig(userId, key string, value interfac
 	} else {
 		i := bson.M{"UpdatedTime": time.Now()}
 		this.GlobalAllConfigs[key] = value
-		if(isArr) {
+		if isArr {
 			v, _ := value.([]string)
 			i["ValueArr"] = v
 			this.GlobalArrayConfigs[key] = v
@@ -177,25 +178,26 @@ func (this *ConfigService) GetGlobalArrMapConfig(key string) []map[string]string
 func (this *ConfigService) IsOpenRegister() bool {
 	return this.GetGlobalStringConfig("openRegister") != ""
 }
+
 //-------
 // 修改共享笔记的配置
-func (this *ConfigService) UpdateShareNoteConfig(registerSharedUserId string, 
-	registerSharedNotebookPerms, registerSharedNotePerms []int, 
+func (this *ConfigService) UpdateShareNoteConfig(registerSharedUserId string,
+	registerSharedNotebookPerms, registerSharedNotePerms []int,
 	registerSharedNotebookIds, registerSharedNoteIds, registerCopyNoteIds []string) (ok bool, msg string) {
-	
-	defer func() { 
+
+	defer func() {
 		if err := recover(); err != nil {
 			ok = false
 			msg = fmt.Sprint(err)
 		}
-	}();
-	
+	}()
+
 	// 用户是否存在?
 	if registerSharedUserId == "" {
 		ok = true
 		msg = "share userId is blank, So it share nothing to register"
 		this.UpdateGlobalStringConfig(this.adminUserId, "registerSharedUserId", "")
-		return 
+		return
 	} else {
 		user := userService.GetUserInfo(registerSharedUserId)
 		if user.UserId == "" {
@@ -206,7 +208,7 @@ func (this *ConfigService) UpdateShareNoteConfig(registerSharedUserId string,
 			this.UpdateGlobalStringConfig(this.adminUserId, "registerSharedUserId", registerSharedUserId)
 		}
 	}
-	
+
 	notebooks := []map[string]string{}
 	// 共享笔记本
 	if len(registerSharedNotebookIds) > 0 {
@@ -222,7 +224,7 @@ func (this *ConfigService) UpdateShareNoteConfig(registerSharedUserId string,
 				msg = "The user has no such notebook: " + notebookId
 				return
 			} else {
-				perm := "0";
+				perm := "0"
 				if registerSharedNotebookPerms[i] == 1 {
 					perm = "1"
 				}
@@ -231,7 +233,7 @@ func (this *ConfigService) UpdateShareNoteConfig(registerSharedUserId string,
 		}
 	}
 	this.UpdateGlobalArrMapConfig(this.adminUserId, "registerSharedNotebooks", notebooks)
-	
+
 	notes := []map[string]string{}
 	// 共享笔记
 	if len(registerSharedNoteIds) > 0 {
@@ -247,7 +249,7 @@ func (this *ConfigService) UpdateShareNoteConfig(registerSharedUserId string,
 				msg = "The user has no such note: " + noteId
 				return
 			} else {
-				perm := "0";
+				perm := "0"
 				if registerSharedNotePerms[i] == 1 {
 					perm = "1"
 				}
@@ -256,7 +258,7 @@ func (this *ConfigService) UpdateShareNoteConfig(registerSharedUserId string,
 		}
 	}
 	this.UpdateGlobalArrMapConfig(this.adminUserId, "registerSharedNotes", notes)
-	
+
 	// 复制
 	noteIds := []string{}
 	if len(registerCopyNoteIds) > 0 {
@@ -277,7 +279,7 @@ func (this *ConfigService) UpdateShareNoteConfig(registerSharedUserId string,
 		}
 	}
 	this.UpdateGlobalArrayConfig(this.adminUserId, "registerCopyNoteIds", noteIds)
-	
+
 	ok = true
 	return
 }
@@ -298,7 +300,7 @@ func (this *ConfigService) getBackupDirname() string {
 }
 func (this *ConfigService) Backup(remark string) (ok bool, msg string) {
 	binPath := configService.GetGlobalStringConfig("mongodumpPath")
-	config := revel.Config;
+	config := revel.Config
 	dbname, _ := config.String("db.dbname")
 	host, _ := revel.Config.String("db.host")
 	port, _ := revel.Config.String("db.port")
@@ -318,20 +320,21 @@ func (this *ConfigService) Backup(remark string) (ok bool, msg string) {
 		msg = fmt.Sprintf("%v", err)
 		return
 	}
-	
+
 	cmd := exec.Command("/bin/sh", "-c", binPath)
-	Log(binPath);
+	Log(binPath)
 	b, err := cmd.Output()
-    if err != nil {
-    	msg = fmt.Sprintf("%v", err)
+	if err != nil {
+		msg = fmt.Sprintf("%v", err)
 		ok = false
-    	Log("error:......")
-    	Log(string(b))
-    	return
-    }
+		Log("error:......")
+		Log(string(b))
+		return
+	}
 	ok = configService.AddBackup(dir, remark)
-    return ok, msg
+	return ok, msg
 }
+
 // 还原
 func (this *ConfigService) Restore(createdTime string) (ok bool, msg string) {
 	backups := this.GetGlobalArrMapConfig("backups") // [{}, {}]
@@ -339,22 +342,22 @@ func (this *ConfigService) Restore(createdTime string) (ok bool, msg string) {
 	var backup map[string]string
 	for i, backup = range backups {
 		if backup["createdTime"] == createdTime {
-			break;
+			break
 		}
 	}
 	if i == len(backups) {
 		return false, "Backup Not Found"
 	}
-	
+
 	// 先备份当前
-	ok, msg = this.Backup("Auto backup when restore from " + backup["createdTime"] )
+	ok, msg = this.Backup("Auto backup when restore from " + backup["createdTime"])
 	if !ok {
 		return
 	}
-	
+
 	// mongorestore -h localhost -d leanote --directoryperdb /home/user1/gopackage/src/github.com/leanote/leanote/mongodb_backup/leanote_install_data/
 	binPath := configService.GetGlobalStringConfig("mongorestorePath")
-	config := revel.Config;
+	config := revel.Config
 	dbname, _ := config.String("db.dbname")
 	host, _ := revel.Config.String("db.host")
 	port, _ := revel.Config.String("db.port")
@@ -365,26 +368,26 @@ func (this *ConfigService) Restore(createdTime string) (ok bool, msg string) {
 	if username != "" {
 		binPath += " -u " + username + " -p " + password
 	}
-	
+
 	path := backup["path"] + "/" + dbname
 	// 判断路径是否存在
 	if !IsDirExists(path) {
 		return false, path + " Is Not Exists"
 	}
-	
+
 	binPath += " " + path
-	
+
 	cmd := exec.Command("/bin/sh", "-c", binPath)
-	Log(binPath);
+	Log(binPath)
 	b, err := cmd.Output()
-    if err != nil {
-    	msg = fmt.Sprintf("%v", err)
+	if err != nil {
+		msg = fmt.Sprintf("%v", err)
 		ok = false
-    	Log("error:......")
-    	Log(string(b))
-    	return
-    }
-	
+		Log("error:......")
+		Log(string(b))
+		return
+	}
+
 	return true, ""
 }
 func (this *ConfigService) DeleteBackup(createdTime string) (bool, string) {
@@ -393,22 +396,22 @@ func (this *ConfigService) DeleteBackup(createdTime string) (bool, string) {
 	var backup map[string]string
 	for i, backup = range backups {
 		if backup["createdTime"] == createdTime {
-			break;
+			break
 		}
 	}
 	if i == len(backups) {
 		return false, "Backup Not Found"
 	}
-	
+
 	// 删除文件夹之
 	err := os.RemoveAll(backups[i]["path"])
 	if err != nil {
 		return false, fmt.Sprintf("%v", err)
 	}
-	
+
 	// 删除之
 	backups = append(backups[0:i], backups[i+1:]...)
-	
+
 	ok := this.UpdateGlobalArrMapConfig(this.adminUserId, "backups", backups)
 	return ok, ""
 }
@@ -419,14 +422,14 @@ func (this *ConfigService) UpdateBackupRemark(createdTime, remark string) (bool,
 	var backup map[string]string
 	for i, backup = range backups {
 		if backup["createdTime"] == createdTime {
-			break;
+			break
 		}
 	}
 	if i == len(backups) {
 		return false, "Backup Not Found"
 	}
-	backup["remark"] = remark;
-	
+	backup["remark"] = remark
+
 	ok := this.UpdateGlobalArrMapConfig(this.adminUserId, "backups", backups)
 	return ok, ""
 }
@@ -438,7 +441,7 @@ func (this *ConfigService) GetBackup(createdTime string) (map[string]string, boo
 	var backup map[string]string
 	for i, backup = range backups {
 		if backup["createdTime"] == createdTime {
-			break;
+			break
 		}
 	}
 	if i == len(backups) {
@@ -456,15 +459,15 @@ var port string
 func init() {
 	revel.OnAppStart(func() {
 		/*
-		不用配置的, 因为最终通过命令可以改, 而且有的使用nginx代理
-		port  = strconv.Itoa(revel.HttpPort)
-		if port != "80" {
-			port = ":" + port
-		} else {
-			port = "";
-		}
+			不用配置的, 因为最终通过命令可以改, 而且有的使用nginx代理
+			port  = strconv.Itoa(revel.HttpPort)
+			if port != "80" {
+				port = ":" + port
+			} else {
+				port = "";
+			}
 		*/
-		
+
 		siteUrl, _ := revel.Config.String("site.url") // 已包含:9000, http, 去掉成 leanote.com
 		if strings.HasPrefix(siteUrl, "http://") {
 			defaultDomain = siteUrl[len("http://"):]
@@ -472,7 +475,7 @@ func init() {
 			defaultDomain = siteUrl[len("https://"):]
 			schema = "https://"
 		}
-		
+
 		// port localhost:9000
 		ports := strings.Split(defaultDomain, ":")
 		if len(ports) == 2 {
@@ -487,49 +490,53 @@ func init() {
 }
 
 func (this *ConfigService) GetSchema() string {
-	return schema;
+	return schema
 }
+
 // 默认
 func (this *ConfigService) GetDefaultDomain() string {
 	return defaultDomain
 }
+
 // 包含http://
 func (this *ConfigService) GetDefaultUrl() string {
 	return schema + defaultDomain
 }
+
 // note
 func (this *ConfigService) GetNoteDomain() string {
-	subDomain := this.GetGlobalStringConfig("noteSubDomain");
+	subDomain := this.GetGlobalStringConfig("noteSubDomain")
 	if subDomain != "" {
 		return subDomain + port
 	}
 	return this.GetDefaultDomain() + "/note"
 }
 func (this *ConfigService) GetNoteUrl() string {
-	return schema + this.GetNoteDomain();
+	return schema + this.GetNoteDomain()
 }
 
 // blog
 func (this *ConfigService) GetBlogDomain() string {
-	subDomain := this.GetGlobalStringConfig("blogSubDomain");
+	subDomain := this.GetGlobalStringConfig("blogSubDomain")
 	if subDomain != "" {
 		return subDomain + port
 	}
 	return this.GetDefaultDomain() + "/blog"
 }
 func (this *ConfigService) GetBlogUrl() string {
-	return schema + this.GetBlogDomain();
+	return schema + this.GetBlogDomain()
 }
+
 // lea
 func (this *ConfigService) GetLeaDomain() string {
-	subDomain := this.GetGlobalStringConfig("leaSubDomain");
+	subDomain := this.GetGlobalStringConfig("leaSubDomain")
 	if subDomain != "" {
 		return subDomain + port
 	}
 	return this.GetDefaultDomain() + "/lea"
 }
 func (this *ConfigService) GetLeaUrl() string {
-	return schema + this.GetLeaDomain();
+	return schema + this.GetLeaDomain()
 }
 
 func (this *ConfigService) GetUserUrl(domain string) string {
@@ -543,6 +550,7 @@ func (this *ConfigService) GetUserSubUrl(subDomain string) string {
 func (this *ConfigService) AllowCustomDomain() bool {
 	return configService.GetGlobalStringConfig("allowCustomDomain") != ""
 }
+
 // 是否是好的自定义域名
 func (this *ConfigService) IsGoodCustomDomain(domain string) bool {
 	blacks := this.GetGlobalArrayConfig("blackCustomDomains")
@@ -567,20 +575,21 @@ func (this *ConfigService) IsGoodSubDomain(domain string) bool {
 // 上传大小
 func (this *ConfigService) GetUploadSize(key string) float64 {
 	f, _ := strconv.ParseFloat(this.GetGlobalStringConfig(key), 64)
-	return f;
+	return f
 }
 func (this *ConfigService) GetUploadSizeLimit() map[string]float64 {
 	return map[string]float64{
-		"uploadImageSize": this.GetUploadSize("uploadImageSize"),
-		"uploadBlogLogoSize":this.GetUploadSize("uploadBlogLogoSize"),
-		"uploadAttachSize":this.GetUploadSize("uploadAttachSize"),
-		"uploadAvatarSize":this.GetUploadSize("uploadAvatarSize"),
+		"uploadImageSize":    this.GetUploadSize("uploadImageSize"),
+		"uploadBlogLogoSize": this.GetUploadSize("uploadBlogLogoSize"),
+		"uploadAttachSize":   this.GetUploadSize("uploadAttachSize"),
+		"uploadAvatarSize":   this.GetUploadSize("uploadAvatarSize"),
 	}
 }
+
 // 为用户得到全局的配置
 // NoteController调用
 func (this *ConfigService) GetGlobalConfigForUser() map[string]interface{} {
-	uploadSizeConfigs := this.GetUploadSizeLimit();
+	uploadSizeConfigs := this.GetUploadSizeLimit()
 	config := map[string]interface{}{}
 	for k, v := range uploadSizeConfigs {
 		config[k] = v

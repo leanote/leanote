@@ -7,7 +7,7 @@ func ComparePwd(rawPwd, dbPwd string) bool {
 	if len(dbPwd) == 32 {
 		return Md5(rawPwd) == dbPwd
 	}
-	
+
 	hex := []byte(dbPwd)
 	return CompareHash(hex, rawPwd)
 }

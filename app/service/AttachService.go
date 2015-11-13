@@ -20,9 +20,9 @@ type AttachService struct {
 func (this *AttachService) AddAttach(attach info.Attach, fromApi bool) (ok bool, msg string) {
 	attach.CreatedTime = time.Now()
 	ok = db.Insert(db.Attachs, attach)
-	
+
 	note := noteService.GetNoteById(attach.NoteId.Hex())
-	
+
 	// api调用时, 添加attach之前是没有note的
 	var userId string
 	if note.NoteId != "" {
@@ -35,13 +35,13 @@ func (this *AttachService) AddAttach(attach info.Attach, fromApi bool) (ok bool,
 		// 更新笔记的attachs num
 		this.updateNoteAttachNum(attach.NoteId, 1)
 	}
-	
+
 	if !fromApi {
 		// 增长note's usn
 		noteService.IncrNoteUsn(attach.NoteId.Hex(), userId)
 	}
-	
-	return 
+
+	return
 }
 
 // 更新笔记的附件个数
@@ -49,13 +49,13 @@ func (this *AttachService) AddAttach(attach info.Attach, fromApi bool) (ok bool,
 func (this *AttachService) updateNoteAttachNum(noteId bson.ObjectId, addNum int) bool {
 	num := db.Count(db.Attachs, bson.M{"NoteId": noteId})
 	/*
-	note := info.Note{}
-	note = noteService.GetNoteById(noteId.Hex())
-	note.AttachNum += addNum
-	if note.AttachNum < 0 {
-		note.AttachNum = 0
-	}
-	Log(note.AttachNum)
+		note := info.Note{}
+		note = noteService.GetNoteById(noteId.Hex())
+		note.AttachNum += addNum
+		if note.AttachNum < 0 {
+			note.AttachNum = 0
+		}
+		Log(note.AttachNum)
 	*/
 	return db.UpdateByQField(db.Notes, bson.M{"_id": noteId}, "AttachNum", num)
 }
@@ -63,18 +63,18 @@ func (this *AttachService) updateNoteAttachNum(noteId bson.ObjectId, addNum int)
 // list attachs
 func (this *AttachService) ListAttachs(noteId, userId string) []info.Attach {
 	attachs := []info.Attach{}
-	
+
 	// 判断是否有权限为笔记添加附件, userId为空时表示是分享笔记的附件
 	if userId != "" && !shareService.HasUpdateNotePerm(noteId, userId) {
 		return attachs
 	}
-	
+
 	// 笔记是否是自己的
 	note := noteService.GetNoteByIdAndUserId(noteId, userId)
 	if note.NoteId == "" {
 		return attachs
 	}
-	
+
 	// TODO 这里, 优化权限控制
 
 	db.ListByQ(db.Attachs, bson.M{"NoteId": bson.ObjectIdHex(noteId)}, &attachs)
@@ -122,13 +122,13 @@ func (this *AttachService) DeleteAllAttachs(noteId, userId string) bool {
 func (this *AttachService) DeleteAttach(attachId, userId string) (bool, string) {
 	attach := info.Attach{}
 	db.Get(db.Attachs, attachId, &attach)
-	
-	if(attach.AttachId != "") {
+
+	if attach.AttachId != "" {
 		// 判断是否有权限为笔记添加附件
 		if !shareService.HasUpdateNotePerm(attach.NoteId.Hex(), userId) {
 			return false, "No Perm"
 		}
-		
+
 		if db.Delete(db.Attachs, bson.M{"_id": bson.ObjectIdHex(attachId)}) {
 			this.updateNoteAttachNum(attach.NoteId, -1)
 			attach.Path = strings.TrimLeft(attach.Path, "/")
@@ -137,7 +137,7 @@ func (this *AttachService) DeleteAttach(attachId, userId string) (bool, string) 
 				// userService.UpdateAttachSize(note.UserId.Hex(), -attach.Size)
 				// 修改note Usn
 				noteService.IncrNoteUsn(attach.NoteId.Hex(), userId)
-				
+
 				return true, "delete file success"
 			}
 			return false, "delete file error"

@@ -1,8 +1,8 @@
 package member
 
 import (
-	"github.com/revel/revel"
 	"github.com/leanote/leanote/app/info"
+	"github.com/revel/revel"
 )
 
 // 分组管理
@@ -16,7 +16,7 @@ func (c MemberGroup) Index() revel.Result {
 	c.SetLocale()
 	c.RenderArgs["title"] = "My Group"
 	c.RenderArgs["groups"] = groupService.GetGroupsAndUsers(c.GetUserId())
-	return c.RenderTemplate("member/group/index.html");
+	return c.RenderTemplate("member/group/index.html")
 }
 
 // 添加分组

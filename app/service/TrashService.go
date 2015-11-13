@@ -1,9 +1,9 @@
 package service
 
 import (
-	"gopkg.in/mgo.v2/bson"
 	"github.com/leanote/leanote/app/db"
 	"github.com/leanote/leanote/app/info"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // 回收站
@@ -25,9 +25,9 @@ type TrashService struct {
 // 应该放在回收站里
 // 有trashService
 func (this *TrashService) DeleteNote(noteId, userId string) bool {
-	note := noteService.GetNote(noteId, userId);
+	note := noteService.GetNote(noteId, userId)
 	// 如果是垃圾, 则彻底删除
-	if (note.IsTrash) {
+	if note.IsTrash {
 		return this.DeleteTrash(noteId, userId)
 	}
 
@@ -42,7 +42,7 @@ func (this *TrashService) DeleteNote(noteId, userId string) bool {
 			return true
 		}
 	}
-	
+
 	return false
 }
 
@@ -59,16 +59,16 @@ func (this *TrashService) DeleteSharedNote(noteId, myUserId string) bool {
 
 // recover
 func (this *TrashService) recoverNote(noteId, notebookId, userId string) bool {
-	re := db.UpdateByIdAndUserId(db.Notes, noteId, userId, 
-		bson.M{"$set": bson.M{"IsTrash": false, 
-			"Usn": userService.IncrUsn(userId),
+	re := db.UpdateByIdAndUserId(db.Notes, noteId, userId,
+		bson.M{"$set": bson.M{"IsTrash": false,
+			"Usn":        userService.IncrUsn(userId),
 			"NotebookId": bson.ObjectIdHex(notebookId)}})
-	return re;
+	return re
 }
 
 // 删除trash
 func (this *TrashService) DeleteTrash(noteId, userId string) bool {
-	note := noteService.GetNote(noteId, userId);
+	note := noteService.GetNote(noteId, userId)
 	if note.NoteId == "" {
 		return false
 	}
@@ -76,52 +76,52 @@ func (this *TrashService) DeleteTrash(noteId, userId string) bool {
 	ok := attachService.DeleteAllAttachs(noteId, userId)
 
 	// 设置删除位
-	ok = db.UpdateByIdAndUserIdMap(db.Notes, noteId, userId, 
-		bson.M{"IsDeleted": true, 
+	ok = db.UpdateByIdAndUserIdMap(db.Notes, noteId, userId,
+		bson.M{"IsDeleted": true,
 			"Usn": userService.IncrUsn(userId)})
 	// delete note
-//	ok = db.DeleteByIdAndUserId(db.Notes, noteId, userId)
-	
+	//	ok = db.DeleteByIdAndUserId(db.Notes, noteId, userId)
+
 	// delete content
 	ok = db.DeleteByIdAndUserId(db.NoteContents, noteId, userId)
-	
+
 	// 重新统计tag's count
 	// TODO 这里会改变tag's Usn
 	tagService.reCountTagCount(userId, note.Tags)
-	
+
 	return ok
 }
 
 func (this *TrashService) DeleteTrashApi(noteId, userId string, usn int) (bool, string, int) {
 	note := noteService.GetNote(noteId, userId)
-	
+
 	if note.NoteId == "" || note.IsDeleted {
 		return false, "notExists", 0
 	}
-	
+
 	if note.Usn != usn {
 		return false, "conflict", 0
 	}
-	
+
 	// delete note's attachs
 	ok := attachService.DeleteAllAttachs(noteId, userId)
 
 	// 设置删除位
 	afterUsn := userService.IncrUsn(userId)
-	ok = db.UpdateByIdAndUserIdMap(db.Notes, noteId, userId, 
-		bson.M{"IsDeleted": true, 
+	ok = db.UpdateByIdAndUserIdMap(db.Notes, noteId, userId,
+		bson.M{"IsDeleted": true,
 			"Usn": afterUsn})
-	
+
 	// delete content
 	ok = db.DeleteByIdAndUserId(db.NoteContents, noteId, userId)
-	
+
 	return ok, "", afterUsn
 }
 
 // 列出note, 排序规则, 还有分页
 // CreatedTime, UpdatedTime, title 来排序
-func (this *TrashService) ListNotes(userId string, 
-		pageNumber, pageSize int, sortField string, isAsc bool) (notes []info.Note) {
+func (this *TrashService) ListNotes(userId string,
+	pageNumber, pageSize int, sortField string, isAsc bool) (notes []info.Note) {
 	_, notes = noteService.ListNotes(userId, "", true, pageNumber, pageSize, sortField, isAsc, false)
 	return
 }

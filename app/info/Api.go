@@ -1,20 +1,20 @@
 package info
 
 import (
-	"time"
 	"gopkg.in/mgo.v2/bson"
+	"time"
 )
 
 //---------
 // 数据结构
 //---------
 type NoteFile struct {
-	FileId string // 服务器端Id
+	FileId      string // 服务器端Id
 	LocalFileId string // 客户端Id
-	Type string // images/png, doc, xls, 根据fileName确定
-	Title string
-	HasBody bool // 传过来的值是否要更新内容
-	IsAttach bool // 是否是附件, 不是附件就是图片
+	Type        string // images/png, doc, xls, 根据fileName确定
+	Title       string
+	HasBody     bool // 传过来的值是否要更新内容
+	IsAttach    bool // 是否是附件, 不是附件就是图片
 }
 type ApiNote struct {
 	NoteId     string
@@ -22,32 +22,31 @@ type ApiNote struct {
 	UserId     string
 	Title      string
 	Desc       string
-//	ImgSrc     string
+	//	ImgSrc     string
 	Tags       []string
 	Abstract   string
 	Content    string
 	IsMarkdown bool
-//	FromUserId string // 为共享而新建
-	IsBlog     bool   // 是否是blog, 更新note不需要修改, 添加note时才有可能用到, 此时需要判断notebook是否设为Blog
-	IsTrash bool
-	IsDeleted bool
-	Usn int
-	Files []NoteFile
+	//	FromUserId string // 为共享而新建
+	IsBlog      bool // 是否是blog, 更新note不需要修改, 添加note时才有可能用到, 此时需要判断notebook是否设为Blog
+	IsTrash     bool
+	IsDeleted   bool
+	Usn         int
+	Files       []NoteFile
 	CreatedTime time.Time
 	UpdatedTime time.Time
-	PublicTime time.Time
+	PublicTime  time.Time
 }
-
 
 // 内容
 type ApiNoteContent struct {
 	NoteId bson.ObjectId `bson:"_id,omitempty"`
 	UserId bson.ObjectId `bson:"UserId"`
 
-	Content  string `Content`
+	Content string `Content`
 
-//	CreatedTime   time.Time     `CreatedTime`
-//	UpdatedTime   time.Time     `UpdatedTime`
+	//	CreatedTime   time.Time     `CreatedTime`
+	//	UpdatedTime   time.Time     `UpdatedTime`
 }
 
 // 转换
@@ -61,11 +60,11 @@ func NoteToApiNote(note Note, files []NoteFile) ApiNote {
 //----------
 
 type ApiUser struct {
-	UserId  string
+	UserId   string
 	Username string
-	Email string
+	Email    string
 	Verified bool
-	Logo string
+	Logo     string
 }
 
 //----------
@@ -81,8 +80,8 @@ type ApiNotebook struct {
 	IsBlog           bool          `IsBlog,omitempty`                  // 是否是Blog 2013/12/29 新加
 	CreatedTime      time.Time     `CreatedTime,omitempty`
 	UpdatedTime      time.Time     `UpdatedTime,omitempty`
-	Usn int `Usn` // UpdateSequenceNum 
-	IsDeleted bool `IsDeleted`
+	Usn              int           `Usn` // UpdateSequenceNum
+	IsDeleted        bool          `IsDeleted`
 }
 
 //---------
@@ -91,7 +90,7 @@ type ApiNotebook struct {
 
 // 一般返回
 type ApiRe struct {
-	Ok bool
+	Ok  bool
 	Msg string
 }
 
@@ -101,19 +100,20 @@ func NewApiRe() ApiRe {
 
 // auth
 type AuthOk struct {
-	Ok bool
-	Token string
-	UserId bson.ObjectId
-	Email string
+	Ok       bool
+	Token    string
+	UserId   bson.ObjectId
+	Email    string
 	Username string
 }
 
 // 供notebook, note, tag更新的返回数据用
 type ReUpdate struct {
-	Ok bool
+	Ok  bool
 	Msg string
 	Usn int
 }
+
 func NewReUpdate() ReUpdate {
 	return ReUpdate{Ok: false}
 }

@@ -1,10 +1,10 @@
 package service
 
 import (
-	"gopkg.in/mgo.v2/bson"
 	"github.com/leanote/leanote/app/db"
 	"github.com/leanote/leanote/app/info"
 	. "github.com/leanote/leanote/app/lea"
+	"gopkg.in/mgo.v2/bson"
 	"time"
 )
 
@@ -18,11 +18,11 @@ type TokenService struct {
 // 生成token
 func (this *TokenService) NewToken(userId string, email string, tokenType int) string {
 	token := info.Token{UserId: bson.ObjectIdHex(userId), Token: NewGuidWith(email), CreatedTime: time.Now(), Email: email, Type: tokenType}
-		
+
 	if db.Upsert(db.Tokens, bson.M{"_id": token.UserId}, token) {
 		return token.Token
 	}
-	
+
 	return ""
 }
 
@@ -50,23 +50,23 @@ func (this *TokenService) VerifyToken(token string, tokenType int) (ok bool, msg
 		msg = "不存在"
 		return
 	}
-	
+
 	db.GetByQ(db.Tokens, bson.M{"Token": token}, &tokenInfo)
-	
+
 	if tokenInfo.UserId == "" {
 		msg = "不存在"
 		return
 	}
-	
+
 	// 验证是否过时
 	now := time.Now()
 	duration := now.Sub(tokenInfo.CreatedTime)
-	
+
 	if duration.Hours() > overHours {
 		msg = "过期"
 		return
 	}
-	
+
 	ok = true
 	return
 }

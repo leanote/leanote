@@ -13,15 +13,15 @@ type Admin struct {
 // admin 主页
 func (c Admin) Index() revel.Result {
 	c.SetUserInfo()
-	
+
 	c.RenderArgs["title"] = "leanote"
 	c.SetLocale()
-	
+
 	c.RenderArgs["countUser"] = userService.CountUser()
 	c.RenderArgs["countNote"] = noteService.CountNote("")
 	c.RenderArgs["countBlog"] = noteService.CountBlog("")
-	
-	return c.RenderTemplate("admin/index.html");
+
+	return c.RenderTemplate("admin/index.html")
 }
 
 // 模板
@@ -35,5 +35,5 @@ func (c Admin) T(t string) revel.Result {
 }
 
 func (c Admin) GetView(view string) revel.Result {
-	return c.RenderTemplate("admin/" + view);
+	return c.RenderTemplate("admin/" + view)
 }

@@ -16,7 +16,7 @@ func TransToGif(path string, maxWidth uint, afterDelete bool) (ok bool, transPat
 	transPath = path
 	wand.Genesis()
     defer wand.Terminus()
-    
+
     w := wand.NewMagickWand()
     defer w.Destroy()
 
@@ -24,7 +24,7 @@ func TransToGif(path string, maxWidth uint, afterDelete bool) (ok bool, transPat
     	fmt.Println(err);
     	return;
     }
-    
+
     width := w.ImageWidth()
     height := w.ImageHeight()
     if maxWidth != 0 {
@@ -34,14 +34,14 @@ func TransToGif(path string, maxWidth uint, afterDelete bool) (ok bool, transPat
 	    	width = maxWidth
 	    }
     }
-    
+
 	w.SetImageFormat("GIF");
 
     if err := paint.Thumbnail(w, width, height); err != nil {
     	fmt.Println(err);
     	return;
     }
-    
+
     // 判断是否是gif图片, 是就不用转换了
 	baseName, ext := SplitFilename(path)
     var toPath string
@@ -50,19 +50,19 @@ func TransToGif(path string, maxWidth uint, afterDelete bool) (ok bool, transPat
     } else {
 	    toPath = TransferExt(path, ".gif");
     }
-    
+
     if err := w.WriteImage(toPath); err != nil {
     	fmt.Println(err);
     	return;
     }
-    
+
     if afterDelete {
     	os.Remove(path)
     }
-    
+
     ok = true
     transPath = toPath
-    
+
     return
 }
 
@@ -71,7 +71,7 @@ func TransToGif(path string, maxWidth uint, afterDelete bool) (ok bool, transPat
 func Reset(path string, maxWidth uint) (ok bool, transPath string){
 	wand.Genesis()
     defer wand.Terminus()
-    
+
     w := wand.NewMagickWand()
     defer w.Destroy()
 
@@ -79,7 +79,7 @@ func Reset(path string, maxWidth uint) (ok bool, transPath string){
     	fmt.Println(err);
     	return;
     }
-    
+
     width := w.ImageWidth()
     height := w.ImageHeight()
     if maxWidth != 0 {
@@ -93,16 +93,16 @@ func Reset(path string, maxWidth uint) (ok bool, transPath string){
     	fmt.Println(err);
     	return;
     }
-    
+
     toPath := TransferExt(path, ".gif");
     if err := w.WriteImage(toPath); err != nil {
     	fmt.Println(err);
     	return;
     }
-    
+
     ok = true
     transPath = toPath
-    
+
     return
 }
 */

@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"github.com/leanote/leanote/app/service"
 	"github.com/leanote/leanote/app/info"
 	"github.com/leanote/leanote/app/lea/blog"
-//	. "github.com/leanote/leanote/app/lea"
+	"github.com/leanote/leanote/app/service"
+	//	. "github.com/leanote/leanote/app/lea"
 	"github.com/revel/revel"
 	"strings"
 )
@@ -68,7 +68,7 @@ var commonUrl = map[string]map[string]bool{"Index": map[string]bool{"Index": tru
 	},
 	"Oauth":  map[string]bool{"GithubCallback": true},
 	"File":   map[string]bool{"OutputImage": true, "OutputFile": true},
-	"Attach": map[string]bool{"Download": true/*, "DownloadAll": true*/},
+	"Attach": map[string]bool{"Download": true /*, "DownloadAll": true*/},
 }
 
 func needValidate(controller, method string) bool {

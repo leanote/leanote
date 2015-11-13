@@ -2,8 +2,8 @@ package lea
 
 import (
 	"encoding/json"
-	"github.com/revel/revel"
 	"fmt"
+	"github.com/revel/revel"
 )
 
 func Log(i interface{}) {
@@ -11,7 +11,7 @@ func Log(i interface{}) {
 }
 
 func LogJ(i interface{}) {
-	b, _ := json.MarshalIndent(i, "", "	") 
+	b, _ := json.MarshalIndent(i, "", "	")
 	revel.INFO.Println(string(b))
 }
 
@@ -21,6 +21,6 @@ func L(i interface{}) {
 }
 
 func LJ(i interface{}) {
-	b, _ := json.MarshalIndent(i, "", "	") 
+	b, _ := json.MarshalIndent(i, "", "	")
 	fmt.Println(string(b))
 }

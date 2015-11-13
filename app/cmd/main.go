@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/revel/revel"
-	"github.com/revel/cmd/harness"
 	"fmt"
+	"github.com/revel/cmd/harness"
+	"github.com/revel/revel"
 )
 
 func main() {
@@ -15,5 +15,5 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("Ok")
-//	panicOnError(reverr, "Failed to build")
+	//	panicOnError(reverr, "Failed to build")
 }

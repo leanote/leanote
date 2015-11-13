@@ -116,13 +116,13 @@ func CopyDir(source string, dest string) (err error) {
 			// create sub-directories - recursively
 			err = CopyDir(sourcefilepointer, destinationfilepointer)
 			if err != nil {
-//				fmt.Println(err)
+				//				fmt.Println(err)
 			}
 		} else {
 			// perform copy
 			_, err = CopyFile(sourcefilepointer, destinationfilepointer)
 			if err != nil {
-//				fmt.Println(err)
+				//				fmt.Println(err)
 			}
 		}
 	}

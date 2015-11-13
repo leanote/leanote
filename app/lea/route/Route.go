@@ -1,9 +1,9 @@
 package route
 
 import (
-	"github.com/revel/revel"
 	"github.com/leanote/leanote/app/db"
-//	. "github.com/leanote/leanote/app/lea"
+	"github.com/revel/revel"
+	//	. "github.com/leanote/leanote/app/lea"
 	"net/url"
 	"strings"
 )
@@ -11,10 +11,11 @@ import (
 // overwite revel RouterFilter
 // /api/user/Info => ApiUser.Info()
 var staticPrefix = []string{"/public", "/favicon.ico", "/css", "/js", "/images", "/tinymce", "/upload", "/fonts"}
+
 func RouterFilter(c *revel.Controller, fc []revel.Filter) {
 	// 补全controller部分
 	path := c.Request.Request.URL.Path
-	
+
 	// Figure out the Controller/Action
 	var route *revel.RouteMatch = revel.MainRouter.Route(c.Request.Request)
 	if route == nil {
@@ -27,29 +28,29 @@ func RouterFilter(c *revel.Controller, fc []revel.Filter) {
 		c.Result = c.NotFound("(intentionally)")
 		return
 	}
-	
+
 	//----------
 	// life start
 	/*
-	type URL struct {
-	    Scheme   string
-	    Opaque   string    // encoded opaque data
-	    User     *Userinfo // username and password information
-	    Host     string    // host or host:port
-	    Path     string
-	    RawQuery string // encoded query values, without '?'
-	    Fragment string // fragment for references, without '#'
-	}
+		type URL struct {
+		    Scheme   string
+		    Opaque   string    // encoded opaque data
+		    User     *Userinfo // username and password information
+		    Host     string    // host or host:port
+		    Path     string
+		    RawQuery string // encoded query values, without '?'
+		    Fragment string // fragment for references, without '#'
+		}
 	*/
 	if route.ControllerName != "Static" {
 
 		// 检查mongodb 是否lost
 		db.CheckMongoSessionLost()
-	
+
 		// api设置
 		// leanote.com/api/user/get => ApiUser::Get
 		//*       /api/login               ApiAuth.Login,  这里的设置, 其实已经转成了ApiAuth了
-		if strings.HasPrefix(path, "/api") && !strings.HasPrefix(route.ControllerName, "Api"){
+		if strings.HasPrefix(path, "/api") && !strings.HasPrefix(route.ControllerName, "Api") {
 			route.ControllerName = "Api" + route.ControllerName
 		} else if strings.HasPrefix(path, "/member") && !strings.HasPrefix(route.ControllerName, "Member") {
 			// member设置
@@ -57,7 +58,7 @@ func RouterFilter(c *revel.Controller, fc []revel.Filter) {
 		}
 		// end
 	}
-	
+
 	// Set the action.
 	if err := c.SetAction(route.ControllerName, route.MethodName); err != nil {
 		c.Result = c.NotFound(err.Error())
@@ -84,4 +85,3 @@ func RouterFilter(c *revel.Controller, fc []revel.Filter) {
 
 	fc[0](c, fc[1:])
 }
-

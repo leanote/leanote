@@ -1,17 +1,17 @@
 package service
 
 import (
-	"github.com/leanote/leanote/app/info"
+	"bytes"
+	"fmt"
 	"github.com/leanote/leanote/app/db"
+	"github.com/leanote/leanote/app/info"
 	. "github.com/leanote/leanote/app/lea"
 	"gopkg.in/mgo.v2/bson"
-	"time"
-	"strings"
+	"html/template"
 	"net/smtp"
 	"strconv"
-	"fmt"
-	"html/template"
-	"bytes"
+	"strings"
+	"time"
 )
 
 // 发送邮件
@@ -20,7 +20,7 @@ type EmailService struct {
 	tpls map[string]*template.Template
 }
 
-func NewEmailService() (*EmailService) {
+func NewEmailService() *EmailService {
 	return &EmailService{tpls: map[string]*template.Template{}}
 }
 
@@ -39,32 +39,32 @@ func InitEmailFromDb() {
 
 func (this *EmailService) SendEmail(to, subject, body string) (ok bool, e string) {
 	InitEmailFromDb()
-	
+
 	if host == "" || emailPort == "" || username == "" || password == "" {
-		return 
+		return
 	}
 	hp := strings.Split(host, ":")
 	auth := smtp.PlainAuth("", username, password, hp[0])
-	
+
 	var content_type string
-	
+
 	mailtype := "html"
 	if mailtype == "html" {
-		content_type = "Content-Type: text/"+ mailtype + "; charset=UTF-8"
-	} else{
+		content_type = "Content-Type: text/" + mailtype + "; charset=UTF-8"
+	} else {
 		content_type = "Content-Type: text/plain" + "; charset=UTF-8"
 	}
-	
-	msg := []byte("To: " + to + "\r\nFrom: " + username + "<"+ username +">\r\nSubject: " + subject + "\r\n" + content_type + "\r\n\r\n" + body)
+
+	msg := []byte("To: " + to + "\r\nFrom: " + username + "<" + username + ">\r\nSubject: " + subject + "\r\n" + content_type + "\r\n\r\n" + body)
 	send_to := strings.Split(to, ";")
 	err := smtp.SendMail(host+":"+emailPort, auth, username, send_to, msg)
-	
+
 	if err != nil {
 		e = fmt.Sprint(err)
-		return 
+		return
 	}
 	ok = true
-	return 
+	return
 }
 
 // AddUser调用
@@ -74,20 +74,20 @@ func (this *EmailService) RegisterSendActiveEmail(userInfo info.User, email stri
 	if token == "" {
 		return false
 	}
-	
-	subject := configService.GetGlobalStringConfig("emailTemplateRegisterSubject");
-	tpl := configService.GetGlobalStringConfig("emailTemplateRegister");
-	
-	if(tpl == "") {
+
+	subject := configService.GetGlobalStringConfig("emailTemplateRegisterSubject")
+	tpl := configService.GetGlobalStringConfig("emailTemplateRegister")
+
+	if tpl == "" {
 		return false
 	}
-	
+
 	tokenUrl := configService.GetSiteUrl() + "/user/activeEmail?token=" + token
 	// {siteUrl} {tokenUrl} {token} {tokenTimeout} {user.id} {user.email} {user.username}
 	token2Value := map[string]interface{}{"siteUrl": configService.GetSiteUrl(), "tokenUrl": tokenUrl, "token": token, "tokenTimeout": strconv.Itoa(int(tokenService.GetOverHours(info.TokenActiveEmail))),
 		"user": map[string]interface{}{
-			"userId": userInfo.UserId.Hex(),
-			"email": userInfo.Email,
+			"userId":   userInfo.UserId.Hex(),
+			"email":    userInfo.Email,
 			"username": userInfo.Username,
 		},
 	}
@@ -97,7 +97,7 @@ func (this *EmailService) RegisterSendActiveEmail(userInfo info.User, email stri
 	if !ok {
 		return false
 	}
-	
+
 	// 发送邮件
 	ok, _ = this.SendEmail(email, subject, tpl)
 	return ok
@@ -113,66 +113,66 @@ func (this *EmailService) UpdateEmailSendActiveEmail(userInfo info.User, email s
 	}
 
 	token := tokenService.NewToken(userInfo.UserId.Hex(), email, info.TokenUpdateEmail)
-	
+
 	if token == "" {
 		return
 	}
-	
-	subject := configService.GetGlobalStringConfig("emailTemplateUpdateEmailSubject");
-	tpl := configService.GetGlobalStringConfig("emailTemplateUpdateEmail");
-	
+
+	subject := configService.GetGlobalStringConfig("emailTemplateUpdateEmailSubject")
+	tpl := configService.GetGlobalStringConfig("emailTemplateUpdateEmail")
+
 	// 发送邮件
 	tokenUrl := configService.GetSiteUrl() + "/user/updateEmail?token=" + token
 	// {siteUrl} {tokenUrl} {token} {tokenTimeout} {user.userId} {user.email} {user.username}
 	token2Value := map[string]interface{}{"siteUrl": configService.GetSiteUrl(), "tokenUrl": tokenUrl, "token": token, "tokenTimeout": strconv.Itoa(int(tokenService.GetOverHours(info.TokenActiveEmail))),
 		"newEmail": email,
 		"user": map[string]interface{}{
-			"userId": userInfo.UserId.Hex(),
-			"email": userInfo.Email,
+			"userId":   userInfo.UserId.Hex(),
+			"email":    userInfo.Email,
 			"username": userInfo.Username,
 		},
 	}
 
 	ok, msg, subject, tpl = this.renderEmail(subject, tpl, token2Value)
 	if !ok {
-		return 
+		return
 	}
-	
+
 	// 发送邮件
 	ok, msg = this.SendEmail(email, subject, tpl)
 	return
 }
 
 func (this *EmailService) FindPwdSendEmail(token, email string) (ok bool, msg string) {
-	subject := configService.GetGlobalStringConfig("emailTemplateFindPasswordSubject");
-	tpl := configService.GetGlobalStringConfig("emailTemplateFindPassword");
-	
+	subject := configService.GetGlobalStringConfig("emailTemplateFindPasswordSubject")
+	tpl := configService.GetGlobalStringConfig("emailTemplateFindPassword")
+
 	// 发送邮件
 	tokenUrl := configService.GetSiteUrl() + "/findPassword/" + token
 	// {siteUrl} {tokenUrl} {token} {tokenTimeout} {user.id} {user.email} {user.username}
-	token2Value := map[string]interface{}{"siteUrl": configService.GetSiteUrl(), "tokenUrl": tokenUrl, 
+	token2Value := map[string]interface{}{"siteUrl": configService.GetSiteUrl(), "tokenUrl": tokenUrl,
 		"token": token, "tokenTimeout": strconv.Itoa(int(tokenService.GetOverHours(info.TokenActiveEmail)))}
-		
+
 	ok, msg, subject, tpl = this.renderEmail(subject, tpl, token2Value)
 	if !ok {
-		return 
+		return
 	}
 	// 发送邮件
 	ok, msg = this.SendEmail(email, subject, tpl)
-	return 
+	return
 }
 
 // 发送邀请链接
 func (this *EmailService) SendInviteEmail(userInfo info.User, email, content string) bool {
-	subject := configService.GetGlobalStringConfig("emailTemplateInviteSubject");
-	tpl := configService.GetGlobalStringConfig("emailTemplateInvite");
-	
+	subject := configService.GetGlobalStringConfig("emailTemplateInviteSubject")
+	tpl := configService.GetGlobalStringConfig("emailTemplateInvite")
+
 	token2Value := map[string]interface{}{"siteUrl": configService.GetSiteUrl(),
 		"registerUrl": configService.GetSiteUrl() + "/register?from=" + userInfo.Username,
-		"content": content,
+		"content":     content,
 		"user": map[string]interface{}{
 			"username": userInfo.Username,
-			"email": userInfo.Email,
+			"email":    userInfo.Email,
 		},
 	}
 	var ok bool
@@ -187,32 +187,32 @@ func (this *EmailService) SendInviteEmail(userInfo info.User, email, content str
 
 // 发送评论
 func (this *EmailService) SendCommentEmail(note info.Note, comment info.BlogComment, userId, content string) bool {
-	subject := configService.GetGlobalStringConfig("emailTemplateCommentSubject");
-	tpl := configService.GetGlobalStringConfig("emailTemplateComment");
-	
+	subject := configService.GetGlobalStringConfig("emailTemplateCommentSubject")
+	tpl := configService.GetGlobalStringConfig("emailTemplateComment")
+
 	// title := "评论提醒"
-	
+
 	/*
-	toUserId := note.UserId.Hex()
-	// title := "评论提醒"
-	
-	// 表示回复回复的内容, 那么发送给之前回复的
-	if comment.CommentId != "" {
-		toUserId = comment.UserId.Hex()
-	}
-	toUserInfo := userService.GetUserInfo(toUserId)
-	sendUserInfo := userService.GetUserInfo(userId)
-	
-	subject := note.Title + " 收到 " + sendUserInfo.Username + " 的评论";
-	if comment.CommentId != "" {
-		subject = "您在 " + note.Title + " 发表的评论收到 " + sendUserInfo.Username;
-		if userId == note.UserId.Hex() {
-			subject += "(作者)";
+		toUserId := note.UserId.Hex()
+		// title := "评论提醒"
+
+		// 表示回复回复的内容, 那么发送给之前回复的
+		if comment.CommentId != "" {
+			toUserId = comment.UserId.Hex()
 		}
-		subject += " 的评论";
-	}
+		toUserInfo := userService.GetUserInfo(toUserId)
+		sendUserInfo := userService.GetUserInfo(userId)
+
+		subject := note.Title + " 收到 " + sendUserInfo.Username + " 的评论";
+		if comment.CommentId != "" {
+			subject = "您在 " + note.Title + " 发表的评论收到 " + sendUserInfo.Username;
+			if userId == note.UserId.Hex() {
+				subject += "(作者)";
+			}
+			subject += " 的评论";
+		}
 	*/
-	
+
 	toUserId := note.UserId.Hex()
 	// 表示回复回复的内容, 那么发送给之前回复的
 	if comment.CommentId != "" {
@@ -220,28 +220,28 @@ func (this *EmailService) SendCommentEmail(note info.Note, comment info.BlogComm
 	}
 	toUserInfo := userService.GetUserInfo(toUserId) // 被评论者
 	sendUserInfo := userService.GetUserInfo(userId) // 评论者
-	
-	// {siteUrl} {blogUrl} 
+
+	// {siteUrl} {blogUrl}
 	// {blog.id} {blog.title} {blog.url}
-	// {commentUser.userId} {commentUser.username} {commentUser.email} 
+	// {commentUser.userId} {commentUser.username} {commentUser.email}
 	// {commentedUser.userId} {commentedUser.username} {commentedUser.email}
 	token2Value := map[string]interface{}{"siteUrl": configService.GetSiteUrl(), "blogUrl": configService.GetBlogUrl(),
 		"blog": map[string]string{
-			"id": note.NoteId.Hex(),
+			"id":    note.NoteId.Hex(),
 			"title": note.Title,
-			"url": configService.GetBlogUrl() + "/view/" + note.NoteId.Hex(),
+			"url":   configService.GetBlogUrl() + "/view/" + note.NoteId.Hex(),
 		},
 		"commentContent": content,
 		// 评论者信息
-		"commentUser": map[string]interface{}{"userId": sendUserInfo.UserId.Hex(), 
-			"username": sendUserInfo.Username,
-			"email": sendUserInfo.Email,
+		"commentUser": map[string]interface{}{"userId": sendUserInfo.UserId.Hex(),
+			"username":     sendUserInfo.Username,
+			"email":        sendUserInfo.Email,
 			"isBlogAuthor": userId == note.UserId.Hex(),
 		},
 		// 被评论者信息
 		"commentedUser": map[string]interface{}{"userId": toUserId,
-			"username": toUserInfo.Username,
-			"email": toUserInfo.Email,
+			"username":     toUserInfo.Username,
+			"email":        toUserInfo.Email,
 			"isBlogAuthor": toUserId == note.UserId.Hex(),
 		},
 	}
@@ -251,53 +251,52 @@ func (this *EmailService) SendCommentEmail(note info.Note, comment info.BlogComm
 	if !ok {
 		return false
 	}
-	
+
 	// 发送邮件
 	ok, _ = this.SendEmail(toUserInfo.Email, subject, tpl)
 	return ok
 }
 
-
 // 验证模板是否正确
-func (this *EmailService) ValidTpl(str string) (ok bool, msg string){
-	defer func() { 
+func (this *EmailService) ValidTpl(str string) (ok bool, msg string) {
+	defer func() {
 		if err := recover(); err != nil {
 			ok = false
 			msg = fmt.Sprint(err)
 		}
-	}();
-	header := configService.GetGlobalStringConfig("emailTemplateHeader");
-	footer := configService.GetGlobalStringConfig("emailTemplateFooter");
+	}()
+	header := configService.GetGlobalStringConfig("emailTemplateHeader")
+	footer := configService.GetGlobalStringConfig("emailTemplateFooter")
 	str = strings.Replace(str, "{{header}}", header, -1)
 	str = strings.Replace(str, "{{footer}}", footer, -1)
 	_, err := template.New("tpl name").Parse(str)
-    if err != nil {
+	if err != nil {
 		msg = fmt.Sprint(err)
-    	return
-    }
-    ok = true
+		return
+	}
+	ok = true
 	return
 }
 
 // ok, msg, subject, tpl
-func (this *EmailService) getTpl(str string) (ok bool, msg string, tpl *template.Template){
-	defer func() { 
+func (this *EmailService) getTpl(str string) (ok bool, msg string, tpl *template.Template) {
+	defer func() {
 		if err := recover(); err != nil {
 			ok = false
 			msg = fmt.Sprint(err)
 		}
-	}();
-	
+	}()
+
 	var err error
 	var has bool
-	
+
 	if tpl, has = this.tpls[str]; !has {
-	    tpl, err = template.New("tpl name").Parse(str)
-	    if err != nil {
+		tpl, err = template.New("tpl name").Parse(str)
+		if err != nil {
 			msg = fmt.Sprint(err)
-	    	return
-	    }
-	    this.tpls[str] = tpl
+			return
+		}
+		this.tpls[str] = tpl
 	}
 	ok = true
 	return
@@ -310,67 +309,67 @@ func (this *EmailService) renderEmail(subject, body string, values map[string]in
 	defer func() { // 必须要先声明defer，否则不能捕获到panic异常
 		if err := recover(); err != nil {
 			ok = false
-			msg = fmt.Sprint(err)    // 这里的err其实就是panic传入的内容，
+			msg = fmt.Sprint(err) // 这里的err其实就是panic传入的内容，
 		}
-	}();
-	
+	}()
+
 	var tpl *template.Template
-	
-	values["siteUrl"] = configService.GetSiteUrl();
-	
+
+	values["siteUrl"] = configService.GetSiteUrl()
+
 	// subject
 	if subject != "" {
 		ok, msg, tpl = this.getTpl(subject)
-		if(!ok) {
+		if !ok {
 			return
 		}
 		var buffer bytes.Buffer
-	    err := tpl.Execute(&buffer, values)
-	    if err != nil {
+		err := tpl.Execute(&buffer, values)
+		if err != nil {
 			msg = fmt.Sprint(err)
 			return
-	    }
-	    o = buffer.String()
-    } else {
-    	o = ""
-    }
-    
-    // content
-    header := configService.GetGlobalStringConfig("emailTemplateHeader");
-	footer := configService.GetGlobalStringConfig("emailTemplateFooter");
+		}
+		o = buffer.String()
+	} else {
+		o = ""
+	}
+
+	// content
+	header := configService.GetGlobalStringConfig("emailTemplateHeader")
+	footer := configService.GetGlobalStringConfig("emailTemplateFooter")
 	body = strings.Replace(body, "{{header}}", header, -1)
 	body = strings.Replace(body, "{{footer}}", footer, -1)
 	values["subject"] = o
 	ok, msg, tpl = this.getTpl(body)
-	if(!ok) {
+	if !ok {
 		return
 	}
 	var buffer2 bytes.Buffer
-    err := tpl.Execute(&buffer2, values)
-    if err != nil {
+	err := tpl.Execute(&buffer2, values)
+	if err != nil {
 		msg = fmt.Sprint(err)
 		return
-    }
-    b = buffer2.String()
-    
-    return
+	}
+	b = buffer2.String()
+
+	return
 }
 
 // 发送email给用户
 // 需要记录
 func (this *EmailService) SendEmailToUsers(users []info.User, subject, body string) (ok bool, msg string) {
-	if(users == nil || len(users) == 0) {
+	if users == nil || len(users) == 0 {
 		msg = "no users"
-		return 
+		return
 	}
-	
+
 	// 尝试renderHtml
 	ok, msg, _, _ = this.renderEmail(subject, body, map[string]interface{}{})
-	if(!ok) {
+	if !ok {
 		Log(msg)
-		return 
+		return
 	}
-	
+
 	go func() {
 		for _, user := range users {
 			LogJ(user)
@@ -381,8 +380,8 @@ func (this *EmailService) SendEmailToUsers(users []info.User, subject, body stri
 			ok2, msg2, subject2, body2 := this.renderEmail(subject, body, m)
 			ok = ok2
 			msg = msg2
-			if(ok2) {
-				sendOk, msg := this.SendEmail(user.Email, subject2, body2);
+			if ok2 {
+				sendOk, msg := this.SendEmail(user.Email, subject2, body2)
 				this.AddEmailLog(user.Email, subject, body, sendOk, msg) // 把模板记录下
 				// 记录到Email Log
 				if sendOk {
@@ -395,47 +394,47 @@ func (this *EmailService) SendEmailToUsers(users []info.User, subject, body stri
 			}
 		}
 	}()
-	
-	return 
+
+	return
 }
 
 func (this *EmailService) SendEmailToEmails(emails []string, subject, body string) (ok bool, msg string) {
-	if(emails == nil || len(emails) == 0) {
+	if emails == nil || len(emails) == 0 {
 		msg = "no emails"
-		return 
+		return
 	}
-	
+
 	// 尝试renderHtml
 	ok, msg, _, _ = this.renderEmail(subject, body, map[string]interface{}{})
-	if(!ok) {
+	if !ok {
 		Log(msg)
-		return 
+		return
 	}
-	
-//	go func() {
-		for _, email := range emails {
-			if email == "" {
-				continue
-			}
-			m := map[string]interface{}{}
-			m["email"] = email
-			ok, msg, subject, body = this.renderEmail(subject, body, m)
-			if(ok) {
-				sendOk, msg := this.SendEmail(email, subject, body);
-				this.AddEmailLog(email, subject, body, sendOk, msg)
-				// 记录到Email Log
-				if sendOk {
-					Log("ok " + email)
-				} else {
-					Log("no " + email)
-				}
-			} else {
-				Log(msg);
-			}
+
+	//	go func() {
+	for _, email := range emails {
+		if email == "" {
+			continue
 		}
-//	}()
-	
-	return 
+		m := map[string]interface{}{}
+		m["email"] = email
+		ok, msg, subject, body = this.renderEmail(subject, body, m)
+		if ok {
+			sendOk, msg := this.SendEmail(email, subject, body)
+			this.AddEmailLog(email, subject, body, sendOk, msg)
+			// 记录到Email Log
+			if sendOk {
+				Log("ok " + email)
+			} else {
+				Log("no " + email)
+			}
+		} else {
+			Log(msg)
+		}
+	}
+	//	}()
+
+	return
 }
 
 // 添加邮件日志
@@ -443,6 +442,7 @@ func (this *EmailService) AddEmailLog(email, subject, body string, ok bool, msg 
 	log := info.EmailLog{LogId: bson.NewObjectId(), Email: email, Subject: subject, Body: body, Ok: ok, Msg: msg, CreatedTime: time.Now()}
 	db.Insert(db.EmailLogs, log)
 }
+
 // 展示邮件日志
 
 func (this *EmailService) DeleteEmails(ids []string) bool {
@@ -451,7 +451,7 @@ func (this *EmailService) DeleteEmails(ids []string) bool {
 		idsO[i] = bson.ObjectIdHex(id)
 	}
 	db.DeleteAll(db.EmailLogs, bson.M{"_id": bson.M{"$in": idsO}})
-	
+
 	return true
 }
 func (this *EmailService) ListEmailLogs(pageNumber, pageSize int, sortField string, isAsc bool, email string) (page info.Page, emailLogs []info.EmailLog) {
@@ -461,7 +461,7 @@ func (this *EmailService) ListEmailLogs(pageNumber, pageSize int, sortField stri
 	if email != "" {
 		query["Email"] = bson.M{"$regex": bson.RegEx{".*?" + email + ".*", "i"}}
 	}
-	q := db.EmailLogs.Find(query);
+	q := db.EmailLogs.Find(query)
 	// 总记录数
 	count, _ := q.Count()
 	// 列表

@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"github.com/revel/revel"
 	"github.com/leanote/leanote/app/info"
 	. "github.com/leanote/leanote/app/lea"
-//	"strconv"
+	"github.com/revel/revel"
+	//	"strconv"
 )
 
 // 用户登录/注销/找回密码
@@ -21,14 +21,14 @@ func (c Auth) Login(email, from string) revel.Result {
 	c.RenderArgs["email"] = email
 	c.RenderArgs["from"] = from
 	c.RenderArgs["openRegister"] = configService.IsOpenRegister()
-	
+
 	sessionId := c.Session.Id()
 	if sessionService.LoginTimesIsOver(sessionId) {
 		c.RenderArgs["needCaptcha"] = true
 	}
-	
+
 	c.SetLocale()
-	
+
 	if c.Has("demo") {
 		c.RenderArgs["demo"] = true
 		c.RenderArgs["email"] = "demo@leanote.com"
@@ -49,14 +49,14 @@ func (c Auth) doLogin(email, pwd string) revel.Result {
 		c.SetSession(userInfo)
 		sessionService.ClearLoginTimes(sessionId)
 		return c.RenderJson(info.Re{Ok: true})
-	} 
-	
-	return c.RenderJson(info.Re{Ok: false, Item: sessionService.LoginTimesIsOver(sessionId) , Msg: c.Message(msg)})
+	}
+
+	return c.RenderJson(info.Re{Ok: false, Item: sessionService.LoginTimesIsOver(sessionId), Msg: c.Message(msg)})
 }
 func (c Auth) DoLogin(email, pwd string, captcha string) revel.Result {
 	sessionId := c.Session.Id()
 	var msg = ""
-	
+
 	// > 5次需要验证码, 直到登录成功
 	if sessionService.LoginTimesIsOver(sessionId) && sessionService.GetCaptcha(sessionId) != captcha {
 		msg = "captchaError"
@@ -66,15 +66,16 @@ func (c Auth) DoLogin(email, pwd string, captcha string) revel.Result {
 			// 登录错误, 则错误次数++
 			msg = "wrongUsernameOrPassword"
 			sessionService.IncrLoginTimes(sessionId)
-	  } else {
+		} else {
 			c.SetSession(userInfo)
 			sessionService.ClearLoginTimes(sessionId)
 			return c.RenderJson(info.Re{Ok: true})
-		} 
+		}
 	}
-	
-	return c.RenderJson(info.Re{Ok: false, Item: sessionService.LoginTimesIsOver(sessionId) , Msg: c.Message(msg)})
+
+	return c.RenderJson(info.Re{Ok: false, Item: sessionService.LoginTimesIsOver(sessionId), Msg: c.Message(msg)})
 }
+
 // 注销
 func (c Auth) Logout() revel.Result {
 	sessionId := c.Session.Id()
@@ -90,8 +91,8 @@ func (c Auth) Demo() revel.Result {
 
 	userInfo, err := authService.Login(email, pwd)
 	if err != nil {
-		  return c.RenderJson(info.Re{Ok: false})
-	  } else {
+		return c.RenderJson(info.Re{Ok: false})
+	} else {
 		c.SetSession(userInfo)
 		return c.Redirect("/note")
 	}
@@ -107,7 +108,7 @@ func (c Auth) Register(from, iu string) revel.Result {
 	c.SetLocale()
 	c.RenderArgs["from"] = from
 	c.RenderArgs["iu"] = iu
-	
+
 	c.RenderArgs["title"] = c.Message("register")
 	c.RenderArgs["subTitle"] = c.Message("register")
 	return c.RenderTemplate("home/register.html")
@@ -116,24 +117,24 @@ func (c Auth) DoRegister(email, pwd, iu string) revel.Result {
 	if !configService.IsOpenRegister() {
 		return c.Redirect("/index")
 	}
-	
-	re := info.NewRe();
-	
+
+	re := info.NewRe()
+
 	if re.Ok, re.Msg = Vd("email", email); !re.Ok {
-		return c.RenderRe(re);
+		return c.RenderRe(re)
 	}
 	if re.Ok, re.Msg = Vd("password", pwd); !re.Ok {
-		return c.RenderRe(re);
+		return c.RenderRe(re)
 	}
-	
+
 	// 注册
 	re.Ok, re.Msg = authService.Register(email, pwd, iu)
-	
+
 	// 注册成功, 则立即登录之
 	if re.Ok {
 		c.doLogin(email, pwd)
 	}
-	
+
 	return c.RenderRe(re)
 }
 
@@ -150,6 +151,7 @@ func (c Auth) DoFindPassword(email string) revel.Result {
 	re.Ok = true
 	return c.RenderJson(re)
 }
+
 // 点击链接后, 先验证之
 func (c Auth) FindPassword2(token string) revel.Result {
 	c.RenderArgs["title"] = c.Message("findPassword")
@@ -157,23 +159,24 @@ func (c Auth) FindPassword2(token string) revel.Result {
 	if token == "" {
 		return c.RenderTemplate("find_password2_timeout.html")
 	}
-	ok, _, findPwd := tokenService.VerifyToken(token, info.TokenPwd);
+	ok, _, findPwd := tokenService.VerifyToken(token, info.TokenPwd)
 	if !ok {
 		return c.RenderTemplate("home/find_password2_timeout.html")
 	}
 	c.RenderArgs["findPwd"] = findPwd
-	
+
 	c.RenderArgs["title"] = c.Message("updatePassword")
 	c.RenderArgs["subTitle"] = c.Message("updatePassword")
-	
+
 	return c.RenderTemplate("home/find_password2.html")
 }
+
 // 找回密码修改密码
 func (c Auth) FindPasswordUpdate(token, pwd string) revel.Result {
-	re := info.NewRe();
+	re := info.NewRe()
 
 	if re.Ok, re.Msg = Vd("password", pwd); !re.Ok {
-		return c.RenderRe(re);
+		return c.RenderRe(re)
 	}
 
 	// 修改之

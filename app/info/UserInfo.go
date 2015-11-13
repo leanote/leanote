@@ -73,8 +73,8 @@ type UserAccount struct {
 // note主页需要
 type UserAndBlogUrl struct {
 	User
-	BlogUrl   string        `BlogUrl`
-	PostUrl   string        `PostUrl`
+	BlogUrl string `BlogUrl`
+	PostUrl string `PostUrl`
 }
 
 // 用户与博客信息结合, 公开

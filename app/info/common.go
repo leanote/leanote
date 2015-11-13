@@ -4,14 +4,13 @@ import (
 	"math"
 )
 
-
 // 分页数据
 type Page struct {
-	CurPage int // 当前页码
-	TotalPage int // 总页
+	CurPage     int // 当前页码
+	TotalPage   int // 总页
 	PerPageSize int
-	Count int // 总记录数
-	List interface{}
+	Count       int // 总记录数
+	List        interface{}
 }
 
 func NewPage(page, perPageSize, count int, list interface{}) Page {

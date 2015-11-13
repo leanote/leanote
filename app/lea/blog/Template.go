@@ -6,8 +6,8 @@ import (
 	"html/template"
 	"io/ioutil"
 	//	"os"
-	"fmt"
 	"bytes"
+	"fmt"
 	"io"
 	"net/http"
 	"regexp"
@@ -40,8 +40,8 @@ type RenderTemplateResult struct {
 	Template    *template.Template
 	PathContent map[string]string
 	RenderArgs  map[string]interface{}
-	
-	IsPreview bool // 是否是预览
+
+	IsPreview  bool // 是否是预览
 	CurBlogTpl *BlogTpl
 }
 
@@ -87,7 +87,7 @@ func (r *RenderTemplateResult) render(req *revel.Request, resp *revel.Response, 
 		Line:        line,
 		SourceLines: templateContent,
 	}
-	
+
 	// 这里, 错误!!
 	// 这里应该导向到本主题的错误页面
 	resp.Status = 500
@@ -117,7 +117,7 @@ func (r *RenderTemplateResult) Apply(req *revel.Request, resp *revel.Response) {
 		r.render(req, resp, out) // 这里!!!
 		return
 	}
-	
+
 	// Render the template into a temporary buffer, to see if there was an error
 	// rendering the template.  If not, then copy it into the response buffer.
 	// Otherwise, template render errors may result in unpredictable HTML (and
@@ -139,7 +139,7 @@ func Init() {
 		fileBytes, _ := ioutil.ReadFile(revel.ViewsPath + "/Blog/" + path)
 		fileStr := string(fileBytes)
 		path := "blog/" + path
-//		path := path
+		//		path := path
 		BlogTplObject.PathContent[path] = fileStr
 		BlogTplObject.Template.New(path).Parse(fileStr) // 以blog为根
 	}
@@ -157,7 +157,7 @@ func RenderTemplate(name string, args map[string]interface{}, basePath string, i
 	// 都不会为空的
 	if basePath == "" {
 		path := "blog/" + name
-//		path := name
+		//		path := name
 		t := BlogTplObject.Template.Lookup(path)
 		r = &RenderTemplateResult{
 			Template:    t,
@@ -181,7 +181,7 @@ func RenderTemplate(name string, args map[string]interface{}, basePath string, i
 		files := ListDir(basePath)
 		for _, t := range files {
 			if !strings.Contains(t, ".html") {
-				continue;
+				continue
 			}
 			fileBytes, err := ioutil.ReadFile(basePath + "/" + t)
 			if err != nil {
@@ -194,7 +194,7 @@ func RenderTemplate(name string, args map[string]interface{}, basePath string, i
 
 		// 如果本主题下没有, 则用系统的
 		t := newBlogTplObject.Template.Lookup(name)
-		
+
 		if t == nil {
 			path := "blog/" + name
 			t = BlogTplObject.Template.Lookup(path)
@@ -203,23 +203,21 @@ func RenderTemplate(name string, args map[string]interface{}, basePath string, i
 			Template:    t,
 			PathContent: newBlogTplObject.PathContent, // 为了显示错误
 			RenderArgs:  args,
-			CurBlogTpl: newBlogTplObject,
-			IsPreview: isPreview,
+			CurBlogTpl:  newBlogTplObject,
+			IsPreview:   isPreview,
 		}
 	}
 
 	return r
 }
 
-
 ////////////////////
 //
-
 
 type ErrorResult struct {
 	RenderArgs map[string]interface{}
 	Error      error
-	IsPreview bool
+	IsPreview  bool
 	CurBlogTpl *BlogTpl
 }
 
@@ -240,7 +238,7 @@ func (r ErrorResult) Apply(req *revel.Request, resp *revel.Response) {
 	var err error
 	templatePath := fmt.Sprintf("errors/%d.%s", status, format)
 	err = nil
-//	tmpl, err := revel.MainTemplateLoader.Template("index.html") // 这里找到错误页面主题
+	//	tmpl, err := revel.MainTemplateLoader.Template("index.html") // 这里找到错误页面主题
 
 	// This func shows a plaintext error message, in case the template rendering
 	// doesn't work.

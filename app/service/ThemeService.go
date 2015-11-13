@@ -1,20 +1,20 @@
 package service
 
 import (
-	"github.com/revel/revel"
-	"github.com/leanote/leanote/app/info"
+	"encoding/json"
+	"fmt"
 	"github.com/leanote/leanote/app/db"
+	"github.com/leanote/leanote/app/info"
 	. "github.com/leanote/leanote/app/lea"
 	"github.com/leanote/leanote/app/lea/archive"
+	"github.com/revel/revel"
 	"gopkg.in/mgo.v2/bson"
-	"time"
-	"strings"
-	"os"
-	"fmt"
 	"html/template"
-	"regexp"
 	"io/ioutil"
-	"encoding/json"
+	"os"
+	"regexp"
+	"strings"
+	"time"
 )
 
 // 主题
@@ -29,6 +29,7 @@ var fixedStyle = "blog_left_fixed"
 func (this *ThemeService) getDefaultThemeBasePath() string {
 	return revel.BasePath + "/public/blog/themes"
 }
+
 // 默认主题路径
 func (this *ThemeService) getDefaultThemePath(style string) string {
 	if style == elegantStyle {
@@ -39,6 +40,7 @@ func (this *ThemeService) getDefaultThemePath(style string) string {
 		return this.getDefaultThemeBasePath() + "/default"
 	}
 }
+
 // blogService用
 func (this *ThemeService) GetDefaultThemePath(style string) string {
 	if style == elegantStyle {
@@ -51,34 +53,34 @@ func (this *ThemeService) GetDefaultThemePath(style string) string {
 }
 
 // 得到默认主题
-// style是之前的值, 有3个值 blog_default, blog_daqi, blog_left_fixed 
+// style是之前的值, 有3个值 blog_default, blog_daqi, blog_left_fixed
 func (this *ThemeService) getDefaultTheme(style string) info.Theme {
 	if style == elegantStyle {
 		return info.Theme{
 			IsDefault: true,
-			Path: "public/blog/themes/elegant",
-			Name: "leanote elegant",
-			Author: "leanote",
+			Path:      "public/blog/themes/elegant",
+			Name:      "leanote elegant",
+			Author:    "leanote",
 			AuthorUrl: "http://leanote.com",
-			Version: "1.0",
+			Version:   "1.0",
 		}
 	} else if style == fixedStyle {
 		return info.Theme{
 			IsDefault: true,
-			Path: "public/blog/themes/nav_fixed",
-			Name: "leanote nav fixed",
-			Author: "leanote",
+			Path:      "public/blog/themes/nav_fixed",
+			Name:      "leanote nav fixed",
+			Author:    "leanote",
 			AuthorUrl: "http://leanote.com",
-			Version: "1.0",
+			Version:   "1.0",
 		}
 	} else { // blog default
 		return info.Theme{
 			IsDefault: true,
-			Path: "public/blog/themes/default",
-			Name: "leanote default",
-			Author: "leanote",
+			Path:      "public/blog/themes/default",
+			Name:      "leanote default",
+			Author:    "leanote",
 			AuthorUrl: "http://leanote.com",
-			Version: "1.0",
+			Version:   "1.0",
 		}
 	}
 }
@@ -103,15 +105,15 @@ func (this *ThemeService) CopyDefaultTheme(userBlog info.UserBlog) (ok bool, the
 	themePath := this.getUserThemePath(userId, themeId)
 	err := os.MkdirAll(themePath, 0755)
 	if err != nil {
-		return 
+		return
 	}
 	// 复制默认主题
 	defaultThemePath := this.getDefaultThemePath(userBlog.Style)
 	err = CopyDir(defaultThemePath, themePath)
 	if err != nil {
-		return 
+		return
 	}
-	
+
 	// 保存到数据库中
 	theme, _ := this.getThemeConfig(themePath)
 	theme.ThemeId = newThemeId
@@ -119,7 +121,7 @@ func (this *ThemeService) CopyDefaultTheme(userBlog info.UserBlog) (ok bool, the
 	theme.CreatedTime = time.Now()
 	theme.UpdatedTime = theme.CreatedTime
 	theme.UserId = bson.ObjectIdHex(userId)
-	
+
 	ok = db.Insert(db.Themes, theme)
 	return ok, themeId
 }
@@ -141,7 +143,7 @@ func (this *ThemeService) NewTheme(userId string) (ok bool, themeId string) {
 		themeService.NewThemeForFirst(userBlog)
 	}
 	// 再copy一个默认主题
-	userBlog.Style = "defaultStyle";
+	userBlog.Style = "defaultStyle"
 	ok, themeId = this.CopyDefaultTheme(userBlog)
 	return
 }
@@ -151,37 +153,37 @@ func (this *ThemeService) parseConfig(configStr string) (theme info.Theme, err e
 	theme = info.Theme{}
 	// 除去/**/注释
 	reg, _ := regexp.Compile("/\\*[\\s\\S]*?\\*/")
-	configStr = reg.ReplaceAllString(configStr, "") 
+	configStr = reg.ReplaceAllString(configStr, "")
 	// 转成map
 	config := map[string]interface{}{}
 	err = json.Unmarshal([]byte(configStr), &config)
-    if err != nil {
-	    return
-    }
-    // 没有错, 则将Name, Version, Author, AuthorUrl
-    Name := config["Name"]
-    if Name != nil {
-	    theme.Name = Name.(string)
-    }
-    Version := config["Version"]
-    if Version != nil {
-	    theme.Version = Version.(string)
-    }
-    Author := config["Author"]
-    if Author != nil {
-	    theme.Author = Author.(string)
-    }
-    AuthorUrl := config["AuthorUrl"]
-    if AuthorUrl != nil {
-	    theme.AuthorUrl = AuthorUrl.(string)
-    }
-    theme.Info = config
-    
-    return
+	if err != nil {
+		return
+	}
+	// 没有错, 则将Name, Version, Author, AuthorUrl
+	Name := config["Name"]
+	if Name != nil {
+		theme.Name = Name.(string)
+	}
+	Version := config["Version"]
+	if Version != nil {
+		theme.Version = Version.(string)
+	}
+	Author := config["Author"]
+	if Author != nil {
+		theme.Author = Author.(string)
+	}
+	AuthorUrl := config["AuthorUrl"]
+	if AuthorUrl != nil {
+		theme.AuthorUrl = AuthorUrl.(string)
+	}
+	theme.Info = config
+
+	return
 }
 
 // 读取theme.json得到值
-func (this *ThemeService) getThemeConfig(themePath string) (theme info.Theme, err error) { 
+func (this *ThemeService) getThemeConfig(themePath string) (theme info.Theme, err error) {
 	theme = info.Theme{}
 	configStr := GetFileStrContent(themePath + "/theme.json")
 	theme, err = this.parseConfig(configStr)
@@ -222,12 +224,12 @@ func (this *ThemeService) GetThemeInfo(themeId, style string) map[string]interfa
 func (this *ThemeService) GetUserThemes(userId string) (theme info.Theme, themes []info.Theme) {
 	theme = info.Theme{}
 	themes = []info.Theme{}
-	
-//	db.ListByQ(db.Themes, bson.M{"UserId": bson.ObjectIdHex(userId)}, &themes)
-	
+
+	//	db.ListByQ(db.Themes, bson.M{"UserId": bson.ObjectIdHex(userId)}, &themes)
+
 	// 创建时间逆序
 	query := bson.M{"UserId": bson.ObjectIdHex(userId)}
-	q := db.Themes.Find(query);
+	q := db.Themes.Find(query)
 	q.Sort("-CreatedTime").All(&themes)
 	if len(themes) == 0 {
 		userBlog := blogService.GetUserBlog(userId)
@@ -285,6 +287,7 @@ func (this *ThemeService) GetThemePath(userId, themeId string) string {
 	}
 	return ""
 }
+
 // 更新模板内容
 func (this *ThemeService) UpdateTplContent(userId, themeId, filename, content string) (ok bool, msg string) {
 	basePath := this.GetThemeAbsolutePath(userId, themeId)
@@ -305,13 +308,13 @@ func (this *ThemeService) UpdateTplContent(userId, themeId, filename, content st
 			return false, fmt.Sprintf("%v", err)
 		}
 		// 正确, 更新theme信息
-		ok = db.UpdateByQMap(db.Themes, bson.M{"_id": bson.ObjectIdHex(themeId), "UserId": bson.ObjectIdHex(userId)}, 
+		ok = db.UpdateByQMap(db.Themes, bson.M{"_id": bson.ObjectIdHex(themeId), "UserId": bson.ObjectIdHex(userId)},
 			bson.M{
-				"Name": theme.Name,
-				"Version": theme.Version,
-				"Author": theme.Author,
+				"Name":      theme.Name,
+				"Version":   theme.Version,
+				"Author":    theme.Author,
 				"AuthorUrl": theme.AuthorUrl,
-				"Info": theme.Info,
+				"Info":      theme.Info,
 			})
 		if ok {
 			ok = PutFileStrContent(path, content)
@@ -351,7 +354,7 @@ func (this *ThemeService) ActiveTheme(userId, themeId string) (ok bool) {
 		db.UpdateByQField(db.Themes, bson.M{"UserId": bson.ObjectIdHex(userId), "IsActive": true}, "IsActive", false)
 		// 现在的设为true
 		db.UpdateByQField(db.Themes, bson.M{"_id": bson.ObjectIdHex(themeId)}, "IsActive", true)
-		
+
 		// UserBlog ThemeId
 		db.UpdateByQField(db.UserBlogs, bson.M{"_id": bson.ObjectIdHex(userId)}, "ThemeId", bson.ObjectIdHex(themeId))
 		return true
@@ -361,7 +364,7 @@ func (this *ThemeService) ActiveTheme(userId, themeId string) (ok bool) {
 
 // 删除主题
 func (this *ThemeService) DeleteTheme(userId, themeId string) (ok bool) {
-	return db.Delete(db.Themes,bson.M{"_id": bson.ObjectIdHex(themeId), "UserId": bson.ObjectIdHex(userId), "IsActive": false})
+	return db.Delete(db.Themes, bson.M{"_id": bson.ObjectIdHex(themeId), "UserId": bson.ObjectIdHex(userId), "IsActive": false})
 }
 
 // 公开主题, 只有管理员才有权限, 之前没公开的变成公开
@@ -375,37 +378,37 @@ func (this *ThemeService) PublicTheme(userId, themeId string) (ok bool) {
 	return false
 }
 
-
 // 导出主题
 func (this *ThemeService) ExportTheme(userId, themeId string) (ok bool, path string) {
 	theme := this.GetThemeById(themeId)
 	// 打包
 	// 验证路径, 别把整个项目打包了
 	Log(theme.Path)
-	if theme.Path == "" || 
+	if theme.Path == "" ||
 		(!strings.HasPrefix(theme.Path, "public/upload") &&
-		!strings.HasPrefix(theme.Path, "public/blog/themes")) || 
+			!strings.HasPrefix(theme.Path, "public/blog/themes")) ||
 		strings.Contains(theme.Path, "..") {
 		return
 	}
-	
-	sourcePath := revel.BasePath  + "/" + theme.Path
+
+	sourcePath := revel.BasePath + "/" + theme.Path
 	targetPath := revel.BasePath + "/public/upload/" + userId + "/tmp"
 	err := os.MkdirAll(targetPath, 0755)
 	if err != nil {
 		Log(err)
-		return 
+		return
 	}
 	targetName := targetPath + "/" + theme.Name + ".zip"
 	Log(sourcePath)
 	Log(targetName)
-	ok = archive.Zip(sourcePath, targetName) 
+	ok = archive.Zip(sourcePath, targetName)
 	if !ok {
 		return
 	}
-	
+
 	return true, targetName
 }
+
 // 导入主题
 // path == /llllllll/..../public/upload/.../aa.zip, 绝对路径
 func (this *ThemeService) ImportTheme(userId, path string) (ok bool, msg string) {
@@ -416,14 +419,14 @@ func (this *ThemeService) ImportTheme(userId, path string) (ok bool, msg string)
 	err := os.MkdirAll(targetPath, 0755)
 	if err != nil {
 		msg = "error"
-		return 
+		return
 	}
 	if ok, msg = archive.Unzip(path, targetPath); !ok {
 		DeleteFile(targetPath)
 		Log("oh no")
 		return
 	}
-	
+
 	// 主题验证
 	if ok, msg = this.ValidateTheme(targetPath, "", ""); !ok {
 		DeleteFile(targetPath)
@@ -443,13 +446,13 @@ func (this *ThemeService) ImportTheme(userId, path string) (ok bool, msg string)
 	theme.CreatedTime = time.Now()
 	theme.UpdatedTime = theme.CreatedTime
 	theme.UserId = bson.ObjectIdHex(userId)
-	
+
 	ok = db.Insert(db.Themes, theme)
 	if !ok {
 		DeleteFile(targetPath)
 	}
 	DeleteFile(path)
-	return 
+	return
 }
 
 // 升级用
@@ -492,28 +495,28 @@ func (this *ThemeService) InstallTheme(userId, themeId string) (ok bool) {
 	if !theme.IsDefault {
 		return false
 	}
-	
+
 	// 用户之前是否有主题?
 	userBlog := blogService.GetUserBlog(userId)
 	if userBlog.ThemeId == "" {
 		this.NewThemeForFirst(userBlog)
 	}
-	
+
 	// 生成新主题
 	newThemeId := bson.NewObjectId()
 	themeId = newThemeId.Hex()
 	themePath := this.getUserThemePath(userId, themeId)
 	err := os.MkdirAll(themePath, 0755)
 	if err != nil {
-		return 
+		return
 	}
 	// 复制默认主题
 	sourceThemePath := revel.BasePath + "/" + theme.Path
 	err = CopyDir(sourceThemePath, themePath)
 	if err != nil {
-		return 
+		return
 	}
-	
+
 	// 保存到数据库中
 	theme, _ = this.getThemeConfig(themePath)
 	theme.ThemeId = newThemeId
@@ -521,11 +524,11 @@ func (this *ThemeService) InstallTheme(userId, themeId string) (ok bool) {
 	theme.CreatedTime = time.Now()
 	theme.UpdatedTime = theme.CreatedTime
 	theme.UserId = bson.ObjectIdHex(userId)
-	
+
 	ok = db.Insert(db.Themes, theme)
-	
+
 	// 激活之
-	this.ActiveTheme(userId, themeId);
+	this.ActiveTheme(userId, themeId)
 
 	return ok
 }
@@ -535,39 +538,39 @@ func (this *ThemeService) InstallTheme(userId, themeId string) (ok bool) {
 func (this *ThemeService) ValidateTheme(path string, filename, newContent string) (ok bool, msg string) {
 	Log("theme Path")
 	Log(path)
-	// 建立一个有向图	
+	// 建立一个有向图
 	// 将该path下的所有文件提出, 得到文件的引用情况
 	files := ListDir(path)
-	LogJ(files);
+	LogJ(files)
 	size := len(files)
-	if(size > 100) {
-		ok = false;
+	if size > 100 {
+		ok = false
 		msg = "tooManyFiles"
 		return
 	}
 	/*
-	111111111
-	111000000
+		111111111
+		111000000
 	*/
 	vector := make([][]int, size)
 	for i := 0; i < size; i++ {
 		vector[i] = make([]int, size)
 	}
-	fileIndexMap := map[string]int{} // fileName => index
+	fileIndexMap := map[string]int{}   // fileName => index
 	fileContent := map[string]string{} // fileName => content
 	index := 0
 	// 得到文件内容, 和建立索引, 每个文件都有一个index, 对应数组位置
 	for _, t := range files {
 		if !strings.Contains(t, ".html") {
-			continue;
+			continue
 		}
 		if t != filename {
 			fileBytes, err := ioutil.ReadFile(path + "/" + t)
 			if err != nil {
 				continue
 			}
-			
-			fileIndexMap[t] = index;
+
+			fileIndexMap[t] = index
 			// html内容
 			fileStr := string(fileBytes)
 			fileContent[t] = fileStr
@@ -583,7 +586,7 @@ func (this *ThemeService) ValidateTheme(path string, filename, newContent string
 		thisIndex := fileIndexMap[filename]
 		finds := reg.FindAllStringSubmatch(content, -1) // 子匹配
 		LogJ(finds)
-//		Log(content)
+		//		Log(content)
 		if finds != nil && len(finds) > 0 {
 			for _, includes := range finds {
 				include := includes[1]
@@ -597,7 +600,7 @@ func (this *ThemeService) ValidateTheme(path string, filename, newContent string
 			}
 		}
 	}
-	
+
 	LogJ(vector)
 	LogJ(fileIndexMap)
 	// 建立图后, 判断是否有环
@@ -607,7 +610,7 @@ func (this *ThemeService) ValidateTheme(path string, filename, newContent string
 	} else {
 		ok = true
 	}
-	return;
+	return
 }
 
 // 检测有向图是否有环, DFS
@@ -616,8 +619,8 @@ func (this *ThemeService) hasRound(vector [][]int, size int) (ok bool) {
 		visited := make([]int, size)
 		if this.hasRoundEach(vector, i, size, visited) {
 			Log(">>")
-			Log(i);
-			return true;
+			Log(i)
+			return true
 		}
 	}
 	return false
@@ -630,13 +633,13 @@ func (this *ThemeService) hasRoundEach(vector [][]int, index int, size int, visi
 		Log(index)
 		return true
 	}
-	visited[index] = 1;
+	visited[index] = 1
 	// 遍历它的孩子
 	for i := 0; i < size; i++ {
 		if vector[index][i] > 0 {
-			return this.hasRoundEach(vector, i, size, visited);
+			return this.hasRoundEach(vector, i, size, visited)
 		}
 	}
-	visited[index] = 0;
-	return false;
+	visited[index] = 0
+	return false
 }

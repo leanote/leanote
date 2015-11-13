@@ -4,11 +4,11 @@ import (
 	"github.com/revel/revel"
 	"gopkg.in/mgo.v2/bson"
 	//	"encoding/json"
-	. "github.com/leanote/leanote/app/lea"
 	"github.com/leanote/leanote/app/controllers"
 	"github.com/leanote/leanote/app/info"
+	. "github.com/leanote/leanote/app/lea"
 	"os"
-//	"fmt"
+	//	"fmt"
 	"io/ioutil"
 	//	"fmt"
 	//	"math"
@@ -43,75 +43,75 @@ func (c ApiBaseContrller) getUserInfo() info.User {
 
 // 上传附件
 func (c ApiBaseContrller) uploadAttach(name string, noteId string) (ok bool, msg string, id string) {
-	userId := c.getUserId();
-	
+	userId := c.getUserId()
+
 	// 判断是否有权限为笔记添加附件
 	// 如果笔记还没有添加是不是会有问题
 	/*
-	if !shareService.HasUpdateNotePerm(noteId, userId) {
-		return 
-	}
+		if !shareService.HasUpdateNotePerm(noteId, userId) {
+			return
+		}
 	*/
-	
+
 	file, handel, err := c.Request.FormFile(name)
 	if err != nil {
-		return 
+		return
 	}
 	defer file.Close()
-	
+
 	data, err := ioutil.ReadAll(file)
 	if err != nil {
-		return 
+		return
 	}
 	// > 5M?
-	maxFileSize := configService.GetUploadSize("uploadAttachSize");
+	maxFileSize := configService.GetUploadSize("uploadAttachSize")
 	if maxFileSize <= 0 {
 		maxFileSize = 1000
 	}
-	if(float64(len(data)) > maxFileSize * float64(1024*1024)) {
-		msg = "fileIsTooLarge" 
-		return 
+	if float64(len(data)) > maxFileSize*float64(1024*1024) {
+		msg = "fileIsTooLarge"
+		return
 	}
-	
+
 	// 生成上传路径
 	newGuid := NewGuid()
-	filePath :=	"files/" + Digest3(userId) + "/" + userId + "/" + Digest2(newGuid) + "/attachs"	
-	
-	dir := revel.BasePath + "/" +  filePath
+	filePath := "files/" + Digest3(userId) + "/" + userId + "/" + Digest2(newGuid) + "/attachs"
+
+	dir := revel.BasePath + "/" + filePath
 	err = os.MkdirAll(dir, 0755)
 	if err != nil {
-		return 
+		return
 	}
 	// 生成新的文件名
 	filename := handel.Filename
 	_, ext := SplitFilename(filename) // .doc
 	filename = newGuid + ext
-	toPath := dir + "/" + filename;
+	toPath := dir + "/" + filename
 	err = ioutil.WriteFile(toPath, data, 0777)
 	if err != nil {
-		return 
+		return
 	}
-	
+
 	// add File to db
 	fileType := ""
 	if ext != "" {
 		fileType = strings.ToLower(ext[1:])
 	}
 	filesize := GetFilesize(toPath)
-	fileInfo := info.Attach{AttachId:  bson.NewObjectId(), 
-		Name: filename,
-		Title: handel.Filename,
-		NoteId: bson.ObjectIdHex(noteId),
+	fileInfo := info.Attach{AttachId: bson.NewObjectId(),
+		Name:         filename,
+		Title:        handel.Filename,
+		NoteId:       bson.ObjectIdHex(noteId),
 		UploadUserId: bson.ObjectIdHex(userId),
-		Path: filePath + "/" + filename,
-		Type: fileType,
-		Size: filesize}
-	
+		Path:         filePath + "/" + filename,
+		Type:         fileType,
+		Size:         filesize}
+
 	ok, msg = attachService.AddAttach(fileInfo, true)
 	if !ok {
 		return
 	}
-	
+
 	id = fileInfo.AttachId.Hex()
 	return
 }
@@ -123,16 +123,16 @@ func (c ApiBaseContrller) upload(name string, noteId string, isAttach bool) (ok 
 	}
 	file, handel, err := c.Request.FormFile(name)
 	if err != nil {
-		return 
+		return
 	}
 	defer file.Close()
-	
+
 	newGuid := NewGuid()
 	// 生成上传路径
 	userId := c.getUserId()
 	fileUrlPath := "files/" + Digest3(userId) + "/" + userId + "/" + Digest2(newGuid) + "/images"
-	
-	dir := revel.BasePath + "/" +  fileUrlPath
+
+	dir := revel.BasePath + "/" + fileUrlPath
 	err = os.MkdirAll(dir, 0755)
 	if err != nil {
 		return
@@ -140,7 +140,7 @@ func (c ApiBaseContrller) upload(name string, noteId string, isAttach bool) (ok 
 	// 生成新的文件名
 	filename := handel.Filename
 	_, ext := SplitFilename(filename)
-	if(ext != ".gif" && ext != ".jpg" && ext != ".png" && ext != ".bmp" && ext != ".jpeg") {
+	if ext != ".gif" && ext != ".jpg" && ext != ".png" && ext != ".bmp" && ext != ".jpeg" {
 		msg = "notImage"
 		return
 	}
@@ -150,35 +150,35 @@ func (c ApiBaseContrller) upload(name string, noteId string, isAttach bool) (ok 
 	if err != nil {
 		return
 	}
-	
-	maxFileSize := configService.GetUploadSize("uploadImageSize");
+
+	maxFileSize := configService.GetUploadSize("uploadImageSize")
 	if maxFileSize <= 0 {
 		maxFileSize = 1000
 	}
-	
+
 	// > 2M?
-	if(float64(len(data)) > maxFileSize * float64(1024*1024)) {
+	if float64(len(data)) > maxFileSize*float64(1024*1024) {
 		msg = "fileIsTooLarge"
 		return
 	}
-	
-	toPath := dir + "/" + filename;
+
+	toPath := dir + "/" + filename
 	err = ioutil.WriteFile(toPath, data, 0777)
 	if err != nil {
-		return 
+		return
 	}
 	// 改变成gif图片
 	_, toPathGif := TransToGif(toPath, 0, true)
 	filename = GetFilename(toPathGif)
 	filesize := GetFilesize(toPathGif)
 	fileUrlPath += "/" + filename
-	
+
 	// File
 	fileInfo := info.File{FileId: bson.NewObjectId(),
-		Name: filename,
+		Name:  filename,
 		Title: handel.Filename,
-		Path: fileUrlPath,
-		Size: filesize}
+		Path:  fileUrlPath,
+		Size:  filesize}
 	ok, msg = fileService.AddImage(fileInfo, "", c.getUserId(), true)
 	if ok {
 		id = fileInfo.FileId.Hex()

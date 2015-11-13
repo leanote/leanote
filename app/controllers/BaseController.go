@@ -1,17 +1,17 @@
 package controllers
 
 import (
-	"github.com/revel/revel"
-	"gopkg.in/mgo.v2/bson"
 	"encoding/json"
 	"github.com/leanote/leanote/app/info"
-//	. "github.com/leanote/leanote/app/lea"
-//	"io/ioutil"
-//	"fmt"
+	"github.com/revel/revel"
+	"gopkg.in/mgo.v2/bson"
+	//	. "github.com/leanote/leanote/app/lea"
+	//	"io/ioutil"
+	//	"fmt"
+	"bytes"
 	"math"
 	"strconv"
 	"strings"
-	"bytes"
 )
 
 // 公用Controller, 其它Controller继承它
@@ -56,29 +56,29 @@ func (c BaseController) GetUsername() string {
 // 得到用户信息
 func (c BaseController) GetUserInfo() info.User {
 	if userId, ok := c.Session["UserId"]; ok && userId != "" {
-		return userService.GetUserInfo(userId);
+		return userService.GetUserInfo(userId)
 		/*
-		notebookWidth, _ := strconv.Atoi(c.Session["NotebookWidth"])
-		noteListWidth, _ := strconv.Atoi(c.Session["NoteListWidth"])
-		mdEditorWidth, _ := strconv.Atoi(c.Session["MdEditorWidth"])
-		LogJ(c.Session)
-		user := info.User{UserId: bson.ObjectIdHex(userId), 
-			Email: c.Session["Email"], 
-			Logo: c.Session["Logo"], 
-			Username: c.Session["Username"], 
-			UsernameRaw: c.Session["UsernameRaw"], 
-			Theme: c.Session["Theme"], 
-			NotebookWidth: notebookWidth, 
-			NoteListWidth: noteListWidth,
-			MdEditorWidth: mdEditorWidth, 
+			notebookWidth, _ := strconv.Atoi(c.Session["NotebookWidth"])
+			noteListWidth, _ := strconv.Atoi(c.Session["NoteListWidth"])
+			mdEditorWidth, _ := strconv.Atoi(c.Session["MdEditorWidth"])
+			LogJ(c.Session)
+			user := info.User{UserId: bson.ObjectIdHex(userId),
+				Email: c.Session["Email"],
+				Logo: c.Session["Logo"],
+				Username: c.Session["Username"],
+				UsernameRaw: c.Session["UsernameRaw"],
+				Theme: c.Session["Theme"],
+				NotebookWidth: notebookWidth,
+				NoteListWidth: noteListWidth,
+				MdEditorWidth: mdEditorWidth,
+				}
+			if c.Session["Verified"] == "1" {
+				user.Verified = true
 			}
-		if c.Session["Verified"] == "1" {
-			user.Verified = true
-		}
-		if c.Session["LeftIsMin"] == "1" {
-			user.LeftIsMin = true
-		}
-		return user
+			if c.Session["LeftIsMin"] == "1" {
+				user.LeftIsMin = true
+			}
+			return user
 		*/
 	}
 	return info.User{}
@@ -86,7 +86,7 @@ func (c BaseController) GetUserInfo() info.User {
 
 func (c BaseController) GetUserAndBlogUrl() info.UserAndBlogUrl {
 	if userId, ok := c.Session["UserId"]; ok && userId != "" {
-		return userService.GetUserAndBlogUrl(userId);
+		return userService.GetUserAndBlogUrl(userId)
 	}
 	return info.UserAndBlogUrl{}
 }
@@ -107,16 +107,16 @@ func (c BaseController) SetSession(userInfo info.User) {
 		c.Session["UsernameRaw"] = userInfo.UsernameRaw
 		c.Session["Theme"] = userInfo.Theme
 		c.Session["Logo"] = userInfo.Logo
-		
+
 		c.Session["NotebookWidth"] = strconv.Itoa(userInfo.NotebookWidth)
 		c.Session["NoteListWidth"] = strconv.Itoa(userInfo.NoteListWidth)
-		
+
 		if userInfo.Verified {
 			c.Session["Verified"] = "1"
 		} else {
 			c.Session["Verified"] = "0"
 		}
-		
+
 		if userInfo.LeftIsMin {
 			c.Session["LeftIsMin"] = "1"
 		} else {
@@ -139,8 +139,8 @@ func (c BaseController) UpdateSession(key, value string) {
 
 // 返回json
 func (c BaseController) Json(i interface{}) string {
-//	b, _ := json.MarshalIndent(i, "", "	") 
-	b, _ := json.Marshal(i) 
+	//	b, _ := json.MarshalIndent(i, "", "	")
+	b, _ := json.Marshal(i)
 	return string(b)
 }
 
@@ -157,9 +157,9 @@ func (c BaseController) GetPage() int {
 // 判断是否含有某参数
 func (c BaseController) Has(key string) bool {
 	if _, ok := c.Params.Values[key]; ok {
-		return true;
+		return true
 	}
-	return false;
+	return false
 }
 
 /*
@@ -169,12 +169,12 @@ func (c Blog) GetPage(page, count int, list interface{}) info.Page {
 */
 
 func (c BaseController) GetTotalPage(page, count int) int {
-	return int(math.Ceil(float64(count)/float64(page)))
+	return int(math.Ceil(float64(count) / float64(page)))
 }
 
 //-------------
 func (c BaseController) E404() revel.Result {
-	c.RenderArgs["title"] = "404";
+	c.RenderArgs["title"] = "404"
 	return c.NotFound("", nil)
 }
 
@@ -187,15 +187,15 @@ func (c BaseController) SetLocale() string {
 		lang = locale[0:pos]
 	}
 	if lang != "zh" && lang != "en" {
-		lang = "en";
+		lang = "en"
 	}
-	c.RenderArgs["locale"] = lang;
-	c.RenderArgs["siteUrl"] = configService.GetSiteUrl();
-	
+	c.RenderArgs["locale"] = lang
+	c.RenderArgs["siteUrl"] = configService.GetSiteUrl()
+
 	c.RenderArgs["blogUrl"] = configService.GetBlogUrl()
 	c.RenderArgs["leaUrl"] = configService.GetLeaUrl()
 	c.RenderArgs["noteUrl"] = configService.GetNoteUrl()
-	
+
 	return lang
 }
 
@@ -203,7 +203,7 @@ func (c BaseController) SetLocale() string {
 func (c BaseController) SetUserInfo() info.User {
 	userInfo := c.GetUserInfo()
 	c.RenderArgs["userInfo"] = userInfo
-	if(userInfo.Username == configService.GetAdminUsername()) {
+	if userInfo.Username == configService.GetAdminUsername() {
 		c.RenderArgs["isAdmin"] = true
 	}
 	return userInfo
@@ -222,10 +222,10 @@ func (c BaseController) RenderTemplateStr(templatePath string) string {
 		Template:   template,
 		RenderArgs: c.RenderArgs, // 把args给它
 	}
-	
+
 	var buffer bytes.Buffer
 	tpl.Template.Render(&buffer, c.RenderArgs)
-	return buffer.String();
+	return buffer.String()
 }
 
 // json, result
@@ -234,7 +234,7 @@ func (c BaseController) RenderTemplateStr(templatePath string) string {
 func (c BaseController) RenderRe(re info.Re) revel.Result {
 	oldMsg := re.Msg
 	if re.Msg != "" {
-		if(strings.Contains(re.Msg, "-")) {
+		if strings.Contains(re.Msg, "-") {
 			msgAndValues := strings.Split(re.Msg, "-")
 			if len(msgAndValues) == 2 {
 				re.Msg = c.Message(msgAndValues[0], msgAndValues[1])

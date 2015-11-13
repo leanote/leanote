@@ -23,7 +23,7 @@ type ApiAuth struct {
 // 失败返回 {Ok: false, Msg: ""}
 func (c ApiAuth) Login(email, pwd string) revel.Result {
 	var msg = ""
-	
+
 	userInfo, err := authService.Login(email, pwd)
 	if err == nil {
 		token := bson.NewObjectId().Hex()

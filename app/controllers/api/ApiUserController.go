@@ -3,15 +3,15 @@ package api
 import (
 	"github.com/revel/revel"
 	//	"encoding/json"
-	"gopkg.in/mgo.v2/bson"
 	"github.com/leanote/leanote/app/info"
 	. "github.com/leanote/leanote/app/lea"
+	"gopkg.in/mgo.v2/bson"
 	"time"
 	//	"github.com/leanote/leanote/app/types"
-		"io/ioutil"
+	"io/ioutil"
 	//	"fmt"
 	//	"math"
-		"os"
+	"os"
 
 	//	"path"
 	//	"strconv"
@@ -31,10 +31,10 @@ func (c ApiUser) Info() revel.Result {
 		return c.RenderJson(re)
 	}
 	apiUser := info.ApiUser{
-		UserId: userInfo.UserId.Hex(),
+		UserId:   userInfo.UserId.Hex(),
 		Username: userInfo.Username,
-		Email: userInfo.Email,
-		Logo: userInfo.Logo,
+		Email:    userInfo.Email,
+		Logo:     userInfo.Logo,
 		Verified: userInfo.Verified,
 	}
 	return c.RenderJson(apiUser)
@@ -82,7 +82,6 @@ func (c ApiUser) GetSyncState() revel.Result {
 	return c.RenderJson(ret)
 }
 
-
 // 头像设置
 // 参数file=文件
 // 成功返回{Logo: url} 头像新url
@@ -112,7 +111,7 @@ func (c ApiUser) uploadImage() (ok bool, msg, url string) {
 	defer file.Close()
 	// 生成上传路径
 	fileUrlPath = "public/upload/" + c.getUserId() + "/images/logo"
-	
+
 	dir := revel.BasePath + "/" + fileUrlPath
 	err = os.MkdirAll(dir, 0755)
 	if err != nil {
@@ -122,11 +121,11 @@ func (c ApiUser) uploadImage() (ok bool, msg, url string) {
 	filename := handel.Filename
 
 	var ext string
-	
+
 	_, ext = SplitFilename(filename)
 	if ext != ".gif" && ext != ".jpg" && ext != ".png" && ext != ".bmp" && ext != ".jpeg" {
 		msg = "notImage"
-		return 
+		return
 	}
 
 	filename = NewGuid() + ext
@@ -148,8 +147,8 @@ func (c ApiUser) uploadImage() (ok bool, msg, url string) {
 		LogJ(err)
 		return
 	}
-	
+
 	ok = true
 	url = configService.GetSiteUrl() + "/" + fileUrlPath + "/" + filename
-	return 
+	return
 }

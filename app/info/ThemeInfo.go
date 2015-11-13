@@ -18,7 +18,7 @@ type Theme struct {
 	Info      map[string]interface{} `Info`     // 所有信息
 	IsActive  bool                   `IsActive` // 是否在用
 
-	IsDefault bool   `IsDefault` // leanote默认主题, 如果用户修改了默认主题, 则先copy之. 也是admin用户的主题
+	IsDefault bool   `IsDefault`       // leanote默认主题, 如果用户修改了默认主题, 则先copy之. 也是admin用户的主题
 	Style     string `Style,omitempty` // 之前的, 只有default的用户才有blog_default, blog_daqi, blog_left_fixed
 
 	CreatedTime time.Time `CreatedTime`

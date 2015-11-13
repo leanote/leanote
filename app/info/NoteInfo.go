@@ -34,15 +34,15 @@ type Note struct {
 	IsMarkdown bool `IsMarkdown` // 是否是markdown笔记, 默认是false
 
 	AttachNum int `AttachNum` // 2014/9/21, attachments num
-	
+
 	CreatedTime   time.Time     `CreatedTime`
 	UpdatedTime   time.Time     `UpdatedTime`
 	RecommendTime time.Time     `RecommendTime,omitempty` // 推荐时间
 	PublicTime    time.Time     `PublicTime,omitempty`    // 发表时间, 公开为博客则设置
 	UpdatedUserId bson.ObjectId `bson:"UpdatedUserId"`    // 如果共享了, 并可写, 那么可能是其它他修改了
-	
+
 	// 2015/1/15, 更新序号
-	Usn int `Usn` // UpdateSequenceNum 
+	Usn int `Usn` // UpdateSequenceNum
 
 	IsDeleted bool `IsDeleted` // 删除位
 }

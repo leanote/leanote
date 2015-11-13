@@ -2,9 +2,9 @@ package api
 
 import (
 	"github.com/leanote/leanote/app/info"
+	. "github.com/leanote/leanote/app/lea"
 	"github.com/revel/revel"
 	"gopkg.in/mgo.v2/bson"
-		. "github.com/leanote/leanote/app/lea"
 	//	"io/ioutil"
 )
 
@@ -30,17 +30,17 @@ func (c ApiNotebook) fixNotebook(notebook *info.Notebook) info.ApiNotebook {
 		return info.ApiNotebook{}
 	}
 	return info.ApiNotebook{
-		NotebookId       : notebook.NotebookId,
-		UserId           : notebook.UserId,
-		ParentNotebookId : notebook.ParentNotebookId,
-		Seq              : notebook.Seq,
-		Title            : notebook.Title,
-		UrlTitle         : notebook.UrlTitle,
-		IsBlog           : notebook.IsBlog,
-		CreatedTime      : notebook.CreatedTime,
-		UpdatedTime      : notebook.UpdatedTime,
-		Usn: notebook.Usn,
-		IsDeleted: notebook.IsDeleted,
+		NotebookId:       notebook.NotebookId,
+		UserId:           notebook.UserId,
+		ParentNotebookId: notebook.ParentNotebookId,
+		Seq:              notebook.Seq,
+		Title:            notebook.Title,
+		UrlTitle:         notebook.UrlTitle,
+		IsBlog:           notebook.IsBlog,
+		CreatedTime:      notebook.CreatedTime,
+		UpdatedTime:      notebook.UpdatedTime,
+		Usn:              notebook.Usn,
+		IsDeleted:        notebook.IsDeleted,
 	}
 }
 
@@ -86,7 +86,7 @@ func (c ApiNotebook) AddNotebook(title, parentNotebookId string, seq int) revel.
 // [OK]
 func (c ApiNotebook) UpdateNotebook(notebookId, title, parentNotebookId string, seq, usn int) revel.Result {
 	re := info.NewApiRe()
-	
+
 	ok, msg, notebook := notebookService.UpdateNotebookApi(c.getUserId(), notebookId, title, parentNotebookId, seq, usn)
 	if !ok {
 		re.Ok = false

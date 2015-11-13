@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/leanote/leanote/app/info"
 	"github.com/leanote/leanote/app/service"
-//		. "github.com/leanote/leanote/app/lea"
+	//		. "github.com/leanote/leanote/app/lea"
 	"github.com/revel/revel"
 	"strings"
 )
@@ -46,10 +46,10 @@ const (
 // 不需要拦截的url
 var commonUrl = map[string]map[string]bool{"ApiAuth": map[string]bool{"Login": true,
 	"Register": true,
-	},
+},
 	// 文件的操作也不用登录, userId会从session中获取
 	"ApiFile": map[string]bool{"GetImage": true,
-		"GetAttach": true,
+		"GetAttach":     true,
 		"GetAllAttachs": true,
 	},
 }
@@ -90,15 +90,15 @@ func AuthInterceptor(c *revel.Controller) revel.Result {
 	if noToken && userId == "" {
 		// 从session中获取, api/file/getImage, api/file/getAttach, api/file/getAllAttach
 		// 客户端
-		userId, _ = c.Session["UserId"];
+		userId, _ = c.Session["UserId"]
 	}
 	c.Session["_userId"] = userId
-	
+
 	// 是否需要验证?
 	if !needValidate(controller, method) {
 		return nil
 	}
-	
+
 	if userId != "" {
 		return nil // 已登录
 	}

@@ -24,29 +24,29 @@ import (
 type Html2Image struct {
 	image *image.RGBA
 	gc *draw2d.ImageGraphicContext
-	
+
 	// 试探
 	gc2 *draw2d.ImageGraphicContext
-	
+
 	width float64 // 图片宽度
 	height float64
-	
+
 	painWidth float64 // 画布宽度
-	
+
 	startX float64
 	x float64
 	y float64
-	
+
 	isFirstP bool // 是否是第一个段落?
-	
+
 	// 换行和段落的高度
 	brY float64
 	pY float64
-	
+
 	// 字体
 	normalFontFamily draw2d.FontData
 	boldFontFamily draw2d.FontData
-	
+
 	// preTag 之前的标签
 	preTag *html.Node
 }
@@ -58,23 +58,23 @@ func NewHtml2Image() *Html2Image {
 	i, gc := h.InitGc(h.width, h.height)
 	h.gc = gc;
 	h.image = i
-	
+
 	// 试探
 	_, h.gc2 = h.InitGc(h.width, 100)
-	
-	h.startX = 10 
-	
+
+	h.startX = 10
+
 	// 最初位置
 	h.x =  h.startX
 	h.y = 80
-	
+
 	h.isFirstP = true
-	
+
 	h.normalFontFamily = draw2d.FontData{"xihei", 4, draw2d.FontStyleNormal};
 	h.boldFontFamily = draw2d.FontData{"heiti", 5, draw2d.FontStyleNormal};
-	
+
 	h.SetNormalFont()
-	
+
 	return h
 }
 
@@ -86,12 +86,12 @@ func (this *Html2Image) InitGc(w, h float64) (* image.RGBA, *draw2d.ImageGraphic
 	gc.SetFillColor(image.White)
 	// fill the background
 	// gc.Clear()
-	
+
 	draw2d.SetFontFolder(revel.BasePath + "/public/fonts/weibo")
 	draw2d.Rect(gc, 0, 0, w, h) // 设置背景
 	gc.FillStroke()
 	gc.SetFillColor(image.Black)
-	
+
 	// 这个很耗时
 //	gc.Translate(0, 0)
 	return i, gc
@@ -101,7 +101,7 @@ func (this *Html2Image) SaveToPngFile(filePath string) bool {
 //	m := this.image;
 	m := this.image.SubImage(image.Rect(0, 0, int(this.width), int(this.y + 20)))
 	// 需要截断之
-	
+
 	f, err := os.Create(filePath)
 	if err != nil {
 		return false
@@ -124,14 +124,14 @@ func (this *Html2Image) SaveToPngFile(filePath string) bool {
 func (this *Html2Image) SetSmallFont() {
 	this.gc.SetFontData(this.normalFontFamily)
 	this.gc2.SetFontData(this.normalFontFamily)
-	
+
 	this.gc.SetFillColor(color.NRGBA{60, 60, 60, 255})
 	this.gc.SetFontSize(12)
 	this.gc2.SetFontSize(12)
-	
+
 	this.brY = 16
 	this.pY = 30
-	
+
 	this.painWidth = this.width - 10
 }
 
@@ -139,13 +139,13 @@ func (this *Html2Image) SetNormalFont() {
 	this.gc.SetFillColor(image.Black)
 	this.gc.SetFontData(this.normalFontFamily)
 	this.gc2.SetFontData(this.normalFontFamily)
-	
+
 	this.gc.SetFontSize(14)
 	this.gc2.SetFontSize(14)
-	
+
 	this.brY = 20
 	this.pY = 30
-	
+
 	this.painWidth = this.width - 10
 }
 func (this *Html2Image) SetAColor() {
@@ -155,16 +155,16 @@ func (this *Html2Image) SetAColor() {
 // 标题
 func (this *Html2Image) SetTitleFont() {
 	this.gc.SetFillColor(image.Black)
-	
+
 	this.gc.SetFontData(this.boldFontFamily)
 	this.gc2.SetFontData(this.boldFontFamily)
-	
+
 	this.gc.SetFontSize(24)
 	this.gc2.SetFontSize(24)
-	
+
 	this.brY = 30
 	this.pY = 60
-	
+
 	this.painWidth = this.width - 100
 }
 
@@ -175,9 +175,9 @@ func (this *Html2Image) SetHeadFont(h string) {
 
 	this.gc.SetFontData(this.boldFontFamily)
 	this.gc2.SetFontData(this.boldFontFamily)
-	
+
 	this.painWidth = this.width - 50
-	
+
 	if h == "h1" {
 		this.gc.SetFontSize(20)
 		this.gc2.SetFontSize(20)
@@ -229,7 +229,7 @@ func (this *Html2Image) IsOver(r []rune) bool {
 	// 以下的方法可以极大节约时间
 //	a, b, c, d := this.gc2.GetStringBounds(string(r))
 //	width2 := c - a + 2
-	
+
 //	fmt.Println(width2)
 //	fmt.Println(c - a)
 
@@ -268,7 +268,7 @@ func (this *Html2Image) InsertText(text string, needTest bool, prefix string) {
 		this.InsertText(text, true, prefix)
 		return;
 	}
-	
+
 	r := []rune(text)
 	// 试探吧, 可能需要截取
 	if !needTest || !this.IsOver(r) {
@@ -316,17 +316,17 @@ func (this *Html2Image) InsertText(text string, needTest bool, prefix string) {
 								end = i
 							}
 						}
-						
+
 						// 这一段写上
 //						println("------>" + string(r[0:end]))
-						
+
 						// 这里, 判断后面一个是否是标点符号
 						end = this.includePunctuation(r, end)
 						this.InsertText(string(r[0:end]), false, prefix)
 						this.NewBr()
 						// 之后的
 						this.InsertText(string(r[end:]), true, prefix)
-						
+
 						return;
 					} else {
 						// 没超出, 不用计算, 但出要看是否是结尾了
@@ -351,17 +351,17 @@ func (this *Html2Image) InsertText(text string, needTest bool, prefix string) {
 					end = maxRI + 1
 				}
 			}
-			
+
 			// 这一段写上
 //			println("-e----->" + string(r[0:end]))
-			
+
 			// 这里, 判断后面一个是否是标点符号
 			end = this.includePunctuation(r, end)
 			this.InsertText(string(r[0:end]), false, prefix)
 			this.NewBr()
 			// 之后的
 			this.InsertText(string(r[end:]), true, prefix)
-			
+
 			return;
 		}
 	}
@@ -376,9 +376,9 @@ func (this *Html2Image) SetBottom(username, url string) {
 	this.gc.SetStrokeColor(color.NRGBA{200, 0, 0, 255})
 	this.gc.SetLineWidth(2)
     this.gc.FillStroke()
-    
+
     this.SetSmallFont()
-    
+
     // 左侧写字
     this.NewP()
     this.InsertText("本文来自 " + username + " 的leanote笔记", true, "  ")
@@ -389,11 +389,11 @@ func (this *Html2Image) SetBottom(username, url string) {
     	siteUrl = "http://leanote.com"
     }
     this.InsertA(siteUrl + "/blog/" + username, false)
-    
+
 	this.setLogo()
 //    this.painWidth = this.width - 100
 //    this.NewP()
-//    this.InsertText("leanote, 不一样的笔记.", false, "  ") 
+//    this.InsertText("leanote, 不一样的笔记.", false, "  ")
 //    this.NewBr()
 //    this.InsertText("在这里你可以管理自己的知识", false, "  ")
 //    this.NewBr()
@@ -401,7 +401,7 @@ func (this *Html2Image) SetBottom(username, url string) {
 //    this.NewBr()
 //    this.InsertText("并且还可以将笔记设为博客公开", false, "  ")
 //    this.InsertText(". 赶紧加入吧! leanote.com", false, "")
-//    
+//
     // Logo
 }
 
@@ -411,7 +411,7 @@ func (this *Html2Image) setImage(path string, x, y float64) {
     	return;
         panic(err)
     }
-    
+
     var m1 image.Image
 	_, ext := lea.SplitFilename(path)
     if ext == ".png" {
@@ -424,8 +424,8 @@ func (this *Html2Image) setImage(path string, x, y float64) {
 	if err != nil {
 	    return
         panic(err)
-    }   
-    
+    }
+
     this.gc.Translate(x, y)
     this.gc.DrawImage(m1)
     this.gc.Translate(-x, -y)
@@ -448,10 +448,10 @@ func (this *Html2Image) InsertA(text string, isNormal bool) {
 	if text == "" {
 		return
 	}
-	
+
 	this.SetAColor()
 	this.InsertText(text, true, "")
-	
+
 	// 还原
 	if isNormal {
 		this.SetNormalFont()
@@ -464,17 +464,17 @@ func (this *Html2Image) InsertA(text string, isNormal bool) {
 func (this *Html2Image) InsertTitle(title string) {
 	oldX := this.x
 	oldY := this.y - 35
-	
+
 	// 插入之
 	this.SetTitleFont()
-	
+
 	this.InsertText(title, true, "  ")
-	
+
 	// 还原字体大小
 	this.SetNormalFont()
-	
+
 	this.NewBr()
-	
+
 	this.gc.MoveTo(oldX, oldY)
     this.gc.LineTo(this.x, this.y - 10)
 	this.gc.SetStrokeColor(color.NRGBA{200, 0, 0, 255})
@@ -512,7 +512,7 @@ func (this *Html2Image) InsertCode(n *html.Node) {
 		}
 	}
 	this.NewBr()
-	
+
 	this.gc.MoveTo(oldX, oldY)
     this.gc.LineTo(this.x, this.y - 20)
 	this.gc.SetStrokeColor(color.NRGBA{0, 200, 0, 255})
@@ -521,14 +521,14 @@ func (this *Html2Image) InsertCode(n *html.Node) {
 }
 
 // 插入图片
-// 这个path应该是url, 
+// 这个path应该是url,
 // http://abc.com/a.gif 需要先下载
 // 或 /upload/a.gif
 func (this *Html2Image) InsertImage(path string, needTrans bool, width uint) {
 	if path == "" {
 		return;
 	}
-	
+
 	// 是url, 那么取网络图片之
 	var ok bool
 	if strings.HasPrefix(path, "http") || strings.HasPrefix(path, "//") {
@@ -539,7 +539,7 @@ func (this *Html2Image) InsertImage(path string, needTrans bool, width uint) {
 	} else {
 		path = revel.BasePath + "/public/" + path
 	}
-	
+
 	// 需要转换, logo不需要转换
 	if(needTrans) {
 		painWidth := uint(this.painWidth - 10)
@@ -557,7 +557,7 @@ func (this *Html2Image) InsertImage(path string, needTrans bool, width uint) {
     	return;
         panic(err)
     }
-    
+
     var m1 image.Image
 	_, ext := lea.SplitFilename(path)
     if ext == ".png" {
@@ -568,8 +568,8 @@ func (this *Html2Image) InsertImage(path string, needTrans bool, width uint) {
 	if err != nil {
 	    return
         panic(err)
-    }   
-    
+    }
+
     // 如果之前是p, 那么不要有<br>
     if this.preTag.Data != "p" {
 	    this.NewBr()
@@ -580,9 +580,9 @@ func (this *Html2Image) InsertImage(path string, needTrans bool, width uint) {
     this.gc.Translate(-this.x, -this.y) // 这个有用些
 	this.y += float64(m1.Bounds().Dy()) - 20
 	this.NewP()
-    
+
     os.Remove(path)
-    
+
     // 如果图片是文章第一个的话, 之后的需要p
     this.isFirstP = false
 }
@@ -605,7 +605,7 @@ func (this *Html2Image) InsertBody(htmlStr string) (ok bool) {
 				this.preTag = n
 			}
 		}()
-		
+
 		// 标签
 		if n.Type == html.ElementNode {
 			if n.Data == "p" {
@@ -616,7 +616,7 @@ func (this *Html2Image) InsertBody(htmlStr string) (ok bool) {
 				}
 				return;
 			}
-			
+
 			// 也是一个段落, 只是要缩进
 			if n.Data == "ul" || n.Data == "ol" {
 				this.NewP()
@@ -637,7 +637,7 @@ func (this *Html2Image) InsertBody(htmlStr string) (ok bool) {
 					} else {
 						f(c, n, "")
 					}
-					
+
 					if c.Type == html.ElementNode {
 						if c.Data == "br" || c.Data == "p" {
 							needPrefix = true
@@ -650,19 +650,19 @@ func (this *Html2Image) InsertBody(htmlStr string) (ok bool) {
 				this.NewBr()
 				return;
 			}
-			
+
 			// 标题
 			if n.Data == "h1" || n.Data == "h2" || n.Data == "h3" || n.Data == "h4" {
 				this.InsertHead(n)
 				return;
 			}
-			
+
 			if n.Data == "pre" {
 				// 把之后的全拿过来
 				this.InsertCode(n)
 				return;
 			}
-			
+
 			// 图片
 			// 得到src
 			if n.Data == "img" {
@@ -680,22 +680,22 @@ func (this *Html2Image) InsertBody(htmlStr string) (ok bool) {
 				}
 				return;
 			}
-			
+
 			// 链接
 			// 如果链接里只有文本, 那么单独处理, 如果还有其它的, 不作链接处理
 			if n.Data == "a" {
 				if n.FirstChild == n.LastChild {
 					this.InsertA(n.FirstChild.Data, true)
 					return;
-				} 
+				}
 			}
-			
+
 			// 空行
 			if n.Data == "br" { // || n.Data == "div"
 				this.NewBr()
 			}
 		}
-		
+
 		// 是文本, 输出之
 		if n.Type == html.TextNode {
 			data := strings.TrimSpace(n.Data);
@@ -705,36 +705,36 @@ func (this *Html2Image) InsertBody(htmlStr string) (ok bool) {
 			}
 			return;
 		}
-		
+
 		// 其余的
-		
+
 		for c := n.FirstChild; c != nil; c = c.NextSibling {
 			f(c, n, prefix)
 		}
-		
+
 		return;
 	}
 	f(doc, nil, "")
-	
+
 	return true
 }
 
 // 主函数
 func ToImage(uid, username, noteId, title, htmlStr, toPath string) (ok bool) {
 	h := NewHtml2Image()
-	
+
 	// 标题
 	h.InsertTitle(title)
-	
+
 	// 主体
 	ok = h.InsertBody(htmlStr)
 	if(!ok) {
 		return
 	}
-	
+
 	// 页眉与页脚
 	h.SetBottom(username, "")
-	
+
 	// 保存成png图片
 	ok = h.SaveToPngFile(toPath)
 	return

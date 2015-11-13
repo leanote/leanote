@@ -30,7 +30,7 @@ func (this *FileService) AddImage(image info.File, albumId, userId string, needC
 		image.IsDefaultAlbum = true
 	}
 	image.UserId = bson.ObjectIdHex(userId)
-	
+
 	ok = db.Insert(db.Files, image)
 	return
 }
@@ -40,28 +40,28 @@ func (this *FileService) AddImage(image info.File, albumId, userId string, needC
 func (this *FileService) ListImagesWithPage(userId, albumId, key string, pageNumber, pageSize int) info.Page {
 	skipNum, sortFieldR := parsePageAndSort(pageNumber, pageSize, "CreatedTime", false)
 	files := []info.File{}
-	
+
 	q := bson.M{"UserId": bson.ObjectIdHex(userId), "Type": ""} // life
 	if albumId != "" {
-		q["AlbumId"] = bson.ObjectIdHex(albumId);
+		q["AlbumId"] = bson.ObjectIdHex(albumId)
 	} else {
 		q["IsDefaultAlbum"] = true
 	}
 	if key != "" {
-		q["Title"] =  bson.M{"$regex": bson.RegEx{".*?" + key + ".*", "i"}}
+		q["Title"] = bson.M{"$regex": bson.RegEx{".*?" + key + ".*", "i"}}
 	}
-	
-//	LogJ(q)
-	
-	count := db.Count(db.Files, q);
-	
+
+	//	LogJ(q)
+
+	count := db.Count(db.Files, q)
+
 	db.Files.
 		Find(q).
 		Sort(sortFieldR).
 		Skip(skipNum).
 		Limit(pageSize).
 		All(&files)
-		
+
 	return info.Page{Count: count, List: files}
 }
 
@@ -75,12 +75,12 @@ func (this *FileService) GetAllImageNamesMap(userId string) (m map[string]bool) 
 	q := bson.M{"UserId": bson.ObjectIdHex(userId)}
 	files := []info.File{}
 	db.ListByQWithFields(db.Files, q, []string{"Name"}, &files)
-	
+
 	m = make(map[string]bool)
 	if len(files) == 0 {
 		return
 	}
-	
+
 	for _, file := range files {
 		m[file.Name] = true
 	}
@@ -91,8 +91,8 @@ func (this *FileService) GetAllImageNamesMap(userId string) (m map[string]bool) 
 func (this *FileService) DeleteImage(userId, fileId string) (bool, string) {
 	file := info.File{}
 	db.GetByIdAndUserId(db.Files, fileId, userId, &file)
-	
-	if(file.FileId != "") {
+
+	if file.FileId != "" {
 		if db.DeleteByIdAndUserId(db.Files, fileId, userId) {
 			// delete image
 			// TODO
@@ -173,63 +173,63 @@ func (this *FileService) GetFile(userId, fileId string) string {
 	if fileId == "" {
 		return ""
 	}
-	
+
 	file := info.File{}
 	db.Get(db.Files, fileId, &file)
 	path := file.Path
 	if path == "" {
 		return ""
 	}
-	
+
 	// 1. 判断权限
-	
+
 	// 是否是我的文件
 	if userId != "" && file.UserId.Hex() == userId {
 		return path
 	}
-	
+
 	// 得到使用过该fileId的所有笔记NoteId
 	// 这些笔记是否有public的, 若有则ok
 	// 这些笔记(笔记本)是否有共享给我的, 若有则ok
-	
+
 	noteIds := noteImageService.GetNoteIds(fileId)
 	if noteIds != nil && len(noteIds) > 0 {
 		// 这些笔记是否有public的
 		if db.Has(db.Notes, bson.M{"_id": bson.M{"$in": noteIds}, "IsBlog": true}) {
 			return path
 		}
-		
+
 		// 2014/12/28 修复, 如果是分享给用户组, 那就不行, 这里可以实现
 		for _, noteId := range noteIds {
 			note := noteService.GetNoteById(noteId.Hex())
 			if shareService.HasReadPerm(note.UserId.Hex(), userId, noteId.Hex()) {
-				return path;
-			}
-		}
-		/*
-		// 若有共享给我的笔记?
-		// 对该笔记可读?
-		if db.Has(db.ShareNotes, bson.M{"ToUserId": bson.ObjectIdHex(userId), "NoteId": bson.M{"$in": noteIds}}) {
-			return path
-		}
-		
-		// 笔记本是否共享给我?
-		// 通过笔记得到笔记本
-		notes := []info.Note{}
-		db.ListByQWithFields(db.Notes, bson.M{"_id": bson.M{"$in": noteIds}}, []string{"NotebookId"}, &notes)	
-		if notes != nil && len(notes) > 0 {
-			notebookIds := make([]bson.ObjectId, len(notes))
-			for i := 0; i < len(notes); i++ {
-				notebookIds[i] = notes[i].NotebookId
-			}
-			
-			if db.Has(db.ShareNotebooks, bson.M{"ToUserId": bson.ObjectIdHex(userId), "NotebookId": bson.M{"$in": notebookIds}}) {
 				return path
 			}
 		}
+		/*
+			// 若有共享给我的笔记?
+			// 对该笔记可读?
+			if db.Has(db.ShareNotes, bson.M{"ToUserId": bson.ObjectIdHex(userId), "NoteId": bson.M{"$in": noteIds}}) {
+				return path
+			}
+
+			// 笔记本是否共享给我?
+			// 通过笔记得到笔记本
+			notes := []info.Note{}
+			db.ListByQWithFields(db.Notes, bson.M{"_id": bson.M{"$in": noteIds}}, []string{"NotebookId"}, &notes)
+			if notes != nil && len(notes) > 0 {
+				notebookIds := make([]bson.ObjectId, len(notes))
+				for i := 0; i < len(notes); i++ {
+					notebookIds[i] = notes[i].NotebookId
+				}
+
+				if db.Has(db.ShareNotebooks, bson.M{"ToUserId": bson.ObjectIdHex(userId), "NotebookId": bson.M{"$in": notebookIds}}) {
+					return path
+				}
+			}
 		*/
 	}
-	
+
 	// 可能是刚复制到owner上, 但内容又没有保存, 所以没有note->imageId的映射, 此时看是否有fromFileId
 	if file.FromFileId != "" {
 		fromFile := info.File{}
@@ -238,7 +238,7 @@ func (this *FileService) GetFile(userId, fileId string) string {
 			return fromFile.Path
 		}
 	}
-	
+
 	return ""
 }
 
@@ -248,44 +248,44 @@ func (this *FileService) CopyImage(userId, fileId, toUserId string) (bool, strin
 	file2 := info.File{}
 	db.GetByQ(db.Files, bson.M{"UserId": bson.ObjectIdHex(toUserId), "FromFileId": bson.ObjectIdHex(fileId)}, &file2)
 	if file2.FileId != "" {
-		return true, file2.FileId.Hex();
+		return true, file2.FileId.Hex()
 	}
 
 	// 复制之
-	
+
 	file := info.File{}
 	db.GetByIdAndUserId(db.Files, fileId, userId, &file)
-	
+
 	if file.FileId == "" || file.UserId.Hex() != userId {
 		return false, ""
 	}
-		
+
 	_, ext := SplitFilename(file.Name)
 	newFilename := NewGuid() + ext
-	
+
 	dir := "files/" + toUserId + "/images"
 	filePath := dir + "/" + newFilename
 	err := os.MkdirAll(dir, 0755)
 	if err != nil {
 		return false, ""
 	}
-	
-	_, err = CopyFile(revel.BasePath + "/" + file.Path, revel.BasePath + "/" + filePath)
+
+	_, err = CopyFile(revel.BasePath+"/"+file.Path, revel.BasePath+"/"+filePath)
 	if err != nil {
 		Log(err)
 		return false, ""
 	}
-	
+
 	fileInfo := info.File{Name: newFilename,
-		Title: file.Title,
-		Path: filePath,
-		Size: file.Size, 
+		Title:      file.Title,
+		Path:       filePath,
+		Size:       file.Size,
 		FromFileId: file.FileId}
-	id := bson.NewObjectId();
+	id := bson.NewObjectId()
 	fileInfo.FileId = id
 	fileId = id.Hex()
 	Ok, _ := this.AddImage(fileInfo, "", toUserId, false)
-	
+
 	if Ok {
 		return Ok, id.Hex()
 	}
@@ -296,7 +296,7 @@ func (this *FileService) CopyImage(userId, fileId, toUserId string) (bool, strin
 func (this *FileService) IsMyFile(userId, fileId string) bool {
 	// 如果有问题会panic
 	if !bson.IsObjectIdHex(fileId) || !bson.IsObjectIdHex(userId) {
-		return false;
+		return false
 	}
 	return db.Has(db.Files, bson.M{"UserId": bson.ObjectIdHex(userId), "_id": bson.ObjectIdHex(fileId)})
 }

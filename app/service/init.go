@@ -1,13 +1,13 @@
 package service
 
 import (
-	"regexp"
-	"strings"
-	"net/url"
-	"strconv"
-	"gopkg.in/mgo.v2"
 	"github.com/leanote/leanote/app/db"
+	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+	"net/url"
+	"regexp"
+	"strconv"
+	"strings"
 )
 
 // init service, for share service bettween services
@@ -61,7 +61,7 @@ func InitService() {
 	UpgradeS = &UpgradeService{}
 	SessionS = &SessionService{}
 	ThemeS = &ThemeService{}
-	
+
 	notebookService = NotebookS
 	noteService = NoteS
 	noteContentHistoryService = NoteContentHistoryS

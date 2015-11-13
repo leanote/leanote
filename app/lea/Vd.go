@@ -2,8 +2,8 @@ package lea
 
 import (
 	"encoding/json"
-	"strconv"
 	"regexp"
+	"strconv"
 )
 
 // 验证
@@ -38,15 +38,15 @@ var rulesStr = `{
 `
 var rulesMap map[string][]map[string]string
 
-var rules = map[string]func(string, map[string]string)(bool, string) {
-	"required": func(value string, rule map[string]string)(ok bool, msg string) {
+var rules = map[string]func(string, map[string]string) (bool, string){
+	"required": func(value string, rule map[string]string) (ok bool, msg string) {
 		if value == "" {
 			return
 		}
 		ok = true
-		return 
+		return
 	},
-	"minLength": func(value string, rule map[string]string)(ok bool, msg string) {
+	"minLength": func(value string, rule map[string]string) (ok bool, msg string) {
 		if value == "" {
 			return
 		}
@@ -55,7 +55,7 @@ var rules = map[string]func(string, map[string]string)(bool, string) {
 		ok = len(value) >= dataI
 		return
 	},
-	"min": func(value string, rule map[string]string)(ok bool, msg string) {
+	"min": func(value string, rule map[string]string) (ok bool, msg string) {
 		if value == "" {
 			return
 		}
@@ -65,8 +65,8 @@ var rules = map[string]func(string, map[string]string)(bool, string) {
 		ok = vI >= dataI
 		return
 	},
-	
-	"sortField": func(value string, rule map[string]string)(ok bool, msg string) {
+
+	"sortField": func(value string, rule map[string]string) (ok bool, msg string) {
 		if value == "" {
 			return
 		}
@@ -74,22 +74,22 @@ var rules = map[string]func(string, map[string]string)(bool, string) {
 		ok = InArray(sortFields, value)
 		return
 	},
-	
-	"password": func(value string, rule map[string]string)(ok bool, msg string) {
+
+	"password": func(value string, rule map[string]string) (ok bool, msg string) {
 		if value == "" {
 			return
 		}
 		ok = len(value) >= 6
 		return
 	},
-	"email": func(value string, rule map[string]string)(ok bool, msg string) {
+	"email": func(value string, rule map[string]string) (ok bool, msg string) {
 		if value == "" {
 			return
 		}
 		ok = IsEmail(value)
 		return
 	},
-	"noSpecialChars": func(value string, rule map[string]string)(ok bool, msg string) {
+	"noSpecialChars": func(value string, rule map[string]string) (ok bool, msg string) {
 		if value == "" {
 			return
 		}
@@ -97,8 +97,8 @@ var rules = map[string]func(string, map[string]string)(bool, string) {
 		return
 	},
 	// www.baidu.com
-	// 
-	"domain": func(value string, rule map[string]string)(ok bool, msg string) {
+	//
+	"domain": func(value string, rule map[string]string) (ok bool, msg string) {
 		if value == "" {
 			ok = true
 			return // 可为空
@@ -106,16 +106,16 @@ var rules = map[string]func(string, map[string]string)(bool, string) {
 		ok2, _ := regexp.MatchString(`[^0-9a-zA-Z_\.\-]`, value)
 		ok = !ok2
 		if !ok {
-			return 
+			return
 		}
 		ok = true
 		return
 	},
 	// abcd
-	"subDomain": func(value string, rule map[string]string)(ok bool, msg string) {
+	"subDomain": func(value string, rule map[string]string) (ok bool, msg string) {
 		if value == "" {
 			ok = true
-			return  // 可为空
+			return // 可为空
 		}
 		if len(value) < 4 {
 			ok = false
@@ -137,7 +137,7 @@ func InitVd() {
 
 func Vd(name, value string) (ok bool, msg string) {
 	rs, _ := rulesMap[name]
-	
+
 	for _, rule := range rs {
 		ruleFunc, _ := rules[rule["rule"]]
 		if ok2, msg2 := ruleFunc(value, rule); !ok2 {
@@ -151,11 +151,11 @@ func Vd(name, value string) (ok bool, msg string) {
 			if msgData != "" {
 				msg += "-" + msgData
 			}
-			return 
+			return
 		}
 	}
 	ok = true
-	return 
+	return
 }
 
 func Vds(m map[string]string) (ok bool, msg string) {
@@ -166,5 +166,5 @@ func Vds(m map[string]string) (ok bool, msg string) {
 		}
 	}
 	ok = true
-	return 
+	return
 }

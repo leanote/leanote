@@ -2,9 +2,9 @@ package admin
 
 import (
 	"github.com/revel/revel"
-//	"encoding/json"
+	//	"encoding/json"
 	"github.com/leanote/leanote/app/info"
-//	"io/ioutil"
+	//	"io/ioutil"
 )
 
 // Upgrade controller
@@ -14,7 +14,7 @@ type AdminUpgrade struct {
 
 func (c AdminUpgrade) UpgradeBlog() revel.Result {
 	upgradeService.UpgradeBlog()
-	return nil;
+	return nil
 }
 
 func (c AdminUpgrade) UpgradeBetaToBeta2() revel.Result {
