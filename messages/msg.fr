@@ -3,7 +3,7 @@ app=Leanote
 moto=Plus qu'un simple bloc-notes!
 moto2=Connaissance, Blog, Partage, Coopération... tout est dans Leanote
 moto3=Simple mais pas simplet.
-fork github=Fork leanote sur Github
+fork github=Forkez Leanote sur Github
 
 # Home
 forgetPassword = Mot de passe oublié?
@@ -14,14 +14,14 @@ usernameOrEmail=Nom d'utilisateur ou adresse de courriel
 password=Mot de passe
 home=Mes blocs-notes
 desktopApp=Application
-aboutLeanote=A propos de leanote
+aboutLeanote=A propos de Leanote
 suggestions=Suggestions
 yourSuggestions=Suggestions
 leanoteBlog=Blog
 knowledge=Connaissances
-knowledgeInfo=Utiliser leanote comme une note, gérer ses connaissances dans leanote.
+knowledgeInfo=Utiliser Leanote pour gérer ses notes et ses connaissances
 share=Partager
-shareInfo=Partagez vos connaissances avec vos amis dans leanote.
+shareInfo=Partagez vos connaissances avec vos amis dans Leanote.
 cooperation=Coopération
 cooperationInfo=Collaborez avec vos amis pour augmenter vos connaissances.
 blog=Blog
@@ -33,7 +33,7 @@ captcha=Captcha
 reloadCaptcha=Recharger Captcha
 captchaError=Le Captcha ne correspond pas
 inputCaptcha=Le Captcha est requis 
-noTag=No Tags
+noTag=Pas d'étiquettes
 
 hi=Coucou
 welcomeUseLeanote=Bienvenue!
@@ -109,8 +109,8 @@ writingMode=Mode écriture
 normalMode=Mode normal
 saving=Sauvegarde
 saveSuccess=Sauvegarde réussie
-SearchNote=Search Note
-SearchNotebook=Search Notebook
+SearchNote=Chercher une note
+SearchNotebook=Chercher un bloc-note
 
 update=Mettre à jour
 create=Créer
@@ -270,7 +270,7 @@ premiumAccountType=Premium
 normalAccountType=Normal
 imageSize=Taille de l'image
 attachSize=Taille de la pièce-jointe
-totalTraffic=Web Traffic
+totalTraffic=Trafic Web
 upgrade=Mettre mon compte à niveau
 leanoteEvents=Nouvelles de Leanote
 addLeanoteAccount=Nouveau compte Leanote
@@ -343,27 +343,27 @@ deleteGroup=Effacer groupe
 addMemberTips=Rentrer le nom d'utilisateur et le courriel pour ajouter un membre
 deleteMember=Effacer membre
 
-created=Created
-updated=Updated
-modify=Modify
+created=Créé
+updated=Mis à jour
+modify=Modifier
 
 # share
 tokenExpired=Token Expired
-Share=Share
-hasSharedThisNote=has shared this note
-inputSharePwd=Please input password
-shareToGroup=Share to group
-shareByPwd=Share by password
-groupName=Group Name
-operation=Operation
-groupAndMemberManage=Manage group/member
-shareToGroupTips=If you share your note to group, the member belongs to group will have the right to access the note
-shared=Shared
-notShared=Not shared
-shareLink=Share link
-sharePwd=Access password
-cancelShare=Cancel
-getShareLinkAndPwd=Get link and password
+Share=Partager
+hasSharedThisNote=a partagé cette note
+inputSharePwd=Veuillez entrer le mot de passe
+shareToGroup=Partager avec le groupe
+shareByPwd=Partager avec un mot de passe
+groupName=Nom de groupe
+operation=Opération
+groupAndMemberManage=Gérer le group/membre
+shareToGroupTips=Si vous partagez votre note avec un groupe, les membres qui en font partie auront accès à la note.
+shared=Partagé
+notShared=Non partagé
+shareLink=Partager le lien
+sharePwd=Accès au mot de passe
+cancelShare=Annuler
+getShareLinkAndPwd=Obtenir le lien et le mot de passe
 
 
 # error 
