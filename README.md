@@ -1,7 +1,7 @@
 # Leanote
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/leanote/leanote?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Build Status](https://travis-ci.org/leanote/leanote.svg)](https://travis-ci.org/leanote/leanote)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/leanote/leanote?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## 1. Introduction
 
@@ -48,8 +48,8 @@ More information about how to install Leanote please see:
 Please see [How-to-develop-leanote](https://github.com/leanote/leanote/wiki/How-to-develop-leanote-%E5%A6%82%E4%BD%95%E5%BC%80%E5%8F%91leanote)
 
 ## 5. Docs
-* [Leanote binary distribution installation tutorial](https://github.com/leanote/leanote/wiki/leanote-binary-distribution-installation-tutorial)
-* [Leanote develop distribution installation tutorial](https://github.com/leanote/leanote/wiki/leanote-develop-distribution-installation-tutorial)
+* [Leanote binary installation tutorial](https://github.com/leanote/leanote/wiki/leanote-binary-distribution-installation-tutorial)
+* [Leanote source installation tutorial](https://github.com/leanote/leanote/wiki/leanote-source-installation-tutorial)
 
 More docs please see [wiki](https://github.com/leanote/leanote/wiki).
 
@@ -122,7 +122,7 @@ Leanote云笔记产品包括: Leanote Web & Server(即本仓库), 桌面客户�
 这里详细整理了Leanote二进版和Leanote开发版的安装教程, 请移步至:
 
 * [Leanote二进制详细安装教程](https://github.com/leanote/leanote/wiki/leanote%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
-* [Leanote开发版详细安装教程](https://github.com/leanote/leanote/wiki/leanote%E5%BC%80%E5%8F%91%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
+* [Leanote源码详细安装教程](https://github.com/leanote/leanote/wiki/leanote%E5%BC%80%E5%8F%91%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
 
 ## 4. 如何对Leanote进行二次开发
 
@@ -130,7 +130,7 @@ Leanote云笔记产品包括: Leanote Web & Server(即本仓库), 桌面客户�
 
 ## 5 相关文档
 * [Leanote二进制版详细安装教程](https://github.com/leanote/leanote/wiki/leanote%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
-* [Leanote开发版详细安装教程](https://github.com/leanote/leanote/wiki/leanote%E5%BC%80%E5%8F%91%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
+* [Leanote源码详细安装教程](https://github.com/leanote/leanote/wiki/leanote%E5%BC%80%E5%8F%91%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
 * [Leanote source Leanote源码导读](https://github.com/leanote/leanote/wiki/Leanote-source-leanote源码导读)
 * [Leanote blog theme api(中文版)](https://github.com/leanote/leanote/wiki/leanote-blog-theme-api)
 * [How to develop leanote 如何开发Leanote](https://github.com/leanote/leanote/wiki/How-to-develop-leanote-如何开发leanote)
