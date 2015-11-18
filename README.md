@@ -40,18 +40,16 @@ Welcome to sign up on https://leanote.com, Leanote team provide a stable and rel
 
 More information about how to install Leanote please see:
 
-* [Leanote binary distribution installation tutorial](https://github.com/leanote/leanote/wiki/leanote-binary-distribution-installation-tutorial)
-* [Leanote develop distribution installation tutorial](https://github.com/leanote/leanote/wiki/leanote-develop-distribution-installation-tutorial)
+* [Leanote binary installation tutorial](https://github.com/leanote/leanote/wiki/leanote-binary-distribution-installation-tutorial)
+* [Leanote source installation tutorial](https://github.com/leanote/leanote/wiki/leanote-source-installation-tutorial)
 
 ## 4. How to develop Leanote
 
 Please see [How-to-develop-leanote](https://github.com/leanote/leanote/wiki/How-to-develop-leanote-%E5%A6%82%E4%BD%95%E5%BC%80%E5%8F%91leanote)
 
 ## 5. Docs
-* [Leanote binary installation tutorial](https://github.com/leanote/leanote/wiki/leanote-binary-distribution-installation-tutorial)
-* [Leanote source installation tutorial](https://github.com/leanote/leanote/wiki/leanote-source-installation-tutorial)
 
-More docs please see [wiki](https://github.com/leanote/leanote/wiki).
+Please see [wiki](https://github.com/leanote/leanote/wiki).
 
 ## 6. Contributors
 Thank you to all the [contributors](https://github.com/leanote/leanote/graphs/contributors) on
