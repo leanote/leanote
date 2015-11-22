@@ -64,11 +64,10 @@ gulp.task('concatAppJs', function() {
 
 // plugins压缩
 gulp.task('plugins', function() {
-    gulp.src(base + '/js/plugins/libs/*.js')
-        .pipe(uglify()) // 压缩
-        // .pipe(concat('main.min.js'))
-        .pipe(gulp.dest(base + '/js/plugins/libs-min'));
-
+    // gulp.src(base + '/js/plugins/libs/*.js')
+    //     .pipe(uglify()) // 压缩
+    //     // .pipe(concat('main.min.js'))
+    //     .pipe(gulp.dest(base + '/js/plugins/libs-min'));
 
     // 所有js合并成一个
      var jss = [
@@ -83,8 +82,9 @@ gulp.task('plugins', function() {
     for(var i in jss) {
         jss[i] = base + '/js/plugins/' + jss[i] + '.js';
     }
+    jss.push(base + '/js/plugins/libs-min/fileupload.js');
 
-     gulp.src(jss)
+    return gulp.src(jss)
         .pipe(uglify()) // 压缩
         .pipe(concat('main.min.js'))
         .pipe(gulp.dest(base + '/js/plugins'));
@@ -138,10 +138,15 @@ gulp.task('devToProHtml', function() {
         .pipe(replace(/<!-- pro_markdown_js -->/, '<script src="/js/markdown-v2.min.js"></script>')) // 替换
         .pipe(replace(/<!-- pro_tinymce_init_js -->/, "var tinyMCEPreInit = {base: '/public/tinymce', suffix: '.min'};")) // 替换
         .pipe(replace(/plugins\/main.js/, "plugins/main.min.js")) // 替换
-        // 连续两个空行换成一个空行, 没用
-        .pipe(replace(/\n\n/g, '\n'))
-        .pipe(replace(/\n\n/g, '\n'))
+        // 连续两个空行换成一个空行
+        .pipe(replace(/\r\n\r\n/g, '\r\n'))
+        .pipe(replace(/\r\n\r\n/g, '\r\n'))
+        .pipe(replace(/\r\n\r\n/g, '\r\n'))
+        .pipe(replace(/\r\n\r\n/g, '\r\n'))
+        .pipe(replace(/\r\n\r\n/g, '\r\n'))
+        .pipe(replace(/\r\n\r\n/g, '\r\n'))
         .pipe(replace('console.log(o);', ''))
+        .pipe(replace('console.trace(o);', ''))
         // .pipe(minifyHtml()) // 不行, 压缩后golang报错
         .pipe(rename('note.html'))
         .pipe(gulp.dest(noteProBase));
@@ -289,35 +294,6 @@ gulp.task('concatAlbumJs', function() {
         .pipe(concat('main.all.js'))
         .pipe(gulp.dest(base + '/album/js'));
 });
-
-// plugins压缩
-gulp.task('plugins', function() {
-    gulp.src(base + '/js/plugins/libs/*.js')
-        .pipe(uglify()) // 压缩
-        // .pipe(concat('main.min.js'))
-        .pipe(gulp.dest(base + '/js/plugins/libs-min'));
-
-       
-    // 所有js合并成一个
-     var jss = [
-        'note_info',
-        'tips',
-        'history',
-        'attachment_upload',
-        'editor_drop_paste',
-        'main'
-    ];
-
-    for(var i in jss) {
-        jss[i] = base + '/js/plugins/' + jss[i] + '.js';
-    }
-
-     gulp.src(jss)
-        .pipe(uglify()) // 压缩
-        .pipe(concat('main.min.js'))
-        .pipe(gulp.dest(base + '/js/plugins'));
-});
-
 
 // tinymce
 // please set the right path on your own env

@@ -9,9 +9,9 @@ requirejs.config({
         'editor_drop_paste': 'js/plugins/editor_drop_paste',
         'attachment_upload': 'js/plugins/attachment_upload',
         
-        'jquery.ui.widget': 'js/plugins/libs-min/jquery.ui.widget',
-        'fileupload': 'js/plugins/libs-min/jquery.fileupload',
-        'iframe-transport': 'js/plugins/libs-min/jquery.iframe-transport',
+        // 'jquery.ui.widget': 'js/plugins/libs-min/jquery.ui.widget',
+        'fileupload': 'js/plugins/libs-min/fileupload',
+        // 'iframe-transport': 'js/plugins/libs-min/jquery.iframe-transport',
 
         'note_info': 'js/plugins/note_info',
         'tips': 'js/plugins/tips',
@@ -19,7 +19,7 @@ requirejs.config({
     },
     shim: {
         // life
-        'fileupload': {deps: ['jquery.ui.widget', 'iframe-transport']},
+        // 'fileupload': {deps: ['jquery.ui.widget', 'iframe-transport']},
     }
 });
 

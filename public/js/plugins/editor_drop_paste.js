@@ -1,7 +1,7 @@
 // for editor.
 // drag image to editor
 var urlPrefix = UrlPrefix; // window.location.protocol + "//" + window.location.host;
-define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function() {
+define('editor_drop_paste', ['fileupload'], function() {
 
 	// 在toggle成pre或ace时
 	// 最后没有元素, 或者元素不是p, 则在最后插入之
