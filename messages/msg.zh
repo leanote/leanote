@@ -425,6 +425,10 @@ Undo=撤销
 Redo=重做
 enter image description here=图片标题
 enter link description here=链接标题
+Edit mode=编辑模式
+Vim mode=Vim模式
+Emacs mode=Emacs模式
+Normal mode=普通模式
 
 Insert Image=插入
 
