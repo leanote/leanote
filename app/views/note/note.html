@@ -625,7 +625,7 @@ function log(o) {
 							                    <li class="wmd-button-group3 btn-group"></li>
 							                </ul>
 							                <ul class="nav left-buttons">
-							                    <li class="wmd-button-group5 btn-group"></li>
+							                    <li class="wmd-button-group4 btn-group"></li>
 							                </ul>
 							                <!-- 帮助 -->
 							                 <ul class="nav left-buttons">
@@ -717,15 +717,15 @@ function log(o) {
 			            <div class="modal-header">
 			                <button type="button" class="close" data-dismiss="modal"
 			                    aria-hidden="true">&times;</button>
-			                <h4 class="modal-title">{{msg . "Image"}}</h4>
+			                <h4 class="modal-title">{{leaMsg . "Image"}}</h4>
 			            </div>
 			            <div class="modal-body" style="padding-top: 0; padding-bottom: 0">
 			            	<iframe name="mdImageManager" style="width: 100%; height: 350px" scrolling="no" id="leauiIfrForMD" src="" frameborder="0"></iframe>
 			            </div>
 			            <div class="modal-footer">
 			                 <a href="#" class="btn btn-default"
-			                    data-dismiss="modal">{{msg . "Cancel"}}</a> <a href="#"
-			                    class="btn btn-primary action-insert-image" data-dismiss="modal">{{msg . "Insert Image"}}</a>
+			                    data-dismiss="modal">{{leaMsg . "Cancel"}}</a> <a href="#"
+			                    class="btn btn-primary action-insert-image" data-dismiss="modal">{{leaMsg . "Insert Image"}}</a>
 			            </div>
 			        </div>
 			    </div>
@@ -898,7 +898,7 @@ window.require = {
 };
 </script>
 
-<script src="/js/markdown.min.js"></script>
+<script src="/js/markdown-v2.min.js"></script>
 
 
 
