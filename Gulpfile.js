@@ -94,7 +94,7 @@ gulp.task('plugins', function() {
 gulp.task('concatMarkdownJs', function() {
     var jss = [
         'js/require.js',
-        'dist/main.min.js',
+        'md/main.min.js',
     ];
 
     for(var i in jss) {
@@ -112,7 +112,7 @@ gulp.task('concatMarkdownJs', function() {
 gulp.task('concatMarkdownJsV2', function() {
     var jss = [
         'js/require.js',
-        'dist/main-v2.min.js',
+        'md/main-v2.min.js',
     ];
 
     for(var i in jss) {
@@ -190,7 +190,7 @@ gulp.task('i18n', function() {
 
     ls(base + '/admin');
     ls(base + '/blog');
-    ls(base + '/dist');
+    ls(base + '/md');
     ls(base + '/js');
     ls(base + '/album');
     ls(base + '/libs');
@@ -372,10 +372,10 @@ gulp.task('minifycss', function() {
         .pipe(minifycss())
         .pipe(gulp.dest(base + '/css/zTreeStyle'));
 
-    gulp.src(base + '/dist/themes/default.css')
+    gulp.src(base + '/md/themes/default.css')
         .pipe(rename({suffix: '-min'}))
         .pipe(minifycss())
-        .pipe(gulp.dest(base + '/dist/themes'));
+        .pipe(gulp.dest(base + '/md/themes'));
 
     gulp.src(base + '/js/contextmenu/css/contextmenu.css')
         .pipe(rename({suffix: '-min'}))
