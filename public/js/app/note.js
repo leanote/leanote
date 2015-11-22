@@ -1019,20 +1019,20 @@ Note.newNote = function(notebookId, isShare, fromUserId, isMarkdown) {
 		// 插入到第一个位置
 		Note.noteItemListO.prepend(newItem);
 	}
-	
+
 	Note.selectTarget($(tt('[noteId="?"]', note.NoteId)));
-	
+
 	$("#noteTitle").focus();
 	
 	Note.renderNote(note);
 	Note.renderNoteContent(note);
 	Note.setCurNoteId(note.NoteId);
-	
+
 	// 更新数量
 	Notebook.incrNotebookNumberNotes(notebookId)
 	
 	// 切换到写模式
-	Note.toggleWriteable();
+	Note.toggleWriteable(true);
 };
 
 // 删除或移动笔记后, 渲染下一个或上一个
@@ -1589,7 +1589,7 @@ Note.toggleReadOnly = function(needSave) {
 	}
 };
 // 切换到编辑模式
-LEA.toggleWriteable = Note.toggleWriteable = function() {
+LEA.toggleWriteable = Note.toggleWriteable = function(isFromNewNote) {
 	var me = Note;
 
 	// $('#infoToolbar').hide();
@@ -1612,9 +1612,11 @@ LEA.toggleWriteable = Note.toggleWriteable = function() {
 		$('#editorContent pre').each(function() {
 			LeaAce.setAceReadOnly($(this), false);
 		});
+		isFromNewNote || tinymce.activeEditor.focus();
 	}
 	else {
 		if(MD) {
+			isFromNewNote || MD.focus();
 			MD.onResize();
 		}
 	}
@@ -2429,6 +2431,17 @@ $(function() {
 		var key = $(this).val();
 		Notebook.searchNotebookForList(key);
 	});
+
+	// note title 里按tab, 切换到编辑区
+	$('#noteTitle').on("keydown", function(e) {
+		var keyCode = e.keyCode || e.witch;
+		// tab
+		if (keyCode == 9) {
+			// 一举两得, 即切换到了writable, 又focus了
+			Note.toggleWriteable();
+			e.preventDefault();
+		}
+	});
 	
 	//---------------------------
 	// 搜索, 按enter才搜索
@@ -2438,16 +2451,13 @@ $(function() {
 	});
 	*/
 	$("#searchNoteInput").on("keydown", function(e) {
-		var theEvent = e; // window.event || arguments.callee.caller.arguments[0];
-		if(theEvent.keyCode == 13 || theEvent.keyCode == 108) {
-			theEvent.preventDefault();
+		var keyCode = e.keyCode || e.witch;
+		if(keyCode == 13 || keyCode == 108) {
+			e.preventDefault();
 			Note.searchNote();
 			return false;
 		}
 	});
-	
-	//--------------------
-	// Note.initContextmenu();
 	
 	$("#saveBtn").click(function() {
 		// 只有在这里, 才会force
@@ -2492,15 +2502,23 @@ $(function() {
 	//
 	// 笔记内容里的链接跳转
 	$('#editorContent').on('click', 'a', function (e) {
-		e.preventDefault();
 		if (Note.readOnly) {
 			var href = $(this).attr('href');
+			// 是一个hash
+			if (href && href[0] == '#') {
+				return;
+			}
+			e.preventDefault();
 			window.open(href);
 		}
 	});
 	$('#preview-contents').on('click', 'a', function (e) {
-		e.preventDefault();
 		var href = $(this).attr('href');
+		// 是一个hash
+		if (href && href[0] == '#') {
+			return;
+		}
+		e.preventDefault();
 		window.open(href);
 	});
 });

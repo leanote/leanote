@@ -295,13 +295,20 @@ var Resize = {
 			resizeEditor();
 		}
 	},
-	
+
+	resizeMDInterval: null,
 	// mdeditor
 	resizeMdColumns: function(event) {
 		var self = this;
 		if (self.mdLineMove) {
 			var mdEditorWidth = event.clientX - self.leftColumn.offset().left; // self.leftNotebook.width() - self.noteList.width();
 			self.setMdColumnWidth(mdEditorWidth);
+
+			clearInterval(self.resizeMDInterval);
+
+			self.resizeMDInterval = setTimeout(function () {
+				MD.aceEditor && MD.aceEditor.resize();
+			}, 50);
 		}
 	},
 	// 设置宽度
@@ -493,10 +500,20 @@ function initEditor() {
 			});
 			
 			// 为了把下拉菜单关闭
+			/*
 	        ed.on("click", function(e) {
 	          // $("body").trigger("click");
 	          // console.log(tinymce.activeEditor.selection.getNode());
 	        });
+	        */
+	        
+	        // electron下有问题, Ace剪切导致行数减少, #16
+			ed.on('cut', function(e) {
+				if($(e.target).hasClass('ace_text-input')) {
+					e.preventDefault();
+					return;
+				}
+			});
 		},
 		
 		// fix TinyMCE Removes site base url
@@ -506,10 +523,9 @@ function initEditor() {
 		remove_script_host:false,
 		
 		selector : "#editorContent",
-		// height: 100,//这个应该是文档的高度, 而其上层的高度是$("#content").height(),
-		// parentHeight: $("#content").height(),
-		// content_css : ["/css/bootstrap.css", "/css/editor/editor.css"].concat(em.getWritingCss()),
-		content_css : ["/css/editor/editor.css"], // .concat(em.getWritingCss()),
+		
+		// content_css 不再需要
+		// content_css : [LEA.sPath + "/css/editor/editor.css"], // .concat(em.getWritingCss()),
 		skin : "custom",
 		language: LEA.locale, // 语言
 		plugins : [
@@ -674,23 +690,11 @@ function scrollTo(self, tagName, text) {
 		}
 	});
 	
-	// 打开设置
-	function openSetInfoDialog(whichTab) {
-		showDialogRemote("/user/account", {tab: whichTab});
-	}
-	// 帐号设置
-	$("#setInfo").click(function() {
-		openSetInfoDialog(0);
-	});
 	// 邮箱验证
 	$("#wrongEmail").click(function() {
 		openSetInfoDialog(1);
 	});
 	
-	$("#setAvatarMenu").click(function() {
-		showDialog2("#avatarDialog", {title: "头像设置", postShow: function() {
-		}});
-	});
 	$("#setTheme").click(function() {
 		showDialog2("#setThemeDialog", {title: "主题设置", postShow: function() {
 			if (!UserInfo.Theme) {
@@ -717,14 +721,7 @@ function scrollTo(self, tagName, text) {
 			}
 		});
 	});
-	
-	//-------------
-	// 邮箱验证
-	if(!UserInfo.Verified) {
-//		$("#leanoteMsg").hide();
-//		$("#verifyMsg").show();
-	}
-	
+
 	// 禁止双击选中文字
 	$("#notebook, #newMyNote, #myProfile, #topNav, #notesAndSort", "#leanoteNavTrigger").bind("selectstart", function(e) {
 		e.preventDefault();
@@ -735,39 +732,21 @@ function scrollTo(self, tagName, text) {
 	function updateLeftIsMin(is) {
 		ajaxGet("/user/updateLeftIsMin", {leftIsMin: is})
 	}
+
+	// 最小化左侧
+	var $page = $('#page');
 	function minLeft(save) {
-		$("#leftNotebook").width(30);
-		$("#notebook").hide();
-		// 左侧
-		$("#noteAndEditor").css("left", 30)	
-		$("#notebookSplitter").hide();
-		
-//		$("#leftSwitcher").removeClass("fa-angle-left").addClass("fa-angle-right");
-		
-		// logo
-		$("#logo").hide();
-		$("#leftSwitcher").hide();
-		$("#leftSwitcher2").show();
-		$("#leftNotebook .slimScrollDiv").hide();
-		
+		$page.addClass('mini-left');
 		if(save) {
 			updateLeftIsMin(true);
 		}
 	}
-	
+
+	// 展开右侧
 	function maxLeft(save) {
+		$page.removeClass('mini-left');
 		$("#noteAndEditor").css("left", UserInfo.NotebookWidth);
 		$("#leftNotebook").width(UserInfo.NotebookWidth);
-		$("#notebook").show();
-		$("#notebookSplitter").show();
-		
-//		$("#leftSwitcher").removeClass("fa-angle-right").addClass("fa-angle-left");
-		
-		$("#leftSwitcher2").hide();
-		$("#logo").show();
-		$("#leftSwitcher").show();
-		$("#leftNotebook .slimScrollDiv").show();
-		
 		if(save) {
 			updateLeftIsMin(false);
 		}
@@ -948,7 +927,7 @@ var Pjax = {
 		var title = noteInfo.Title;
 		var url = '/note/' + noteId;
 		if (location.href.indexOf('?online') > 0) {
-			url += '?online=1'
+			url += '?online=' + /online=([0-9])/.exec(location.href)[1];
 		}
 		if(location.hash) {
 			url += location.hash;
@@ -1043,7 +1022,9 @@ LeaAce = {
 					b = brush.split(':')[1];
 				} catch(e) {}
 			}
-			b = b || "javascript";
+			if (!b || b === 'false') {
+				b = 'javascript';
+			}
 			aceEditor.session.setMode("ace/mode/" + b);
 			aceEditor.session.setOption("useWorker", false); // 不用语法检查
 			// retina

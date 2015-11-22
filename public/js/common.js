@@ -345,22 +345,6 @@ function getVendorPrefix() {
 
 //-----------------
 
-// 切换编辑器时要修改tabIndex
-function editorIframeTabindex(index) {
-	var $i = $("#editorContent");
-	// var $i = $("#editorContent_ifr");
-	// if($i.size() == 0) {
-		$i.attr("tabindex", index);
-		setTimeout(function() {
-			$i.attr("tabindex", index);
-		}, 500);
-		setTimeout(function() {
-			$i.attr("tabindex", index);
-		}, 1000);
-	// } else {
-		// $i.attr("tabindex", index);
-	// }
-}
 //切换编辑器
 LEA.isM = false;
 LEA.isMarkdownEditor = function() {
@@ -374,18 +358,13 @@ function switchEditor(isMarkdown) {
 		$("#mdEditor").css("z-index", 1).hide();
 		
 		// 刚开始没有
-		editorIframeTabindex(2);
-		$("#wmd-input").attr("tabindex", 3);
 		$("#leanoteNav").show();
 	} else {
 		$("#mdEditor").css("z-index", 3).show();
 		
-		editorIframeTabindex(3);
-		$("#wmd-input").attr("tabindex", 2);
 		$("#leanoteNav").hide();
 	}
 }
-
 
 // editor 设置内容
 // 可能是tinymce还没有渲染成功
