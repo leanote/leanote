@@ -2,7 +2,7 @@
  * leanote code plugin
  */
 
-tinymce.PluginManager.requireLangPack('leanote_code');
+// tinymce.PluginManager.requireLangPack('leanote_code');
 
 tinymce.PluginManager.add('leanote_code', function(editor, url) {
 	var me = this;
@@ -283,8 +283,8 @@ tinymce.PluginManager.add('leanote_code', function(editor, url) {
     	}
 		return {
 			type: 'listbox',
-			text: "codeLang",
-			tooltip: "toggleCode",
+			text: "Language",
+			tooltip: "`ctrl/cmd+shift+c` toggle code",
 			values: items,
 			fixedWidth: true,
 			onselect: function(e) {
