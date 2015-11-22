@@ -62,6 +62,34 @@ gulp.task('concatAppJs', function() {
         .pipe(gulp.dest(base + '/js'));
 });
 
+// plugins压缩
+gulp.task('plugins', function() {
+    gulp.src(base + '/js/plugins/libs/*.js')
+        .pipe(uglify()) // 压缩
+        // .pipe(concat('main.min.js'))
+        .pipe(gulp.dest(base + '/js/plugins/libs-min'));
+
+
+    // 所有js合并成一个
+     var jss = [
+        'note_info',
+        'tips',
+        'history',
+        'attachment_upload',
+        'editor_drop_paste',
+        'main'
+    ];
+
+    for(var i in jss) {
+        jss[i] = base + '/js/plugins/' + jss[i] + '.js';
+    }
+
+     gulp.src(jss)
+        .pipe(uglify()) // 压缩
+        .pipe(concat('main.min.js'))
+        .pipe(gulp.dest(base + '/js/plugins'));
+});
+
 // 合并requirejs和markdown为一个文件
 gulp.task('concatMarkdownJs', function() {
     var jss = [
@@ -80,6 +108,24 @@ gulp.task('concatMarkdownJs', function() {
         .pipe(gulp.dest(base + '/js'));
 });
 
+// / 合并requirejs和markdown为一个文件
+gulp.task('concatMarkdownJsV2', function() {
+    var jss = [
+        'js/require.js',
+        'dist/main-v2.min.js',
+    ];
+
+    for(var i in jss) {
+        jss[i] = base + '/' + jss[i];
+    }
+
+    return gulp
+        .src(jss)
+        .pipe(uglify()) // 压缩
+        .pipe(concat('markdown-v2.min.js'))
+        .pipe(gulp.dest(base + '/js'));
+});
+
 // note-dev.html -> note.html, 替换css, js
 // TODO 加?t=2323232, 强制浏览器更新, 一般只需要把app.min.js上加
 gulp.task('devToProHtml', function() {
@@ -88,7 +134,8 @@ gulp.task('devToProHtml', function() {
         .pipe(replace(/<!-- dev -->[.\s\S]+?<!-- \/dev -->/g, '')) // 把dev 去掉
         .pipe(replace(/<!-- pro_dep_js -->/, '<script src="/js/dep.min.js"></script>')) // 替换
         .pipe(replace(/<!-- pro_app_js -->/, '<script src="/js/app.min.js"></script>')) // 替换
-        .pipe(replace(/<!-- pro_markdown_js -->/, '<script src="/js/markdown.min.js"></script>')) // 替换
+        // .pipe(replace(/<!-- pro_markdown_js -->/, '<script src="/js/markdown.min.js"></script>')) // 替换
+        .pipe(replace(/<!-- pro_markdown_js -->/, '<script src="/js/markdown-v2.min.js"></script>')) // 替换
         .pipe(replace(/<!-- pro_tinymce_init_js -->/, "var tinyMCEPreInit = {base: '/public/tinymce', suffix: '.min'};")) // 替换
         .pipe(replace(/plugins\/main.js/, "plugins/main.min.js")) // 替换
         // 连续两个空行换成一个空行, 没用
@@ -106,9 +153,15 @@ var path = require('path');
 gulp.task('i18n', function() {
     var keys = {};
     var reg = /getMsg\(["']+(.+?)["']+/g;
+    // {rule: "required", msg: "inputNewPassword"},
+    var reg2 = /msg: ?"?([0-9a-zA-Z]*)"?/g;
     function getKey(data) {
         while(ret = reg.exec(data)) {
             keys[ret[1]] = 1;
+        }
+
+        while(ret2 = reg2.exec(data)) {
+            keys[ret2[1]] = 1;
         }
     }
     // 先获取需要的key
@@ -143,6 +196,8 @@ gulp.task('i18n', function() {
     ls(base + '/libs');
     ls(base + '/member');
     ls(base + '/tinymce');
+
+    ls(leanoteBase + '/app/views');
 
     console.log('parsed');
 
@@ -201,7 +256,6 @@ gulp.task('i18n', function() {
     genI18nJsFile('blog.en', keys);
     genI18nJsFile('blog.fr', keys);
 });
-
 
 // 合并album需要的js
 gulp.task('concatAlbumJs', function() {
@@ -265,6 +319,41 @@ gulp.task('plugins', function() {
 });
 
 
+// tinymce
+// please set the right path on your own env
+var tinymceBase = '/Users/life/leanote/leanote-tools/tinymce_4.1.9_leanote_public';
+gulp.task('tinymce', function() {
+    // 先清理
+    fs.unlink(tinymceBase + '/js/tinymce/tinymce.dev.js');
+    fs.unlink(tinymceBase + '/js/tinymce/tinymce.jquery.dev.js');
+    fs.unlink(tinymceBase + '/js/tinymce/tinymce.full.js');
+    fs.unlink(tinymceBase + '/js/tinymce/tinymce.full.min.js');
+
+    var cp = require('child_process');
+
+    var bundleCmd = 'grunt bundle --themes leanote --plugins autolink,link,leaui_image,lists,hr,paste,searchreplace,leanote_nav,leanote_code,tabfocus,table,directionality,textcolor';
+    // build
+    cp.exec('grunt minify', {cwd: tinymceBase}, function(err, stdout, stderr) {
+        console.log('stdout: ' + stdout);
+        console.log('stderr: ' + stderr);
+
+        // 将所有都合并成一起
+        cp.exec(bundleCmd, {cwd: tinymceBase}, function(err, stdout, stderr) {
+            console.log('stdout: ' + stdout);
+            console.log('stderr: ' + stderr);
+        });
+    });
+});
+
+// 合并css, 无用
+// Deprecated
+gulp.task('concatCss', function() {
+    return gulp
+        .src([markdownRaw + '/css/default.css', markdownRaw + '/css/md.css'])
+        .pipe(concat('all.css'))
+        .pipe(gulp.dest(markdownMin));
+});
+
 // mincss
 var minifycss = require('gulp-minify-css');
 gulp.task('minifycss', function() {
@@ -305,41 +394,7 @@ gulp.task('minifycss', function() {
     */
 });
 
-// tinymce
-// please set the right path on your own env
-var tinymceBase = '/Users/life/leanote/leanote-tools/tinymce_4.1.9_leanote_public';
-gulp.task('tinymce', function() {
-    // 先清理
-    fs.unlink(tinymceBase + '/js/tinymce/tinymce.dev.js');
-    fs.unlink(tinymceBase + '/js/tinymce/tinymce.jquery.dev.js');
-    fs.unlink(tinymceBase + '/js/tinymce/tinymce.full.js');
-    fs.unlink(tinymceBase + '/js/tinymce/tinymce.full.min.js');
 
-    var cp = require('child_process');
-
-    var bundleCmd = 'grunt bundle --themes leanote --plugins autolink,link,leaui_image,lists,hr,paste,searchreplace,leanote_nav,leanote_code,tabfocus,table,directionality,textcolor';
-    // build
-    cp.exec('grunt minify', {cwd: tinymceBase}, function(err, stdout, stderr) {
-        console.log('stdout: ' + stdout);
-        console.log('stderr: ' + stderr);
-
-        // 将所有都合并成一起
-        cp.exec(bundleCmd, {cwd: tinymceBase}, function(err, stdout, stderr) {
-            console.log('stdout: ' + stdout);
-            console.log('stderr: ' + stderr);
-        });
-    });
-});
-
-// 合并css, 无用
-// Deprecated
-gulp.task('concatCss', function() {
-    return gulp
-        .src([markdownRaw + '/css/default.css', markdownRaw + '/css/md.css'])
-        .pipe(concat('all.css'))
-        .pipe(gulp.dest(markdownMin));
-});
-
-gulp.task('concat', ['concatDepJs', 'concatAppJs', 'concatMarkdownJs']);
+gulp.task('concat', ['concatDepJs', 'concatAppJs', /* 'concatMarkdownJs', */'concatMarkdownJsV2']);
 gulp.task('html', ['devToProHtml']);
 gulp.task('default', ['concat', 'plugins', 'minifycss', 'i18n', 'concatAlbumJs', 'html']);
