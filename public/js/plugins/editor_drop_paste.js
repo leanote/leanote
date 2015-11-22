@@ -290,7 +290,7 @@ define('editor_drop_paste', ['jquery.ui.widget', 'fileupload'], function() {
 	    // 2015/4/17 添加wmd-input markdown paste image
 	    $('#editorContent, #wmd-input .editor-content').fileupload({
 	        dataType: 'json',
-	        pasteZone: $('#editorContent, #wmd-input .editor-content'),
+	        pasteZone: $('#editorContent, #wmd-input'),
 	        dropZone: '', // 只允许paste
 	        maxFileSize: 210000,
 	        url: "/file/pasteImage",
