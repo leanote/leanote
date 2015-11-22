@@ -1,0 +1,69 @@
+
+// 当是批量操作时, 隐藏之
+.batch {
+    #noteItemList {
+        .item-active,
+        .item-active:hover {
+            // .item-blog, 
+            .item-setting {
+                display: none;
+            }
+         }
+    }
+    #toggleEditorMode {
+        display: none;
+    }
+}
+
+
+//---------
+// batch
+#batchMask {
+    background: #fff;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}
+.batch-ctn {
+    position: relative;
+    padding: 50px;
+    width: 100%;
+    height: 100%;
+}
+.batch-note {
+    display: inline-block;
+    width: 160px;
+    position: absolute;
+    left: 50%;
+    // margin-left: -80px;
+    border: 1px solid #ccc;
+    height: 200px;
+    padding: 5px;
+    border-radius: 5px;
+    background: #eee;
+    // transform: rotate(-30deg);
+    overflow: hidden;
+    transition: margin 0.5s;
+    margin-left: -1000px;
+    .title {
+        font-size: 16px;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+}
+.batch-info {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    text-align: center;
+    margin-top: 300px;
+    // 设置
+    p {
+        margin-top: 8px;
+    }
+    .fa {
+        cursor: pointer;
+        font-size: 16px;
+    }
+}

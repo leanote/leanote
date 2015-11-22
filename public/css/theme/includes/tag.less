@@ -1,0 +1,98 @@
+
+/*标签与其它工具*/
+
+/* tag */
+#addTagInput {
+  line-height: 25px;
+  display: none;
+  padding:0;
+  border: none;
+  background-color: @bgColor;
+}
+#addTagInput:focus {
+  outline: none;
+}
+.label-default {
+  background-color: #464C5E;
+}
+.label-red {
+  background-color: #d9534f;
+}
+.label-yellow {
+  background-color: #f0ad4e;
+}
+.label-blue {
+  background-color: #428bca;
+}
+.label-green {
+  background-color: #5cb85c;
+}
+.label {
+  border-radius: 0;
+  font-weight: normal;
+}
+.label i {
+  width: 10px;
+  cursor: pointer;
+  font-style: normal;
+  /*border-left: 1px solid #ccc;*/
+  display: inline-block;
+  padding-left: 3px;
+  opacity: 0;
+}
+.label i:hover {
+  opacity: 1;
+  // font-weight: bold;
+}
+
+#tag {
+  position: absolute;
+  right: 300px;
+  top: 0;
+  left: 5px;
+  bottom: 0;
+}
+
+#tag {
+  height: 36px;
+  line-height: 36px;
+}
+
+// 前面的38影响了dropdown
+#tag .dropdown {
+  line-height: 30px;
+}
+
+
+#tagColor {
+  left: 10px;
+  &:before {
+    content: "";
+    background-image: none;
+  }
+}
+#addTagInput {
+  width: 100px;
+}
+
+
+
+#tagNav {
+  i, em {
+    font-style: normal;
+  }
+
+  .tag-delete {
+    display: none;
+    margin-left: 3px;
+    font-size: 12px;
+  }
+  li:hover {
+    .tag-delete {
+      display: inline-block;
+    }
+  }
+  a:hover {
+    background: none !important;
+  }
+}

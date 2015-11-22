@@ -420,7 +420,11 @@ a.raw:hover {
   position: relative; 
   height: 30px; 
   overflow: hidden; 
+  border-bottom: none;
   background-color: @bgColor;
+}
+#wmd-button-bar {
+  overflow: visible;
 }
 /* 编辑器工具 需要important, 因为mce还要有js加载css, 肯定在此之后 */
 
@@ -860,7 +864,8 @@ html,body {
 #myProfile,
 #demoRegister
 {
-	display: none;
+// display: none;
+  visibility: hidden; // 不能隐藏, 不然点击目录markdown不能跳转 
 }
 #mainMask {
   position: absolute;
@@ -938,6 +943,7 @@ html,body {
 	border: none;
 	background-color: @bgColor !important;
 	font-size: 16px !important;
+  margin-top: 10px;
 }
 #md-section-helper {
 	display: none;

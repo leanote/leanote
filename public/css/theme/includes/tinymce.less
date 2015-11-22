@@ -1,0 +1,184 @@
+/**
+ * tinymce editor
+ */
+
+/* 包裹iframe */
+#editor .mce-ifr {
+  border: none;
+  overflow: hidden !important; /*不知道哪里设置了auto*/
+}
+
+/* 最顶层 */
+#editor .mce-tinymce {
+  border: none;
+}
+/* 编辑器工具 需要important, 因为mce还要有js加载css, 肯定在此之后 */
+
+/*加高, 之前显得拥挤*/
+.mce-btn-small button {
+  padding: 5px 5px !important;
+  line-height: 20px !important;
+}
+.mce-foot .mce-btn {
+  border-radius: 3px;
+}
+.mce-menubtn.mce-btn-small span {
+  line-height: 20px !important;
+}
+.mce-btn span {
+  font-family: @fontFamily !important;
+}
+.mce-primary button, .mce-primary button i {
+  text-shadow: none;
+}
+.mce-primary {
+  background-color: #47a447 !important;
+  border: none !important;
+}
+// 下拉
+.mce-menu-item:hover, .mce-menu-item.mce-selected, .mce-menu-item:focus {
+  background-color: @borderColor;
+  span {
+    color: #000 !important;
+  }
+}
+// 下拉选中
+.mce-menu-item-normal.mce-active {
+  background-color: @borderColor;
+}
+
+// tool的分隔
+.tool-split {
+  display: inline-block;
+  line-height: 25px;  
+  color: #ddd;
+}
+
+// 内容table
+.mce-item-table tr {
+    background-color: none;
+    border-top: 1px solid #ccc;
+}
+.mce-item-table tr:nth-child(2n) {
+    background-color: rgb(247, 247, 249);
+}
+.mce-item-table, .mce-item-table td, .mce-item-table th, .mce-item-table caption {
+  border: 1px solid #ddd;
+  border-collapse: collapse;
+  padding: 5px;
+  vertical-align: middle;
+}
+
+
+#moreBtn {
+  dispaly: block; position: absolute; 
+  cursor: pointer; 
+  right: 5px; 
+  padding: 3px 10px;
+}
+// more btn下怎么会有<span data-mce-type="bookmark" id="mce_1_start" data-mce-style="overflow:hidden;line-height:0px" style="overflow:hidden;line-height:0px">﻿</span> ?
+#moreBtn span {
+  display: none;
+}
+
+
+// 没有颜色, tinymce
+.mce-colorbtn-trans div {
+  line-height: 11px;
+  text-align: center;
+}
+.mce-btn-small .mce-caret {
+  margin-top: 8px;
+}
+.mce-listbox.mce-btn-small .mce-caret {
+  margin-top: -2px;
+}
+
+// 字体没有shadow
+.mce-btn i {
+  text-shadow: none;
+}
+.mce-colorbutton.mce-btn-small .mce-preview {
+  width: 15px;
+}
+
+
+#editorContent {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px;
+  outline: none;
+  margin-top: 5px;
+  bottom: 5px !important;
+  pre {
+    position: relative;
+    // overflow: visible;
+    -mo-height: auto !important; // 防止ace设置了高度  
+    .toggle-raw {
+      position: absolute;
+      left: 2px;
+      top: -2px;
+      z-index: 100;
+      display: none;
+      // cursor: default;
+      input {
+      }
+    }
+    &:hover .toggle-raw {
+      // cursor: default;
+      display: block;
+    }
+  }
+  
+  // 字体设置不起作用
+  * {font-family: inherit; }
+
+}
+
+.mce-tinymce-inline {
+  border-width: 0 !important;
+}
+#editorContent {
+  a {
+    color: #2a6496;
+    text-decoration: underline;
+  }
+  pre {
+    font: 12px/normal @aceFontFamily;
+    color: #4D4D4C;
+  }
+  .ace_searchbtn_close {
+    margin: 0px;
+  }
+  .ace-tomorrow  {
+    padding: 0;
+    padding-left: 44px;
+  }
+  .ace-to-pre {
+    padding: 0;
+    padding-left: 5px;
+    // border-left: 10px solid #ccc;
+  }
+  
+  // 垂直滚动条, 在windows下会显示的问题
+  .ace_scrollbar-v {
+    overflow-y: hidden;
+  }
+
+  .leanote-image-container {
+    display: inline-block;
+    width: 100px;
+    .loader {
+      display: inline-block;
+      vertical-align: top;
+      margin-right: 3px;
+      margin-top: 5px;
+    }
+    .progress {
+      display: inline-block;
+      margin: 0;
+      width: 80px;
+    }
+  }
+}
+

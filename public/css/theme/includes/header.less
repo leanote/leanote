@@ -1,0 +1,265 @@
+/**
+ * 头部
+ */
+
+
+// 新建不要显示笔记本下拉了, 没用
+#listNotebookDropdownMenu {
+    display: none;
+}
+
+// 主题切换
+#themeForm td {
+    padding: 5px;
+    text-align: center;
+}
+#themeForm img {
+    border: 1px solid #eee;
+    padding: 2px;
+}
+
+#logo {
+    font-size: 36px;
+}
+
+#avatar {
+    height: 60px; max-width: 200px; display: inline-block; margin: 10px;
+}
+
+// 新建
+.new-split {
+    display: none;
+}
+
+.new-note-right {
+    padding: 0 5px;
+    padding-left: 3px
+}
+#leanoteMsg {
+    line-height: 40px; margin-top: 10px; margin-left: 10px;
+}
+#newNoteWrap {
+    line-height: 40px; margin-top: 10px;
+}
+
+// 新建笔记
+.new-note {
+  background-color: @newNoteBgColor;
+  border-radius: 3px;
+  padding: 3px 5px;
+  border: @newNoteBorder;
+    &, a {
+        color: @newNoteTextColor;
+    }
+    &:hover {
+        background: @newNoteBgColorHover;
+        border-color: @newNoteBBorderColorHover;
+        &, a {
+            color: #fff;
+        }
+    }
+}
+.new-markdown {
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+// 顶部导航, 博客
+.top-nav {
+    margin: 0 10px;
+    display: inline-block;
+    line-height: 60px;
+}
+.my-link, .new-markdown-text-abbr, .new-note-text-abbr {
+    display: none;
+}
+#myAvatar {
+    height: 30px; 
+    max-width: 30px;
+    overflow: hidden;
+    // border: 1px solid #ccc;
+    border-radius: 50%;
+}
+
+.ios7-a {
+  display: inline-block;
+  padding: 0 10px;
+  height: 36px;
+  vertical-align: middle;
+  line-height: 36px;
+  cursor: pointer; 
+}
+
+
+//====================
+// 最小化左侧, 展示右侧
+
+
+
+#page.mini-left {
+
+    #notebook,
+    #notebookSplitter,
+    #logo,
+    #leftSwitcher,
+    #leftNotebook .slimScrollDiv
+    {
+        display: none;
+    }
+
+    #leftSwitcher2 {
+        display: block;
+    }
+
+    #leftNotebook {
+        width: 30px !important;
+    }
+    #noteAndEditor {
+        left: 30px !important;
+    }
+}
+
+
+//============
+// header
+
+a {
+  color: @aBlackColor;
+  cursor: pointer;
+}
+
+a:hover {
+  text-decoration: none !important;
+  color: @aBlackColor;
+}
+
+#header {
+  height: @headerHeight;
+  background-color: @headerBgColor;
+  border-bottom: 1px solid @borderColor;
+  color: @headerTextColor;
+
+  a {
+    color: @headerAColor;//@aWhiteColor;
+  }
+  li, li a {
+    color: @dropdownTextColor;
+  }
+
+  /* for app */
+  webkit-user-select: none; /* 还不知 */
+  -webkit-app-region: drag; /* -webkit-app-region: no-drag; */
+}
+
+#logo {
+  line-height: 50px;//@headerHeight;
+  box-sizing: content-box;
+  width: 140px;
+  height: @headerHeight;
+  padding-left: 10px;
+  padding-top: 0px;
+}
+
+#switcher {
+  line-height: 50px;//@headerHeight;
+  padding-top: 6px;
+  padding-right: 5px;
+  width: 30px;
+  text-align: center;
+  i {
+    font-size: 16px;
+    cursor: pointer;
+    &:hover {
+      color: @hColor;
+    }
+  }
+  span {
+    border-radius: 5px;
+    background-color: @switcherBgColor; 
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 34px;
+    margin-top: 8px;
+    padding: 0 5px;
+    height: 34px;
+    display: inline-block;
+    &:hover {
+      color: @hColor;
+    }
+  }
+
+  // 默认隐藏
+  #leftSwitcher2 {
+      display: none;
+  }
+}
+
+// search
+#searchNote {
+  padding-left: 0;
+  line-height: 60px;
+  margin:0;
+  input {
+    background-size: 18px 13px;
+    border-color: @borderColor;
+
+    border: @searchNoteInputBorder;
+    color: @searchNoteInputTextColor;
+    background-color: @searchNoteInputBgColor;
+
+    padding-left: 14px;
+    border-radius: 5px;
+    height: 30px;
+    width: @noteListWidth;
+    line-height: 20px;
+    box-shadow: none;
+    &:focus {
+      outline: none !important;
+      border-color: @hColor;
+      box-shadow: none;
+    }
+  }
+}
+
+// 右侧链接
+
+#header ul {
+  margin:0;
+  padding:0;
+  list-style: none;
+}
+#header ul li.dropdown {
+  display: inline-block;
+  height: @headerHeight;
+}
+
+#header ul > li > a.dropdown-toggle {
+  display: block;
+  // 这里必须要有padding-top, 不然不会垂直居中, 悲剧
+  // li 限制了60px, 所以下拉的top还和之前一样
+  padding: 15px 5px 0 0;
+  position: relative;
+  // -webkit-transition: all 0.3s;
+  // -moz-transition: all 0.3s;
+  // transition: all 0.3s;
+}
+
+#header span.icon {
+  display: inline-block;
+  font-size: 28px;
+  color: #999999;
+}
+
+.dropdown-menu {
+  // border: 1px solid @hColor;
+}
+.dropdown-menu li > a {
+  color: @aBlackColor;
+}
+.dropdown-menu li:hover, .dropdown-menu li:focus {
+  background-color: @borderColor;
+}
+.dropdown-menu  li > a:hover, .dropdown-menu li > a:focus {
+  background-color: @borderColor;
+}
+

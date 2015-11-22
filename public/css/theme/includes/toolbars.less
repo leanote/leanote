@@ -1,0 +1,307 @@
+/**
+ * 工具栏
+ * 附件
+ * 笔记信息
+ * 历史记录
+ * 提示
+ */
+
+#tool {
+  border-bottom: 1px solid #ddd;
+  height: 36px;
+  margin-left: -5px; // 为了和左边的底部线连接起来
+    position: relative;
+}
+
+#editorTool {
+  margin: 0;
+  margin-right: 5px;
+  padding: 0;
+  list-style: none;
+}
+#editorTool li {
+  display: inline-block;
+}
+
+// 笔记信息设置
+#noteInfo {
+    width: 400px;
+    box-sizing: border-box;
+    padding: 10px 10px;
+    -webkit-user-select: initial;
+    table {
+        width: 100%;
+        margin: 0;
+        th {
+            min-width: 80px;
+        }
+        th, td {
+            border-top: none;
+            border-bottom: 1px solid #dddddd;
+        }
+        td {
+            max-width: 300px;
+        }
+    }
+    a {
+        cursor: pointer;
+    }
+
+    a.post-url {
+        background: #FDF936;
+    }
+
+    .post-url-wrap {
+        word-wrap: break-word;
+        span {
+            display: inline;
+        }
+        input {
+            display: none;
+        }
+        &.post-url-edit {
+            .post-url-pencil {
+                display: none;
+            }
+            .post-url-text {
+                display: none;
+            }
+            input {
+                display: inline;
+            }
+        }
+    }
+}
+
+
+// 工具栏
+#editor {
+    #mceToolbar {
+        height: 30px;
+    }
+    // 所有都展开
+    &.all-tool {
+        #mceToolbar {
+            height: 60px;
+        }
+        .more-fa:before {
+            content: "\f106";
+        }
+        #editorContent {
+            top: 60px;
+        }
+    }
+    .more-fa:before {
+        content: "\f107";
+    }
+}
+
+
+//===========
+// history
+
+#historyList {
+    img {
+        max-width: 100%;
+    }
+}
+.history-modal .modal-dialog {
+    width: auto !important;
+    position: absolute;
+    /* width: 100%; */
+    /* height: 100%; */
+    left: 5px;
+    right: 5px;
+    top: 5px;
+    bottom: 5px;
+
+    .modal-content {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: 0;
+        padding: 0;
+        overflow: scroll;
+
+        .modal-body {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 0;
+            .history-list-wrap {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                overflow-y: auto;
+                width: 200px;
+                border-right: 1px solid #ccc;
+                box-shadow: 1px 1px 10px #ddd;
+
+                .history-list-header {
+                    line-height: 50px;
+                    font-size: 16px;
+                    font-weight: bold;
+                    padding-left: 15px;
+                    border-bottom: 1px solid #eee;
+                    background-color: #ccc;
+                }
+
+                .history-list {
+                    position: absolute;
+                    top: 51px;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    overflow-y: auto;
+                    margin-bottom: 0;
+                }
+
+                .list-group-item {
+                    border-top: none;
+                    &.active, &:hover {
+                        color: #000;
+                        background-color: #eee;
+                        border-color: #eee;
+                    }
+                }
+            }
+            .history-content-wrap {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                right: 0;
+                left: 200px;
+
+                .close {
+                    padding: 10px 15px;
+                }
+                
+                .back {
+                    margin-left: 10px;
+                    margin-top: 5px;
+                }
+
+                .history-content-header {
+                    // background-color: #eee;
+                    height: 51px;
+                    border-bottom: 1px solid #eee;
+                    box-shadow: 5px 0px 5px #ccc;
+                }
+
+                .history-content {
+                    position: absolute;
+                    top: 51px;
+                    bottom: 0;
+                    right: 0;
+                    left: 0;
+                    padding-top: 5px;
+                    padding-right: 5px;
+                    padding-left: 10px;
+                    overflow-y: auto;
+                }
+            }
+        }
+    }
+}
+
+// 附件
+
+// leaui image drop drag
+#upload {
+    position: absolute;
+    z-index: 0;
+    bottom: 0;
+    right: 0;
+    left: 0px;
+    padding: 0;
+    background-color: #fff;
+    text-align: center;
+    display: none;
+}
+#upload #drop {
+    width: 100%;
+    height: 100%;
+    padding-top: 100px;
+}
+#drop.in {
+    border: 1px solid #000000;
+}
+#drop.hover {
+    border: 2px solid #000000;
+}
+#uploadMsg {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    bottom: 10px;
+    overflow: scroll;
+    list-style: none;
+}
+
+// upload attach
+#uploadAttach {
+    position: relative;
+    margin-top: 5px;
+}
+.dropzone {
+    text-align: center;
+    input {
+        display: none;
+    }
+}
+.dropzone.in {
+    border: 1px solid #000000;
+}
+.dropzone.hover {
+    border: 2px solid #000000;
+}
+
+#attachUploadMsg, #avatarUploadMsg{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    max-height: 240px;
+    z-index: 3;
+    .alert {
+        margin: 0;
+        padding: 0 3px;
+        margin-top: 10px;
+    }
+}
+#attachMenu {
+    width: 450px;
+    padding: 10px 5px;
+}
+#attachList {
+    margin: 0;
+    padding: 0;
+    max-height: 450px;
+    overflow-y: auto;
+    li {
+        display: block;
+        margin: 0;
+        padding: 0 3px;
+        border-radius: 3px;
+        border-bottom: 1px dashed #eee;
+        height: 45px;
+        line-height: 45px;
+        div {
+            float: left;
+        }
+        .attach-title {
+            width: 290px;
+            white-space: nowrap;text-overflow:ellipsis; overflow:hidden;
+        }
+        .attach-process {
+            float: right;
+        }
+    }
+    li.loading {
+        text-align: center;
+    }
+}
+

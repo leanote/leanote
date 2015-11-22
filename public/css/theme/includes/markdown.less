@@ -1,0 +1,281 @@
+/**
+ * markdown editor
+ */
+
+#mdEditor {
+    z-index: 1;
+    background-color: #fff;
+    bottom: 5px; 
+    #md-section-helper,
+    #wmd-input {
+        font-size: 14px;
+        line-height: 22px;
+    }
+}
+
+/*编辑器按钮*/
+#mceToolbar, #wmd-button-bar {
+  position: relative; 
+  height: 30px; 
+  overflow: hidden; 
+  border-bottom: 1px solid #ccc;
+  background-color: #f0f0f0;
+}
+#wmd-button-bar {
+    overflow: visible;
+}
+
+#mdEditorPreview {
+    position: absolute; 
+    top: 35px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#left-column, #right-column, #mdSplitter{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}
+#mdSplitter {
+    width: 5px;
+    height: 100%;
+    overflow: hidden;
+    z-index: 5;
+    cursor: col-resize;
+    left: 450px;
+    background: none;
+}
+#left-column {
+    left: 0;
+    width: 450px;
+}
+#right-column {
+    left: 450px;
+    right: 0;
+    overflow: hidden;
+}
+
+.wmd-panel-editor, .preview-container, #wmd-input {
+    height: 100%;
+}
+
+.wmd-panel-editor, .wmd-panel-preview {
+}
+
+.wmd-input, .wmd-input:focus, #md-section-helper /* helper必须在这里 */
+{
+    width: 100%;
+    border: 1px #eee solid;
+    border-radius: 5px;
+    outline: none;
+    font-size: 14px;
+    resize: none;
+    overflow-x: hidden;
+}
+
+/* 不能为display: none */
+#md-section-helper {
+    position: absolute;
+    height: 0;
+    overflow-y: scroll;
+    padding: 0 6px;
+    top:10px; /*一条横线....*/
+    z-index: -1;
+    opacity: none;
+}
+
+.preview-container {
+    overflow: auto;
+}
+
+.wmd-preview { 
+    width: 100%;
+    font-size: 14px;
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+.wmd-button-row, .preview-button-row
+{
+    padding: 0px;  
+    height: auto;
+    margin: 0;
+}
+
+.wmd-spacer
+{
+    width: 0px; 
+    height: 20px; 
+    margin-left: 10px;
+
+    background-color: Silver;
+    display: inline-block; 
+    list-style: none;
+}
+.wmd-button, .preview-button {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    list-style: none;
+    cursor: pointer;
+    font-size: 17px;
+}
+.wmd-button {
+    margin-left: 10px;
+}
+.preview-button {
+    margin-right: 10px;
+}
+.wmd-button > span, .preview-button > span {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    font-size: 14px;
+}
+
+// 为了显示编辑模式下拉
+#mdEditor .navbar-default {
+    overflow: visible;
+}
+// 编辑模式下拉
+.wmd-mode {
+  min-width: 100px;
+  left: 50%;
+  margin-left: -50px !important; // 为什么要!important, 因为writting模式下要用
+  // 小箭头
+  &:before {
+    right: auto;
+    left: 40%;
+  }
+}
+#md-keyboard-mode {
+    color: #8E8E8E;
+    font-size: 12px;
+    font-family: @aceFontFamily;
+    font-style: normal;
+}
+
+// markdown editor ace
+@mdAceTextColor: #2C3E50; // #04294E; // #384654;
+@mdAceHeadingColor: #000; // 1a2026
+@mdAceBlockquoteColor: #003873;
+@mdAceCursorColor: #243342;
+
+#wmd-input {
+  .ace_searchbtn_close {
+      margin: 0px;
+  }
+  .ace_content {
+    padding-top: 5px;
+  }
+  &.ace_editor {
+    color: @mdAceTextColor;
+  }
+  &.ace-tm {
+    background-color: #ffffff;
+  }
+  &.ace-tm .ace_text-input {
+    box-sizing: initial;
+  }
+  &.ace-tm .ace_marker-layer .ace_active-line {
+    background-color: rgba(89, 128, 166, 0.05);
+  }
+  &.ace-tm .ace_cursor {
+    color: @mdAceCursorColor;
+  }
+  // 左侧的线
+  &.ace-tm .ace_print-margin {
+    background: none;
+    // background-color: rgba(89, 128, 166, 0.05);
+  }
+  &.ace-tm .ace_markup.ace_heading {
+    color: @mdAceHeadingColor;
+    font-weight: bold;
+  }
+  &.ace-tm .ace_markup.ace_list {
+    color: #576c82;
+  }
+  &.ace-tm .ace_constant.ace_language {
+    color: rgba(87, 108, 130, 0.6);
+    font-weight: normal;
+  }
+  &.ace-tm .ace_meta.ace_tag {
+    color: #384654;
+    font-style: italic;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+  &.ace-tm .ace_keyword.ace_operator {
+    color: #384654;
+    background-color: transparent;
+  }
+  &.ace-tm .ace_storage,
+  &.ace-tm .ace_keyword {
+    color: #384654;
+    background-color: rgba(0, 0, 0, 0.04);
+    font-weight: bold;
+  }
+  &.ace-tm .ace_entity.ace_name.ace_function {
+    color: #1a2026;
+    font-weight: bold;
+  }
+  &.ace-tm .ace_string {
+    color: #384654;
+    font-style: italic;
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+  &.ace-tm .ace_invalid {
+    color: inherit;
+    background: inherit;
+  }
+  &.ace-tm .ace_strong {
+    color: #384654;
+    font-weight: bold;
+  }
+  &.ace-tm .ace_emphasis {
+    color: #1a2026;
+    font-style: italic;
+  }
+  &.ace-tm .ace_blockquote {
+    color: @mdAceBlockquoteColor;
+  }
+  &.ace-tm .ace_code {
+    color: #1a2026;
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+  &.ace-tm .ace_code_block {
+    color: #1a2026;
+  }
+  &.ace-tm .ace_link {
+    color: #576c82;
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+  &.ace-tm .ace_description {
+    color: #576c82;
+  }
+  &.ace-tm .ace_constant {
+    color: #384654;
+  }
+  &.ace-tm .ace_comment {
+    color: rgba(87, 108, 130, 0.6);
+    font-style: italic;
+  }
+  &.ace-tm .ace_marker-layer .misspelled {
+    position: absolute;
+    z-index: -2;
+    border-bottom: 1px dotted red;
+    margin-bottom: -1px;
+  }
+
+  // vim cursor
+  &.normal-mode .ace_cursor {
+      background-color: #003A92;
+  }
+  // emacs cursor
+  &.emacs-mode .ace_cursor {
+    border: 2px rgba(101, 189, 119, 0.8) solid !important;
+    background-color: rgb(101, 189, 119, 0.9);
+  }
+}

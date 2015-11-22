@@ -1,0 +1,99 @@
+// ace 重置css, 必须
+.ace_editor, .ace_editor * {
+    font-family: @aceFontFamily;
+}
+// 不显示空白
+.ace_invisible_space {
+    visibility: hidden !important;
+}
+
+#editor, #mdEditor{
+  position: absolute; 
+  z-index: 2;
+  top: 66px; 
+  bottom: 0px; 
+  right: 0; 
+  left: 5px;  
+  padding: 0; // 0px 0px 0px 0px;
+  display: none;
+}
+
+
+/* leanote nav */
+
+.leanoteNav {
+  position: absolute; 
+  right: 0px;
+  border: 1px solid #ccc; 
+  border-radius: 3px;
+  background-color: #fff;
+  opacity: 0.5;
+  // display: none;
+  z-index: 11;
+  margin-top: 4px;
+  h1 {
+    margin: 0;
+    font-size: 16px;
+    padding: 3px; 
+    cursor: pointer;
+    // padding-top: 3px;
+  }
+  i {
+    padding: 3px;
+  }
+  span {
+    display: none;
+  }
+  .leanoteNavContent {
+    display: none;
+    overflow: auto;
+  } 
+}
+
+.leanoteNav.unfolder {
+  min-width: 200px;
+  max-width: 300px;
+  // bottom: 1px;
+  opacity: 0.8;
+  h1 {
+    border-bottom: 1px dashed @borderColor;
+  }
+  span {
+      display: inline;
+  }
+  
+  .leanoteNavContent {
+    display: block;
+    min-height: 30px;
+  }
+}
+
+.leanoteNav ul {
+  margin:0;
+  padding-left: 23px;
+  li {
+    list-style-type: disc;
+    a {
+        &:hover {
+            color: @hColor;
+        }   
+    }
+  }
+}
+.leanoteNav ul .nav-h1 {
+}
+.leanoteNav ul .nav-h2 {
+  margin-left: 20px;
+}
+.leanoteNav ul .nav-h3 {
+  margin-left: 30px;
+}
+.leanoteNav ul .nav-h4 {
+  margin-left: 40px;
+}
+.leanoteNav ul .nav-h5 {
+  margin-left: 50px;
+}
+.scrollTo-a {
+  cursor: pointer !important;
+}

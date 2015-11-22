@@ -1,0 +1,102 @@
+
+// readonly
+
+// readonly
+.info-toolbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    line-height: 30px;
+    padding-left: 5px;
+    height: 30px;
+    display: none;
+    overflow: hidden;
+
+    .toolbar-update {
+        color: inherit;
+        float: right;
+        padding: 0 10px;
+        &:hover {
+            background: #fff;
+            color: #000;
+        }
+    }
+
+    .created-time {
+        display: inline-block;
+        padding-right: 10px;
+    }
+}
+
+#editorContent {
+    -webkit-user-select: text;
+}
+
+#editor.read-only {
+    #mceToolbarContainer {
+        display: none;
+    }
+    .info-toolbar {
+        display: block;
+    }
+}
+
+//---------------
+// note for read
+#note.read-only {
+    #editor, #mdEditor {
+        top: 60px;
+    }
+    #tool {
+        display: none;
+    }
+    .toolbar-update {
+        display: none;
+    }
+    #noteReadTop {
+        display: block;
+    }
+    #infoToolbar, #mceToolbar, .navbar {
+        display: none;
+    }
+    #editorContent, #mdEditor .layout-wrapper-l3 {
+        top: 0;
+    }
+}
+#noteRead {
+    position: absolute;
+    left: 5px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: none;
+    z-index: 100;
+    padding-left: 5px;
+    background-color: #fff;
+}
+
+@noteReadTopHeight: 60px;
+#noteReadTop {
+    position: absolute;
+    height: @noteReadTopHeight;
+    left: 5px;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 2;
+    display: none;
+    background: #fff;
+    padding-left: 5px;
+}
+#noteReadTitle {
+    margin: 3px 0;
+    height: 26px;
+    white-space: nowrap;text-overflow:ellipsis; overflow:hidden;
+}
+#noteReadInfo {
+    white-space: nowrap;text-overflow:ellipsis; overflow:hidden;
+    color: #666;
+    margin-top: 8px;
+}

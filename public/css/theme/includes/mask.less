@@ -1,0 +1,36 @@
+
+//--------
+// 右部edtior
+// 为splitter使用
+#editorMask {
+    position: absolute; top: 0px; bottom: 0px; right: 0; left: 0; 
+    background-color: #fff;
+    display: none;
+    z-index: -10;
+    .fa, a {
+        font-size: 24px;
+    }
+    padding-top: 50px;
+    text-align: center;
+    a {
+        display: inline-block;
+        border-radius: 3px;
+        border: 1px solid @borderColor;
+        padding: 10px;
+        &:hover {
+            background-color: @noteActiveBg;
+            color: #fff;
+        }
+    }
+}
+.note-mask {
+    position: absolute; top: 0px; bottom: 0px; right: 0; 
+    left: 0px;
+    z-index: -1;
+}
+#noteMaskForLoading {
+    padding-top: 60px;
+    background: #fff;
+    text-align: center;
+    opacity: .3;
+}
