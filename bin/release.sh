@@ -9,7 +9,7 @@ SP=$(cd "$(dirname "$0")"; pwd)
 tmp="/Users/life/Desktop/leanote_release"
 
 # version
-V="v1.2"
+V="v1.4"
 
 ##=================================
 # 1. 先build 成 3个平台, 2种bit = 6种
@@ -37,6 +37,7 @@ function build()
 
 build "linux" "386";
 build "linux" "amd64";
+build "linux" "arm";
 
 build "windows" "386";
 build "windows" "amd64";
@@ -135,6 +136,7 @@ function tarRelease()
 
 tarRelease "linux" "386";
 tarRelease "linux" "amd64";
+tarRelease "linux" "arm";
 
 tarRelease "windows" "386";
 tarRelease "windows" "amd64";
