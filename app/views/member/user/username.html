@@ -1,5 +1,5 @@
 {{template "member/top.html" .}}
-<div class="m-b-md"> <h3 class="m-b-none">{{msg . "username"}}</h3></div>
+<div class="m-b-md"> <h3 class="m-b-none">{{msg . "Username"}}</h3></div>
 
 <div class="row">
 
@@ -9,7 +9,7 @@
 			<div class="panel-body">
   				<div class="alert alert-danger" id="usernameMsg" style="display: none"></div>
 				<div class="form-group">
-					<label>{{msg . "username"}}</label>
+					<!-- <label>{{msg . "Username"}}</label> -->
 					<input type="text" class="form-control" id="username"
 				    	value="{{.userInfo.Username}}"
 				    	data-rules='[

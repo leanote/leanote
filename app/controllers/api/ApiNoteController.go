@@ -540,7 +540,6 @@ func (c ApiNote) GetHistories(noteId string) revel.Result {
 
 // 0.2 新增
 // 导出成PDF
-// test localhost:9000/api/note/exportPdf?noteId=554f07bf05fcd15fa9000000&token=562211dc99c37ba6a7000001
 func (c ApiNote) ExportPdf(noteId string) revel.Result {
 	re := info.NewApiRe()
 	userId := c.getUserId()

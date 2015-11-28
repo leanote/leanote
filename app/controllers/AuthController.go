@@ -4,6 +4,7 @@ import (
 	"github.com/leanote/leanote/app/info"
 	. "github.com/leanote/leanote/app/lea"
 	"github.com/revel/revel"
+	"strings"
 	//	"strconv"
 )
 
@@ -127,6 +128,8 @@ func (c Auth) DoRegister(email, pwd, iu string) revel.Result {
 		return c.RenderRe(re)
 	}
 
+	email = strings.ToLower(email)
+
 	// 注册
 	re.Ok, re.Msg = authService.Register(email, pwd, iu)
 
@@ -141,6 +144,7 @@ func (c Auth) DoRegister(email, pwd, iu string) revel.Result {
 //--------
 // 找回密码
 func (c Auth) FindPassword() revel.Result {
+	c.SetLocale()
 	c.RenderArgs["title"] = c.Message("findPassword")
 	c.RenderArgs["subTitle"] = c.Message("findPassword")
 	return c.RenderTemplate("home/find_password.html")
@@ -154,6 +158,7 @@ func (c Auth) DoFindPassword(email string) revel.Result {
 
 // 点击链接后, 先验证之
 func (c Auth) FindPassword2(token string) revel.Result {
+	c.SetLocale()
 	c.RenderArgs["title"] = c.Message("findPassword")
 	c.RenderArgs["subTitle"] = c.Message("findPassword")
 	if token == "" {

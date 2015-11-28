@@ -335,11 +335,11 @@ func (c Note) ToPdf(noteId, appKey string) revel.Result {
 	// 虽然传了cookie但是这里还是不能得到userId, 所以还是通过appKey来验证之
 	appKeyTrue, _ := revel.Config.String("app.secret")
 	if appKeyTrue != appKey {
-		return c.RenderText("error")
+		return c.RenderText("auth error")
 	}
 	note := noteService.GetNoteById(noteId)
 	if note.NoteId == "" {
-		return c.RenderText("error")
+		return c.RenderText("no note")
 	}
 
 	noteUserId := note.UserId.Hex()
@@ -428,7 +428,7 @@ func (c Note) ExportPdf(noteId string) revel.Result {
 		// 是否是有权限协作的
 		if !note.IsBlog && !shareService.HasReadPerm(noteUserId, userId, noteId) {
 			re.Msg = "No Perm"
-			return c.RenderText("error")
+			return c.RenderText("No Perm")
 		}
 	}
 

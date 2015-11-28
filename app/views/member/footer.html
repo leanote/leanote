@@ -23,9 +23,11 @@ $(function() {
 	
 	if(fullPath == "/member/index") {
 		fullPath = "/member";
+	} else if (fullPath == '/member/blog/updateTheme') {
+		fullPath = '/member/blog/theme';
 	}
+	
 	$("#nav > li").removeClass("active");
-	// alert(fullPath);
 	// 自己
 	var $thisLi = $('#nav a[href="' + fullPath + '"]').parent();
 	$thisLi.addClass("active");

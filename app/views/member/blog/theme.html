@@ -1,7 +1,7 @@
 {{template "member/top.html" .}}
 <div class="m-b-md clearfix">
 	<h3 class="m-b-none">
-		{{msg . "themeSet"}}
+		{{msg . "theme"}}
 		<small>
 		(<a href="http://blog.leanote.com/post/545f1a5c380782565e000000" target="_blank">{{msg . "needHelp"}}</a> 
 		<a target="_blank" href="https://github.com/leanote/leanote/wiki/leanote-blog-theme-api">Leanote Blog Theme Api</a>)
@@ -138,7 +138,7 @@
 
 </div>
 {{template "member/footer.html" .}}
-<script src="/js/require.js"></script>
+
 <script>
 var urlPrefix = "{{.siteUrl}}";
 $(function() {
@@ -169,7 +169,7 @@ $(".btn-export").click(function() {
 $(".btn-delete").click(function() {
 	var id = $(this).parent().data('id');
 	var t = $(this);
-	art.confirm("Are you sure ?", function() {
+	art.confirm(getMsg("Are you sure ?"), function() {
 		t.button("loading");
 		ajaxPost("/member/blog/deleteTheme", {themeId: id}, function(re) {
 			t.button("reset");
@@ -187,15 +187,15 @@ $(".btn-delete").click(function() {
 $(".btn-install").click(function() {
 	var id = $(this).parent().data('id');
 	var t = $(this);
-	art.confirm("Are you sure ?", function() {
+	art.confirm(getMsg("Are you sure to install it ?"), function() {
 		t.button("loading");
 		ajaxPost("/member/blog/installTheme", {themeId: id}, function(re) {
 			t.button("reset");
 			if(reIsOk(re)) {
-				art.tips("Success");
+				art.tips(getMsg("Success"));
 				location.reload();
 			} else {
-				art.alert("Error");
+				art.alert(getMsg("Error"));
 			}
 		});
 	});
@@ -206,15 +206,15 @@ $(".btn-install").click(function() {
 $(".btn-public").click(function() {
 	var id = $(this).parent().data('id');
 	var t = $(this);
-	art.confirm("Are you sure ?", function() {
+	art.confirm(getMsg("Are you sure ?"), function() {
 		t.button("loading");
 		ajaxPost("/member/blog/publicTheme", {themeId: id}, function(re) {
 			t.button("reset");
 			if(reIsOk(re)) {
-				art.tips("Success");
+				art.tips(getMsg("Success"));
 				location.reload();
 			} else {
-				art.alert("Error");
+				art.alert(getMsg("Error"));
 			}
 		});
 	});
@@ -222,19 +222,17 @@ $(".btn-public").click(function() {
 {{end}}
 
 });
+</script>
 
+<script src="/js/require.js"></script>
+<script>
 // 导入主题
 require.config({
 	baseUrl: '/public',
     paths: {
-    	'import_theme': 'js/app/import_theme',
-    	'jquery.ui.widget': 'tinymce/plugins/leaui_image/public/js/jquery.ui.widget',
-    	'fileupload': '/tinymce/plugins/leaui_image/public/js/jquery.fileupload',
-    	'iframe-transport': '/tinymce/plugins/leaui_image/public/js/jquery.iframe-transport'
+    	'import_theme': 'member/js/import_theme',
+    	'fileupload': 'js/plugins/libs-min/fileupload',
     },
-    shim: {
-    	'fileupload': {deps: ['jquery.ui.widget', 'iframe-transport']}
-    }
 });
 $(function() {
 	require(['import_theme'], function(import_theme) {});

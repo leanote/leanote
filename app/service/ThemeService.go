@@ -618,8 +618,6 @@ func (this *ThemeService) hasRound(vector [][]int, size int) (ok bool) {
 	for i := 0; i < size; i++ {
 		visited := make([]int, size)
 		if this.hasRoundEach(vector, i, size, visited) {
-			Log(">>")
-			Log(i)
 			return true
 		}
 	}
@@ -629,8 +627,6 @@ func (this *ThemeService) hasRound(vector [][]int, size int) (ok bool) {
 // 从每个节点出发, 判断是否有环
 func (this *ThemeService) hasRoundEach(vector [][]int, index int, size int, visited []int) (ok bool) {
 	if visited[index] > 0 {
-		Log("<")
-		Log(index)
 		return true
 	}
 	visited[index] = 1

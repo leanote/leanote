@@ -13,7 +13,7 @@ type MemberIndex struct {
 // admin 主页
 func (c MemberIndex) Index() revel.Result {
 	c.SetUserInfo()
-	c.RenderArgs["title"] = "Leanote Member Center"
+	c.RenderArgs["title"] = c.Message("Leanote Member Center")
 
 	c.RenderArgs["countNote"] = noteService.CountNote(c.GetUserId())
 	c.RenderArgs["countBlog"] = noteService.CountBlog(c.GetUserId())
