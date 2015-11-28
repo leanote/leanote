@@ -15,7 +15,7 @@
 	</div>
 	-->
 	<div>
-		<h1 id="logo">leanote</h1>
+		<h1 id="logo">Leanote</h1>
 		<div id="boxForm">
 			<div id="boxHeader">{{msg . "login"}}</div>
 			<form>
@@ -133,12 +133,6 @@ $(function() {
 				showMsg(e.Msg);
 			}
 		});
-	});
-	
-	// github
-	$("#github").click(function() {
-		$(this).button("loading");
-		location.href="https://github.com/login/oauth/authorize?access_type=&approval_prompt=&client_id=3790fbf1fc14bc6c5d85&redirect_uri=http%3A%2F%2Fleanote.com%2Foauth%2FgithubCallback&response_type=code&scope=user&state=";
 	});
 });
 </script>
