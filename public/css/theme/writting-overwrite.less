@@ -116,7 +116,9 @@ a.raw:hover {
 
 #searchWrap, #logo, #switcher, 
 #leftNotebook, 
-.noteSplit
+.noteSplit,
+.for-split,
+#curNotebookForNewNote
 { 
 	display: none !important;	
 }
@@ -792,6 +794,15 @@ background-position:-1px -670px
 	background: none;
 }
 
+.new-note {
+    background-color: #FBFCF7;
+    border: 1px solid #ddd;
+    &:hover {
+      background-color: #FBFCF7;
+      border-color: rgba(103, 95, 95, 1);
+    }
+}
+
 .new-note-left {
 	padding: 0 5px;
 	width: 95px;
@@ -992,6 +1003,7 @@ html,body {
 }
 #noteTitleDiv {
   height: 30px;
+  border: none;
 }
 #noteTitle {
   height: 100%;
@@ -1014,6 +1026,7 @@ html,body {
 	opacity: 0.8;
 	overflow-x: hidden;
 	overflow-y: hidden;
+  border: none;
 	#notesAndSort {
 		display: none;
 	}
@@ -1055,7 +1068,7 @@ html,body {
 #leanoteNav {
 	background-color: @bgColor;
 	opacity: 0.3;
-	right: -30px;
+	// right: -30px;
 }
 
 .new-note-right {
@@ -1168,6 +1181,10 @@ body {
 
 #editorContent {
 	padding-top: 10px;
+}
+
+#noteAndEditor {
+  position: static;
 }
 
 // tool-bar
