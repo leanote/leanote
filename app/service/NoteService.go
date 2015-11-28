@@ -5,6 +5,8 @@ import (
 	"github.com/leanote/leanote/app/info"
 	. "github.com/leanote/leanote/app/lea"
 	"gopkg.in/mgo.v2/bson"
+	"regexp"
+	"strings"
 	"time"
 )
 
@@ -920,4 +922,188 @@ func (this *NoteService) UpdateNoteToDeleteTag(userId string, targetTag string) 
 		ret[note.NoteId.Hex()] = usn
 	}
 	return ret
+}
+
+// api
+
+// 得到笔记的内容, 此时将笔记内的链接转成标准的Leanote Url
+// 将笔记的图片, 附件链接转换成 site.url/file/getImage?fileId=xxx,  site.url/file/getAttach?fileId=xxxx
+func (this *NoteService) FixContentBad(content string, isMarkdown bool) string {
+	baseUrl := configService.GetSiteUrl()
+
+	baseUrlPattern := baseUrl
+
+	// 避免https的url
+	if baseUrl[0:8] == "https://" {
+		baseUrlPattern = strings.Replace(baseUrl, "https://", "https*://", 1)
+	} else {
+		baseUrlPattern = strings.Replace(baseUrl, "http://", "https*://", 1)
+	}
+
+	patterns := []map[string]string{
+		map[string]string{"src": "src", "middle": "/file/outputImage", "param": "fileId", "to": "getImage?fileId="},
+		map[string]string{"src": "href", "middle": "/attach/download", "param": "attachId", "to": "getAttach?fileId="},
+		// 该链接已失效, 不再支持
+		map[string]string{"src": "href", "middle": "/attach/downloadAll", "param": "noteId", "to": "getAllAttachs?noteId="},
+	}
+
+	for _, eachPattern := range patterns {
+
+		if !isMarkdown {
+
+			// 富文本处理
+
+			// <img src="http://leanote.com/file/outputImage?fileId=5503537b38f4111dcb0000d1">
+			// <a href="http://leanote.com/attach/download?attachId=5504243a38f4111dcb00017d"></a>
+
+			var reg *regexp.Regexp
+			if eachPattern["src"] == "src" {
+				reg, _ = regexp.Compile("<img(?:[^>]+?)(" + eachPattern["src"] + `=['"]*` + baseUrlPattern + eachPattern["middle"] + `\?` + eachPattern["param"] + `=([a-z0-9A-Z]{24})["']*)[^>]*>`)
+			} else {
+				reg, _ = regexp.Compile("<a(?:[^>]+?)(" + eachPattern["src"] + `=['"]*` + baseUrlPattern + eachPattern["middle"] + `\?` + eachPattern["param"] + `=([a-z0-9A-Z]{24})["']*)[^>]*>`)
+			}
+
+			finds := reg.FindAllStringSubmatch(content, -1) // 查找所有的
+
+			for _, eachFind := range finds {
+				if len(eachFind) == 3 {
+					// 这一行会非常慢!, content是全部的内容, 多次replace导致
+					content = strings.Replace(content,
+						eachFind[1],
+						eachPattern["src"]+"=\""+baseUrl+"/api/file/"+eachPattern["to"]+eachFind[2]+"\"",
+						1)
+				}
+			}
+		} else {
+
+			// markdown处理
+			// ![](http://leanote.com/file/outputImage?fileId=5503537b38f4111dcb0000d1)
+			// [selection 2.html](http://leanote.com/attach/download?attachId=5504262638f4111dcb00017f)
+			// [all.tar.gz](http://leanote.com/attach/downloadAll?noteId=5503b57d59f81b4eb4000000)
+
+			pre := "!"                        // 默认图片
+			if eachPattern["src"] == "href" { // 是attach
+				pre = ""
+			}
+
+			regImageMarkdown, _ := regexp.Compile(pre + `\[([^]]*?)\]\(` + baseUrlPattern + eachPattern["middle"] + `\?` + eachPattern["param"] + `=([a-z0-9A-Z]{24})\)`)
+			findsImageMarkdown := regImageMarkdown.FindAllStringSubmatch(content, -1) // 查找所有的
+			// [[![](http://leanote.com/file/outputImage?fileId=5503537b38f4111dcb0000d1) 5503537b38f4111dcb0000d1] [![你好啊, 我很好, 为什么?](http://leanote.com/file/outputImage?fileId=5503537b38f4111dcb0000d1) 5503537b38f4111dcb0000d1]]
+			for _, eachFind := range findsImageMarkdown {
+				// [![你好啊, 我很好, 为什么?](http://leanote.com/file/outputImage?fileId=5503537b38f4111dcb0000d1) 你好啊, 我很好, 为什么? 5503537b38f4111dcb0000d1]
+				if len(eachFind) == 3 {
+					content = strings.Replace(content, eachFind[0], pre+"["+eachFind[1]+"]("+baseUrl+"/api/file/"+eachPattern["to"]+eachFind[2]+")", 1)
+				}
+			}
+		}
+	}
+
+	return content
+}
+
+// 性能更好, 5倍的差距
+func (this *NoteService) FixContent(content string, isMarkdown bool) string {
+	baseUrl := configService.GetSiteUrl()
+
+	baseUrlPattern := baseUrl
+
+	// 避免https的url
+	if baseUrl[0:8] == "https://" {
+		baseUrlPattern = strings.Replace(baseUrl, "https://", "https*://", 1)
+	} else {
+		baseUrlPattern = strings.Replace(baseUrl, "http://", "https*://", 1)
+	}
+
+	patterns := []map[string]string{
+		map[string]string{"src": "src", "middle": "/file/outputImage", "param": "fileId", "to": "getImage?fileId="},
+		map[string]string{"src": "href", "middle": "/attach/download", "param": "attachId", "to": "getAttach?fileId="},
+		// 该链接已失效, 不再支持
+		map[string]string{"src": "href", "middle": "/attach/downloadAll", "param": "noteId", "to": "getAllAttachs?noteId="},
+	}
+
+	for _, eachPattern := range patterns {
+
+		if !isMarkdown {
+
+			// 富文本处理
+
+			// <img src="http://leanote.com/file/outputImage?fileId=5503537b38f4111dcb0000d1">
+			// <a href="http://leanote.com/attach/download?attachId=5504243a38f4111dcb00017d"></a>
+
+			var reg *regexp.Regexp
+			var reg2 *regexp.Regexp
+			if eachPattern["src"] == "src" {
+				reg, _ = regexp.Compile("<img(?:[^>]+?)(?:" + eachPattern["src"] + `=['"]*` + baseUrlPattern + eachPattern["middle"] + `\?` + eachPattern["param"] + `=(?:[a-z0-9A-Z]{24})["']*)[^>]*>`)
+				reg2, _ = regexp.Compile("<img(?:[^>]+?)(" + eachPattern["src"] + `=['"]*` + baseUrlPattern + eachPattern["middle"] + `\?` + eachPattern["param"] + `=([a-z0-9A-Z]{24})["']*)[^>]*>`)
+			} else {
+				reg, _ = regexp.Compile("<a(?:[^>]+?)(?:" + eachPattern["src"] + `=['"]*` + baseUrlPattern + eachPattern["middle"] + `\?` + eachPattern["param"] + `=(?:[a-z0-9A-Z]{24})["']*)[^>]*>`)
+				reg2, _ = regexp.Compile("<a(?:[^>]+?)(" + eachPattern["src"] + `=['"]*` + baseUrlPattern + eachPattern["middle"] + `\?` + eachPattern["param"] + `=([a-z0-9A-Z]{24})["']*)[^>]*>`)
+			}
+
+			content = reg.ReplaceAllStringFunc(content, func(str string) string {
+				// str=这样的
+				// <img src="http://localhost:9000/file/outputImage?fileId=563d706e99c37b48e0000001" alt="" data-mce-src="http://localhost:9000/file/outputImage?fileId=563d706e99c37b48e0000002">
+
+				eachFind := reg2.FindStringSubmatch(str)
+				str = strings.Replace(str,
+					eachFind[1],
+					eachPattern["src"]+"=\""+baseUrl+"/api/file/"+eachPattern["to"]+eachFind[2]+"\"",
+					1)
+
+				// fmt.Println(str)
+				return str
+			})
+			/*
+				finds := reg.FindAllStringSubmatch(content, -1) // 查找所有的
+
+				for _, eachFind := range finds {
+					if len(eachFind) == 3 {
+						// 这一行会非常慢!, content是全部的内容, 多次replace导致
+						content = strings.Replace(content,
+							eachFind[1],
+							eachPattern["src"]+"=\""+baseUrl+"/api/file/"+eachPattern["to"]+eachFind[2]+"\"",
+							1)
+					}
+				}
+			*/
+		} else {
+
+			// markdown处理
+			// ![](http://leanote.com/file/outputImage?fileId=5503537b38f4111dcb0000d1)
+			// [selection 2.html](http://leanote.com/attach/download?attachId=5504262638f4111dcb00017f)
+			// [all.tar.gz](http://leanote.com/attach/downloadAll?noteId=5503b57d59f81b4eb4000000)
+
+			pre := "!"                        // 默认图片
+			if eachPattern["src"] == "href" { // 是attach
+				pre = ""
+			}
+
+			regImageMarkdown, _ := regexp.Compile(pre + `\[(?:[^]]*?)\]\(` + baseUrlPattern + eachPattern["middle"] + `\?` + eachPattern["param"] + `=(?:[a-z0-9A-Z]{24})\)`)
+			regImageMarkdown2, _ := regexp.Compile(pre + `\[([^]]*?)\]\(` + baseUrlPattern + eachPattern["middle"] + `\?` + eachPattern["param"] + `=([a-z0-9A-Z]{24})\)`)
+
+			content = regImageMarkdown.ReplaceAllStringFunc(content, func(str string) string {
+				// str=这样的
+				// <img src="http://localhost:9000/file/outputImage?fileId=563d706e99c37b48e0000001" alt="" data-mce-src="http://localhost:9000/file/outputImage?fileId=563d706e99c37b48e0000002">
+
+				eachFind := regImageMarkdown2.FindStringSubmatch(str)
+				str = strings.Replace(str, eachFind[0], pre+"["+eachFind[1]+"]("+baseUrl+"/api/file/"+eachPattern["to"]+eachFind[2]+")", 1)
+
+				// fmt.Println(str)
+				return str
+			})
+
+			/*
+				findsImageMarkdown := regImageMarkdown.FindAllStringSubmatch(content, -1) // 查找所有的
+				// [[![](http://leanote.com/file/outputImage?fileId=5503537b38f4111dcb0000d1) 5503537b38f4111dcb0000d1] [![你好啊, 我很好, 为什么?](http://leanote.com/file/outputImage?fileId=5503537b38f4111dcb0000d1) 5503537b38f4111dcb0000d1]]
+				for _, eachFind := range findsImageMarkdown {
+					// [![你好啊, 我很好, 为什么?](http://leanote.com/file/outputImage?fileId=5503537b38f4111dcb0000d1) 你好啊, 我很好, 为什么? 5503537b38f4111dcb0000d1]
+					if len(eachFind) == 3 {
+						content = strings.Replace(content, eachFind[0], pre+"["+eachFind[1]+"]("+baseUrl+"/api/file/"+eachPattern["to"]+eachFind[2]+")", 1)
+					}
+				}
+			*/
+		}
+	}
+
+	return content
 }

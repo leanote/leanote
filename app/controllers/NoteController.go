@@ -434,7 +434,7 @@ func (c Note) ExportPdf(noteId string) revel.Result {
 
 	// path 判断是否需要重新生成之
 	guid := NewGuid()
-	fileUrlPath := "files/" + Digest3(noteUserId) + "/" + noteUserId + "/" + Digest2(guid) + "/images/pdf"
+	fileUrlPath := "files/export_pdf"
 	dir := revel.BasePath + "/" + fileUrlPath
 	if !MkdirAll(dir) {
 		return c.RenderText("error, no dir")
@@ -463,9 +463,9 @@ func (c Note) ExportPdf(noteId string) revel.Result {
 	// wkhtmltopdf参数大全
 	var cc string
 	if note.IsMarkdown {
-		cc = binPath + " --window-status done \"" + url + "\"  \"" + path + "\"" //  \"" + cookieDomain + "\" \"" + cookieName + "\" \"" + cookieValue + "\""
+		cc = binPath + " --lowquality --window-status done \"" + url + "\"  \"" + path + "\"" //  \"" + cookieDomain + "\" \"" + cookieName + "\" \"" + cookieValue + "\""
 	} else {
-		cc = binPath + " \"" + url + "\"  \"" + path + "\"" //  \"" + cookieDomain + "\" \"" + cookieName + "\" \"" + cookieValue + "\""
+		cc = binPath + " --lowquality \"" + url + "\"  \"" + path + "\"" //  \"" + cookieDomain + "\" \"" + cookieName + "\" \"" + cookieValue + "\""
 	}
 
 	cmd := exec.Command("/bin/sh", "-c", cc)
