@@ -144,7 +144,7 @@ function log(o) {
 							<li role="presentation" id="setTheme">
 								<a>
 								<i class="fa fa-sun-o"></i> 
-								{{msg . "themeSetting"}}
+								{{leaMsg . "Theme"}}
 								</a>
 							</li>
 							
@@ -187,7 +187,7 @@ function log(o) {
 				</div>
 				<div class="pull-right top-nav writting-hide lea-blog">
 					<a target="_blank" href="http://lea.leanote.com"> 
-						lea++
+						Lea++
 					</a>
 				</div>
 				
@@ -573,9 +573,7 @@ function log(o) {
 			            </form>
 	            
 						<!-- 由此可以算高度 -->
-						<div id="editorContent" name="editorContent" tabindex="2" />
-							{{.noteContent}}
-				       </div>
+						<div id="editorContent" name="editorContent" tabindex="2" /></div>
 					</div>
 					
 					<div id="mdEditor" class="read-only">
@@ -589,7 +587,7 @@ function log(o) {
 							              <span class="lang">{{msg . "updated"}}</span>: <span class="updated-time"></span>
 							            </div>
 						            	
-						            	<div class="wmd-button-bar-inner">
+						            	<div class="wmd-button-bar-inner clearfix">
 							                <ul class="nav left-buttons">
 							                    <li class="wmd-button-group1 btn-group"></li>
 							                </ul>
@@ -634,6 +632,8 @@ function log(o) {
 						        <div class="layout-wrapper-l3">
 						        	<div id="left-column">
 							            <pre id="wmd-input" class="form-control"><div class="editor-content mousetrap" contenteditable=true></div><div class="editor-margin"></div></pre>
+							            <!-- v2 markdown lightmode需要 -->
+							            <div class="textarea-helper"></div>
 						            </div>
 						            <div id="right-column">
 						            <div class="preview-panel panel-open" id="preview-panel">
