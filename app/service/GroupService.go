@@ -185,16 +185,16 @@ func (this *GroupService) AddUser(ownUserId, groupId, userId string) (ok bool, m
 	// groupId是否是ownUserId的?
 	/*
 		if !this.IsExistsGroupUser(ownUserId, groupId) {
-			return false, "forbidden"
+			return false, "forbiddenNotMyGroup"
 		}
 	*/
 	if !this.isMyGroup(ownUserId, groupId) {
-		return false, "forbidden"
+		return false, "forbiddenNotMyGroup"
 	}
 
 	// 是否已存在
 	if db.Has(db.GroupUsers, bson.M{"GroupId": bson.ObjectIdHex(groupId), "UserId": bson.ObjectIdHex(userId)}) {
-		return false, "hasUsers"
+		return false, "userExistsInGroup"
 	}
 
 	return db.Insert(db.GroupUsers, info.GroupUser{
@@ -210,11 +210,11 @@ func (this *GroupService) DeleteUser(ownUserId, groupId, userId string) (ok bool
 	// groupId是否是ownUserId的?
 	/*
 		if !this.IsExistsGroupUser(ownUserId, groupId) {
-			return false, "forbidden"
+			return false, "forbiddenNotMyGroup"
 		}
 	*/
 	if !this.isMyGroup(ownUserId, groupId) {
-		return false, "forbidden"
+		return false, "forbiddenNotMyGroup"
 	}
 
 	// 删除该用户分享到本组的笔记本, 笔记
