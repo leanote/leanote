@@ -111,7 +111,7 @@ $(function() {
 		}
 		ajaxPost("/member/blog/doUpdateBlogAbstract/", data, function(re) {
 			if(reIsOk(re)) {
-				art.tips("Success");
+				art.tips(getMsg("Success"));
 				location.href = "/member/blog/index";
 			} else {
 				art.alert(re.Msg || "error")
