@@ -95,6 +95,7 @@ editorMode.prototype.normalMode = function() {
 	$("#note").css("left", UserInfo.NoteListWidth);
 
 	this.isWritingMode = false;
+	this.resizeEditor();
 };
 
 editorMode.prototype.writtingMode = function() {
@@ -307,7 +308,7 @@ var Resize = {
 			clearInterval(self.resizeMDInterval);
 
 			self.resizeMDInterval = setTimeout(function () {
-				MD.aceEditor && MD.aceEditor.resize();
+				MD.resize && MD.resize();
 			}, 50);
 		}
 	},
@@ -574,6 +575,9 @@ function initEditor() {
 	
 	// 刷新时保存 参考autosave插件
 	window.onbeforeunload = function(e) {
+		if (LEA.isLogout) {
+			return;
+		}
     	Note.curChangedSaveIt(true);
 	}
 

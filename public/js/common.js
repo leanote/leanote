@@ -212,7 +212,7 @@ function _ajaxCallback(ret, successFunc, failureFunc) {
 		// 是否是NOTELOGIN
 		if(ret && typeof ret == "object") {
 			if(ret.Msg == "NOTLOGIN") {
-				alert("你还没有登录, 请先登录!");
+				alert(getMsg("Please sign in firstly!"));
 				return;
 			}
 		}
@@ -861,6 +861,9 @@ function setCookie(c_name, value, expiredays) {
 	document.cookie = c_name+ "=" + escape(value) + ((expiredays==null) ? "" : ";expires="+exdate.toGMTString()) + 'path=/note';
 }
 function logout() {
+	Note.curChangedSaveIt(true);
+	LEA.isLogout = true;
+
 	setCookie("LEANOTE_SESSION", '', -1);
 	location.href = UrlPrefix + "/logout?id=1";
 }
