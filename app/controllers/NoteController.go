@@ -3,7 +3,6 @@ package controllers
 import (
 	"github.com/revel/revel"
 	//	"encoding/json"
-	"fmt"
 	"github.com/leanote/leanote/app/info"
 	. "github.com/leanote/leanote/app/lea"
 	"gopkg.in/mgo.v2/bson"
@@ -14,6 +13,7 @@ import (
 	"time"
 	//	"github.com/leanote/leanote/app/types"
 	//	"io/ioutil"
+	"fmt"
 	//	"bytes"
 	//	"os"
 )
@@ -248,7 +248,8 @@ func (c Note) UpdateNoteOrContent(noteOrContent NoteOrContent) revel.Result {
 		//		noteService.UpdateNoteContent(noteOrContent.UserId, c.GetUserId(),
 		//			noteOrContent.NoteId, noteOrContent.Content, noteOrContent.Abstract)
 		contentOk, contentMsg, afterContentUsn = noteService.UpdateNoteContent(c.GetUserId(),
-			noteOrContent.NoteId, noteOrContent.Content, noteOrContent.Abstract, needUpdateNote, -1)
+			noteOrContent.NoteId, noteOrContent.Content, noteOrContent.Abstract,
+			needUpdateNote, -1, time.Now())
 	}
 
 	Log(afterContentUsn)

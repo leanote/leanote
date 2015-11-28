@@ -85,7 +85,6 @@ func (c ApiNote) GetTrashNotes() revel.Result {
   "Title": "asdfadsf--=",
   "Desc": "",
   "Tags": [
-    ""
   ],
   "Abstract": "",
   "Content": "",
@@ -95,7 +94,7 @@ func (c ApiNote) GetTrashNotes() revel.Result {
   "Usn": 8,
   "Files": [
     {
-      "FileId": "551975d599c37b970f000002",
+      "FileId": "551975d599c37b970f000000",
       "LocalFileId": "",
       "Type": "",
       "Title": "",
@@ -103,18 +102,18 @@ func (c ApiNote) GetTrashNotes() revel.Result {
       "IsAttach": false
     },
     {
-      "FileId": "551975de99c37b970f000003",
+      "FileId": "551975de99c37b970f000001",
       "LocalFileId": "",
       "Type": "doc",
-      "Title": "李铁-简历-ali-print-en.doc",
+      "Title": "李铁-print-en.doc",
       "HasBody": false,
       "IsAttach": true
     },
     {
-      "FileId": "551975de99c37b970f000004",
+      "FileId": "551975de99c37b970f000002",
       "LocalFileId": "",
       "Type": "doc",
-      "Title": "李铁-简历-ali-print.doc",
+      "Title": "李铁-print.doc",
       "HasBody": false,
       "IsAttach": true
     }
@@ -327,15 +326,20 @@ func (c ApiNote) AddNote(noteOrContent info.ApiNote) revel.Result {
 		Tags:       noteOrContent.Tags,
 		Desc:       noteOrContent.Desc,
 		//		ImgSrc:     noteOrContent.ImgSrc,
-		IsBlog:     noteOrContent.IsBlog,
-		IsMarkdown: noteOrContent.IsMarkdown,
-		AttachNum:  attachNum,
+		IsBlog:      noteOrContent.IsBlog,
+		IsMarkdown:  noteOrContent.IsMarkdown,
+		AttachNum:   attachNum,
+		CreatedTime: noteOrContent.CreatedTime,
+		UpdatedTime: noteOrContent.UpdatedTime,
 	}
 	noteContent := info.NoteContent{NoteId: note.NoteId,
-		UserId:   userId,
-		IsBlog:   note.IsBlog,
-		Content:  noteOrContent.Content,
-		Abstract: noteOrContent.Abstract}
+		UserId:      userId,
+		IsBlog:      note.IsBlog,
+		Content:     noteOrContent.Content,
+		Abstract:    noteOrContent.Abstract,
+		CreatedTime: noteOrContent.CreatedTime,
+		UpdatedTime: noteOrContent.UpdatedTime,
+	}
 
 	// 通过内容得到Desc, abstract
 	if noteOrContent.Abstract == "" {
@@ -447,6 +451,7 @@ func (c ApiNote) UpdateNote(noteOrContent info.ApiNote) revel.Result {
 
 		//		Log("after upload")
 		//		LogJ(noteOrContent.Files)
+
 	}
 
 	// 移到外面来, 删除最后一个file时也要处理, 不然总删不掉
@@ -509,6 +514,8 @@ func (c ApiNote) UpdateNote(noteOrContent info.ApiNote) revel.Result {
 		}
 	}
 
+	noteUpdate["UpdatedTime"] = noteOrContent.UpdatedTime
+
 	afterNoteUsn := 0
 	noteOk := false
 	noteMsg := ""
@@ -532,10 +539,16 @@ func (c ApiNote) UpdateNote(noteOrContent info.ApiNote) revel.Result {
 		if noteOrContent.Abstract == "" {
 			noteOrContent.Abstract = SubStringHTML(noteOrContent.Content, 200, "")
 		}
+
 		//		Log("--------> afte fixed")
 		//		Log(noteOrContent.Content)
 		contentOk, contentMsg, afterContentUsn = noteService.UpdateNoteContent(c.getUserId(),
-			noteOrContent.NoteId, noteOrContent.Content, noteOrContent.Abstract, needUpdateNote, noteOrContent.Usn)
+			noteOrContent.NoteId,
+			noteOrContent.Content,
+			noteOrContent.Abstract,
+			needUpdateNote,
+			noteOrContent.Usn,
+			noteOrContent.UpdatedTime)
 	}
 
 	if needUpdateNote {
