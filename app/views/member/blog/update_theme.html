@@ -265,6 +265,7 @@ var theme = {
 			lang = "css";
 		}
 		editor.setValue(content);
+		editor.getSession().setUndoManager(new ace.UndoManager());
 		editor.session.setMode("ace/mode/" + lang);
 		editor.gotoLine(1);
 		setTimeout(function() {
