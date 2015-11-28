@@ -585,8 +585,12 @@ listStr=addAnchors(listStr);listStr=listStr.replace(/\n{2,}(?=\\x03)/,"\n");list
 		var _mathJaxEnd = false;
 
 		// 如果是jQuery对象
-		if(!toElem['querySelectorAll'] && toElem['get']) {
+		if(toElem && !toElem['querySelectorAll'] && toElem['get']) {
 			toElem = toElem.get(0);
+		}
+		if(!toElem || typeof toElem == 'function') {
+			callback = toElem;
+			toElem = document.createElement('div');
 		}
 		function _go(mdText, toElem) {
 			var htmlParsed = converter.makeHtml(mdText);
@@ -609,7 +613,8 @@ listStr=addAnchors(listStr);listStr=listStr.replace(/\n{2,}(?=\\x03)/,"\n");list
 		// 表示有mathjax?
 		// 加载mathJax
 		if(mdText.indexOf('$') !== -1) {
-			loadJs("http://leanote.com/public/libs/MathJax/MathJax.js?config=TeX-AMS_HTML", function() {
+			// loadJs("http://leanote.com/public/libs/MathJax/MathJax.js?config=TeX-AMS_HTML", function() {
+			loadJs("http://cdn.bootcss.com/mathjax/2.5.3/MathJax.js?config=TeX-AMS_HTML", function() {
 				if(!m) {
 					var m = initMathJax();
 				}

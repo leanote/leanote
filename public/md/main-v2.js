@@ -12053,6 +12053,15 @@ define('extensions/markdownExtra',[
         eventMgr = eventMgrParameter;
     };
 
+    function onToggleMode(editor) {
+        editor.hooks.chain("onPreviewRefresh", function () {
+            $('#preview-contents pre').addClass('prettyprint'); // 不能加linenums, 加了后, uml不能显示
+            prettify.prettyPrint();
+        });
+    }
+
+    markdownExtra.onToggleMode = onToggleMode;
+
     markdownExtra.onPagedownConfigure = function(editor) {
         var converter = editor.getConverter();
         if(markdownExtra.config.intraword === true) {
@@ -12078,10 +12087,8 @@ define('extensions/markdownExtra',[
         };
       
         extraOptions.highlighter = "prettify";
-        editor.hooks.chain("onPreviewRefresh", function () {
-            $('#preview-contents pre').addClass('prettyprint'); // 不能加linenums, 加了后, uml不能显示
-            prettify.prettyPrint();
-        });
+        
+        onToggleMode(editor);
 
         Markdown.Extra.init(converter, extraOptions);
     };
@@ -12278,6 +12285,10 @@ define('extensions/markdownSectionParser',[
                 regexp = '^```.*\\n[\\s\\S]*?\\n```|' + regexp; // Fenced block delimiters
             }
         }
+
+        // TODO 代码```
+        // regexp = '^```$|' + regexp;
+
         if(mathJax.enabled) {
             // Math delimiter has to follow 1 empty line to be considered as a section delimiter
             regexp = '^[ \\t]*\\n\\$\\$[\\s\\S]*?\\$\\$|' + regexp; // $$ math block delimiters
@@ -12288,6 +12299,8 @@ define('extensions/markdownSectionParser',[
         
         var converter = editor.getConverter();
         converter.hooks.chain("preConversion", function(text) {
+            // console.log('preConversion');
+            // console.log(text);
             eventMgr.previewStartTime = new Date();
             var tmpText = text + "\n\n";
             function addSection(startOffset, endOffset) {
@@ -12497,7 +12510,8 @@ define('extensions/partialRendering',[
         }
     }
 
-    partialRendering.onPagedownConfigure = function(editor) {
+    // 初始化时, toggleMode时
+    function onPagedownConfigure(editor) {
         converter = editor.getConverter();
         converter.hooks.chain("preConversion", function() {
             var result = _.map(modifiedSections, function(section) {
@@ -12509,7 +12523,10 @@ define('extensions/partialRendering',[
         editor.hooks.chain("onPreviewRefresh", function() {
             refreshSections();
         });
-    };
+    }
+
+    partialRendering.onPagedownConfigure = onPagedownConfigure;
+    partialRendering.onToggleMode = onPagedownConfigure;
 
     partialRendering.onInit = function() {
         if(markdownExtra.enabled) {
@@ -12636,12 +12653,15 @@ define('extensions/umlDiagrams',[
 		});
 	}
 
-	umlDiagrams.onPagedownConfigure = function(editor) {
+	function onToggleMode(editor) {
 		editor.hooks.chain("onPreviewRefresh", function() {
 			renderSequence();
 			renderFlow();
 		});
-	};
+	}
+
+	umlDiagrams.onPagedownConfigure = onToggleMode;
+	umlDiagrams.onToggleMode = onToggleMode;
 
 	return umlDiagrams;
 });
@@ -12822,6 +12842,18 @@ define('extensions/emailConverter',[
     return emailConverter;
 });
 
+/**
+scrollLink原理
+
+1) preview分出一个个section
+2) Md text通过这些section一个个取高度, 成mdSection
+3) 将mdSection和previewSection建立映射
+4) 滚动时, 通过scollTop()得到section的位置, 到另一边的section得到另一方scrollTop(), 滚动之
+
+注意要点:
+light下得到左侧的mdSection是通过helper, 每一个section的文字设到helper容器内得到高度. 所以helper的样式要和wmd-input的样式要一模一样, 不然就会有误差!!
+
+ */
 define('extensions/scrollLink',[
     // "jquery",
     "underscore",
@@ -13083,8 +13115,12 @@ define('extensions/scrollLink',[
         mdSectionList = [];
     };
 
-    var scrollAdjust = false;
-    scrollLink.onReady = function() {
+    function initScrollEvent () {
+
+    }
+
+    // 切换编辑模式时
+    var onToggleMode = function (isOnToggleMode) {
         $previewElt = $(".preview-container");
         $textareaElt = $("#wmd-input");
         // This helper is used to measure sections height in light mode
@@ -13105,12 +13141,46 @@ define('extensions/scrollLink',[
                 doScrollLink();
             }
         };
-        if(window.lightMode) {
-            $textareaElt.scroll(handleEditorScroll);
-        }
-        else {
-            aceEditor.session.on("changeScrollTop", handleEditorScroll);
-        }
+
+        // editor 滚动时操作
+        var timeout = isOnToggleMode ? 500 : 0;
+        setTimeout(function () {
+            if(window.lightMode) {
+                $textareaElt.scroll(handleEditorScroll);
+            }
+            else {
+                aceEditor.session.on("changeScrollTop", handleEditorScroll);
+            }
+        }, timeout);
+    };
+
+    scrollLink.onToggleMode = function () {
+        $previewElt = $(".preview-container");
+        $textareaElt = $("#wmd-input");
+        $textareaHelperElt = $('.textarea-helper');
+
+        buildSections();
+
+        // 可以不要这一段
+        // isScrollPreview = true;
+        // isScrollEditor = false;
+        // doScrollLink();
+
+        // console.log('-----------------')
+        onToggleMode(true);
+
+        // 左侧滚动到之前的位置
+        // $previewElt.scrollTop($previewElt.scrollTop());
+    };
+
+    var scrollAdjust = false;
+    scrollLink.onReady = function() {
+        $previewElt = $(".preview-container");
+        $textareaElt = $("#wmd-input");
+        // This helper is used to measure sections height in light mode
+        $textareaHelperElt = $('.textarea-helper');
+
+        onToggleMode();
 
         // 添加目录, 两种目录
         // Reimplement anchor scrolling to work without preview
@@ -13487,6 +13557,8 @@ define('eventMgr',[
     addEventHook("onFileOpen");
     addEventHook("onFileClosed");
     addEventHook("onContentChanged");
+
+    addEventHook('onToggleMode');
     // addEventHook("onTitleChanged");
 
     // Operations on folders
@@ -16243,6 +16315,12 @@ define('shortcutMgr',[
 
 define("pagedown-light", function(){});
 
+/**
+ * 已知BUG:
+ * 从light切换到normal, 快捷键没用了
+ *
+ */
+
 /*globals Markdown, requirejs */
 define('core',[
     "underscore",
@@ -16281,7 +16359,7 @@ define('core',[
     function createAceEditor() {
         aceEditor = ace.edit("wmd-input");
         MD.aceEditor = aceEditor;
-        aceEditor.setOption("spellcheck", true);
+        // aceEditor.setOption("spellcheck", true);
 
         // vim
         // aceEditor.setKeyboardHandler("ace/keyboard/vim");
@@ -16363,22 +16441,6 @@ define('core',[
         eventMgr.onAceCreated(aceEditor);
     }
 
-    // 本地缓存
-    var localS = {
-        get: function(key) {
-            if (localStorage) {
-                return localStorage.getItem(key);
-            }
-            return;
-        },
-        set: function(key, value) {
-            value += '';
-            if (localStorage) {
-                localStorage.setItem(key, value);
-            }
-        }
-    }
-
     // Create the layout
     var $editorButtonsElt;
 
@@ -16395,8 +16457,234 @@ define('core',[
     var documentContent;
     // var UndoManager = require("ace/undomanager").UndoManager;
     var previewWrapper;
-    core.initEditor = function(fileDescParam) {
 
+    var converter;
+
+    var lightEditor;
+
+    var $mdKeyboardMode;
+
+    core._resetToolBar = function () {
+        /*
+        <ul class="nav left-buttons">
+                <li class="wmd-button-group1 btn-group"></li>
+            </ul>
+            <ul class="nav left-buttons">
+                <li class="wmd-button-group2 btn-group"></li>
+            </ul>
+            <ul class="nav left-buttons">
+                <li class="wmd-button-group3 btn-group"></li>
+            </ul>
+            <ul class="nav left-buttons">
+                <li class="wmd-button-group4 btn-group"></li>
+            </ul>
+             <ul class="nav left-buttons">
+                <li class="wmd-button-group6 btn-group">
+                  <li class="wmd-button btn btn-success" id="wmd-help-button" title="Markdown syntax" style="left: 0px; display: none;"><span style="display: none; background-position: 0px 0px;"></span><i class="fa fa-question-circle"></i></li>
+                </li>
+            </ul>
+         */
+        $('#wmd-button-row').remove();
+        $('#wmd-button-bar .wmd-button-bar-inner').html('<ul class="nav left-buttons"><li class="wmd-button-group1 btn-group"></li></ul><ul class="nav left-buttons"><li class="wmd-button-group2 btn-group"></li></ul><ul class="nav left-buttons"><li class="wmd-button-group3 btn-group"></li></ul><ul class="nav left-buttons"><li class="wmd-button-group4 btn-group"></li></ul><ul class="nav left-buttons"><li class="wmd-button-group6 btn-group"></li><li class="wmd-button btn btn-success" id="wmd-help-button" title="' + getMsg('Markdown syntax') +'" style="left:0;display:none"><span style="display:none;background-position:0 0"></span><i class="fa fa-question-circle"></i></li></ul>');
+    };
+
+    core._setEditorHook = function () {
+        // Custom insert link dialog
+        editor.hooks.set("insertLinkDialog", function(callback) {
+            core.insertLinkCallback = callback;
+            utils.resetModalInputs();
+            insertLinkO.modal();
+            return true;
+        });
+        // Custom insert image dialog
+        editor.hooks.set("insertImageDialog", function(callback) {
+            core.insertLinkCallback = callback;
+            if(core.catchModal) {
+                return true;
+            }
+            utils.resetModalInputs();
+            var ifr = $("#leauiIfrForMD");
+            if(!ifr.attr('src')) {
+                ifr.attr('src', '/album/index?md=1');
+            }
+            $(".modal-insert-image").modal();
+            return true;
+        });
+
+        editor.hooks.chain("onPreviewRefresh", eventMgr.onAsyncPreview);
+    };
+
+    // 行
+    core._moveCursorTo = function (row, column) {
+        if (!window.lightMode) {
+            aceEditor.moveCursorTo(row, column);
+            return;
+        }
+
+        // 得到offset
+        var offset = core._getTextareaCursorOffset(row, column);
+
+        $('#wmd-input').get(0).setSelectionRange(offset, offset);
+        $('#wmd-input').focus();
+    };
+
+    // 得到文本编辑器的位置
+    // 返回 {row: 0, column: 0}
+    core._getTextareaCusorPosition = function () {
+        var offset = $('#wmd-input').get(0).selectionStart;
+        if (offset == 0) {
+            return {row: 0, column: 0};
+        }
+        var content = MD.getContent() || '';
+        var contentArr = content.split('\n');
+        var to = 0;
+        var row = 0;
+        var column = 0;
+        for (var row = 0; row < contentArr.length; ++row) {
+            var line = contentArr[row];
+            
+            if (offset <= line.length) {
+                column = offset;
+                break;
+            }
+            else {
+                offset -= line.length;
+            }
+
+            // 下一行\n
+            offset--;
+        }
+        return {row: row, column: column};
+    };
+
+    // 通过row, column 得到offset
+    core._getTextareaCursorOffset = function (row, column) {
+        var offset = 0;
+         // 得到offset
+        var content = MD.getContent();
+        var contentArr = content.split('\n');
+        var offset = 0;
+        for (var i = 0; i < contentArr.length && i < row; ++i) {
+            offset += contentArr[i].length + 1;  // \n 算1个
+        }
+        offset += column;
+        return offset + 1;
+    }
+
+    // 切换到轻量编辑器
+    core.initLightEditor = function () {
+        if (window.lightMode) {
+            return;
+        }
+        var scrollTop = aceEditor.renderer.getScrollTop();
+        var pos = aceEditor.getCursorPosition();
+        var content = MD.getContent();
+
+        core._resetToolBar();
+        aceEditor && aceEditor.destroy();
+
+        // In light mode, we replace ACE with a textarea
+        $('#wmd-input').replaceWith(function() {
+            return $('<textarea id="wmd-input" class="ace_editor ace-tm wmd-textarea">').addClass(this.className).addClass('form-control');
+        });
+
+        core._pre();
+
+        // unbind all event
+        // $editorElt.off();
+
+        editor = new Markdown.EditorLight(converter);
+
+        core._setEditorHook();
+
+        editor.run(previewWrapper);
+
+        core._setToolBars();
+
+        $editorElt.val(content);
+
+        window.lightMode = true;
+        MD.clearUndo();
+        eventMgr.onToggleMode(editor);
+        core._moveCursorTo(pos.row, pos.column);
+        $editorElt.focus();
+        $('#wmd-input').scrollTop(scrollTop);
+
+        // 设置API
+        // MD.insertLink = editor.insertLink;
+    };
+
+    // 切换到Ace编辑器
+    core.initAceEditor = function () {
+        if (!window.lightMode) {
+            return;
+        }
+        var scrollTop = $('#wmd-input').scrollTop(); // : 
+        var pos = core._getTextareaCusorPosition();
+        // console.log(pos);
+        var content = MD.getContent();
+
+        core._resetToolBar();
+        aceEditor && aceEditor.destroy();
+
+        $('#wmd-input').replaceWith(function () {
+            return '<pre id="wmd-input" class="form-control"><div id="wmd-input-sub" class="editor-content mousetrap" contenteditable=true></div><div class="editor-margin"></div></pre>';
+        });
+
+        core._pre();
+
+        // ACE editor
+        createAceEditor();
+        // Editor's element
+        $editorElt.find('.ace_content').css({
+            "background-size": "64px " + Math.round(constants.fontSize * (20 / 12)) + "px",
+        });
+
+        // unbind all event
+        // $editorElt.off();
+
+        editor = new Markdown.Editor(converter, undefined, {
+            keyStrokes: shortcutMgr.getPagedownKeyStrokes()
+        });
+
+        core._setEditorHook();
+        editor.run(aceEditor, previewWrapper);
+
+        core._setToolBars();
+
+        aceEditor.setValue(content, -1);
+        window.lightMode = false;
+        MD.clearUndo();
+
+        eventMgr.onToggleMode(editor);
+        core._moveCursorTo(pos.row, pos.column);
+        aceEditor.focus();
+        aceEditor.session.setScrollTop(scrollTop);
+
+        // 设置API
+        // MD.insertLink = editor.insertLink;
+    };
+
+    core._initMarkdownConvert = function () {
+        // Create the converter and the editor
+        converter = new Markdown.Converter();
+        var options = {
+            _DoItalicsAndBold: function(text) {
+                // Restore original markdown implementation
+                text = text.replace(/(\*\*|__)(?=\S)(.+?[*_]*)(?=\S)\1/g,
+                "<strong>$2</strong>");
+                text = text.replace(/(\*|_)(?=\S)(.+?)(?=\S)\1/g,
+                "<em>$2</em>");
+                return text;
+            }
+        };
+        converter.setOptions(options);
+
+        return converter;
+    }
+
+    // 初始化
+    core.initEditor = function(fileDescParam) {
         if(fileDesc !== undefined) {
             eventMgr.onFileClosed(fileDesc);
         }
@@ -16438,6 +16726,7 @@ define('core',[
 
         var $previewContainerElt = $(".preview-container");
 
+        /*
         if(window.lightMode) {
             // Store editor scrollTop on scroll event
             $editorElt.scroll(function() {
@@ -16476,20 +16765,20 @@ define('core',[
                 fileDesc.previewScrollTop = $previewContainerElt.scrollTop();
             }
         });
+        */
 
-        // Create the converter and the editor
-        var converter = new Markdown.Converter();
-        var options = {
-            _DoItalicsAndBold: function(text) {
-                // Restore original markdown implementation
-                text = text.replace(/(\*\*|__)(?=\S)(.+?[*_]*)(?=\S)\1/g,
-                "<strong>$2</strong>");
-                text = text.replace(/(\*|_)(?=\S)(.+?)(?=\S)\1/g,
-                "<em>$2</em>");
-                return text;
-            }
-        };
-        converter.setOptions(options);
+        if(window.lightMode) {
+            editor = new Markdown.EditorLight(converter);
+        }
+        else {
+            editor = new Markdown.Editor(converter, undefined, {
+                keyStrokes: shortcutMgr.getPagedownKeyStrokes()
+            });
+        }
+
+        // editor['eventMgr'] = eventMgr;
+
+        core._setEditorHook();
 
         function checkDocumentChanges() {
             var newDocumentContent = $editorElt.val();
@@ -16502,147 +16791,44 @@ define('core',[
             }
             documentContent = newDocumentContent;
         }
+        previewWrapper = function(makePreview) {
+            var debouncedMakePreview = _.debounce(makePreview, 500);
+            return function() {
+                if(documentContent === undefined) {
+                    makePreview();
 
-
-        if(window.lightMode) {
-            editor = new Markdown.EditorLight(converter);
-        }
-        else {
-            editor = new Markdown.Editor(converter, undefined, {
-                keyStrokes: shortcutMgr.getPagedownKeyStrokes()
-            });
-        }
-
-        editor['eventMgr'] = eventMgr;
-
-        //==============
-        // MD API start
-
-        MD = editor;
-        MD.focus = function () {
-            aceEditor ? aceEditor.focus() : $editorElt.focus();
-        };
-        MD.setContent = function (content) {
-            var desc = {
-                content: content
-            }
-            // Notify extensions
-            // eventMgr.onFileSelected(desc);
-
-            // Refresh the editor (even if it's the same file)
-            core.initEditor(desc);
-        };
-        MD.getContent = function () {
-            if(aceEditor !== undefined) {
-                return aceEditor.getValue();
-            }
-            return $editorElt.val();
-        };
-        // 重新refresh preview
-        MD.onResize = function () {
-            eventMgr.onLayoutResize();
-            return fileDesc;
-        };
-
-        if (!window.lightMode) {
-            MD.aceEditor = aceEditor;
-        }
-
-        MD.clearUndo = function () {
-            if(window.lightMode) {
-                MD.undoManager.reinit();
-            }
-            else {
-                aceEditor.getSession().setUndoManager(new ace.UndoManager());
-            }
-            // 重新设置undo, redo button是否可用状态
-            MD.uiManager.setUndoRedoButtonStates();
-        };
-
-        // MD API end
-        //==============
-
-        // Custom insert link dialog
-        editor.hooks.set("insertLinkDialog", function(callback) {
-            core.insertLinkCallback = callback;
-            utils.resetModalInputs();
-            insertLinkO.modal();
-            return true;
-        });
-        // Custom insert image dialog
-        editor.hooks.set("insertImageDialog", function(callback) {
-            core.insertLinkCallback = callback;
-            if(core.catchModal) {
-                return true;
-            }
-            utils.resetModalInputs();
-            var ifr = $("#leauiIfrForMD");
-            if(!ifr.attr('src')) {
-                ifr.attr('src', '/album/index?md=1');
-            }
-            $(".modal-insert-image").modal();
-            return true;
-        });
-
-        if(true) {
-            previewWrapper = function(makePreview) {
-                var debouncedMakePreview = _.debounce(makePreview, 500);
-                return function() {
-                    if(documentContent === undefined) {
-                        makePreview();
-
-                        eventMgr.onFileOpen(fileDesc);
-                        $previewContainerElt.scrollTop(fileDesc.previewScrollTop);
-                        if(window.lightMode) {
-                            $editorElt.scrollTop(fileDesc.editorScrollTop);
-                        }
-                        else {
-                            _.defer(function() {
-                                aceEditor.renderer.scrollToY(fileDesc.editorScrollTop);
-                            });
-                        }
+                    eventMgr.onFileOpen(fileDesc);
+                    $previewContainerElt.scrollTop(fileDesc.previewScrollTop);
+                    if(window.lightMode) {
+                        $editorElt.scrollTop(fileDesc.editorScrollTop);
                     }
                     else {
-                        debouncedMakePreview();
+                        _.defer(function() {
+                            aceEditor.renderer.scrollToY(fileDesc.editorScrollTop);
+                        });
                     }
-                    checkDocumentChanges();
-                };
+                }
+                else {
+                    debouncedMakePreview();
+                }
+                checkDocumentChanges();
             };
-        }
-        else {
-            previewWrapper = function(makePreview) {
-                return function() {
-                    makePreview();
-                    if(documentContent === undefined) {
-                        eventMgr.onFileOpen(fileDesc);
-                        $previewContainerElt.scrollTop(fileDesc.previewScrollTop);
-                        if(window.lightMode) {
-                            $editorElt.scrollTop(fileDesc.editorScrollTop);
-                        }
-                        else {
-                            _.defer(function() {
-                                aceEditor.renderer.scrollToY(fileDesc.editorScrollTop);
-                            });
-                        }
-                    }
-                    checkDocumentChanges();
-                };
-            };
-        }
+        };
 
         eventMgr.onPagedownConfigure(editor);
-        editor.hooks.chain("onPreviewRefresh", eventMgr.onAsyncPreview);
+        
         if(window.lightMode) {
             editor.run(previewWrapper);
             editor.undoManager.reinit(initDocumentContent, fileDesc.editorStart, fileDesc.editorEnd, fileDesc.editorScrollTop);
-            // $editorElt.focus();
         }
         else {
             editor.run(aceEditor, previewWrapper);
             fileDesc.editorSelectRange && aceEditor.selection.setSelectionRange(fileDesc.editorSelectRange);
-            // aceEditor.focus();
         }
+    };
 
+    // 工具栏按钮
+    core._setToolBars = function () {
         // Hide default buttons
         $(".wmd-button-row li").addClass("btn btn-success").css("left", 0).find("span").hide();
 
@@ -16665,55 +16851,193 @@ define('core',[
         $("#wmd-undo-button").append($('<i class="fa fa-undo">')).appendTo($btnGroupElt);
         $("#wmd-redo-button").append($('<i class="fa fa-repeat">')).appendTo($btnGroupElt);
 
+        core._initModeToolbar();
+    };
+
+    core.setMDApi = function () {
+        //==============
+        // MD API start
+
+        // 设置API
+        // MD.insertLink = editor.insertLink;
+
+        MD.focus = function () {
+            !window.lightMode ? aceEditor.focus() : $('#wmd-input').focus();
+        };
+        MD.setContent = function (content) {
+            var desc = {
+                content: content
+            }
+            // Notify extensions
+            // eventMgr.onFileSelected(desc);
+
+            // Refresh the editor (even if it's the same file)
+            core.initEditor(desc);
+        };
+        MD.getContent = function () {
+            if(!window.lightMode) {
+                return aceEditor.getValue();
+            }
+            return $('#wmd-input').val();
+            // return $editorElt.val(); // 有延迟?
+        };
+        
+
+        /*
         if (!window.lightMode) {
+            MD.aceEditor = aceEditor;
+        }
+        */
+
+        // 重新refresh preview
+        MD.onResize = function () {
+            eventMgr.onLayoutResize();
+        };
+
+        // aceEditor resize
+        MD.resize = function () {
+            if (!window.lightMode) {
+                aceEditor.resize();
+            }
+        };
+
+        MD.clearUndo = function () {
+            if(window.lightMode) {
+                editor.undoManager.reinit();
+            }
+            else {
+                aceEditor.getSession().setUndoManager(new ace.UndoManager());
+            }
+            // 重新设置undo, redo button是否可用状态
+            editor.uiManager.setUndoRedoButtonStates();
+        };
+
+        MD.toggleToAce = function () {
+            core.initAceEditor();
+        };
+
+        // 切换成light模式
+        MD.toggleToLight = function () {
+            core.initLightEditor();
+        };
+
+        // 以下一行是为了i18n能分析到
+        // getMsg('Light') getMsg('Normal')
+        MD.setModeName = function(mode) {
+            if (mode === 'textarea') {
+                mode = 'Normal';
+            }
+            var msg = getMsg(mode);
+            $mdKeyboardMode.html(msg);
+        };
+
+        MD.changeAceKeyboardMode = function(mode, modeName) {
+            // 保存之
+            localS.set(localSModeKey, mode);
+
+            // 之前是lightMode
+            if (window.lightMode) {
+                // 要切换成ace
+                if (mode != 'light') {
+                    core.initAceEditor();
+                    if (!MD.defaultKeyboardMode) {
+                        MD.defaultKeyboardMode = aceEditor.getKeyboardHandler();
+                    }
+                }
+                // 还是ligth, 则返回
+                else {
+                    return;
+                }
+            }
+            // 当前是ace
+            else {
+                // 如果mode是light, 则切换之, 否则
+                if (mode == 'light') {
+                    core.initLightEditor();
+                    return;
+                }
+            }
+
+            // ace切换成其它模式
+
+            if (mode != 'vim' && mode != 'emacs') {
+                aceEditor.setKeyboardHandler(MD.defaultKeyboardMode);
+                // shortcutMgr.configureAce(aceEditor);
+            }
+            else {
+                aceEditor.setKeyboardHandler("ace/keyboard/" + mode);
+            }
+
+            // if (mode != 'light') {
+            //     aceEditor.focus();
+            // }
+        };
+
+        // MD API end
+        //==============
+    };
+
+    core._initModeToolbar = function () {
+        // 可以切换
+        if (!window.lightModeForce) {
             $('.wmd-button-group4').html(['<div class="btn-group">',
                     '<button type="button" class="wmd-button btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="' + getMsg('Edit mode') + '">',
                       '<i class="fa fa-gear"></i> <i id="md-keyboard-mode"></i>',
                     '</button>',
                     '<ul class="dropdown-menu wmd-mode">',
-                      '<li><a href="#" data-mode="textarea">' + getMsg('Normal mode') + '</a></li>',
-                      '<li><a href="#" data-mode="Vim">' + getMsg('Vim mode') + '</a></li>',
-                      '<li><a href="#" data-mode="Emacs">' + getMsg('Emacs mode') + '</a></li>',
+                      '<li><a href="#" data-mode="Normal"><i class="fa fa-check"></i> ' + getMsg('Normal mode') + '</a></li>',
+                      '<li><a href="#" data-mode="Vim"><i class="fa"></i> ' + getMsg('Vim mode') + '</a></li>',
+                      '<li><a href="#" data-mode="Emacs"><i class="fa"></i> ' + getMsg('Emacs mode') + '</a></li>',
+                      '<li role="separator" class="divider"></li>',
+                      '<li><a href="#" data-mode="Light"><i class="fa"></i> ' + getMsg('Light editor') + '</a></li>',
                     '</ul>',
                   '</div>'].join(''));
 
             $("#wmd-help-button").show();
-            var $mdKeyboardMode = $('#md-keyboard-mode');
-            var localSKey = 'LeaMdAceMode'
-            MD.changeAceKeyboardMode = function(mode, modeName) {
-                localS.set(localSKey, mode);
-                if (mode != 'vim' && mode != 'emacs') {
-                    aceEditor.setKeyboardHandler(MD.defaultKeyboardMode);
-                    $mdKeyboardMode.html('');
-                }
-                else {
-                    aceEditor.setKeyboardHandler("ace/keyboard/" + mode);
-                    $mdKeyboardMode.html(modeName);
-                }
-                aceEditor.focus();
-            }
+            $mdKeyboardMode = $('#md-keyboard-mode');
+            
             // 编辑模式选择
-            MD.defaultKeyboardMode = aceEditor.getKeyboardHandler();
             $('.wmd-mode a').click(function () {
-                var mode = $(this).data('mode');
+                var $this = $(this);
+                var mode = $this.data('mode');
                 MD.changeAceKeyboardMode(mode.toLowerCase(), mode);
+                MD.setModeName(mode);
+
+                // 切换后可能会重绘html, 所以这里重新获取
+                $('.wmd-mode').find('i').removeClass('fa-check');
+                $('.wmd-mode a[data-mode="' + mode + '"]').find('i').addClass('fa-check');
             });
-            // 是否可以从storage中设置md mode
-            if (!window.LEA || (window.LEA && window.LEA.canSetMDModeFromStorage && window.LEA.canSetMDModeFromStorage())) {
-                var userMode = localS.get(localSKey);
-                if (userMode) {
-                    var userModeUpper = userMode[0].toUpperCase() + userMode.substr(1);
-                    MD.changeAceKeyboardMode(userMode, userModeUpper);
+
+            if (!window.LEA 
+                || (window.LEA 
+                    && window.LEA.canSetMDModeFromStorage 
+                    && window.LEA.canSetMDModeFromStorage())) {
+                var aceMode = localS.get(localSModeKey);
+                if (!aceMode) {
+                    return;
                 }
+                var aceModeUpper = aceMode[0].toUpperCase() + aceMode.substr(1);
+                $('.wmd-mode i').removeClass('fa-check');
+                $('.wmd-mode a[data-mode="' + aceModeUpper + '"] i').addClass('fa-check');
+
+                MD.setModeName(aceModeUpper);
             }
         }
+    };
+
+    core._pre = function () {
+        $editorElt = $("#wmd-input, .textarea-helper").css({
+            // Apply editor font
+            "font-family": constants.fontFamily,
+            "font-size": constants.fontSize + "px",
+            "line-height": Math.round(constants.fontSize * (20 / 12)) + "px"
+        });
     };
 
     // Initialize multiple things and then fire eventMgr.onReady
     var isDocumentPanelShown = false;
     var isMenuPanelShown = false;
     core.onReady = function() {
-
         $navbarElt = $('.navbar');
         $leftBtnElts = $navbarElt.find('.left-buttons');
         $rightBtnElts = $navbarElt.find('.right-buttons');
@@ -16724,16 +17048,11 @@ define('core',[
         if(window.lightMode) {
             // In light mode, we replace ACE with a textarea
             $('#wmd-input').replaceWith(function() {
-                return $('<textarea id="wmd-input">').addClass(this.className).addClass('form-control');
+                return $('<textarea id="wmd-input" class="ace_editor ace-tm wmd-textarea">').addClass(this.className).addClass('form-control');
             });
         }
 
-        $editorElt = $("#wmd-input, .textarea-helper").css({
-            // Apply editor font
-            "font-family": constants.fontFamily,
-            "font-size": constants.fontSize + "px",
-            "line-height": Math.round(constants.fontSize * (20 / 12)) + "px"
-        });
+        core._pre();
 
         if(!window.lightMode) {
             // ACE editor
@@ -16746,7 +17065,27 @@ define('core',[
         }
 
         eventMgr.onReady();
+        core._initMarkdownConvert();
         core.initEditor();
+        core.setMDApi();
+        core._setToolBars();
+
+        // 默认Ace编辑模式
+        if (!window.lightMode) {
+            MD.defaultKeyboardMode = aceEditor.getKeyboardHandler();
+        }
+        // 初始时
+        // 是否可以从storage中设置md mode
+        if (!window.LEA 
+            || (window.LEA 
+                && window.LEA.canSetMDModeFromStorage 
+                && window.LEA.canSetMDModeFromStorage())) {
+            var aceMode = localS.get(localSModeKey);
+            if (!window.lightMode && aceMode) {
+                var aceModeUpper = aceMode[0].toUpperCase() + aceMode.substr(1);
+                MD.changeAceKeyboardMode(aceMode, aceModeUpper);
+            }
+        }
     };
 
     // Other initialization that are not prioritary
@@ -16824,17 +17163,8 @@ define('core',[
         });
 
         // 弹框显示markdown语法
-        $('#wmd-help-button').click(function() {
-            window.open("http://leanote.com/blog/post/531b263bdfeb2c0ea9000002");
-        });
-
-        // Load images
-        _.each(document.querySelectorAll('img'), function(imgElt) {
-            var $imgElt = $(imgElt);
-            var src = $imgElt.data('stackeditSrc');
-            if(src) {
-                $imgElt.attr('src', window.baseDir + '/img/' + src);
-            }
+        $('#wmd-button-bar').on('click', '#wmd-help-button', function() {
+            window.open("http://leanote.leanote.com/post/Leanote-Markdown-Manual");
         });
     });
 
@@ -16896,15 +17226,42 @@ requirejs.config({
     }
 });
 
+// 本地缓存
+var localS = {
+    get: function(key) {
+        if (localStorage) {
+            return localStorage.getItem(key);
+        }
+        return;
+    },
+    set: function(key, value) {
+        value += '';
+        if (localStorage) {
+            localStorage.setItem(key, value);
+        }
+    }
+};
+var localSModeKey = 'LeaMdAceMode';
+
 // Viewer mode is deduced from the body class
 window.viewerMode = false;
 
 // Light mode is for mobile or viewer
-window.lightMode = window.viewerMode || /_light_/.test(localStorage.mode) || /(\?|&)light($|&)/.test(location.search) || (function(a) {
+window.lightModeForce = window.viewerMode || /_light_/.test(localStorage.mode) || /(\?|&)light($|&)/.test(location.search) || (function(a) {
     if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino|android|ipad|playbook|silk/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) {
         return true;
     }
 })(navigator.userAgent || navigator.vendor || window.opera);
+// 是否是强制lightMode
+if (window.lightModeForce) {
+    window.lightMode = true;
+}
+else {
+    var mode = localS.get(localSModeKey);
+    if (mode === 'light') {
+        window.lightMode = true;
+    }
+}
 
 // window.lightMode = true;
 
