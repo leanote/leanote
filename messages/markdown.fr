@@ -1,0 +1,35 @@
+
+# markdown editor
+
+Hyperlink=Hyperlink
+Please provide the link URL and an optional title=Please provide the link URL and an optional title
+optional title=optional title
+Ok=Ok
+Cancel=Cancel
+Strong=Strong
+strong text=strong text
+Emphasis=Emphasis
+emphasized text=emphasized text
+Blockquote=Blockquote
+Code Sample=Code Sample
+enter code here=enter code here
+Image=Image
+Heading=Heading
+Numbered List=Numbered List
+Bulleted List=Bulleted List
+List item=List item
+Horizontal Rule=Horizontal Rule
+Markdown syntax=Markdown syntax
+Undo=Undo
+Redo=Redo
+enter image description here=enter image description here
+enter link description here=enter link description here
+Edit mode=Edit mode
+Vim mode=Vim mode
+Emacs mode=Emacs mode
+Normal mode=Normal mode
+Normal=Normal
+Light=Light
+Light editor=Light editor
+
+Insert Image=Insert Image

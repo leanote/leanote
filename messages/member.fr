@@ -3,6 +3,13 @@
 ####################
 
 
+# member center
+memberCenter=Espace Membre
+userNotExists=L'utilisateur n'existe pas
+hasUsers=L'utilisateur existe déjà
+My Group=My Group
+
+
 # post abstract
 
 Abstract=Abstract
@@ -11,3 +18,121 @@ Once the abstract has been updated, it will not set the abstract automatically o
 Main Image=Main Image
 Get next image as main image from content=Get next image as main image from content
 Raw Content=Raw Content
+
+# member title
+Leanote Member Center=Leanote Member Center
+Username=Username
+Email=Email
+Password=Password
+Avatar=Avatar
+Add Account=Add Account
+Update Post Abstract=Update Post Abstract
+Blog Base Info=Blog Base Info
+Comment=Comment
+Posts=Posts
+Domain=Domain
+Paging=Paging
+Category=Category
+Add Single=Add Single
+Update Single=Update Single
+Single=Single
+Theme=Theme
+Upate Theme=Upate Theme
+
+
+group=Groupe
+newGroup=Nouveau groupe
+deleteGroup=Effacer groupe
+addMemberTips=Rentrer le nom d'utilisateur et le courriel pour ajouter un membre
+deleteMember=Effacer membre
+forbiddenNotMyGroup=You have no authority to access, cause you are not the group owner
+userExistsInGroup=The member is already exists in this group
+notMyGroup=You are not the group owner
+
+#memeber
+welcomeToLeanote=Bienvenue
+accountInfo=Info sur le Compte
+accountType=Type de Compte
+premiumAccountType=Premium
+normalAccountType=Normal
+imageSize=Taille de l'image
+attachSize=Taille de la pièce-jointe
+totalTraffic=Trafic Web
+upgrade=Mettre mon compte à niveau
+leanoteEvents=Nouvelles de Leanote
+addLeanoteAccount=Nouveau compte Leanote
+defaultComment=Système de commentaires Leanote par défaut
+upgradeAccountTips=Je veux utiliser un domaine personnalisé pour mon blog, <a class="btn btn-default" href="/service">mettre mon compte à niveau.</a>
+cateIsPublicNotebook=La catégorie est le bloc-note publié
+dragAndSort=Faire glisser pour trier
+permanentLink=Lien Permanent
+cate=Catégorie
+noCates=Sans catégorie
+single=Page simple
+singleTips=Vous pouvez ajouter beaucoup de pages simples
+addSingle=Nouvelle page simple
+updateSingle=Metter à jour une page simple
+inputSingleTitle=Le titre de la page simple est requis
+saveSort=Séquençage de la sauvegarde
+pagingAndSort=Réglages du tri et de la mise en page
+perPageSize=Taille par page
+sortField=Champ de tri
+sortType=Type de tri
+publicTime=Heure de publication
+createdTime=Heure de création
+updatedTime=Heure de mise à jour
+desc=Desc
+asc=Asc
+postList=Afficher la liste
+hasSelfDefined=Défini
+noSelfDefined=Non défini
+setAbstract=Autres réglages
+title=Titre
+content=Contenu
+
+addTheme=Nouveau thème
+importTheme=Importer thème
+exportTheme=Exporter thème
+export=Exporter
+preview=Aperçu
+edit=Editer
+use=Utiliser
+install=Installer
+currentTheme=Thème actuel
+myOtherThemes=Mes autres thèmes
+leanoteThemeMarket=Marché aux thèmes Leanote
+updateTheme=Mettre à jour le thème
+tplStyleScript=modèle, style, script
+newFile=Nouveau fichier
+image=Image
+currentFile=Fichier actuel
+tpl=Modèle
+style=Style
+script=Script
+header=En-tête
+footer=Pied de page
+index=Accueil
+cate=Catégorie
+search=Chercher
+single=Page simple
+archive=Archive
+post=Poster
+tags=Etiquettes
+tag_posts=Etiquettes des publications
+share_comment=Commenter
+themeJson=Réglages du thème
+paging=Mise en page
+highlight=Surlignage du code
+
+
+# view js
+Are you sure ?=Are you sure ?
+Are you sure to install it ?=Are you sure to install it ?
+Are you sure to delete=Are you sure to delete
+Success=Success
+Error=Error
+File exists=File exists
+Delete file=Delete file
+No images=No images
+Filename=Filename
+Group Title=Group Title

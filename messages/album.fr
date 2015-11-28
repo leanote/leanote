@@ -1,0 +1,31 @@
+
+# album image
+Images=Images
+Upload=Upload
+Image URL=Image URL
+Albums=Albums
+Default=Default
+File title search=File title search
+Go to upload images=Go to upload images
+Rename=Rename
+Add=Add
+Add Album=Add Album
+Add Image=Add Image
+Can't load this url=Can't load this url
+No Images=No Images
+Click to upload images Or Drop images to here=Click to upload images Or Drop images to here
+
+Cannot delete default album=Cannot delete default album
+Cannot rename default album=Cannot rename default album
+This album has images, please delete it's images at first.=This album has images, please delete it's images at first.
+
+Rename Album=Rename Album
+Add Success!=Add Success!
+Rename Success!=Rename Success!
+Delete Success!=Delete Success!
+Are you sure to delete this image ?=Are you sure to delete this image ?
+click to remove this image=click to remove this image
+error=error
+Error=Error
+Prev=Prev
+Next=Next

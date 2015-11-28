@@ -6,6 +6,8 @@ moto3=简约而不简单
 fork github=Github 源码
 
 # 首页
+openSource=开源
+Desktop App=桌面客户端
 forgetPassword = 忘记密码?
 or=或
 try=体验一下
@@ -281,127 +283,6 @@ errorPerPageSize=每页记录数至少为1
 errorSortField=排序类型错误
 themeValidHasRoundInclude=警告: 模板存在循环引用问题!
 
-# 用户中心
-memberCenter=个人中心
-userNotExists=该成员沿未注册
-hasUsers=已存在该成员
-Leanote Blog Theme Api=Leanote博客主题API
-My Group=我的分组
-group=用户组
-newGroup=新建组
-deleteGroup=删除组
-addMemberTips=输入用户名或邮箱添加成员
-deleteMember=删除成员
-forbiddenNotMyGroup=无权限操作, 非该组的所有者
-userExistsInGroup=已存在该成员
-notMyGroup=非该组的所有者
-
-
-# yu
-service=服务
-trafficOver=对不起, 您本月的流量已用完, 请至<a href="/service">升级您的帐户</a>
-imageSizeOver=对不起, 您的图片容量不足, 请至<a href="/service">升级您的帐户</a>
-attachSizeOver=对不起, 您的附件容量不足, 请至<a href="/service">升级您的帐户</a>
-
-#memeber
-welcomeToLeanote=欢迎来到leanote
-accountInfo=帐户信息
-accountType=帐户类型
-premiumAccountType=旗舰套餐
-normalAccountType=共享套餐
-imageSize=图片空间
-attachSize=附件空间
-totalTraffic=流量
-upgrade=升级套餐
-leanoteEvents=Leanote动态
-addLeanoteAccount=新建Leanote帐户
-defaultComment=默认leanote评论系统
-upgradeAccountTips=Leanote支持绑定自己的域名到博客上, 请 <a class="btn btn-default" href="/service">升级您的帐户</a>
-cateIsPublicNotebook=分类是公开为博客的笔记本
-dragAndSort=拖动可排序
-permanentLink=固定链接
-cate=分类
-noCates=无分类
-single=单页面
-singleTips=您可以添加多个单页面
-addSingle=添加单页面
-updateSingle=修改单页面
-inputSingleTitle=请输入单页面标题
-saveSort=保存排序
-pagingAndSort=分页与排序设置
-perPageSize=每页记录数
-sortField=排序字段
-sortType=排序类型
-publicTime=发表时间
-createdTime=创建时间
-updatedTime=更新时间
-desc=降序
-asc=升序
-postList=文章列表
-hasSelfDefined=已设置
-noSelfDefined=未设置
-setAbstract=摘要设置
-title=标题
-content=内容
-
-addTheme=添加主题
-importTheme=导入主题
-exportTheme=导出主题
-export=导出
-preview=预览
-edit=编辑
-use=使用
-install=安装
-currentTheme=当前主题
-myOtherThemes=我的其它主题
-leanoteThemeMarket=Leanote主题市场
-updateTheme=编辑主题
-tplStyleScript=模板, 样式, 脚本
-newFile=新建文件
-image=图片
-currentFile=当前文件
-tpl=模板
-style=样式
-script=脚本
-header=头部
-footer=底部
-index=首页
-cate=分类
-search=搜索页
-single=单页
-archive=归档页
-post=文章页
-tags=标签页
-tag_posts=标签文章页
-share_comment=分享评论
-themeJson=主题配置
-paging=分页
-highlight=高亮
-
-# member title
-Leanote Member Center=Leanote 个人中心
-Username=用户名
-Email=Email
-Password=密码
-Avatar=头像
-Add Account=添加Leanote帐户
-Update Post Abstract=更新博文摘要
-Blog Base Info=博客基本设置
-Comment=评论设置
-Posts=博文管理
-Domain=域名
-Paging=分页
-Category=分类管理
-Add Single=添加单页
-Update Single=修改单页
-Single=单页管理
-Theme=主题
-Update Theme=修改主题
-
-created=创建
-updated=更新
-modify=修改
-
 #share
 tokenExpired = 会话已过期
 Share=分享
@@ -420,91 +301,16 @@ sharePwd=查看密码
 cancelShare=取消分享
 getShareLinkAndPwd=生成该笔记的分享链接和密码
 
-# markdown editor
-
-Hyperlink=超链接
-Please provide the link URL and an optional title=请填写链接和一个可选的标题
-optional title=可选标题
-Ok=确认
-Cancel=取消
-Strong=粗体
-strong text=粗体
-Emphasis=斜体
-emphasized text=斜体
-Blockquote=引用
-Code Sample=代码
-enter code here=代码
-Image=图片
-Heading=标题
-Numbered List=有序列表
-Bulleted List=无序列表
-List item=项目
-Horizontal Rule=水平线
-Markdown syntax=Markdown 语法
-Undo=撤销
-Redo=重做
-enter image description here=图片标题
-enter link description here=链接标题
-Edit mode=编辑模式
-Vim mode=Vim模式
-Emacs mode=Emacs模式
-Normal mode=普通模式
-Normal=普通
-Light=轻量
-Light editor=轻量编辑器
-
-Insert Image=插入
-
-# album image
-Images=图片
-Upload=上传
-Image URL=图片地址
-Albums=相册
-Default=默认
-File title search=通过标题搜索
-Go to upload images=去上传图片
-Rename=重命名
-Add=添加
-Add Album=添加相册
-Add Image=添加图片
-Can't load this url=不能载入该图片
-No Images=无图片
-Click to upload images Or Drop images to here=点击上传图片或将图片拖至此
-
-Cannot delete default album=不能删除默认相册
-Cannot rename default album=不能重命名默认相册
-This album has images, please delete it's images at first.=相册内有图片, 不能删除
-
-Rename Album=重命名
-Add Success!=添加成功!
-Rename Success!=重命名成功!
-Delete Success!=删除成功
-Are you sure to delete this image ?=确定删除该图片?
-click to remove this image=删除图片
-error=错误
-Error=错误
-Prev=上一页
-Next=下一页
-
-# view js
-Are you sure ?=你确定执行该操作?
-Are you sure to install it ?=你确定安装该主题?
-Are you sure to delete=你确定删除
-Success=成功
-Error=错误
-File exists=文件已存在
-Delete file=删除文件
-No images=无图片
-Filename=文件名
-Group Title=分组名
-
 #############
 # 通用
 #############
-
+created=创建
+updated=更新
+modify=修改
 Search=搜索
 Save Success=保存成功
 Please save note firstly!=请先保存笔记!
+Please sign in firstly!=你还没有登录, 请先登录!
 
 # 必须要加这个, 奇怪
 [CN]

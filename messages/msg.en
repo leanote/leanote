@@ -5,7 +5,7 @@ moto2=Knowledge, Blog, Sharing, Cooperation... all in Leanote
 moto3=Brief But Not Simple
 fork github=Fork Leanote on Github
 
-# 首页
+# Home
 openSource=leanote.org
 forgetPassword = Forget password?
 or=or
@@ -64,11 +64,11 @@ hadAcount = Already have an account?
 hasAcount = Do not have an account?
 signInWithThird=Sign in with other account
 
-# 注册
+# sign in
 registerSuccessAndRdirectToNote=Register success, redirecting...
 userHasBeenRegistered=%s has been registered
 
-# 找回密码
+# find password
 passwordTips=The length is at least 6
 findPassword=Find password
 findPasswordSendEmailOver=We have already send the find password link to your email, please check out your email
@@ -81,7 +81,7 @@ inputPassword2=Please input your password again
 confirmPassword=Please confirm your password
 notGoodPassword=Tt's not a good password, the length is at least 6
 
-# 笔记主页
+# note
 myBlog=Blog
 history=Histories
 save=Save
@@ -127,7 +127,7 @@ close=Close
 cancel=Cancel
 send=Send
 
-# 标签
+# tag
 tag=Tag
 myTag=My tag
 red=red
@@ -135,7 +135,7 @@ yellow=yellow
 blue=blue
 green=green
 
-# 设置
+# setting
 accountSetting=Account
 logout=Logout
 basicInfo=Basic
@@ -147,6 +147,7 @@ oldPassword=Old password
 newPassword=New password
 admin=Admin
 
+# theme
 default=Default
 simple=Simple
 
@@ -179,7 +180,7 @@ deleteAllShared=Delete shared user
 deleteSharedNotebook=Delete shared notebook
 copyToMyNotebook=Copy to my notebook
 
-####note-dev
+# note-dev
 emailInSending=In sending to 
 checkEmail=Check email
 setUsername=Set username
@@ -193,7 +194,7 @@ unVerified=Unverfied
 verifiedNow=Verify now
 resendVerifiedEmail=Resend verification email
 
-# 分享
+# share
 defaulthhare=Default
 addShare=Add Friend
 friendEmail=Friend email
@@ -211,7 +212,7 @@ clickToCopy=Click to copy
 sendSuccess=success
 inviteEmailBody=Hi,I am %s, %s is awesome, come on!
 
-# 历史记录
+# history
 historiesNum=We have saved at most <b>10</b> latest histories with each note
 noHistories=No histories
 datetime=Datetime
@@ -222,7 +223,7 @@ createAccountSuccess=Account create success
 createAccountFailed=Account create failed
 thirdCreateAcountTips=You are using the 3th account to login %(app)s, you can create a %(app)s account too. <br />After you create %(app)s account, you can use the account and the 3th account to login %(app)s.
 
-## valid msg
+# valid msg
 inputUsername=input username
 updateUsernameSuccess=Update username success
 usernameIsExisted=Username is already exists
@@ -247,128 +248,6 @@ errorPerPageSize=Page size is error
 errorSortField=Sort Field is error
 themeValidHasRoundInclude=WARNING: Templates have circular references!
 
-# 用户中心
-memberCenter=Member Center
-userNotExists=The user is not exists
-hasUsers=The user already exists
-Leanote Blog Theme Api=Leanote Blog Theme Api
-My Group=My Group
-
-# yu
-service=Service
-trafficOver=Sorry, you have no web traffic, please go <a href="/service">upgrade your account</a>.
-imageSizeOver=Sorry, you have no image capacity, please go <a href="/service">upgrade your account</a>.
-attachSizeOver=Sorry, you have no attachment opacity, please go <a href="/service">upgrade your account</a>.
-
-
-#memeber
-welcomeToLeanote=Welcome
-accountInfo=Account Info
-accountType=Account Type
-premiumAccountType=Premium
-normalAccountType=Normal
-imageSize=Image Capacity
-attachSize=Attachment Capacity
-totalTraffic=Web Traffic
-upgrade=Upgrade My Account
-leanoteEvents=Leanote News
-addLeanoteAccount=New Leanote Account
-defaultComment=Default leanote comment system
-upgradeAccountTips=I want to using a custom domain for my blog, <a class="btn btn-default" href="/service">Upgrade My Account</a>
-cateIsPublicNotebook=Category is the published notebooks
-dragAndSort=Drag it to sort
-permanentLink=Permanent Link
-cate=Category
-noCates=No Category
-single=Single Page
-singleTips=You can add many single pages
-addSingle=New single page
-updateSingle=Update single page
-inputSingleTitle=Single page title is required
-saveSort=Save sequencing
-pagingAndSort=Paging And Sort Settings
-perPageSize=Per page size
-sortField=Sorter field
-sortType=Sorter type
-publicTime=Published time
-createdTime=Created time
-updatedTime=Updated time
-desc=Desc
-asc=Asc
-postList=Post List
-hasSelfDefined=Has defined
-noSelfDefined=Not defined
-setAbstract=Abstract settings
-title=Title
-content=Content
-
-addTheme=New theme
-importTheme=Import theme
-exportTheme=Export theme
-export=Export
-preview=Preview
-edit=Edit
-use=Use
-install=Install
-currentTheme=Current theme
-myOtherThemes=My other themes
-leanoteThemeMarket=Leanote theme market
-updateTheme=Update Theme
-tplStyleScript=template, style, script
-newFile=New file
-image=Image
-currentFile=Current file
-tpl=Template
-style=Style
-script=Script
-header=Header
-footer=Footer
-index=Home
-cate=Category
-search=Search
-single=Single Page
-archive=Archive
-post=Post
-tags=Tags
-tag_posts=Tag's posts
-share_comment=Comments
-themeJson=Theme settings
-paging=Paging
-highlight=Code highlight
-
-# member title
-Leanote Member Center=Leanote Member Center
-Username=Username
-Email=Email
-Password=Password
-Avatar=Avatar
-Add Account=Add Account
-Update Post Abstract=Update Post Abstract
-Blog Base Info=Blog Base Info
-Comment=Comment
-Posts=Posts
-Domain=Domain
-Paging=Paging
-Category=Category
-Add Single=Add Single
-Update Single=Update Single
-Single=Single
-Theme=Theme
-Upate Theme=Upate Theme
-
-group=Group
-newGroup=New group
-deleteGroup=Delete group
-addMemberTips=Input username or email to add member
-deleteMember=Delete member
-forbiddenNotMyGroup=You have no authority to access, cause you are not the group owner
-userExistsInGroup=The member is already exists in this group
-notMyGroup=You are not the group owner
-
-created=Created
-updated=Updated
-modify=Modify
-
 # share
 tokenExpired=Token Expired
 Share=Share
@@ -386,6 +265,15 @@ shareLink=Share link
 sharePwd=Access password
 cancelShare=Cancel
 getShareLinkAndPwd=Get link and password
+
+# Common
+created=Created
+updated=Updated
+modify=Modify
+Search=Search
+Save Success=Save Success
+Please save note firstly!=Please save note firstly!
+Please sign in firstly!=Please sign in firstly!
 
 # error 
 notFound=This page can't be found.

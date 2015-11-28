@@ -61,11 +61,11 @@ hadAcount = Déjà inscrit?
 hasAcount = Pas encore inscrit?
 signInWithThird=S'identifier avec un compte tiers
 
-# 注册
+# sign in
 registerSuccessAndRdirectToNote=inscription réussie, redirection...
 userHasBeenRegistered=%s a été inscrit
 
-# 找回密码
+# find pwd
 passwordTips=Doit comporter au moins 6 caractères
 findPassword=Demander le mot de passe
 findPasswordSendEmailOver=Nous avons déjà envoyer le lien pour demander un mot de passe sur votre adresse de courriel, veuillez consulter votre boite de réception.
@@ -78,7 +78,7 @@ inputPassword2=Veuillez taper votre mot de passe à nouveau
 confirmPassword=Veuillez confirmer votre mot de passe
 notGoodPassword=Le mot de passe est incorrect, il doit comporter au moins 6 caractères.
 
-# 笔记主页
+# note
 myBlog=Blog
 history=Historique
 save=Sauvegarder
@@ -121,7 +121,7 @@ close=Fermer
 cancel=Annuler
 send=Envoyer
 
-# 标签
+# tag
 tag=Etiquette
 myTag=Mes étiquettes
 red=rouge
@@ -129,7 +129,7 @@ yellow=jaune
 blue=bleu
 green=vert
 
-# 设置
+# setting
 accountSetting=Compte
 logout=Déconnexion
 basicInfo=Basique
@@ -172,7 +172,7 @@ deleteAllShared=Effacer l'utilisateur partagé
 deleteSharedNotebook=Effacer le bloc-notes partagé
 copyToMyNotebook=Copier vers mon bloc-notes
 
-####note-dev
+## note-dev
 emailInSending=Envoi vers 
 checkEmail=Vérifier courriel
 setUsername=Paramétrer le nom d'utilisateur
@@ -186,7 +186,7 @@ unVerified=Non confirmé
 verifiedNow=Confirmer maintenant
 resendVerifiedEmail=Renvoyer le courriel de confirmation
 
-# 分享
+# share
 defaulthhare=Par défaut
 addShare=Ajouter un ami
 friendEmail=Courriel de l'ami
@@ -204,7 +204,7 @@ clickToCopy=Cliquer pour copier
 sendSuccess=succès
 inviteEmailBody=Coucou, je suis %s, %s est génial, viens!
 
-# 历史记录
+# history
 historiesNum=Nous avons enregistré au maximum <b>10</b> historiques récents de chaque note.
 noHistories=Pas d'historique.
 fold=Plier
@@ -217,7 +217,7 @@ createAccountSuccess=Compte créé avec succès
 createAccountFailed=Echec de la création du compte
 thirdCreateAcountTips=Vous utilisez un compte tiers pour connecter %(app)s, vous pouvrz créer un compte %(app) également. <br />Après avoir créé le compte %(app), vous pouvez utiliser ce compte et le compte tiers pour connecter %(app)s.
 
-## valid msg
+# valid msg
 inputUsername=Entrer le nom d'utilisateur
 updateUsernameSuccess=Mise à jour du nom d'utilisateur réussie
 usernameIsExisted=Le nom d'utilisateur existe déjà.
@@ -242,150 +242,32 @@ errorPerPageSize=Erreur dans la taille de la page
 errorSortField=Erreur dans le tri du champs
 themeValidHasRoundInclude=WARNING: Les modèles ont des références circulaires!
 
-# lea++
-leaDesc=platerforme de blog leanote
-recommend=Recommandé
-latest=Plus récent.
+# share
+tokenExpired=Token Expired
+Share=Share
+hasSharedThisNote=has shared this note
+inputSharePwd=Please input password
+shareToGroup=Share to group
+shareByPwd=Share by password
+groupName=Group Name
+operation=Operation
+groupAndMemberManage=Manage group/member
+shareToGroupTips=If you share your note to group, the member belongs to group will have the right to access the note
+shared=Shared
+notShared=Not shared
+shareLink=Share link
+sharePwd=Access password
+cancelShare=Cancel
+getShareLinkAndPwd=Get link and password
 
-# 用户中心
-memberCenter=Espace Membre
-userNotExists=L'utilisateur n'existe pas
-hasUsers=L'utilisateur existe déjà
-My Group=My Group
-
-# yu
-service=Service
-imageSizeOver=Désolé, l'image est trop volumineuse, veuillez <a href="/service">mettre votre compte à niveau</a>.
-attachSizeOver=Désolé, la pièce-jointe est trop volumineuse, veuillez <a href="/service">mettre votre compte à niveau.</a>.
-
-
-#memeber
-welcomeToLeanote=Bienvenue
-accountInfo=Info sur le Compte
-accountType=Type de Compte
-premiumAccountType=Premium
-normalAccountType=Normal
-imageSize=Taille de l'image
-attachSize=Taille de la pièce-jointe
-totalTraffic=Trafic Web
-upgrade=Mettre mon compte à niveau
-leanoteEvents=Nouvelles de Leanote
-addLeanoteAccount=Nouveau compte Leanote
-defaultComment=Système de commentaires Leanote par défaut
-upgradeAccountTips=Je veux utiliser un domaine personnalisé pour mon blog, <a class="btn btn-default" href="/service">mettre mon compte à niveau.</a>
-cateIsPublicNotebook=La catégorie est le bloc-note publié
-dragAndSort=Faire glisser pour trier
-permanentLink=Lien Permanent
-cate=Catégorie
-noCates=Sans catégorie
-single=Page simple
-singleTips=Vous pouvez ajouter beaucoup de pages simples
-addSingle=Nouvelle page simple
-updateSingle=Metter à jour une page simple
-inputSingleTitle=Le titre de la page simple est requis
-saveSort=Séquençage de la sauvegarde
-pagingAndSort=Réglages du tri et de la mise en page
-perPageSize=Taille par page
-sortField=Champ de tri
-sortType=Type de tri
-publicTime=Heure de publication
-createdTime=Heure de création
-updatedTime=Heure de mise à jour
-desc=Desc
-asc=Asc
-postList=Afficher la liste
-hasSelfDefined=Défini
-noSelfDefined=Non défini
-setAbstract=Autres réglages
-title=Titre
-content=Contenu
-
-addTheme=Nouveau thème
-importTheme=Importer thème
-exportTheme=Exporter thème
-export=Exporter
-preview=Aperçu
-edit=Editer
-use=Utiliser
-install=Installer
-currentTheme=Thème actuel
-myOtherThemes=Mes autres thèmes
-leanoteThemeMarket=Marché aux thèmes Leanote
-updateTheme=Mettre à jour le thème
-tplStyleScript=modèle, style, script
-newFile=Nouveau fichier
-image=Image
-currentFile=Fichier actuel
-tpl=Modèle
-style=Style
-script=Script
-header=En-tête
-footer=Pied de page
-index=Accueil
-cate=Catégorie
-search=Chercher
-single=Page simple
-archive=Archive
-post=Poster
-tags=Etiquettes
-tag_posts=Etiquettes des publications
-share_comment=Commenter
-themeJson=Réglages du thème
-paging=Mise en page
-highlight=Surlignage du code
-
-# member title
-Leanote Member Center=Leanote Member Center
-Username=Username
-Email=Email
-Password=Password
-Avatar=Avatar
-Add Account=Add Account
-Update Post Abstract=Update Post Abstract
-Blog Base Info=Blog Base Info
-Comment=Comment
-Posts=Posts
-Domain=Domain
-Paging=Paging
-Category=Category
-Add Single=Add Single
-Update Single=Update Single
-Single=Single
-Theme=Theme
-Upate Theme=Upate Theme
-
-
-group=Groupe
-newGroup=Nouveau groupe
-deleteGroup=Effacer groupe
-addMemberTips=Rentrer le nom d'utilisateur et le courriel pour ajouter un membre
-deleteMember=Effacer membre
-forbiddenNotMyGroup=You have no authority to access, cause you are not the group owner
-userExistsInGroup=The member is already exists in this group
-notMyGroup=You are not the group owner
-
+# Common
 created=Créé
 updated=Mis à jour
 modify=Modifier
-
-# share
-tokenExpired=Token Expired
-Share=Partager
-hasSharedThisNote=a partagé cette note
-inputSharePwd=Veuillez entrer le mot de passe
-shareToGroup=Partager avec le groupe
-shareByPwd=Partager avec un mot de passe
-groupName=Nom de groupe
-operation=Opération
-groupAndMemberManage=Gérer le group/membre
-shareToGroupTips=Si vous partagez votre note avec un groupe, les membres qui en font partie auront accès à la note.
-shared=Partagé
-notShared=Non partagé
-shareLink=Partager le lien
-sharePwd=Accès au mot de passe
-cancelShare=Annuler
-getShareLinkAndPwd=Obtenir le lien et le mot de passe
-
+Search=Search
+Save Success=Save Success
+Please save note firstly!=Please save note firstly!
+Please sign in firstly!=Please sign in firstly!
 
 # error 
 notFound=Page introuvable.

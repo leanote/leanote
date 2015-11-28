@@ -2,6 +2,11 @@
 # Member Center
 ####################
 
+memberCenter=Member Center
+userNotExists=The user is not exists
+hasUsers=The user already exists
+Leanote Blog Theme Api=Leanote Blog Theme Api
+My Group=My Group
 
 # post abstract
 
@@ -11,3 +16,121 @@ Once the abstract has been updated, it will not set the abstract automatically o
 Main Image=Main Image
 Get next image as main image from content=Get next image as main image from content
 Raw Content=Raw Content
+
+#memeber
+welcomeToLeanote=Welcome
+accountInfo=Account Info
+accountType=Account Type
+premiumAccountType=Premium
+normalAccountType=Normal
+imageSize=Image Capacity
+attachSize=Attachment Capacity
+totalTraffic=Web Traffic
+upgrade=Upgrade My Account
+leanoteEvents=Leanote News
+addLeanoteAccount=New Leanote Account
+defaultComment=Default leanote comment system
+upgradeAccountTips=I want to using a custom domain for my blog, <a class="btn btn-default" href="/service">Upgrade My Account</a>
+cateIsPublicNotebook=Category is the published notebooks
+dragAndSort=Drag it to sort
+permanentLink=Permanent Link
+cate=Category
+noCates=No Category
+single=Single Page
+singleTips=You can add many single pages
+addSingle=New single page
+updateSingle=Update single page
+inputSingleTitle=Single page title is required
+saveSort=Save sequencing
+pagingAndSort=Paging And Sort Settings
+perPageSize=Per page size
+sortField=Sorter field
+sortType=Sorter type
+publicTime=Published time
+createdTime=Created time
+updatedTime=Updated time
+desc=Desc
+asc=Asc
+postList=Post List
+hasSelfDefined=Has defined
+noSelfDefined=Not defined
+setAbstract=Abstract settings
+title=Title
+content=Content
+
+addTheme=New theme
+importTheme=Import theme
+exportTheme=Export theme
+export=Export
+preview=Preview
+edit=Edit
+use=Use
+install=Install
+currentTheme=Current theme
+myOtherThemes=My other themes
+leanoteThemeMarket=Leanote theme market
+updateTheme=Update Theme
+tplStyleScript=template, style, script
+newFile=New file
+image=Image
+currentFile=Current file
+tpl=Template
+style=Style
+script=Script
+header=Header
+footer=Footer
+index=Home
+cate=Category
+search=Search
+single=Single Page
+archive=Archive
+post=Post
+tags=Tags
+tag_posts=Tag's posts
+share_comment=Comments
+themeJson=Theme settings
+paging=Paging
+highlight=Code highlight
+
+# member title
+Leanote Member Center=Leanote Member Center
+Username=Username
+Email=Email
+Password=Password
+Avatar=Avatar
+Add Account=Add Account
+Update Post Abstract=Update Post Abstract
+Blog Base Info=Blog Base Info
+Comment=Comment
+Posts=Posts
+Domain=Domain
+Paging=Paging
+Category=Category
+Add Single=Add Single
+Update Single=Update Single
+Single=Single
+Theme=Theme
+Upate Theme=Upate Theme
+
+group=Group
+newGroup=New group
+deleteGroup=Delete group
+addMemberTips=Input username or email to add member
+deleteMember=Delete member
+forbiddenNotMyGroup=You have no authority to access, cause you are not the group owner
+userExistsInGroup=The member is already exists in this group
+notMyGroup=You are not the group owner
+
+
+# view js
+Are you sure ?=Are you sure ?
+Are you sure to install it ?=Are you sure to install it ?
+Are you sure to delete=Are you sure to delete
+Success=Success
+Error=Error
+File exists=File exists
+Delete file=Delete file
+No images=No images
+Filename=Filename
+Group Title=Group Title
+
