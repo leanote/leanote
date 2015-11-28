@@ -136,6 +136,7 @@ gulp.task('devToProHtml', function() {
         .pipe(replace(/<!-- pro_app_js -->/, '<script src="/js/app.min.js"></script>')) // 替换
         // .pipe(replace(/<!-- pro_markdown_js -->/, '<script src="/js/markdown.min.js"></script>')) // 替换
         .pipe(replace(/<!-- pro_markdown_js -->/, '<script src="/js/markdown-v2.min.js"></script>')) // 替换
+        .pipe(replace('/tinymce/tinymce.js', '/tinymce/tinymce.full.min.js')) // 替换
         .pipe(replace(/<!-- pro_tinymce_init_js -->/, "var tinyMCEPreInit = {base: '/public/tinymce', suffix: '.min'};")) // 替换
         .pipe(replace(/plugins\/main.js/, "plugins/main.min.js")) // 替换
         // 连续两个空行换成一个空行
