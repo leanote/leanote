@@ -1,7 +1,6 @@
 package binder
 
 import (
-	"github.com/leanote/leanote/app/controllers"
 	"github.com/leanote/leanote/app/info"
 	"github.com/revel/revel"
 	//	"github.com/leanote/leanote/app/controllers/api"
@@ -65,11 +64,11 @@ var leanoteStructBinder = revel.Binder{
 		// name = files[0], files[1], noteContent
 		//		fmt.Println(params.Values)
 		/*
-		map[Title:[test1] METHOD:[POST] NotebookId:[54c4f51705fcd14031000002]
-		files[1][FileId]:[]
-		controller:[note]
-		files[1][LocalFileId]:[54c7ae27d98d0329dd000000] files[1][HasBody]:[true] files[0][FileId]:[] files[0][LocalFileId]:[54c7ae855e94ea2dba000000] action:[addNote] Content:[<p>lifedddddd</p><p><img src="app://leanote/data/54bdc65599c37b0da9000002/images/1422368307147_2.png" alt="" data-mce-src="app://leanote/data/54bdc65599c37b0da9000002/images/1422368307147_2.png" style="display: block; margin-left: auto; margin-right: auto;"></p><p><img src="http://127.0.0.1:8008/api/file/getImage?fileId=54c7ae27d98d0329dd000000" alt="" data-mce-src="http://127.0.0.1:8008/api/file/getImg?fileId=54c7ae27d98d0329dd000000"></p><p><br></p><p><img src="http://127.0.0.1:8008/api/file/getImage?fileId=54c7ae855e94ea2dba000000" alt="" data-mce-src="http://127.0.0.1:8008/api/file/getImage?fileId=54c7ae855e94ea2dba000000" style="display: block; margin-left: auto; margin-right: auto;"></p><p><br></p><p><br></p>] IsBlog:[false] token:[user1]
-		files[0][HasBody]:[true]]
+			map[Title:[test1] METHOD:[POST] NotebookId:[54c4f51705fcd14031000002]
+			files[1][FileId]:[]
+			controller:[note]
+			files[1][LocalFileId]:[54c7ae27d98d0329dd000000] files[1][HasBody]:[true] files[0][FileId]:[] files[0][LocalFileId]:[54c7ae855e94ea2dba000000] action:[addNote] Content:[<p>lifedddddd</p><p><img src="app://leanote/data/54bdc65599c37b0da9000002/images/1422368307147_2.png" alt="" data-mce-src="app://leanote/data/54bdc65599c37b0da9000002/images/1422368307147_2.png" style="display: block; margin-left: auto; margin-right: auto;"></p><p><img src="http://127.0.0.1:8008/api/file/getImage?fileId=54c7ae27d98d0329dd000000" alt="" data-mce-src="http://127.0.0.1:8008/api/file/getImg?fileId=54c7ae27d98d0329dd000000"></p><p><br></p><p><img src="http://127.0.0.1:8008/api/file/getImage?fileId=54c7ae855e94ea2dba000000" alt="" data-mce-src="http://127.0.0.1:8008/api/file/getImage?fileId=54c7ae855e94ea2dba000000" style="display: block; margin-left: auto; margin-right: auto;"></p><p><br></p><p><br></p>] IsBlog:[false] token:[user1]
+			files[0][HasBody]:[true]]
 		*/
 		nameIsSlice := strings.Contains(name, "[")
 		//		fmt.Println(params.Values["files[1]"])
@@ -151,7 +150,7 @@ func init() {
 	revel.TypeBinders[reflect.TypeOf(info.UserBlogStyle{})] = leanoteStructBinder
 	revel.TypeBinders[reflect.TypeOf(info.Notebook{})] = leanoteStructBinder
 	revel.TypeBinders[reflect.TypeOf(info.UserAccount{})] = leanoteStructBinder
-	revel.TypeBinders[reflect.TypeOf(controllers.NoteOrContent{})] = leanoteStructBinder
+	revel.TypeBinders[reflect.TypeOf(info.NoteOrContent{})] = leanoteStructBinder
 	revel.TypeBinders[reflect.TypeOf(info.ApiNote{})] = leanoteStructBinder
 	revel.TypeBinders[reflect.TypeOf(info.NoteFile{})] = leanoteStructBinder
 }

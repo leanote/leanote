@@ -54,9 +54,9 @@ func (c Notebook) UpdateNotebookTitle(notebookId, title string) revel.Result {
 
 // 排序
 // 无用
-func (c Notebook) SortNotebooks(notebookId2Seqs map[string]int) revel.Result {
-	return c.RenderJson(notebookService.SortNotebooks(c.GetUserId(), notebookId2Seqs))
-}
+// func (c Notebook) SortNotebooks(notebookId2Seqs map[string]int) revel.Result {
+// 	return c.RenderJson(notebookService.SortNotebooks(c.GetUserId(), notebookId2Seqs))
+// }
 
 // 调整notebooks, 可能是排序, 可能是移动到其它笔记本下
 type DragNotebooksInfo struct {

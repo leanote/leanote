@@ -162,27 +162,8 @@ func (c Note) GetNoteContent(noteId string) revel.Result {
 	return c.RenderJson(noteContent)
 }
 
-// 更新note或content
-// 肯定会传userId(谁的), NoteId
-// 会传Title, Content, Tags, 一种或几种
-type NoteOrContent struct {
-	NotebookId string
-	NoteId     string
-	UserId     string
-	Title      string
-	Desc       string
-	ImgSrc     string
-	Tags       string
-	Content    string
-	Abstract   string
-	IsNew      bool
-	IsMarkdown bool
-	FromUserId string // 为共享而新建
-	IsBlog     bool   // 是否是blog, 更新note不需要修改, 添加note时才有可能用到, 此时需要判断notebook是否设为Blog
-}
-
 // 这里不能用json, 要用post
-func (c Note) UpdateNoteOrContent(noteOrContent NoteOrContent) revel.Result {
+func (c Note) UpdateNoteOrContent(noteOrContent info.NoteOrContent) revel.Result {
 	// 新添加note
 	if noteOrContent.IsNew {
 		userId := c.GetObjectUserId()
