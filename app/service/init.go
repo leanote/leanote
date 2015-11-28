@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/leanote/leanote/app/db"
+	. "github.com/leanote/leanote/app/lea"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"net/url"
@@ -150,12 +151,28 @@ func getUniqueUrlTitle(userId string, urlTitle string, types string, padding int
 	return urlTitle2
 }
 
+// 截取id 24位变成12位
+// 先md5, 再取12位
+func subIdHalf(id string) string {
+	idMd5 := Md5(id)
+	return idMd5[:12]
+}
+
 // types == note,notebook,single
-func GetUrTitle(userId string, title string, types string) string {
+// id noteId, notebookId, singleId 当title没的时候才有用, 用它来替换
+func GetUrTitle(userId string, title string, types string, id string) string {
 	urlTitle := strings.Trim(title, " ")
 	if urlTitle == "" {
-		urlTitle = "Untitled-" + userId
+		if id == "" {
+			urlTitle = "Untitled-" + userId
+		} else {
+			urlTitle = subIdHalf(id)
+		}
+		// 不允许title是ObjectId
+	} else if bson.IsObjectIdHex(title) {
+		urlTitle = subIdHalf(id)
 	}
+
 	urlTitle = fixUrlTitle(urlTitle)
 	return getUniqueUrlTitle(userId, urlTitle, types, 1)
 }

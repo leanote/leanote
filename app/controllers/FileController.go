@@ -109,7 +109,8 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 	if from == "logo" || from == "blogLogo" {
 		fileUrlPath = "public/upload/" + Digest3(userId) + "/" + userId + "/images/logo"
 	} else {
-		fileUrlPath = "files/" + Digest3(userId) + "/" + userId + "/" + Digest2(newGuid) + "/images"
+		// fileUrlPath = "files/" + Digest3(userId) + "/" + userId + "/" + Digest2(newGuid) + "/images"
+		fileUrlPath = "files/" + GetRandomFilePath(userId, newGuid) + "/images"
 	}
 
 	dir := revel.BasePath + "/" + fileUrlPath
@@ -242,7 +243,8 @@ func (c File) CopyHttpImage(src string) revel.Result {
 	// 生成上传路径
 	newGuid := NewGuid()
 	userId := c.GetUserId()
-	fileUrlPath := "files/" + Digest3(userId) + "/" + userId + "/" + Digest2(newGuid) + "/images"
+	// fileUrlPath := "files/" + Digest3(userId) + "/" + userId + "/" + Digest2(newGuid) + "/images"
+	fileUrlPath := "files/" + GetRandomFilePath(userId, newGuid) + "/images"
 	dir := revel.BasePath + "/" + fileUrlPath
 	err := os.MkdirAll(dir, 0755)
 	if err != nil {

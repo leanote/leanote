@@ -1,0 +1,14 @@
+####################
+# 个人中心
+####################
+
+# 博客列表
+
+# 博客摘要设置
+
+Abstract=摘要
+Description=描述
+Once the abstract has been updated, it will not set the abstract automatically other than you cancel it.=以下内容设置后, 以后修改笔记时将不自动获取. 若将该文章取消为博客后, 以下内容会自动获取.
+Main Image=主图
+Get next image as main image from content=从笔记中自动获取下一张
+Raw Content=原文

@@ -12,7 +12,7 @@
 
 <link href="/css/bootstrap-min.css" rel="stylesheet" />
 <!-- 先加载, 没有样式, 宽度不定 -->
-<link rel="stylesheet" href="/tinymce/skins/custom/skin.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="/css/tinymce/skin.min.css" rel="stylesheet"/>
 <!-- leanote css -->
 <link href="/css/font-awesome-4.2.0/css/font-awesome-min.css" rel="stylesheet" />
 <link href="/css/zTreeStyle/zTreeStyle-min.css" rel="stylesheet" />
@@ -154,7 +154,7 @@ function log(o) {
 							<li role="presentation" id="setTheme">
 								<a>
 								<i class="fa fa-sun-o"></i> 
-								{{msg . "themeSetting"}}
+								{{leaMsg . "Theme"}}
 								</a>
 							</li>
 							
@@ -198,7 +198,7 @@ function log(o) {
 
 				<div class="pull-right top-nav writting-hide lea-blog">
 					<a target="_blank" href="http://lea.leanote.com"> 
-						lea++
+						Lea++
 					</a>
 				</div>
 				
@@ -598,9 +598,7 @@ function log(o) {
 			            </form>
 	            
 						<!-- 由此可以算高度 -->
-						<div id="editorContent" name="editorContent" tabindex="2" />
-							{{.noteContent}}
-				       </div>
+						<div id="editorContent" name="editorContent" tabindex="2" /></div>
 					</div>
 					
 					<div id="mdEditor" class="read-only">
@@ -614,7 +612,7 @@ function log(o) {
 							              <span class="lang">{{msg . "updated"}}</span>: <span class="updated-time"></span>
 							            </div>
 						            	
-						            	<div class="wmd-button-bar-inner">
+						            	<div class="wmd-button-bar-inner clearfix">
 							                <ul class="nav left-buttons">
 							                    <li class="wmd-button-group1 btn-group"></li>
 							                </ul>
@@ -659,6 +657,8 @@ function log(o) {
 						        <div class="layout-wrapper-l3">
 						        	<div id="left-column">
 							            <pre id="wmd-input" class="form-control"><div class="editor-content mousetrap" contenteditable=true></div><div class="editor-margin"></div></pre>
+							            <!-- v2 markdown lightmode需要 -->
+							            <div class="textarea-helper"></div>
 						            </div>
 						            <div id="right-column">
 						            <div class="preview-panel panel-open" id="preview-panel">
@@ -887,8 +887,9 @@ var GlobalConfigs = {{.globalConfigs|jsonJs}};
 <script src="/js/jquery-1.9.0.min.js"></script>
 <script src="/js/jquery.ztree.all-3.5.js"></script>
 <script src="/js/object_id-min.js"></script>
-<script src="/public/tinymce/tinymce.js"></script>
 <!-- /dev -->
+
+<script src="/tinymce/tinymce.js"></script>
 
 <script src="/public/libs/ace/ace.js"></script>
 

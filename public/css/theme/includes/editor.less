@@ -97,3 +97,25 @@
 .scrollTo-a {
   cursor: pointer !important;
 }
+
+// 内容table
+.preview-container table,
+.mce-item-table {
+  &, td, th, caption {
+    border: 1px solid #ddd;
+    border-collapse: collapse;
+    padding: 5px;
+    vertical-align: middle;
+  }
+
+ tr {
+    background-color: none;
+    border-top: 1px solid #ccc;
+  }
+  tr:nth-child(2n) {
+    background-color: rgb(247, 247, 249);
+  }
+}
+.preview-container th {
+  padding: 10px;
+}

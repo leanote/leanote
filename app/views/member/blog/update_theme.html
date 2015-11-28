@@ -11,8 +11,8 @@
 		<a class="btn btn-default" href="{{$.siteUrl}}/preview?themeId={{.themeId}}" target="_blank"><span class="fa fa-eye"></span> {{msg . "preview"}}</a>
 		
 		<small>
-		(<a href="http://blog.leanote.com/post/545f1a5c380782565e000000" target="_blank">{{msg . "needHelp"}}</a> 
-		<a target="_blank" href="https://github.com/leanote/leanote/wiki/leanote-blog-theme-api">Leanote Blog Theme Api</a>)
+		
+		<a target="_blank" href="https://github.com/leanote/leanote/wiki/leanote-blog-theme-api">{{msg . "needHelp"}} {{msg . "Leanote Blog Theme Api"}}</a>
 		</small>
 	</h3>
 </div>
@@ -49,7 +49,7 @@
 		<header class="panel-heading">
 			{{msg . "tplStyleScript"}}:
 		</header>
-		<div class="panel-body" style="height:430px;overflow: auto;">
+		<div class="panel-body" style="<!--height:430px;-->overflow: auto;">
 	
 	<div class="list-group bg-white file-list">
 		{{range .myTpls}}
@@ -67,6 +67,7 @@
 	</footer>
 	</section>
 </div>
+
 <div class="col-sm-8">
 	<section class="panel panel-default">
 		<header class="panel-heading">
@@ -74,7 +75,7 @@
 			<span id="msg"></span>
 		</header>
 		<div class="panel-body">
-			<div id="tplContent" class="form-control" style="width: 100%; height: 400px;"></div>
+			<div id="tplContent" class="form-control" style="width: 100%; height: 500px;"></div>
 		</div>
 		<footer class="panel-footer text-right bg-light lter">
 		    <button type="submit" id="saveBtn" class="btn btn-success">{{msg . "save"}}</button>
@@ -107,7 +108,7 @@
 </div>
 
 {{template "member/footer.html" .}}
-<script src="/public/libs/ace/ace.js" type="text/javascript"></script>
+<script src="/public/libs/ace/ace.js"></script>
 <script>
 var editor = ace.edit("tplContent");
 editor.setTheme("ace/theme/tomorrow");
@@ -118,6 +119,7 @@ var themeId = "{{.themeId}}";
 var themeBasePath = "/{{$.theme.Path}}";
 var theme = {
 	cache: {}, // filename => content
+	inited: {}, // filename => bool, 是否已初始化, 防止未加载完就切换到其它
 	curTplO: $("#curTpl"),
 	tplContentO: $("#tplContent"),
 	saveBtnO: $("#saveBtn"),
@@ -153,10 +155,10 @@ var theme = {
 			e.stopPropagation();
 			var $a = $(this).closest("a");
 			var file = $a.data('file');
-			art.confirm("Are you sure to delete " + file + " ?", function() {
+			art.confirm(getMsg("Are you sure to delete") + ' ' + file + " ?", function() {
 				ajaxPost("/member/blog/deleteTpl", {themeId: themeId, filename: file}, function(re) {
 					// if(reIsOk(re)) {
-						art.tips("Success");
+						art.tips(getMsg("Success"));
 						$a.remove();
 						if(self.curTpl == file) {
 							$(".file-list a").eq(0).trigger("click");
@@ -173,18 +175,20 @@ var theme = {
 		self.newFileO.click(function() {
 			// 文件是否存在?
 			
-			
-			art.prompt("Filename", function(file) { 
+			art.prompt(getMsg("Filename"), function(file) { 
 				if(!file) {
 					return;
 				}
 				if($('[data-filename="' + file + '"]').length > 0) {
-					art.alert('File exists');
+					art.alert(getMsg('File exists'));
 					return;
 				}
-				var t = $('<a href="#" class="list-group-item " data-file="' + file + '"> <i class="fa fa-remove icon-muted remove-file" title="delete file" ></i> <span class="filename" data-filename="' + file + '">' + file + '</span><span class="badge"></span></a>');
+				var t = $('<a href="#" class="list-group-item " data-file="' + file + '"> <i class="fa fa-remove icon-muted remove-file" title="' + getMsg("Delete file") + '" ></i> <span class="filename" data-filename="' + file + '">' + file + '</span><span class="badge"></span></a>');
 				$(".file-list").append(t);
+				
 				self.cache[file] = "";
+				self.inited[file] = true;
+				
 				// trigger click, 选中之
 				t.click();
 			});
@@ -221,6 +225,12 @@ var theme = {
 		}
 		// 之前的内容是否有改动
 		if(self.cache[filename] == content) {
+			// console.log('content is same');
+			return;
+		}
+		// 内容都没有加载进来
+		if(!self.inited[filename]) {
+			// console.log('not inited');
 			return;
 		}
 		
@@ -247,7 +257,7 @@ var theme = {
 	renderContent: function(name, content) {
 		var self = this;
 		self.curTplO.html(name);
-		self.curTpl = name; // 这里才设置
+		// self.curTpl = name; // 这里才设置
 		var lang = "html";
 		if(name.indexOf(".js") > 0 || name.indexOf(".json") > 0) {
 			lang = "javascript";
@@ -255,6 +265,7 @@ var theme = {
 			lang = "css";
 		}
 		editor.setValue(content);
+		editor.getSession().setUndoManager(new ace.UndoManager());
 		editor.session.setMode("ace/mode/" + lang);
 		editor.gotoLine(1);
 		setTimeout(function() {
@@ -264,7 +275,7 @@ var theme = {
 	renderTpl: function(name) {
 		var self = this;
 		var content = "";
-		self.curTpl = ""; // 这里设置为空
+		self.curTpl = name; // 这里设置为空
 		if(self.cache[name] != undefined) {
 			content = self.cache[name];
 			self.renderContent(name, content);
@@ -273,7 +284,13 @@ var theme = {
 		ajaxGet("/member/blog/getTplContent", {themeId: themeId, filename: name}, function(re){
 			if(reIsOk(re)) {
 				self.cache[name] = re.Item;
-				self.renderContent(name, re.Item);
+				self.inited[name] = true;
+				// 以防点击过快, 响应不按顺序
+				if (self.curTpl == name) {
+					self.renderContent(name, re.Item);
+				} else {
+					alert(getMsg('Error'));
+				}
 			}
 		});
 	},
@@ -287,10 +304,10 @@ var theme = {
 		self.imageListO.on("click", ".delete-image", function(re) {
 			var file = $(this).data('image');
 			var t = this;
-			art.confirm("Are you sure to delete it " + file + " ?", function() {
+			art.confirm(getMsg("Are you sure to delete") + ' ' + file + " ?", function() {
 				ajaxPost("/member/blog/deleteThemeImage", {themeId: themeId, filename: file}, function(re) {
 					if(reIsOk(re)) {
-						art.tips("Success");
+						art.tips(getMsg("Success"));
 						$(t).closest("li").remove();
 					} else {
 						art.alert(re.Msg);
@@ -302,7 +319,7 @@ var theme = {
 	renderImages: function(images) {
 		var self = this;
 		if(!images || images.length == 0) {
-			self.imageListO.html("无图片");
+			self.imageListO.html(getMsg("No images"));
 			return;
 		}
 		var html = "";
@@ -346,7 +363,7 @@ function uploadFinish(ret) {
 		return;
 	}
 	// 上传出错
-	art.alert("error");
+	art.alert(getMsg("Error"));
 }
 </script>
 

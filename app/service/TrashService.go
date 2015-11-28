@@ -85,6 +85,9 @@ func (this *TrashService) DeleteTrash(noteId, userId string) bool {
 	// delete content
 	ok = db.DeleteByIdAndUserId(db.NoteContents, noteId, userId)
 
+	// 删除content history
+	ok = db.DeleteByIdAndUserId(db.NoteContentHistories, noteId, userId)
+
 	// 重新统计tag's count
 	// TODO 这里会改变tag's Usn
 	tagService.reCountTagCount(userId, note.Tags)
@@ -114,6 +117,13 @@ func (this *TrashService) DeleteTrashApi(noteId, userId string, usn int) (bool, 
 
 	// delete content
 	ok = db.DeleteByIdAndUserId(db.NoteContents, noteId, userId)
+
+	// 删除content history
+	ok = db.DeleteByIdAndUserId(db.NoteContentHistories, noteId, userId)
+
+	// 一个BUG, iOS删除直接调用这个API, 结果没有重新recount
+	// recount notebooks' notes number
+	notebookService.ReCountNotebookNumberNotes(note.NotebookId.Hex())
 
 	return ok, "", afterUsn
 }

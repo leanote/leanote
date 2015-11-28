@@ -34,6 +34,7 @@ func (this *PwdService) FindPwd(email string) (ok bool, msg string) {
 	return
 }
 
+// 重置密码时
 // 修改密码
 // 先验证
 func (this *PwdService) UpdatePwd(token, pwd string) (bool, string) {
@@ -45,11 +46,12 @@ func (this *PwdService) UpdatePwd(token, pwd string) (bool, string) {
 	if ok, msg, tokenInfo = tokenService.VerifyToken(token, info.TokenPwd); !ok {
 		return ok, msg
 	}
-	digest, err := GenerateHash(pwd)
-	if err != nil {
+
+	passwd := GenPwd(pwd)
+	if passwd == "" {
 		return false, "GenerateHash error"
 	}
-	passwd := string(digest)
+
 	// 修改密码之
 	ok = db.UpdateByQField(db.Users, bson.M{"_id": tokenInfo.UserId}, "Pwd", passwd)
 

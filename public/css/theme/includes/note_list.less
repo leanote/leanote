@@ -2,14 +2,43 @@
  * 笔记列表
  */
 
-
-#notesAndSort {
-    height: 36px;
+#noteAndEditor {
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  right: 0;
+  left: @leftNotebookWidth;
 }
 
-// 为了显示右侧的线条
+
 #noteList {
-    z-index: 333;
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  width: @noteListWidth;
+  border-right: 1px solid @noteListBorderColor;
+  border-left: 1px solid @noteListBorderColor;
+  z-index: 333; // 为了显示右侧的线条
+}
+#note {
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  left: @noteListWidth;
+  right: 0;
+  padding-left: 5px;
+  overflow-y: hidden;
+  overflow-x: auto;
+  background-color: @bgColor;
+}
+
+#notesAndSort {
+  background-color: @noteAndSortBgColor; // #65bd77; // @bgColor;
+  border-bottom: 1px solid @borderColor;
+  height: 36px;
+}
+#sortType {
+  float: right;
 }
 
 #noteItemListWrap {
@@ -17,11 +46,6 @@
     top: 36px; bottom: 3px;
 }
 
-#noteList {
-  position: absolute;
-  bottom: 0;
-  top: 0;
-}
 // 笔记列表与editor的遮罩
 #noteAndEditorMask {
     position: absolute;
@@ -33,7 +57,7 @@
     text-align: center;
     padding-top: 60px;
     opacity: .3;
-    z-index: 20;
+    z-index: 500;
     display: none;
 }
 

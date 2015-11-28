@@ -3,6 +3,7 @@
 @import "includes/animation.less";
 @import "includes/common.less";
 @import "includes/header.less";
+@import "includes/page.less";
 
 @import "includes/editor.less";
 @import "includes/tinymce.less";
@@ -16,86 +17,9 @@
 @import "includes/note.less";
 @import "includes/mask.less";
 
-
-@fontFamily: 'Open Sans', Helvetica, Tahoma, Arial, Hiragino Sans GB, "Microsoft YaHei", "微软雅黑", "Micro Hei", SimSun, "宋体", Heiti, "黑体", sans-serif;
-// @fontFamily: Helvetica, Tahoma, Arial, Hiragino Sans GB, "Microsoft YaHei", "微软雅黑", "Micro Hei", SimSun, "宋体", Heiti, "黑体", sans-serif;
-@aceFontFamily: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', "Microsoft YaHei", "微软雅黑";
-
-// header
-@headerTextColor: #fff;
-@headerAColor: #ccc;
-@dropdownTextColor: #000;
-
-@headerHeight: 60px;
-@headerHeightNoBorder: 59px;
-@logoColor: #000;
-
-@searchNoteInputBorder: none;
-@searchNoteInputBgColor: #000;
-@searchNoteInputTextColor: #ccc;
-
-@switcherBgColor: #000;
-
-@newNoteBgColor: #000;
-@newNoteBgColorHover: #3D3B3B;
-@newNoteBBorderColorHover: transparent;
-@newNoteBorder: 1px solid #080303;
-@newNoteTextColor: #fff;
-
-// font
-/*
-@font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Open Sans Light'), local('OpenSans-Light'), url('../../fonts/open-sans2/DXI1ORHCpsQm3Vp6mXoaTXhCUOGz7vYGh680lGh-uXM.woff') format('woff');
-}
-@font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Open Sans'), local('OpenSans'), url('../../fonts/open-sans2/cJZKeOuBrn4kERxqtaUH3T8E0i7KZn-EPnyo3HZu7kw.woff') format('woff');
-}
-@font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 700;
-  src: local('Open Sans Bold'), local('OpenSans-Bold'), url('../../fonts/open-sans2/k3k702ZOKiLJc3WVjuplzHhCUOGz7vYGh680lGh-uXM.woff') format('woff');
-}
-@font-face {
-  font-family: 'Open Sans';
-  font-style: italic;
-  font-weight: 400;
-  src: local('Open Sans Italic'), local('OpenSans-Italic'), url('../../fonts/open-sans2/xjAJXh38I15wypJXxuGMBobN6UDyHWBl620a-IRfuBk.woff') format('woff');
-}
-*/
-
-/* leanote */
-/*
-@font-face {
-    font-family: 'leanoteregular';
-    src: url('../../fonts/leanote/leanote-regular-webfont.eot');
-    src: url('../../fonts/leanote/leanote-regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../../fonts/leanote/leanote-regular-webfont.woff') format('woff'),
-         url('../../fonts/leanote/leanote-regular-webfont.ttf') format('truetype'),
-         url('../../fonts/leanote/leanote-regular-webfont.svg#leanoteregular') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
-*/
-
-@font-face {
-	font-family: 'leanote';
-	src:url('../../fonts/leanote-font2/leanote.eot?-vcf23i');
-	src:url('../../fonts/leanote-font2/leanote.eot?#iefix-vcf23i') format('embedded-opentype'),
-		url('../../fonts/leanote-font2/leanote.ttf?-vcf23i') format('truetype'),
-		url('../../fonts/leanote-font2/leanote.woff?-vcf23i') format('woff'),
-		url('../../fonts/leanote-font2/leanote.svg?-vcf23i#leanote') format('svg');
-	font-weight: normal;
-	font-style: normal;
-}
-
-// 字体
+@import "includes/readonly.less";
+@import "includes/tag.less";
+@import "includes/batch.less";
 
 #logo,
 #switcher span,
@@ -103,39 +27,37 @@
 .mce-i-ace-pre,
 .lea-icon
 {
-	font-family: 'leanote' !important;
-	speak: none;
-	font-style: normal;
-	font-weight: normal;
-	font-variant: normal;
-	text-transform: none;
+  font-family: 'leanote' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
 
-	/* Better Font Rendering =========== */
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 .icon-markdown:before {
-	content: "\e604";
+  content: "\e604";
 }
 .mce-i-mind:before {
-	content: "\e602";
+  content: "\e602";
 }
 .mce-i-ace-pre:before {
-	content: "\e603";
+  content: "\e603";
 }
 #logo:before {
-	content: "\e600";
-	line-height: 1;
- 	margin-top: 5px;
-  	display: inline-block;
-  	vertical-align: top;
+  content: "\e600";
+  line-height: 1;
+  margin-top: 5px;
+    display: inline-block;
+    vertical-align: top;
 }
 #switcher span:before {
-	content: "\e601";
+  content: "\e601";
 }
 
-html,body {
-}
 *,.h1,
 .h2,
 .h3,
@@ -175,10 +97,81 @@ h1, h2, h3 {
 .editor-content,
 .preview-container
 {
-	-webkit-overflow-scrolling: touch !important; // for iphone
+  -webkit-overflow-scrolling: touch !important; // for iphone
 }
 
 
-@import "includes/readonly.less";
-@import "includes/tag.less";
-@import "includes/batch.less";
+@fontFamily: 'Open Sans', Helvetica, Tahoma, Arial, Hiragino Sans GB, "Microsoft YaHei", "微软雅黑", "Micro Hei", SimSun, "宋体", Heiti, "黑体", sans-serif;
+// @fontFamily: Helvetica, Tahoma, Arial, Hiragino Sans GB, "Microsoft YaHei", "微软雅黑", "Micro Hei", SimSun, "宋体", Heiti, "黑体", sans-serif;
+@aceFontFamily: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', Hiragino Sans GB, "Microsoft YaHei", "微软雅黑";
+
+// header
+@headerTextColor: #fff;
+@headerAColor: #ccc;
+@dropdownTextColor: #000;
+
+@headerHeight: 60px;
+@headerHeightNoBorder: 59px;
+@logoColor: #000;
+
+
+@searchNoteInputBorder: none;
+@searchNoteInputBgColor: #000;
+@searchNoteInputTextColor: #ccc;
+
+@switcherBgColor: #000;
+
+@newNoteBgColor: #000;
+@newNoteBgColorHover: #3D3B3B;
+@newNoteBBorderColorHover: transparent;
+@newNoteBorder: 1px solid #080303;
+@newNoteTextColor: #fff;
+
+
+@bgColor: #fff;
+@headerBgColor: #25313e;
+
+@aWhiteColor: #fff;
+@aBlackColor: #000;
+@borderColor: #EBEFF2;
+@headerBottomBorderColor: @headerBgColor;
+@headerHeight: 60px;
+@headerHeightNoBorder: 59px;
+@hColor: #0fb264; // #47a447;// 更深 #198764; // boostrap: #5cb85c; bootstrap:hover #47a447; // #5AD4A0; // #47a447
+@titleColor: @hColor;
+@fontSize: 14px;
+@leftNotebookWidth: 170px;
+@noteListWidth: 250px;
+@noteActiveBg: #65bd77;
+
+@selectionBg: @aBlackColor;
+@selectionColor: #fff;
+
+// header
+@headerTextColor: #fff;
+@headerAColor: #ccc;
+@dropdownTextColor: #000;
+@loadingUrl: url(../../images/loading-a-20.gif);
+
+@notebookBgColor: #41586e;
+@notebookBodyBgColor: #37485e;
+
+@addNotebookColor: #ADBECE;
+
+@notebookListBorder: 1px solid rgba(255, 255, 255, 0.05);
+
+@notebookInputBorder: 1px solid rgba(0,0,0,0.1);
+@notebookInputColor: #fff;
+
+@notebookMinBgColor: #41586e;
+@notebookMinContainerBorder: 1px solid rgba(255, 255, 255, 0.3);
+@notebookMinIconColor: #fff;
+
+@folderHeaderHeight: 35px;
+@folderHeaderBorderColor: rgba(255,255,255,0.05);
+@folderHeaderIconColor: #fff;
+
+@eachUserBorderColor: rgba(0, 0, 0, 0.09);
+
+@noteListBorderColor: #cfcfcf;
+@noteAndSortBgColor: #eee;

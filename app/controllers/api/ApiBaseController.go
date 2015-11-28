@@ -75,7 +75,8 @@ func (c ApiBaseContrller) uploadAttach(name string, noteId string) (ok bool, msg
 
 	// 生成上传路径
 	newGuid := NewGuid()
-	filePath := "files/" + Digest3(userId) + "/" + userId + "/" + Digest2(newGuid) + "/attachs"
+	//	filePath :=	"files/" + Digest3(userId) + "/" + userId + "/" + Digest2(newGuid) + "/attachs"
+	filePath := "files/" + GetRandomFilePath(userId, newGuid) + "/attachs"
 
 	dir := revel.BasePath + "/" + filePath
 	err = os.MkdirAll(dir, 0755)
@@ -130,7 +131,8 @@ func (c ApiBaseContrller) upload(name string, noteId string, isAttach bool) (ok 
 	newGuid := NewGuid()
 	// 生成上传路径
 	userId := c.getUserId()
-	fileUrlPath := "files/" + Digest3(userId) + "/" + userId + "/" + Digest2(newGuid) + "/images"
+	// fileUrlPath := "files/" + Digest3(userId) + "/" + userId + "/" + Digest2(newGuid) + "/images"
+	fileUrlPath := "files/" + GetRandomFilePath(userId, newGuid) + "/images"
 
 	dir := revel.BasePath + "/" + fileUrlPath
 	err = os.MkdirAll(dir, 0755)

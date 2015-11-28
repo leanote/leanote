@@ -1,5 +1,5 @@
 {{template "member/top.html" .}}
-<div class="m-b-md"> <h3 class="m-b-none">{{msg . "cate"}}</h3></div>
+<div class="m-b-md"> <h3 class="m-b-none">{{msg . "Category"}}</h3></div>
 
 <div class="row">
 <div class="col-sm-8">
@@ -46,9 +46,9 @@ $(function() {
 		});
 		ajaxPost("/member/blog/upateCateIds", {cateIds: ids}, function(re){
 			if(reIsOk(re)) {
-				art.tips("Success");
+				art.tips(getMsg("Success"));
 			} else {
-				art.alert(re.Msg || "error");
+				art.alert(re.Msg || getMsg("Error"));
 			}
 		});
 	});
@@ -61,7 +61,7 @@ $(function() {
 			if(reIsOk(re)) {
 				$t.val(re.Item);
 			} else {
-				art.alert(re.Msg || "error");
+				art.alert(re.Msg || getMsg("Error"));
 			}
 		});
 	});

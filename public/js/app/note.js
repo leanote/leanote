@@ -1280,8 +1280,10 @@ Note.searchNote = function() {
 	// 发送请求之
 	// 先取消上一个
 	showLoading();
+	Notebook.showNoteAndEditorLoading();
 	Note.lastSearch = $.post("/note/searchNote", {key: val}, function(notes) {
 		hideLoading();
+		Notebook.hideNoteAndEditorLoading();
 		if(notes) {
 			// 成功后设为空
 			Note.lastSearch = null;

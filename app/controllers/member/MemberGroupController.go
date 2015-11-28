@@ -14,7 +14,7 @@ type MemberGroup struct {
 func (c MemberGroup) Index() revel.Result {
 	c.SetUserInfo()
 	c.SetLocale()
-	c.RenderArgs["title"] = "My Group"
+	c.RenderArgs["title"] = c.Message("My Group")
 	c.RenderArgs["groups"] = groupService.GetGroupsAndUsers(c.GetUserId())
 	return c.RenderTemplate("member/group/index.html")
 }

@@ -74,7 +74,7 @@ func (c MemberBlog) Index(sorter, keywords string) revel.Result {
 	userInfo := userService.GetUserInfo(userId)
 	c.RenderArgs["userInfo"] = userInfo
 
-	c.RenderArgs["title"] = "Posts"
+	c.RenderArgs["title"] = c.Message("Posts")
 	pageNumber := c.GetPage()
 	sorterField, isAsc := c.getSorter("CreatedTime", false, []string{"title", "urlTitle", "updatedTime", "publicTime", "createdTime"})
 	pageInfo, blogs := blogService.ListAllBlogs(c.GetUserId(), "", keywords, false, pageNumber, userPageSize, sorterField, isAsc)
@@ -84,6 +84,8 @@ func (c MemberBlog) Index(sorter, keywords string) revel.Result {
 
 	userAndBlog := userService.GetUserAndBlog(c.GetUserId())
 	c.RenderArgs["userAndBlog"] = userAndBlog
+
+	c.common()
 
 	return c.RenderTemplate("member/blog/list.html")
 }
@@ -97,7 +99,8 @@ func (c MemberBlog) UpdateBlogUrlTitle(noteId, urlTitle string) revel.Result {
 
 // 修改笔记的urlTitle
 func (c MemberBlog) UpdateBlogAbstract(noteId string) revel.Result {
-	c.RenderArgs["title"] = "Update Post Abstract"
+	c.common()
+	c.RenderArgs["title"] = c.Message("Update Post Abstract")
 	note := noteService.GetNoteAndContent(noteId, c.GetUserId())
 	if !note.Note.IsBlog {
 		return c.E404()
@@ -107,7 +110,6 @@ func (c MemberBlog) UpdateBlogAbstract(noteId string) revel.Result {
 	return c.RenderTemplate("member/blog/update_abstract.html")
 }
 func (c MemberBlog) DoUpdateBlogAbstract(noteId, imgSrc, desc, abstract string) revel.Result {
-
 	re := info.NewRe()
 	re.Ok = blogService.UpateBlogAbstract(c.GetUserId(), noteId, imgSrc, desc, abstract)
 	return c.RenderJson(re)
@@ -116,24 +118,24 @@ func (c MemberBlog) DoUpdateBlogAbstract(noteId, imgSrc, desc, abstract string) 
 // 基本信息设置
 func (c MemberBlog) Base() revel.Result {
 	c.common()
-	c.RenderArgs["title"] = "Blog Base Info"
+	c.RenderArgs["title"] = c.Message("Blog Base Info")
 	return c.RenderTemplate("member/blog/base.html")
 }
 func (c MemberBlog) Comment() revel.Result {
 	c.common()
-	c.RenderArgs["title"] = "Comment"
+	c.RenderArgs["title"] = c.Message("Comment")
 	return c.RenderTemplate("member/blog/comment.html")
 }
 
 func (c MemberBlog) Paging() revel.Result {
 	c.common()
-	c.RenderArgs["title"] = "Paging"
+	c.RenderArgs["title"] = c.Message("Paging")
 	return c.RenderTemplate("member/blog/paging.html")
 }
 
 func (c MemberBlog) Cate() revel.Result {
 	userBlog := c.common()
-	c.RenderArgs["title"] = "Cate"
+	c.RenderArgs["title"] = c.Message("Category")
 
 	notebooks := blogService.ListBlogNotebooks(c.GetUserId())
 	notebooksMap := map[string]info.Notebook{}
@@ -190,10 +192,10 @@ func (c MemberBlog) DoAddOrUpdateSingle(singleId, title, content string) revel.R
 }
 func (c MemberBlog) AddOrUpdateSingle(singleId string) revel.Result {
 	c.common()
-	c.RenderArgs["title"] = "Add Single"
+	c.RenderArgs["title"] = c.Message("Add Single")
 	c.RenderArgs["singleId"] = singleId
 	if singleId != "" {
-		c.RenderArgs["title"] = "Update Single"
+		c.RenderArgs["title"] = c.Message("Update Single")
 		c.RenderArgs["single"] = blogService.GetSingle(singleId)
 	}
 	return c.RenderTemplate("member/blog/add_single.html")
@@ -219,7 +221,7 @@ func (c MemberBlog) UpdateSingleUrlTitle(singleId, urlTitle string) revel.Result
 
 func (c MemberBlog) Single() revel.Result {
 	c.common()
-	c.RenderArgs["title"] = "Cate"
+	c.RenderArgs["title"] = c.Message("Single")
 	c.RenderArgs["singles"] = blogService.GetSingles(c.GetUserId())
 
 	return c.RenderTemplate("member/blog/single.html")
@@ -234,7 +236,7 @@ func (c MemberBlog) Theme() revel.Result {
 
 	c.RenderArgs["optionThemes"] = themeService.GetDefaultThemes()
 
-	c.RenderArgs["title"] = "Theme"
+	c.RenderArgs["title"] = c.Message("Theme")
 	return c.RenderTemplate("member/blog/theme.html")
 }
 
@@ -251,7 +253,7 @@ func (c MemberBlog) UpdateTheme(themeId string, isNew int) revel.Result {
 	}
 
 	c.common()
-	c.RenderArgs["title"] = "Upate Theme"
+	c.RenderArgs["title"] = c.Message("Update Theme")
 	c.RenderArgs["isNew"] = isNew
 
 	// 先复制之
@@ -443,8 +445,8 @@ func (c MemberBlog) ImportTheme() revel.Result {
 	if err != nil {
 		re.Msg = fmt.Sprintf("%v", err)
 		return c.RenderJson(re)
-
 	}
+
 	defer file.Close()
 	// 生成上传路径
 	userId := c.GetUserId()

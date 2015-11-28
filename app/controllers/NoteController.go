@@ -3,7 +3,6 @@ package controllers
 import (
 	"github.com/revel/revel"
 	//	"encoding/json"
-	"fmt"
 	"github.com/leanote/leanote/app/info"
 	. "github.com/leanote/leanote/app/lea"
 	"gopkg.in/mgo.v2/bson"
@@ -14,6 +13,7 @@ import (
 	"time"
 	//	"github.com/leanote/leanote/app/types"
 	//	"io/ioutil"
+	"fmt"
 	//	"bytes"
 	//	"os"
 )
@@ -248,7 +248,8 @@ func (c Note) UpdateNoteOrContent(noteOrContent NoteOrContent) revel.Result {
 		//		noteService.UpdateNoteContent(noteOrContent.UserId, c.GetUserId(),
 		//			noteOrContent.NoteId, noteOrContent.Content, noteOrContent.Abstract)
 		contentOk, contentMsg, afterContentUsn = noteService.UpdateNoteContent(c.GetUserId(),
-			noteOrContent.NoteId, noteOrContent.Content, noteOrContent.Abstract, needUpdateNote, -1)
+			noteOrContent.NoteId, noteOrContent.Content, noteOrContent.Abstract,
+			needUpdateNote, -1, time.Now())
 	}
 
 	Log(afterContentUsn)
@@ -334,11 +335,11 @@ func (c Note) ToPdf(noteId, appKey string) revel.Result {
 	// 虽然传了cookie但是这里还是不能得到userId, 所以还是通过appKey来验证之
 	appKeyTrue, _ := revel.Config.String("app.secret")
 	if appKeyTrue != appKey {
-		return c.RenderText("error")
+		return c.RenderText("auth error")
 	}
 	note := noteService.GetNoteById(noteId)
 	if note.NoteId == "" {
-		return c.RenderText("error")
+		return c.RenderText("no note")
 	}
 
 	noteUserId := note.UserId.Hex()
@@ -427,13 +428,13 @@ func (c Note) ExportPdf(noteId string) revel.Result {
 		// 是否是有权限协作的
 		if !note.IsBlog && !shareService.HasReadPerm(noteUserId, userId, noteId) {
 			re.Msg = "No Perm"
-			return c.RenderText("error")
+			return c.RenderText("No Perm")
 		}
 	}
 
 	// path 判断是否需要重新生成之
 	guid := NewGuid()
-	fileUrlPath := "files/" + Digest3(noteUserId) + "/" + noteUserId + "/" + Digest2(guid) + "/images/pdf"
+	fileUrlPath := "files/export_pdf"
 	dir := revel.BasePath + "/" + fileUrlPath
 	if !MkdirAll(dir) {
 		return c.RenderText("error, no dir")
@@ -462,9 +463,9 @@ func (c Note) ExportPdf(noteId string) revel.Result {
 	// wkhtmltopdf参数大全
 	var cc string
 	if note.IsMarkdown {
-		cc = binPath + " --window-status done \"" + url + "\"  \"" + path + "\"" //  \"" + cookieDomain + "\" \"" + cookieName + "\" \"" + cookieValue + "\""
+		cc = binPath + " --lowquality --window-status done \"" + url + "\"  \"" + path + "\"" //  \"" + cookieDomain + "\" \"" + cookieName + "\" \"" + cookieValue + "\""
 	} else {
-		cc = binPath + " \"" + url + "\"  \"" + path + "\"" //  \"" + cookieDomain + "\" \"" + cookieName + "\" \"" + cookieValue + "\""
+		cc = binPath + " --lowquality \"" + url + "\"  \"" + path + "\"" //  \"" + cookieDomain + "\" \"" + cookieName + "\" \"" + cookieValue + "\""
 	}
 
 	cmd := exec.Command("/bin/sh", "-c", cc)

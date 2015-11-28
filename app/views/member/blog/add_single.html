@@ -7,7 +7,8 @@
 {{end}}
 </h3></div>
 
-<link rel="stylesheet" href="/tinymce/skins/custom/skin.min.css" type="text/css">
+<link rel="stylesheet" href="/css/tinymce/skin.min.css" type="text/css">
+
 <div class="row">
 <div class="col-sm-10">
 	<form id="formData">
@@ -28,8 +29,10 @@
 
 					<div class="form-group">
 						<label for="content1">{{msg . "content"}}</label>
-						<div id="popularToolbar"></div>
-						<textarea id="content1" name="content">{{.single.Content}}</textarea>
+						<div class="toolbar-content">
+							<div id="popularToolbar" class="tool-bar"></div>
+							<div id="content1" class="content-ctn" name="content">{{if .single}}{{.single.Content|raw}}{{end}}</div>
+						</div>
 					</div>
 			</div>
 			<footer class="panel-footer text-right bg-light lter">
@@ -40,28 +43,17 @@
 </div>
 
 </div>
-<style>
-.mce-btn.mce-active, .mce-btn.mce-active:hover {
-  background-color: #FFFFFF;
-}
-.mce-btn {
-  background-color: #FFFFFF;
-}
-</style>
 {{template "member/footer.html" .}}
 <script type="text/javascript" src="/tinymce/tinymce.js"></script>
 <script>
 var urlPrefix = "{{.siteUrl}}";
-var LeaAce = {nowIsInAce: function() {return false;}};
+var LeaAce = null;
 $(function() {
 	tinymce.init({
+		inline: true,
 		selector : "#content1",
-		content_css : ["/css/editor/editor.css" ],
-		theme : "leanote",
+		theme: 'leanote',
 		language : "{{.locale}}",
-		height : 300,
-		width : "100%",
-		// skin : "custom",
 		plugins : [
 				"advlist autolink link lists charmap hr ",
 				"searchreplace visualblocks visualchars tabfocus",
@@ -95,12 +87,12 @@ $(function() {
 		ajaxPost("/member/blog/doAddOrUpdateSingle/", data, function(re) {
 			if(reIsOk(re)) {
 				// 添加成功后, 跳转之
-				art.tips("Success")
+				art.tips(getMsg("Success"));
 				if(!data.pageId) {
 					location.href = "/member/blog/single";
 				}
 			} else {
-				art.alert(re.Msg || "error")
+				art.alert(re.Msg || getMsg("Error"));
 			}
 		});
 	});

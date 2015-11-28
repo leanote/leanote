@@ -47,7 +47,7 @@ func (this *UserService) AddUser(user info.User) bool {
 		go func() {
 			emailService.RegisterSendActiveEmail(user, user.Email)
 			// 发送给我 life@leanote.com
-			emailService.SendEmail("life@leanote.com", "新增用户", "{header}用户名"+user.Email+"{footer}")
+			// emailService.SendEmail("life@leanote.com", "新增用户", "{header}用户名"+user.Email+"{footer}")
 		}()
 	}
 
@@ -409,26 +409,6 @@ func (this *UserService) UpdateEmail(token string) (ok bool, msg, email string) 
 
 	ok = false
 	msg = "该链接已过期"
-	return
-}
-
-//---------
-// 第三方添加账号
-func (this *UserService) ThirdAddUser(userId, email, pwd string) (ok bool, msg string) {
-	// 判断该用户是否已有了帐户
-	userInfo := this.GetUserInfo(userId)
-	if userInfo.Email != "" {
-		msg = "你已有帐户"
-		return
-	}
-
-	// 判断email是否存在
-	if this.IsExistsUser(email) {
-		msg = "该用户已存在"
-		return
-	}
-
-	ok = db.UpdateByQMap(db.Users, bson.M{"_id": bson.ObjectIdHex(userId)}, bson.M{"Email": email, "Pwd": Md5(pwd)})
 	return
 }
 

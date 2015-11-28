@@ -21,7 +21,7 @@ gulp.task('concatDepJs', function() {
     var jss = [
         'js/jquery-1.9.0.min.js',
         'js/jquery.ztree.all-3.5-min.js',
-        'tinymce/tinymce.full.min.js', // 使用打成的包, 加载速度快
+        // 'tinymce/tinymce.full.min.js', // 使用打成的包, 加载速度快
         // 'libs/ace/ace.js',
         'js/jQuery-slimScroll-1.3.0/jquery.slimscroll-min.js',
         'js/contextmenu/jquery.contextmenu-min.js',
@@ -136,6 +136,7 @@ gulp.task('devToProHtml', function() {
         .pipe(replace(/<!-- pro_app_js -->/, '<script src="/js/app.min.js"></script>')) // 替换
         // .pipe(replace(/<!-- pro_markdown_js -->/, '<script src="/js/markdown.min.js"></script>')) // 替换
         .pipe(replace(/<!-- pro_markdown_js -->/, '<script src="/js/markdown-v2.min.js"></script>')) // 替换
+        .pipe(replace('/tinymce/tinymce.js', '/tinymce/tinymce.full.min.js')) // 替换
         .pipe(replace(/<!-- pro_tinymce_init_js -->/, "var tinyMCEPreInit = {base: '/public/tinymce', suffix: '.min'};")) // 替换
         .pipe(replace(/plugins\/main.js/, "plugins/main.min.js")) // 替换
         // 连续两个空行换成一个空行
@@ -152,7 +153,6 @@ gulp.task('devToProHtml', function() {
         .pipe(gulp.dest(noteProBase));
 });
 
-// Get used keys
 // 只获取需要js i18n的key
 var path = require('path');
 gulp.task('i18n', function() {
@@ -230,9 +230,18 @@ gulp.task('i18n', function() {
     }
 
     // msg.zh, msg.js
-    function genI18nJsFile(fromFilename, keys) {
-        var msgs = getAllMsgs(leanoteBase + '/messages/' + fromFilename);
-        var toFilename = fromFilename + '.js';
+    function genI18nJsFile(fromFilename, otherNames, keys) {
+        var msgs = {};
+        otherNames.unshift(fromFilename);
+        // console.log(fromFilename);
+        // console.log(otherNames);
+        otherNames.forEach(function (name) {
+            var tmpMsgs = getAllMsgs(leanoteBase + '/messages/' + name);
+            for (var i in tmpMsgs) {
+                msgs[i] = tmpMsgs[i];
+            }
+        });
+
         var toMsgs = {};
         for (var i in msgs) {
             // 只要需要的
@@ -250,16 +259,23 @@ gulp.task('i18n', function() {
                 '}' + 
                 'return key;' + 
             '}';
+
         // 写入到文件中
+        var toFilename = fromFilename + '.js';
         fs.writeFile(base + '/js/i18n/' + toFilename, str);
     }
 
-    genI18nJsFile('msg.zh', keys);
-    genI18nJsFile('msg.en', keys);
-    genI18nJsFile('msg.fr', keys);
-    genI18nJsFile('blog.zh', keys);
-    genI18nJsFile('blog.en', keys);
-    genI18nJsFile('blog.fr', keys);
+    // 必须要的
+    // keys.push();
+
+    genI18nJsFile('blog.zh', [], keys);
+    genI18nJsFile('blog.en', [], keys);
+    genI18nJsFile('blog.fr', [], keys);
+
+    genI18nJsFile('msg.fr', ['member.fr'], keys);
+    genI18nJsFile('msg.zh', ['member.zh'], keys);
+    genI18nJsFile('msg.en', ['member.en'], keys);
+
 });
 
 // 合并album需要的js

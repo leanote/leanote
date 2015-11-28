@@ -3,3 +3,87 @@
  *
  */
 
+#noteTitleDiv {
+  height: 30px;
+  border-bottom: 1px solid #ddd;
+}
+#noteTitle {
+  height: 100%;
+  padding: 0px 3px;
+  width: 100%;
+  border: none;
+  background-color: @bgColor;
+}
+#noteTitle:focus {
+  // outline:thin dotted #333;outline:1px auto -webkit-focus-ring-color;outline-offset:-2px
+  outline: none !important;
+  // border: 1px solid @hColor;
+}
+
+#editorContent {
+  position: absolute;
+  top:30px;
+  bottom: 10px; 
+  right: 0; 
+  left: 0;
+  overflow: auto; // 不设置editor隐藏时没有scroll
+}
+
+
+@sbc: @bgColor;
+
+.fa-calendar {
+    color: #666;
+}
+.dropdown-menu .fa {
+    width: 15px;
+}
+.dropdown-menu span, .dropdown-menu a, .dropdown-menu li {
+    cursor: default;
+}
+
+
+.tab-pane {
+    padding: 5px 0 0 0;
+}
+
+// 新建笔记item
+#notebookNavForNewNote li, #notebookNavForNewSharedNote > li {
+    padding-left: 0;
+    border-bottom: 1px solid @borderColor;
+}
+#notebookNavForNewNote > li:hover, #notebookNavForNewNote > li:focus,
+#notebookNavForNewSharedNote > li:hover, #notebookNavForNewSharedNote > li:focus {
+    background: none;
+}
+
+.new-note-left {
+    padding: 0 5px;
+    width: 95px;
+    overflow: hidden;
+    white-space:nowrap;
+    border-right: 1px dashed @borderColor;
+    &:hover {
+        background-color:@borderColor;
+    }
+}
+.new-note-right {
+    &:hover {
+        background-color:@borderColor;
+    }
+}
+
+// 历史记录
+#historyList {
+    table {
+        width: 100%;
+    }
+    .btns{
+        border-top: 1px dashed #eee;
+        padding: 5px 0;
+    }
+}
+
+#toggleEditorMode {
+    margin: 0 10px !important;
+}

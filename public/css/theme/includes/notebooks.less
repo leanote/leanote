@@ -1,3 +1,140 @@
+#leftNotebook {
+  position: absolute;
+  left: 0;
+  top: 0; 
+  bottom: 0;
+  width: @leftNotebookWidth;
+}
+
+#notebook, #notebookMin {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  top: 0;
+  right: 0;
+  background-color: @notebookBgColor;
+  overflow-y: auto;
+  overflow-x: auto;
+  z-index: 2;
+}
+
+// 添加笔记本
+#addNotebookPlus {
+  padding-right: 10px;
+  .fa {
+      font-size: 16px;
+  }
+  color: @addNotebookColor;
+}
+
+// 重命名, 添加notebook
+#notebookList input, #notebookListForSearch input {
+    border: @notebookInputBorder;
+    width: 90%;
+    padding-left:3px;
+    box-shadow: none;
+    background: none;
+    color: @notebookInputColor;
+    &:focus {
+      outline: none !important;
+    }
+}
+
+// 最小化
+
+#notebookMin {
+    z-index: 1;
+    overflow-y: visible;
+    overflow-x: visible;
+    background-color: @notebookMinBgColor;
+    div.minContainer {
+        border-bottom: @notebookMinContainerBorder;
+        padding: 5px;
+        position: relative;
+        cursor: pointer;
+        i {
+            font-size: 20px;
+            color: @notebookMinIconColor;
+        }
+        
+        &:hover {
+            i {
+                color: @hColor;
+            }
+        }
+        ul {
+            background-color: #fff;
+            opacity: 0.8;
+            display: none;
+            list-style: none;
+            margin: 0;  
+            margin-left: 20px;
+            padding: 5px 0px;
+            border: 1px solid @hColor;
+            position: absolute;
+            z-index: 1000;
+            top: 0;
+            left: 10px;
+            width: 150px;
+            li {
+                padding: 0 5px;
+                cursor: pointer;
+                span {
+                    cursor: pointer;
+                }
+                a {
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+}
+
+#notebookBottom {
+  position: absolute;
+  bottom: 0px;
+  height: 30px;
+  right: 0;
+  left: 0;
+  line-height: 30px;
+  text-align: right;
+  padding-right: 5px;
+  background-color: #eee;
+  #leftSwitcher {
+    border: 1px solid #ccc;
+    padding: 3px 8px;
+    cursor: pointer;
+  }
+}
+
+//------------
+// folder
+
+.folderHeader {
+  min-height: @folderHeaderHeight;
+  line-height: @folderHeaderHeight;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+  border-color: @folderHeaderBorderColor;
+}
+.folderHeader span {
+    display: inline-block;
+  line-height: @folderHeaderHeight;
+  color: @folderHeaderIconColor;
+  font-size: 16px;
+}
+.folderHeader .fa-left, .friend-header i.fa {
+    display: inline-block;
+    line-height: @folderHeaderHeight;
+    font-size: 16px;
+    width: @folderHeaderHeight;
+    border-right: 1px solid @folderHeaderBorderColor;
+    text-align: center;
+    color: @folderHeaderIconColor;
+}
+
+//-------------
+// 分享
 
 // share
 .friend-header {
@@ -20,9 +157,37 @@
     margin-left: 5px;
     margin-right: 5px;
     margin-top: 3px;
-    border: 1px solid #eee;
     border-radius: 3px;
+    border: 1px solid @eachUserBorderColor;
+    background-color: @notebookBodyBgColor;
 }
+
+.each-user div {
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    border-color: @folderHeaderBorderColor;
+    span {
+        line-height: @folderHeaderHeight;
+        color: @folderHeaderIconColor;
+        padding-left: 3px;
+        font-size: 14px;
+        display: block;
+          position: absolute;
+          left: 23px;
+          top: 0;
+          right: 23px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+    }
+    .fa {
+      width: 20px;
+      border-right: none;
+    }
+}
+
+//
+//------------
 
 //
 .notebook-number-notes {
@@ -66,12 +231,11 @@
     line-height: normal;
 }
 #notebookList {
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: @notebookListBorder;
 }
 .ztree {
     padding: 0px;
 }
-
 
 #searchNotebookForAdd {
     line-height: normal;
@@ -101,4 +265,37 @@
 
 #notebookNavForNewNote li:hover {
     background: none;
+}
+
+.folderBody {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: @notebookBodyBgColor;
+}
+
+.folderBody li {
+  line-height: 30px;
+}
+
+// 关闭状态
+
+.closed .folderBody {
+  display: none;
+}
+
+// tag
+#myTag .folderBody {
+    li {
+      position: relative
+    }
+}
+
+#myTag .folderBody li .badge {
+  width: 40px;
+  position: absolute; right:3px; top: 7px;
+  font-weight: normal;
+  background-color: @bgColor;
+  color: @aBlackColor;
+  border: 1px solid @borderColor;
 }

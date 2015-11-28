@@ -470,7 +470,8 @@ func (this *ShareService) GetShareNoteContent(noteId, myUserId, sharedUserId str
 	// 或者, 其notebook共享了我
 	//	Log(this.HasSharedNote(noteId, myUserId))
 	//	Log(this.HasSharedNotebook(noteId, myUserId, sharedUserId))
-	Log(this.HasReadPerm(sharedUserId, myUserId, noteId))
+	//	Log(this.HasReadPerm(sharedUserId, myUserId, noteId))
+
 	if this.HasReadPerm(sharedUserId, myUserId, noteId) {
 		//	if this.HasSharedNote(noteId, myUserId) || this.HasSharedNotebook(noteId, myUserId, sharedUserId) {
 		db.Get(db.NoteContents, noteId, &noteContent)

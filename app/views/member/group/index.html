@@ -113,7 +113,7 @@ var group = {
 	addGroupEvent: function() {
 		var self = this;
 		$('.btn-add-group').click(function() {
-			ajaxPost("/member/group/addGroup", {title: "Group Title"}, function(re) {
+			ajaxPost("/member/group/addGroup", {title: getMsg("Group Title")}, function(re) {
 				if(reIsOk(re)) {
 					var group = re.Item;
 					self.groupsO.prepend(self.tGroupO.render(group))
@@ -136,7 +136,7 @@ var group = {
 			var groupId = $(this).closest(".each-group").data("id");
 			ajaxPost("/member/group/updateGroupTitle", {groupId: groupId, title: val}, function(re) {
 				if(reIsOk(re)) {
-					art.tips("Success")
+					art.tips(getMsg("Success"));
 					t.data('ever', val)
 				}
 			})
@@ -147,11 +147,11 @@ var group = {
 		var self = this;
 		self.groupsO.on("click", ".delete-group", function() {
 			var t = $(this);
-			art.confirm("Are you sure ?", function() {
+			art.confirm(getMsg("Are you sure ?"), function() {
 				var groupId = t.closest(".each-group").data("id");
 				ajaxPost("/member/group/deleteGroup", {groupId: groupId}, function(re) {
 					if(reIsOk(re)) {
-						art.tips("Success");
+						art.tips(getMsg("Success"));
 						t.closest(".each-group").remove();
 					} else {
 						art.alert(re.Msg);
@@ -182,7 +182,7 @@ var group = {
 				var p = t.closest("li");
 				ajaxPost("/member/group/addUser", {groupId: groupId, email: email}, function(re) {
 					if(reIsOk(re)) {
-						art.tips("Success");
+						art.tips(getMsg("Success"));
 						var html = self.tUserO.render(re.Item)
 						p.before(html);
 						t.val("");
@@ -198,12 +198,12 @@ var group = {
 		var self = this;
 		self.groupsO.on("click", ".delete-user", function() {
 			var t = $(this);
-			art.confirm("Are you sure ?", function() {
+			art.confirm(getMsg("Are you sure ?"), function() {
 				var groupId = t.closest(".each-group").data("id");
 				var userId = t.closest("li").data("id");
 				ajaxPost("/member/group/deleteUser", {groupId: groupId, userId: userId}, function(re) {
 					if(reIsOk(re)) {
-						art.tips("Success");
+						art.tips(getMsg("Success"));
 						t.closest("li").remove();
 					} else {
 						art.alert(re.Msg);

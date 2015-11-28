@@ -2,11 +2,10 @@
 
 @bgColor: #fff;
 @headerBgColor: #fff;
-// @fontFamily: 'Open Sans','Helvetica Neue',Arial,'Hiragino Sans GB','Microsoft YaHei','WenQuanYi Micro Hei',sans-serif;
-@fontFamily: Helvetica, Tahoma, Arial, Hiragino Sans GB, "Microsoft YaHei", "微软雅黑", "Micro Hei", SimSun, "宋体", Heiti, "黑体", sans-serif;
 @aWhiteColor: #fff;
 @aBlackColor: #000;
 @borderColor: #EBEFF2;
+@headerBottomBorderColor: @borderColor;
 @headerHeight: 60px;
 @hColor: #0fb264; // #47a447;// 更深 #198764; // boostrap: #5cb85c; bootstrap:hover #47a447; // #5AD4A0; // #47a447
 @titleColor: @hColor;
@@ -23,6 +22,7 @@
 @headerAColor: #000;
 @switcherBgColor: #fff;
 @logoColor: #fff;
+@loadingUrl: url(../../images/loading-a-20-black.gif);
 
 @searchNoteInputBorder: 1px solid @borderColor;
 @searchNoteInputBgColor: #fff;
@@ -33,245 +33,28 @@
 @newNoteBorder: 1px solid transparent;
 @newNoteTextColor: #000;
 
-/*********************/
-#page {
-  overflow: auto;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-}
-#pageInner {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-}
-#mainContainer {
-  position: absolute;
-  top: @headerHeight;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: auto;
-  zoom: 1;
-}
-#mainMask {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: 0;
-  background-color: #fff;
-  text-align: center;
-  padding-top: 100px;
-  z-index: 1000;
-}
+@notebookBgColor: @bgColor;
+@notebookBodyBgColor: #fff;
 
-#notebookSplitter {
-  left: @leftNotebookWidth;
-}
-#noteSplitter {
-  left: @noteListWidth;
-}
+@addNotebookColor: #666;
 
-#leftNotebook {
-  position: absolute;
-  left: 0;
-  top: 0; 
-  bottom: 0;
-  width: @leftNotebookWidth;
-}
-#notebook, #notebookMin {
-  position: absolute;
-  left: 0;
-  // bottom: 30px; 为了给bottom
-  bottom: 0;
-  top: 0;
-  right: 0;
-  /*border: 1px solid #ccc;*/
-  background-color: @bgColor;
-  overflow-y: auto;
-  overflow-x: auto;
-  z-index: 2;
-}
+@notebookListBorder: #eee;
 
-#notebookMin {
-	z-index: 1;
-	overflow-y: visible;
-	overflow-x: visible;
-	background-color: #eee;
-	div.minContainer {
-		border-bottom: 1px solid #ccc;
-		padding: 5px;
-		position: relative;
-		cursor: pointer;
-		i {
-			font-size: 20px;
-			color: #000;
-		}
-		
-		&:hover {
-			i {
-				color: @hColor;
-			}
-		}
-		ul {
-			background-color: #fff;
-			opacity: 0.8;
-			display: none;
-			list-style: none;
-			margin: 0;	
-			margin-left: 20px;
-			padding: 5px 0px;
-			border: 1px solid @hColor;
-			position: absolute;
-			z-index: 1000;
-			top: 0;
-			left: 10px;
-			width: 150px;
-			li {
-				padding: 0 5px;
-				cursor: pointer;
-				span {
-					cursor: pointer;
-				}
-				a {
-					cursor: pointer;
-				}
-			}
-		}
-	}
-}
+@notebookInputBorder: none;
+@notebookInputColor: #000;
 
-#notebookBottom {
-  position: absolute;
-  bottom: 0px;
-  height: 30px;
-  right: 0;
-  left: 0;
-  line-height: 30px;
-  text-align: right;
-  padding-right: 5px;
-  background-color: #eee;
-  #leftSwitcher {
-  	border: 1px solid #ccc;
-  	padding: 3px 8px;
-  	cursor: pointer;
-  }
-}
+@notebookMinBgColor: #eee;
+@notebookMinContainerBorder: 1px solid #ccc;
+@notebookMinIconColor: #000;
 
-#noteAndEditor {
-  position: absolute;
-  bottom: 0;
-  top: 0;
-  right: 0;
-  left: @leftNotebookWidth;
-}
+@folderHeaderBorderColor: rgba(0,0,0,0.05);
+@folderHeaderIconColor: #000;
 
-#noteList {
-  width: @noteListWidth;
-  border-right: 1px solid @borderColor;
-  border-left: 1px solid @borderColor;
-}
+@eachUserBorderColor: #eee;
 
-#note {
-  position: absolute;
-  bottom: 0;
-  top: 0;
-  left: @noteListWidth;
-  right: 0;
-  padding-left: 5px;
-  overflow-y: hidden;
-  overflow-x: auto;
-  background-color: @bgColor;
-}
-.folderNote {
-//  padding-bottom: 5px;
-}
-@folderHeaderHeight: 35px;
-.folderHeader {
-  min-height: @folderHeaderHeight;
-  line-height: @folderHeaderHeight;
-  cursor: pointer;
-  border-bottom: 1px solid transparent;
-  border-color: rgba(0,0,0,0.05);
-}
-.folderHeader span {
-	display: inline-block;
-  line-height: @folderHeaderHeight;
-  color: #000; // @hColor;
-  font-size: 16px;
-}
-.folderHeader .fa-left, .friend-header i.fa {
-	display: inline-block;
-  line-height: @folderHeaderHeight;
-  font-size: 16px;
-  width: @folderHeaderHeight;
-  border-right: 1px solid rgba(0,0,0,0.05);
-  text-align: center;
-  color: #000; // @hColor;
-}
+@noteListBorderColor: @borderColor;
+@noteAndSortBgColor: @bgColor;
 
-.each-user div {
-	cursor: pointer;
-	border-bottom: 1px solid transparent;
-	border-color: rgba(0,0,0,0.05);
-	span {
-		display: inline-block;
-		line-height: @folderHeaderHeight;
-		color: #000;
-		padding-left: 3px;
-		font-size: 14px;
-	      display: block;
-		  position: absolute;
-		  left: 23px;
-		  top: 0;
-		  right: 23px;
-		  overflow: hidden;
-		  white-space: nowrap;
-		  text-overflow: ellipsis;
-	}
-	.fa {
-	  width: 20px;
-	  border-right: none;
-	}
-}
-
-#myNotebooks.opened .fa-left {
-/*
-	background-color: #65bd77;
-	color: #e2f3e5;
-*/
-}
-#myNotebooks .folderBody {
-}
-#addNotebookPlus {
-  padding-right: 10px;
-  .fa {
-	  font-size: 16px;
-  }
- color: #666;
-}
-.closed .folder-icon  { /* 折叠状态 */
-  width: 9px;
-  height: 11px;
-  background-position: -108px -149px;
-}
-.closed .folderBody {
-  display: none;
-}
-.folderBody {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.folderBody li {
-  line-height: 30px;
-}
 .folderBody a.active {
   background-color: @bgColor;
   color: @hColor;
@@ -279,185 +62,6 @@
 
 .folderBody a:hover, .folderBody .contextmenu-hover {
   background-color: @borderColor !important;
-}
-
-// 重命名, 添加notebook
-#notebookList input, #notebookListForSearch input {
-	width: 90%;
-	border: none;
-    box-shadow: none;
-	padding-left:3px;
-	background: none;
-    &:focus {
-      outline: none !important;
-      border: none;
-	}
-}
-
-#myTag .folderBody {
-	li {
-	  position: relative
-	}
-}
-
-#myTag .folderBody li .badge {
-  width: 40px;
-  position: absolute; right:3px; top: 7px;
-  font-weight: normal;
-  background-color: @bgColor;
-  color: @aBlackColor;
-  border: 1px solid @borderColor;
-}
-/* notelist */
-
-
-#search {
-  border: #bababa 1px solid;
-  background-color: #fff;
-  white-space: nowrap;
-  position: absolute;
-  height: 30px;
-  left:3px;
-  right:60px;
-  margin-top: 3px;
-}
-#search label {
-  display: none;
-}
-#searchButton {
-  border: 0 none;
-  width: 16px;
-  height: 16px;
-  overflow: hidden;
-  cursor: pointer;
-  position: absolute;
-  right:3px;
-  top: 5px;
-}
-#searchInput {
-  border: 0 none;
-  overflow: hidden;
-  position: absolute;
-  right:20px;
-  left: 0px;
-  padding-left: 10px;
-  height: 28px;
-}
-#searchInput:focus {
-  border: none;
-  outline:thin dotted #333;outline:5px auto -webkit-focus-ring-color;outline-offset:-2px
-}
-
-#notesAndSort {
-  background-color: @bgColor;
-  border-bottom: 1px solid @borderColor;
-}
-#sortType {
-/*  position: absolute;
-  right:0;*/
-  float: right;
-}
-
-#noteTitleDiv {
-  height: 30px;
-  border-bottom: 1px solid #ddd;
-}
-#noteTitle {
-  height: 100%;
-  padding: 0px 3px;
-  width: 100%;
-  border: none;
-  background-color: @bgColor;
-  min-width: 300px;
-}
-#noteTitle:focus {
-  // outline:thin dotted #333;outline:1px auto -webkit-focus-ring-color;outline-offset:-2px
-  outline: none !important;
-  // border: 1px solid @hColor;
-}
-
-#editorContent {
-  position: absolute; 
-  top: 30px;
-  bottom: 10px; 
-  right: 0; 
-  left: 0;
-  overflow: auto; // 不设置editor隐藏时没有scroll
-}
-
-@sbc: @bgColor;
-
-.fa-calendar {
-	color: #666;
-}
-.dropdown-menu .fa {
-	width: 15px;
-}
-.dropdown-menu span, .dropdown-menu a, .dropdown-menu li {
-	cursor: default;
-}
-
-// 顶部导航, 博客
-#topNav a {
-	display: inline-block;
-	line-height: 60px;
-}
-
-.tab-pane {
-	padding: 5px 0 0 0;
-}
-
-// 新建笔记item
-#notebookNavForNewNote li, #notebookNavForNewSharedNote > li {
-	padding-left: 0;
-	border-bottom: 1px solid @borderColor;
-}
-#notebookNavForNewNote > li:hover, #notebookNavForNewNote > li:focus,
-#notebookNavForNewSharedNote > li:hover, #notebookNavForNewSharedNote > li:focus {
-	background: none;
-}
-.new-note-left {
-	padding: 0 5px;
-	width: 95px;
-	overflow: hidden;
-	white-space:nowrap;
-	border-right: 1px dashed @borderColor;
-	&:hover {
-		background-color:@borderColor;
-	}
-}
-.new-note-right {
-	&:hover {
-		background-color:@borderColor;
-	}
-}
-
-// 历史记录
-#historyList {
-	table {
-		width: 100%;
-	}
-	.btns{
-		border-top: 1px dashed #eee;
-		padding: 5px 0;
-	}
-}
-
-#loading {
-	display: inline-block;
-	width: 20px;
-	height: 20px;
-	content: url(../../images/loading-a-20-black.gif);
-	vertical-align: middle;
-	visibility: hidden;
-}
-
-#toggleEditorMode {
-	margin: 0 10px !important;
-}
-
-#notebookList {
-	border-top: 1px dashed #eee;
 }
 
 @import "mobile.less";

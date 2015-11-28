@@ -7,50 +7,63 @@
 </style>
 
 <div class="m-b-md"> <h3 class="m-b-none">
-{{.note.Title}} - 摘要设置
+{{.note.Title}} - {{msg $ "setAbstract"}}
 </h3>
 </div>
 
-<link rel="stylesheet" href="/tinymce/skins/custom/skin.min.css" type="text/css">
+<link rel="stylesheet" href="/css/tinymce/skin.min.css" type="text/css">
+
 <div class="row">
 <div class="col-sm-10">
 	<form id="formData">
 		<section class="panel panel-default">
 			<div class="panel-body">
-				以下内容设置后, 以后修改笔记时将不自动获取. 若将该文章取消为博客后, 以下内容会自动获取.
+
+				{{leaMsg . "Once the abstract has been updated, it will not set the abstract automatically other than you cancel it."}}
+
 				<hr />
   				<div class="alert alert-danger" id="baseMsg" style="display: none"></div>
-				<div class="form-group">
+  				
+				<div class="form-group" id="mainImg">
 					<label>
-					主图片
-						<a class="btn btn-default btn-select-img">从笔记中自动获取下一张</a>
+						{{leaMsg $ "Main Image"}}
+						<a class="btn btn-default btn-select-img">
+							{{leaMsg $ "Get next image as main image from content"}}
+						</a>
 					</label>
-					<div>
+					<div style="border: 2px dashed #ccc; padding: 5px;">
 						<img src="{{.note.ImgSrc}}" class="img-src" id="imgSrc"/>
 					</div>
 				</div>
 				
 				<div class="form-group">
-					<label>描述</label>
+					<label>{{leaMsg $ "Description" }}</label>
 					<textarea type="text" rows="6" class="form-control" id="desc" name="desc">{{.note.Desc}}</textarea>
 				</div>
 				
 				<div class="form-group">
-					<label for="content1">摘要</label>
-					<div id="popularToolbar"></div>
-					<textarea id="content1" name="content">{{.note.Abstract}}</textarea>
+					<label for="content1">{{leaMsg $ "Abstract"}}</label>
+					<div class="toolbar-content">
+						<div id="popularToolbar" class="tool-bar"></div>
+						<div id="content1" class="content-ctn" name="content">{{raw .note.Abstract}}</div>
+					</div>
 				</div>
 			</div>
 			<footer class="panel-footer text-right bg-light lter">
 			    <button type="submit" id="submitBtn" class="btn btn-success">{{msg . "submit"}}</button>
 			</footer>
-			
+
 			<div class="panel-body">
 				<p>
-				原文:
+				{{leaMsg . "Raw Content"}}:
+				<hr />
 				</p>
 				<div id="rawContent">
-				{{.note.Content|raw}}
+					{{if .note.IsMarkdown}}
+						<pre>{{.note.Content|raw}}</pre>
+					{{else}}
+						{{.note.Content|raw}}
+					{{end}}
 				</div>
 			</div>
 		</section>
@@ -62,20 +75,18 @@
 <script type="text/javascript" src="/tinymce/tinymce.js"></script>
 <script>
 var UrlPrefix = "{{.siteUrl}}";
+var LeaAce = null;
 $(function() {
 	tinymce.init({
+		inline: true,
 		selector : "#content1",
-		content_css : [ "/css/bootstrap.css", "/css/editor/editor.css" ],
-		skin : "custom",
+		theme: 'leanote',
 		language : "{{.locale}}",
-		height : 300,
-		width : "100%",
-		skin : "custom",
 		plugins : [
-				"advlist autolink link leanote_image lists charmap hr ",
+				"advlist autolink link lists charmap hr ",
 				"searchreplace visualblocks visualchars tabfocus",
-				"table contextmenu directionality textcolor paste fullpage textcolor"],
-		toolbar1 : "formatselect |fontselect fontsizeselect| forecolor backcolor | bold italic underline strikethrough | bullist numlist",
+				"table contextmenu directionality textcolor fullpage textcolor"],
+		toolbar1 : "formatselect |fontselect fontsizeselect| forecolor backcolor | bold italic underline strikethrough | bullist numlist |",
 		menubar : false,
 		statusbar : false,
 		font_formats : "Arial=arial,helvetica,sans-serif;"
@@ -100,7 +111,7 @@ $(function() {
 		}
 		ajaxPost("/member/blog/doUpdateBlogAbstract/", data, function(re) {
 			if(reIsOk(re)) {
-				art.tips("Success");
+				art.tips(getMsg("Success"));
 				location.href = "/member/blog/index";
 			} else {
 				art.alert(re.Msg || "error")
@@ -108,19 +119,39 @@ $(function() {
 		});
 	});
 	
-	// 选择主图
-	var $imgs = $("#rawContent").find("img");
-	var imgLen = $imgs.length;
-	var imgSeq = 0;
-	var $imgSrc = $("#imgSrc");
-	$(".btn-select-img").click(function() {
-		if(imgLen == 0) {
-			return;
+	var isMarkdown = {{$.note.IsMarkdown}};
+	
+	var images = [];
+	if (isMarkdown) {
+		var content = $('#rawContent').html();
+		var reg = /!\[.*?\]\((.*)\)/g;
+		var ret = reg.exec(content);
+		while(ret) {
+			images.push(ret[1]);
+			ret = reg.exec(content);
 		}
-		imgSeq++;
-		imgSeq = imgSeq%imgLen;
-		$imgSrc.attr("src", $imgs.eq(imgSeq).attr("src"));
-	});
+		// console.log(images);
+	}
+	// 选择主图
+	$("#rawContent").find("img").each(function () {
+		if($(this).attr('src')) {
+			images.push($(this).attr('src'));
+		}
+	});;
+	var imgLen = images.length;
+	var imgSeq = 0;
+	$imgSrc = $('#imgSrc');
+	
+	if (imgLen) {
+		$(".btn-select-img").click(function() {
+			imgSeq++;
+			imgSeq = imgSeq % imgLen;
+			$imgSrc.attr("src", images[imgSeq]);
+		});
+	}
+	else {
+		$(".btn-select-img").hide();
+	}
 });
 </script>
 

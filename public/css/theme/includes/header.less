@@ -136,7 +136,7 @@ a:hover {
 #header {
   height: @headerHeight;
   background-color: @headerBgColor;
-  border-bottom: 1px solid @borderColor;
+  border-bottom: 1px solid @headerBottomBorderColor;
   color: @headerTextColor;
 
   a {
@@ -175,7 +175,7 @@ a:hover {
   }
   span {
     border-radius: 5px;
-    background-color: @switcherBgColor; 
+    // background-color: @switcherBgColor; 
     cursor: pointer;
     font-size: 18px;
     line-height: 34px;
@@ -263,3 +263,11 @@ a:hover {
   background-color: @borderColor;
 }
 
+#loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content: @loadingUrl;
+  vertical-align: middle;
+  visibility: hidden;
+}
