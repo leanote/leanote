@@ -152,7 +152,6 @@ gulp.task('devToProHtml', function() {
         .pipe(gulp.dest(noteProBase));
 });
 
-// Get used keys
 // 只获取需要js i18n的key
 var path = require('path');
 gulp.task('i18n', function() {
@@ -230,9 +229,18 @@ gulp.task('i18n', function() {
     }
 
     // msg.zh, msg.js
-    function genI18nJsFile(fromFilename, keys) {
-        var msgs = getAllMsgs(leanoteBase + '/messages/' + fromFilename);
-        var toFilename = fromFilename + '.js';
+    function genI18nJsFile(fromFilename, otherNames, keys) {
+        var msgs = {};
+        otherNames.unshift(fromFilename);
+        // console.log(fromFilename);
+        // console.log(otherNames);
+        otherNames.forEach(function (name) {
+            var tmpMsgs = getAllMsgs(leanoteBase + '/messages/' + name);
+            for (var i in tmpMsgs) {
+                msgs[i] = tmpMsgs[i];
+            }
+        });
+
         var toMsgs = {};
         for (var i in msgs) {
             // 只要需要的
@@ -250,16 +258,23 @@ gulp.task('i18n', function() {
                 '}' + 
                 'return key;' + 
             '}';
+
         // 写入到文件中
+        var toFilename = fromFilename + '.js';
         fs.writeFile(base + '/js/i18n/' + toFilename, str);
     }
 
-    genI18nJsFile('msg.zh', keys);
-    genI18nJsFile('msg.en', keys);
-    genI18nJsFile('msg.fr', keys);
-    genI18nJsFile('blog.zh', keys);
-    genI18nJsFile('blog.en', keys);
-    genI18nJsFile('blog.fr', keys);
+    // 必须要的
+    // keys.push();
+
+    genI18nJsFile('blog.zh', [], keys);
+    genI18nJsFile('blog.en', [], keys);
+    genI18nJsFile('blog.fr', [], keys);
+
+    genI18nJsFile('msg.fr', ['member.fr'], keys);
+    genI18nJsFile('msg.zh', ['member.zh'], keys);
+    genI18nJsFile('msg.en', ['member.en'], keys);
+
 });
 
 // 合并album需要的js
