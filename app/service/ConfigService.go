@@ -577,6 +577,14 @@ func (this *ConfigService) GetUploadSize(key string) float64 {
 	f, _ := strconv.ParseFloat(this.GetGlobalStringConfig(key), 64)
 	return f
 }
+func (this *ConfigService) GetInt64(key string) int64 {
+	f, _ := strconv.ParseInt(this.GetGlobalStringConfig(key), 10, 64)
+	return f
+}
+func (this *ConfigService) GetInt32(key string) int32 {
+	f, _ := strconv.ParseInt(this.GetGlobalStringConfig(key), 10, 32)
+	return int32(f)
+}
 func (this *ConfigService) GetUploadSizeLimit() map[string]float64 {
 	return map[string]float64{
 		"uploadImageSize":    this.GetUploadSize("uploadImageSize"),
