@@ -36,18 +36,20 @@ func (c File) UploadBlogLogo() revel.Result {
 func (c File) PasteImage(noteId string) revel.Result {
 	re := c.uploadImage("pasteImage", "")
 
-	userId := c.GetUserId()
-	note := noteService.GetNoteById(noteId)
-	if note.UserId != "" {
-		noteUserId := note.UserId.Hex()
-		if noteUserId != userId {
-			// 是否是有权限协作的
-			if shareService.HasUpdatePerm(noteUserId, userId, noteId) {
-				// 复制图片之, 图片复制给noteUserId
-				_, re.Id = fileService.CopyImage(userId, re.Id, noteUserId)
-			} else {
-				// 怎么可能在这个笔记下paste图片呢?
-				// 正常情况下不会
+	if noteId != "" {
+		userId := c.GetUserId()
+		note := noteService.GetNoteById(noteId)
+		if note.UserId != "" {
+			noteUserId := note.UserId.Hex()
+			if noteUserId != userId {
+				// 是否是有权限协作的
+				if shareService.HasUpdatePerm(noteUserId, userId, noteId) {
+					// 复制图片之, 图片复制给noteUserId
+					_, re.Id = fileService.CopyImage(userId, re.Id, noteUserId)
+				} else {
+					// 怎么可能在这个笔记下paste图片呢?
+					// 正常情况下不会
+				}
 			}
 		}
 	}
