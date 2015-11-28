@@ -125,6 +125,7 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 
 	var ext string
 	if from == "pasteImage" {
+		handel.Filename = c.Message("unTitled")
 		ext = ".png" // TODO 可能不是png类型
 	} else {
 		_, ext = SplitFilename(filename)
