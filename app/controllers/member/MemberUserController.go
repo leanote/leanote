@@ -38,9 +38,3 @@ func (c MemberUser) Avatar() revel.Result {
 	c.RenderArgs["globalConfigs"] = configService.GetGlobalConfigForUser()
 	return c.RenderTemplate("member/user/avatar.html")
 }
-func (c MemberUser) AddAccount() revel.Result {
-	c.SetUserInfo()
-	c.SetLocale()
-	c.RenderArgs["title"] = "Add Account"
-	return c.RenderTemplate("member/user/add_account.html")
-}

@@ -93,21 +93,6 @@ func (c User) ReSendActiveEmail() revel.Result {
 	return c.RenderJson(re)
 }
 
-// 修改Email发送激活邮箱
-func (c User) updateEmailSendActiveEmail(email, pwd string) revel.Result {
-	re := info.NewRe()
-	if c.GetUserId() == configService.GetGlobalStringConfig("demoUserId") {
-		re.Msg = "cannotUpdateDemo"
-		return c.RenderJson(re)
-	}
-	if re.Ok, re.Msg = Vd("email", email); !re.Ok {
-		return c.RenderRe(re)
-	}
-
-	re.Ok, re.Msg = emailService.UpdateEmailSendActiveEmail(c.GetUserInfo(), email)
-	return c.RenderRe(re)
-}
-
 // 通过点击链接
 // 修改邮箱
 func (c User) UpdateEmail(token string) revel.Result {
@@ -145,27 +130,6 @@ func (c User) ActiveEmail(token string) revel.Result {
 	c.RenderArgs["email"] = email
 
 	return c.RenderTemplate("user/active_email.html")
-}
-
-//------------
-// 第三方账号添加leanote账号
-func (c User) AddAccount(email, pwd string) revel.Result {
-	re := info.NewRe()
-
-	if re.Ok, re.Msg = Vd("email", email); !re.Ok {
-		return c.RenderRe(re)
-	}
-	if re.Ok, re.Msg = Vd("password", pwd); !re.Ok {
-		return c.RenderRe(re)
-	}
-
-	re.Ok, re.Msg = userService.ThirdAddUser(c.GetUserId(), email, pwd)
-
-	if re.Ok {
-		c.UpdateSession("Email", email)
-	}
-
-	return c.RenderRe(re)
 }
 
 //-----------------

@@ -39,7 +39,6 @@
 					</a>
 				</li>
 				
-				{{if $.userInfo.Email}}
 				<li>
 					<a href="/member/user/username">
 						<span>
@@ -62,15 +61,7 @@
 						</span>
 					</a>
 				</li>
-				{{else}}
-				<li>
-					<a href="/member/user/addAccount">
-						<span>
-							{{msg . "addLeanoteAccount"}}
-						</span>
-					</a>
-				</li>
-				{{end}}
+				
 			</ul>
 		</li>
 		
