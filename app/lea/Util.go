@@ -394,3 +394,40 @@ func FixFilename(filename string) string {
 	}
 	return filename
 }
+
+// 是否是合法的时间
+// 不是, 0001-01-01T00:00:00Z, 且比今天小
+func IsValidTime(t time.Time) bool {
+	if t.Year() > 20 {
+		now := time.Now()
+		Log("------")
+		Log(t)
+		Log(now)
+		if t.Before(now) {
+			return true
+		}
+	}
+	return false
+}
+
+// url传过来的时间没有时区信息, 转到本地时间
+func ToLocalTime(t time.Time) time.Time {
+	return time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), 0, time.Local)
+}
+
+// 修复传过来的时间, 如果比今天大, 则设为现在
+func FixUrlTime(t time.Time) time.Time {
+	localTime := ToLocalTime(t)
+	if IsValidTime(localTime) {
+		return localTime
+	}
+	return time.Now()
+}
+
+// 得到用户的随机文件路径 3位/userId/2位
+func GetRandomFilePath(userId, uuid string) string {
+	if uuid == "" {
+		uuid = NewGuid()
+	}
+	return Digest3(userId) + "/" + userId + "/" + Digest2(uuid)
+}
