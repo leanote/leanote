@@ -165,15 +165,11 @@ green=绿色
 
 # 设置
 accountSetting=帐户设置
-themeSetting=主题设置
-setAvatar=头像设置
 logout=退出
 basicInfo=基本信息
 basicInfoSet=博客基本设置
 updateEmail=修改Email
 usernameSetting=用户名设置
-username=用户名
-avatar=头像
 chooseImage=选择图片
 oldPassword=旧密码
 newPassword=新密码
@@ -290,6 +286,16 @@ memberCenter=个人中心
 userNotExists=该成员沿未注册
 hasUsers=已存在该成员
 Leanote Blog Theme Api=Leanote博客主题API
+My Group=我的分组
+group=用户组
+newGroup=新建组
+deleteGroup=删除组
+addMemberTips=输入用户名或邮箱添加成员
+deleteMember=删除成员
+forbiddenNotMyGroup=无权限操作, 非该组的所有者
+userExistsInGroup=已存在该成员
+notMyGroup=非该组的所有者
+
 
 # yu
 service=服务
@@ -360,7 +366,7 @@ script=脚本
 header=头部
 footer=底部
 index=首页
-cate=分类页
+cate=分类
 search=搜索页
 single=单页
 archive=归档页
@@ -372,11 +378,25 @@ themeJson=主题配置
 paging=分页
 highlight=高亮
 
-group=用户组
-newGroup=新建组
-deleteGroup=删除组
-addMemberTips=输入用户名或邮箱添加成员
-deleteMember=删除成员
+# member title
+Leanote Member Center=Leanote 个人中心
+Username=用户名
+Email=Email
+Password=密码
+Avatar=头像
+Add Account=添加Leanote帐户
+Update Post Abstract=更新博文摘要
+Blog Base Info=博客基本设置
+Comment=评论设置
+Posts=博文管理
+Domain=域名
+Paging=分页
+Category=分类管理
+Add Single=添加单页
+Update Single=修改单页
+Single=单页管理
+Theme=主题
+Update Theme=修改主题
 
 created=创建
 updated=更新
@@ -429,6 +449,9 @@ Edit mode=编辑模式
 Vim mode=Vim模式
 Emacs mode=Emacs模式
 Normal mode=普通模式
+Normal=普通
+Light=轻量
+Light editor=轻量编辑器
 
 Insert Image=插入
 
@@ -462,6 +485,25 @@ error=错误
 Error=错误
 Prev=上一页
 Next=下一页
+
+# view js
+Are you sure ?=你确定执行该操作?
+Are you sure to install it ?=你确定安装该主题?
+Are you sure to delete=你确定删除
+Success=成功
+Error=错误
+File exists=文件已存在
+Delete file=删除文件
+No images=无图片
+Filename=文件名
+Group Title=分组名
+
+#############
+# 通用
+#############
+
+Search=搜索
+Save Success=保存成功
 
 # 必须要加这个, 奇怪
 [CN]

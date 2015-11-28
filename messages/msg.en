@@ -20,9 +20,9 @@ suggestions=Suggestions
 yourSuggestions=Suggestions
 leanoteBlog=Blog
 knowledge=Knowledge
-knowledgeInfo=Use leanote as a note, manage your knowledge in leanote.
+knowledgeInfo=Use Leanote as a note, manage your knowledge in Leanote.
 share=Share
-shareInfo=Share your knowledge to your friends in leanote.
+shareInfo=Share your knowledge to your friends in Leanote.
 cooperation=Cooperation
 cooperationInfo=Collaborate with friends to improve your knowledge.
 blog=Blog
@@ -137,15 +137,11 @@ green=green
 
 # 设置
 accountSetting=Account
-themeSetting=Theme
-setAvatar=Avatar
 logout=Logout
 basicInfo=Basic
 basicInfoSet=Blog Basic Setting
 updateEmail=Update email
 usernameSetting=Update username
-username=Username
-avatar=Avatar
 chooseImage=Choose Image
 oldPassword=Old password
 newPassword=New password
@@ -256,6 +252,7 @@ memberCenter=Member Center
 userNotExists=The user is not exists
 hasUsers=The user already exists
 Leanote Blog Theme Api=Leanote Blog Theme Api
+My Group=My Group
 
 # yu
 service=Service
@@ -339,11 +336,34 @@ themeJson=Theme settings
 paging=Paging
 highlight=Code highlight
 
+# member title
+Leanote Member Center=Leanote Member Center
+Username=Username
+Email=Email
+Password=Password
+Avatar=Avatar
+Add Account=Add Account
+Update Post Abstract=Update Post Abstract
+Blog Base Info=Blog Base Info
+Comment=Comment
+Posts=Posts
+Domain=Domain
+Paging=Paging
+Category=Category
+Add Single=Add Single
+Update Single=Update Single
+Single=Single
+Theme=Theme
+Upate Theme=Upate Theme
+
 group=Group
 newGroup=New group
 deleteGroup=Delete group
 addMemberTips=Input username or email to add member
 deleteMember=Delete member
+forbiddenNotMyGroup=You have no authority to access, cause you are not the group owner
+userExistsInGroup=The member is already exists in this group
+notMyGroup=You are not the group owner
 
 created=Created
 updated=Updated

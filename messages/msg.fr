@@ -131,15 +131,11 @@ green=vert
 
 # 设置
 accountSetting=Compte
-themeSetting=Thème
-setAvatar=Avatar
 logout=Déconnexion
 basicInfo=Basique
 basicInfoSet=Réglages de base du blog
 updateEmail=Mettre à jour le courriel
 usernameSetting=Mettre à jour le nom d'utilisateur
-username=Nom d'utilisateur
-avatar=Avatar
 chooseImage=Choisir une image
 oldPassword=Ancien mot de passe
 newPassword=Nouveau mot de passe
@@ -255,6 +251,7 @@ latest=Plus récent.
 memberCenter=Espace Membre
 userNotExists=L'utilisateur n'existe pas
 hasUsers=L'utilisateur existe déjà
+My Group=My Group
 
 # yu
 service=Service
@@ -337,11 +334,35 @@ themeJson=Réglages du thème
 paging=Mise en page
 highlight=Surlignage du code
 
+# member title
+Leanote Member Center=Leanote Member Center
+Username=Username
+Email=Email
+Password=Password
+Avatar=Avatar
+Add Account=Add Account
+Update Post Abstract=Update Post Abstract
+Blog Base Info=Blog Base Info
+Comment=Comment
+Posts=Posts
+Domain=Domain
+Paging=Paging
+Category=Category
+Add Single=Add Single
+Update Single=Update Single
+Single=Single
+Theme=Theme
+Upate Theme=Upate Theme
+
+
 group=Groupe
 newGroup=Nouveau groupe
 deleteGroup=Effacer groupe
 addMemberTips=Rentrer le nom d'utilisateur et le courriel pour ajouter un membre
 deleteMember=Effacer membre
+forbiddenNotMyGroup=You have no authority to access, cause you are not the group owner
+userExistsInGroup=The member is already exists in this group
+notMyGroup=You are not the group owner
 
 created=Créé
 updated=Mis à jour
