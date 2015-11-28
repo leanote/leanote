@@ -425,6 +425,7 @@ function setEditorContent(content, isMarkdown, preview, callback) {
 	*/
 		if(MD) {
 			MD.setContent(content);
+			MD.clearUndo && MD.clearUndo();
 			callback && callback();
 		} else {
 			clearIntervalForSetContent = setTimeout(function() {
@@ -722,8 +723,8 @@ function getObjectId() {
 
 //-----------------------------------------
 function resizeEditor(second) {
+	LEA.isM && MD && MD.resize && MD.resize();
 	return;
-	
 	var ifrParent = $("#editorContent_ifr").parent();
     ifrParent.css("overflow", "auto");
     var height = $("#editorContent").height();
