@@ -245,11 +245,14 @@ func (this *NoteService) AddNote(note info.Note, fromApi bool) info.Note {
 		noteId := bson.NewObjectId()
 		note.NoteId = noteId
 	}
-	note.CreatedTime = time.Now()
-	note.UpdatedTime = note.CreatedTime
+
+	// 关于创建时间, 可能是客户端发来, 此时判断时间是否有
+	note.CreatedTime = FixUrlTime(note.CreatedTime)
+	note.UpdatedTime = FixUrlTime(note.UpdatedTime)
+
 	note.IsTrash = false
 	note.UpdatedUserId = note.UserId
-	note.UrlTitle = GetUrTitle(note.UserId.Hex(), note.Title, "note")
+	note.UrlTitle = GetUrTitle(note.UserId.Hex(), note.Title, "note", note.NoteId.Hex())
 	note.Usn = userService.IncrUsn(note.UserId.Hex())
 
 	notebookId := note.NotebookId.Hex()
@@ -287,8 +290,10 @@ func (this *NoteService) AddSharedNote(note info.Note, myUserId bson.ObjectId) i
 // 添加笔记本内容
 // [ok]
 func (this *NoteService) AddNoteContent(noteContent info.NoteContent) info.NoteContent {
-	noteContent.CreatedTime = time.Now()
-	noteContent.UpdatedTime = noteContent.CreatedTime
+
+	noteContent.CreatedTime = FixUrlTime(noteContent.CreatedTime)
+	noteContent.UpdatedTime = FixUrlTime(noteContent.UpdatedTime)
+
 	noteContent.UpdatedUserId = noteContent.UserId
 	db.Insert(db.NoteContents, noteContent)
 
@@ -419,7 +424,15 @@ func (this *NoteService) UpdateNote(updatedUserId, noteId string, needUpdate bso
 	}
 
 	needUpdate["UpdatedUserId"] = bson.ObjectIdHex(updatedUserId)
-	needUpdate["UpdatedTime"] = time.Now()
+
+	// 可以将时间传过来
+	updatedTime, ok := needUpdate["UpdatedTime"].(time.Time)
+	if ok {
+		needUpdate["UpdatedTime"] = FixUrlTime(updatedTime)
+	} else {
+		needUpdate["UpdatedTime"] = time.Now()
+	}
+
 	afterUsn := userService.IncrUsn(userId)
 	needUpdate["Usn"] = afterUsn
 
@@ -443,7 +456,7 @@ func (this *NoteService) UpdateNote(updatedUserId, noteId string, needUpdate bso
 		}
 	}
 
-	ok := db.UpdateByIdAndUserIdMap(db.Notes, noteId, userId, needUpdate)
+	ok = db.UpdateByIdAndUserIdMap(db.Notes, noteId, userId, needUpdate)
 	if !ok {
 		return ok, "", 0
 	}
@@ -460,14 +473,19 @@ func (this *NoteService) UpdateNote(updatedUserId, noteId string, needUpdate bso
 		notebookId := notebookIdI.(bson.ObjectId)
 		if notebookId != "" {
 			notebookService.ReCountNotebookNumberNotes(note.NotebookId.Hex())
-			hasRecount = true
 			notebookService.ReCountNotebookNumberNotes(notebookId.Hex())
+			hasRecount = true
 		}
 	}
 
 	// 不要多次更新, isTrash = false, = true都要重新统计
-	if !hasRecount {
-		if _, ok := needUpdate["IsTrash"]; ok {
+	if isTrashI, ok := needUpdate["IsTrash"]; ok {
+		// 如果是垃圾, 则删除之共享
+		isTrash := isTrashI.(bool)
+		if isTrash {
+			shareService.DeleteShareNoteAll(noteId, userId)
+		}
+		if !hasRecount {
 			notebookService.ReCountNotebookNumberNotes(note.NotebookId.Hex())
 		}
 	}
@@ -507,7 +525,9 @@ func (this *NoteService) UpdateNoteTitle(userId, updatedUserId, noteId, title st
 // [ok] TODO perm未测
 // hasBeforeUpdateNote 之前是否更新过note其它信息, 如果有更新, usn不用更新
 // TODO abstract这里生成
-func (this *NoteService) UpdateNoteContent(updatedUserId, noteId, content, abstract string, hasBeforeUpdateNote bool, usn int) (bool, string, int) {
+func (this *NoteService) UpdateNoteContent(updatedUserId, noteId, content, abstract string,
+	hasBeforeUpdateNote bool,
+	usn int, updatedTime time.Time) (bool, string, int) {
 	// 是否已自定义
 	note := this.GetNoteById(noteId)
 	if note.NoteId == "" {
@@ -522,11 +542,13 @@ func (this *NoteService) UpdateNoteContent(updatedUserId, noteId, content, abstr
 		}
 	}
 
+	updatedTime = FixUrlTime(updatedTime)
+
 	// abstract重置
 	data := bson.M{"UpdatedUserId": bson.ObjectIdHex(updatedUserId),
 		"Content":     content,
 		"Abstract":    abstract,
-		"UpdatedTime": time.Now()}
+		"UpdatedTime": updatedTime}
 
 	if note.IsBlog && note.HasSelfDefined {
 		delete(data, "Abstract")
@@ -788,7 +810,11 @@ func (this *NoteService) searchNoteFromContent(notes []info.Note, userId, key st
 		noteIds[i] = note.NoteId
 	}
 	noteContents := []info.NoteContent{}
-	query := bson.M{"_id": bson.M{"$nin": noteIds}, "UserId": bson.ObjectIdHex(userId), "Content": bson.M{"$regex": bson.RegEx{".*?" + key + ".*", "i"}}}
+	query := bson.M{
+		"_id":     bson.M{"$nin": noteIds},
+		"UserId":  bson.ObjectIdHex(userId),
+		"Content": bson.M{"$regex": bson.RegEx{".*?" + key + ".*", "i"}},
+	}
 	if isBlog {
 		query["IsBlog"] = true
 	}
