@@ -242,6 +242,7 @@ func (this *FileService) GetFile(userId, fileId string) string {
 	return ""
 }
 
+// 复制共享的笔记时, 复制其中的图片到我本地
 // 复制图片
 func (this *FileService) CopyImage(userId, fileId, toUserId string) (bool, string) {
 	// 是否已经复制过了
@@ -252,7 +253,6 @@ func (this *FileService) CopyImage(userId, fileId, toUserId string) (bool, strin
 	}
 
 	// 复制之
-
 	file := info.File{}
 	db.GetByIdAndUserId(db.Files, fileId, userId, &file)
 
@@ -261,18 +261,20 @@ func (this *FileService) CopyImage(userId, fileId, toUserId string) (bool, strin
 	}
 
 	_, ext := SplitFilename(file.Name)
-	newFilename := NewGuid() + ext
+	guid := NewGuid()
+	newFilename := guid + ext
 
-	dir := "files/" + toUserId + "/images"
+	// TODO 统一目录格式
+	// dir := "files/" + toUserId + "/images"
+	dir := "files/" + GetRandomFilePath(toUserId, guid) + "/images"
 	filePath := dir + "/" + newFilename
-	err := os.MkdirAll(dir, 0755)
+	err := os.MkdirAll(revel.BasePath+dir, 0755)
 	if err != nil {
 		return false, ""
 	}
 
 	_, err = CopyFile(revel.BasePath+"/"+file.Path, revel.BasePath+"/"+filePath)
 	if err != nil {
-		Log(err)
 		return false, ""
 	}
 
