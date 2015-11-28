@@ -919,7 +919,7 @@ func (this *BlogService) UpateCateUrlTitle(userId string, cateId, urlTitle strin
 			"UrlTitle": "",
 		})
 	*/
-	url = GetUrTitle(userId, urlTitle, "notebook")
+	url = GetUrTitle(userId, urlTitle, "notebook", cateId)
 	ok = db.UpdateByIdAndUserIdMap(db.Notebooks, cateId, userId, bson.M{
 		"UrlTitle": url,
 	})
@@ -935,7 +935,7 @@ func (this *BlogService) UpateBlogUrlTitle(userId string, noteId, urlTitle strin
 	ok = db.UpdateByIdAndUserIdMap(db.Notes, noteId, userId, bson.M{
 		"UrlTitle": "",
 	})
-	url = GetUrTitle(userId, urlTitle, "note")
+	url = GetUrTitle(userId, urlTitle, "note", noteId)
 	ok = db.UpdateByIdAndUserIdMap(db.Notes, noteId, userId, bson.M{
 		"UrlTitle": url,
 	})
@@ -1036,7 +1036,7 @@ func (this *BlogService) UpdateSingleUrlTitle(userId, singleId, urlTitle string)
 			"UrlTitle": "",
 		})
 	*/
-	url = GetUrTitle(userId, urlTitle, "single")
+	url = GetUrTitle(userId, urlTitle, "single", singleId)
 	ok = db.UpdateByIdAndUserIdMap(db.BlogSingles, singleId, userId, bson.M{
 		"UrlTitle": url,
 	})
@@ -1070,7 +1070,7 @@ func (this *BlogService) AddOrUpdateSingle(userId, singleId, title, content stri
 		UserId:      bson.ObjectIdHex(userId),
 		Title:       title,
 		Content:     content,
-		UrlTitle:    GetUrTitle(userId, title, "single"),
+		UrlTitle:    GetUrTitle(userId, title, "single", singleId),
 		CreatedTime: time.Now(),
 	}
 	page.UpdatedTime = page.CreatedTime

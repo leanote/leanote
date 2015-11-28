@@ -156,9 +156,13 @@ func (this *NotebookService) GetNotebooksByNotebookIds(notebookIds []bson.Object
 }
 
 // 添加
-// [ok]
 func (this *NotebookService) AddNotebook(notebook info.Notebook) (bool, info.Notebook) {
-	notebook.UrlTitle = GetUrTitle(notebook.UserId.Hex(), notebook.Title, "notebook")
+
+	if notebook.NotebookId == "" {
+		notebook.NotebookId = bson.NewObjectId()
+	}
+
+	notebook.UrlTitle = GetUrTitle(notebook.UserId.Hex(), notebook.Title, "notebook", notebook.NotebookId.Hex())
 	notebook.Usn = userService.IncrUsn(notebook.UserId.Hex())
 	now := time.Now()
 	notebook.CreatedTime = now

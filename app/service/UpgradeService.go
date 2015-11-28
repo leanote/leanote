@@ -65,7 +65,7 @@ func (this *UpgradeService) UpgradeBetaToBeta2(userId string) (ok bool, msg stri
 			data["RecommendTime"] = note.UpdatedTime
 			Log("Time " + noteId)
 		}
-		data["UrlTitle"] = GetUrTitle(note.UserId.Hex(), note.Title, "note")
+		data["UrlTitle"] = GetUrTitle(note.UserId.Hex(), note.Title, "note", noteId)
 		db.UpdateByIdAndUserIdMap2(db.Notes, note.NoteId, note.UserId, data)
 		Log(noteId)
 	}
@@ -77,7 +77,7 @@ func (this *UpgradeService) UpgradeBetaToBeta2(userId string) (ok bool, msg stri
 	for _, notebook := range notebooks {
 		notebookId := notebook.NotebookId.Hex()
 		data := bson.M{}
-		data["UrlTitle"] = GetUrTitle(notebook.UserId.Hex(), notebook.Title, "notebook")
+		data["UrlTitle"] = GetUrTitle(notebook.UserId.Hex(), notebook.Title, "notebook", notebookId)
 		db.UpdateByIdAndUserIdMap2(db.Notebooks, notebook.NotebookId, notebook.UserId, data)
 		Log(notebookId)
 	}
