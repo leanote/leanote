@@ -122,7 +122,12 @@ function tarRelease()
 	if [ $1 = "linux" -o $1 = "darwin" ]
 	then
 		suffix=""
-		cp ./bin/run.sh $tmp/leanote/bin/
+		if [ $2 = "arm" ]
+		then
+			cp ./bin/run_arm.sh $tmp/leanote/bin/run.sh
+		else
+			cp ./bin/run.sh $tmp/leanote/bin/
+		fi
 	else
 		cp ./bin/run.bat $tmp/leanote/bin/
 		suffix=".exe"
