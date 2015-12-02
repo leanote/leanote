@@ -9,7 +9,7 @@ SP=$(cd "$(dirname "$0")"; pwd)
 tmp="/Users/life/Desktop/leanote_release"
 
 # version
-V="v1.4"
+V="v1.4.1"
 
 ##=================================
 # 1. 先build 成 3个平台, 2种bit = 6种

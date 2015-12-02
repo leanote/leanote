@@ -111,6 +111,7 @@ saving=Sauvegarde
 saveSuccess=Sauvegarde réussie
 SearchNote=Chercher une note
 SearchNotebook=Chercher un bloc-note
+Toggle Modify with Readonly=Toggle Modify with Readonly
 
 update=Mettre à jour
 create=Créer

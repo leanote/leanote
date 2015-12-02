@@ -416,14 +416,14 @@ Note.curChangedSaveIt = function(force, callback) {
 	// 如果当前没有笔记, 不保存
 	// 或者是共享的只读笔记
 	if(!Note.curNoteId || Note.isReadOnly) {
-		log(!Note.curNoteId ? '无当前笔记' : '共享只读');
+		// log(!Note.curNoteId ? '无当前笔记' : '共享只读');
 		return;
 	}
 	var hasChanged;
 	try {
 		hasChanged = Note.curHasChanged(force);
 	} catch(e) {
-		console.error('获取当前改变的笔记错误!');
+		// console.error('获取当前改变的笔记错误!');
 		callback && callback(false);
 		return;
 	}
@@ -1560,6 +1560,7 @@ Note.toggleReadOnly = function(needSave) {
 
 	// markdown
 	$('#mdEditor').addClass('read-only');
+	$('#note').addClass('read-only-editor');
 
 	if(!note) {
 		return;
@@ -1596,6 +1597,7 @@ LEA.toggleWriteable = Note.toggleWriteable = function(isFromNewNote) {
 
 	// $('#infoToolbar').hide();
 	$('#editor').removeClass('read-only');
+	$('#note').removeClass('read-only-editor');
 	$('#editorContent').attr('contenteditable', true);
 
 	// markdown
@@ -1623,6 +1625,8 @@ LEA.toggleWriteable = Note.toggleWriteable = function(isFromNewNote) {
 		}
 	}
 };
+
+// page ctrl+e也会
 Note.toggleWriteableAndReadOnly = function () {
 	if (LEA.readOnly) {
 		Note.toggleWriteable();
@@ -2499,6 +2503,9 @@ $(function() {
 	// 修改
 	$('.toolbar-update').click(function() {
 		Note.toggleWriteable();
+	});
+	$("#editBtn").click(function() {
+		Note.toggleWriteableAndReadOnly();
 	});
 
 	//

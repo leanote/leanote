@@ -208,13 +208,13 @@ function log(o) {
 					</a>
 				</div>
 
-				<div class="pull-right toggle-editor-mode" style="line-height: 60px; margin-right:10px" id="toggleEditorMode">
+				<div class="pull-right toggle-editor-mode top-nav" id="toggleEditorMode">
 					<a href="#writing"><span>{{msg . "writingMode"}}</span></a>
 				</div>
 				
 				{{if eq .userInfo.Email "demo@leanote.com"}}
 				{{if .openRegister}}					
-				<div class="pull-right" style="line-height: 60px; margin-right:10px" id="demoRegister">
+				<div class="pull-right top-nav" id="demoRegister">
 					<span>
 						{{msg . "demoRegister"}}
 					</span>
@@ -423,7 +423,7 @@ function log(o) {
 				
 					<div class="noteSplit" id="noteSplitter"></div>
 					
-					<div id="note">
+					<div id="note" class="read-only-editor">
 					
 					<!-- 遮罩, 为了resize3Columns用 -->
 					<div id="noteMask" class="note-mask"></div>
@@ -494,8 +494,12 @@ function log(o) {
 							</div>
 							
 							<ul class="pull-right" id="editorTool">
+								<li><a class="ios7-a " id="editBtn"
+									data-toggle="dropdown" title="ctrl/cmd+e {{leaMsg . "Toggle Modify with Readonly"}}">
+									<span class="fa"></span></a></li>
+
 								<li><a class="ios7-a " id="saveBtn"
-									data-toggle="dropdown" title="ctrl+s {{msg . "save"}}">
+									data-toggle="dropdown" title="ctrl/cmd+s {{msg . "save"}}">
 									<span class="fa fa-save"></span></a></li>
 
 								<li class="dropdown" id="noteInfoDropdown">
@@ -572,7 +576,7 @@ function log(o) {
 							</div>
 							<!-- 查看信息 -->
 							<div id="infoToolbar" class="info-toolbar invisible">
-				              <a class="toolbar-update" title="{{msg . "modify"}} ctrl/cmd+e"><i class="fa fa-pencil"></i> <span class="lang">{{msg . "modify"}}</span></a>
+				              
 				              <span class="lang">{{msg . "created"}}</span>: <span class="created-time"></span>
 				              <span class="lang">{{msg . "updated"}}</span>: <span class="updated-time"></span>
 				            </div>
@@ -607,7 +611,6 @@ function log(o) {
 						        <div class="navbar navbar-default">
 						            <div class="navbar-inner" id="wmd-button-bar">
 						            	<div id="mdInfoToolbar" class="info-toolbar invisible">
-							              <a class="toolbar-update" title="{{msg . "modify"}} ctrl/cmd+e"><i class="fa fa-pencil"></i> <span class="lang">{{msg . "modify"}}</span></a>
 							              <span class="lang">{{msg . "created"}}</span>: <span class="created-time"></span>
 							              <span class="lang">{{msg . "updated"}}</span>: <span class="updated-time"></span>
 							            </div>
