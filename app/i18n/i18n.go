@@ -86,7 +86,9 @@ func main() {
 	parse("msg.en")
 	parse("msg.zh")
 	parse("msg.fr")
+	parse("msg.pt")
 	parse("blog.zh")
 	parse("blog.en")
 	parse("blog.fr")
+	parse("blog.pt")
 }

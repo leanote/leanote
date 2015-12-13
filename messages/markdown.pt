@@ -1,0 +1,35 @@
+
+# markdown editor
+
+Hyperlink=Hyperlink
+Please provide the link URL and an optional title=Favor informar a URL e um título opcional
+optional title=título opcional
+Ok=Ok
+Cancel=Cancelar
+Strong=Negrito
+strong text=texto em negrito
+Emphasis=Itálico
+emphasized text=texto em itálido
+Blockquote=Avanço
+Code Sample=Código de exemplo
+enter code here=Insira o código aqui
+Image=Imagem
+Heading=Cabeçalho
+Numbered List=Lista numerada
+Bulleted List=Lista não-numerada
+List item=Item de lista
+Horizontal Rule=Linha horizontal
+Markdown syntax=Syntaxe Markdown
+Undo=Desfazer
+Redo=Refazer
+enter image description here=Inserir a descrição da imagem aqui
+enter link description here=Inserir a descrição do link aqui
+Edit mode=Modo Edit
+Vim mode=Movo Vim
+Emacs mode=Modo Emacs
+Normal mode=Modo Normal
+Normal=Normal
+Light=Light
+Light editor=Editor light
+
+Insert Image=Inserir Imagem

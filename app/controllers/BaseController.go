@@ -186,7 +186,7 @@ func (c BaseController) SetLocale() string {
 		pos := strings.Index(locale, "-")
 		lang = locale[0:pos]
 	}
-	if lang != "zh" && lang != "en" {
+	if lang != "zh" && lang != "en" && lang != "fr" && lang != "pt" {
 		lang = "en"
 	}
 	c.RenderArgs["locale"] = lang

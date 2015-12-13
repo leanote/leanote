@@ -1,0 +1,136 @@
+####################
+# Member Center
+####################
+
+memberCenter=Membro Central
+userNotExists=Usuário inexistente
+hasUsers=O usuário já existe
+Leanote Blog Theme Api=Tema da API do Blog do Leanote
+My Group=Meu grupo
+
+# post abstract
+
+Abstract=Resumo
+Description=Descrição
+Once the abstract has been updated, it will not set the abstract automatically other than you cancel it.=Uma vez que o resumo seja atualizado, ele não será definido automaticamente exceto se você cancelá-lo.
+Main Image=Imagem principal
+Get next image as main image from content=Usar a próxima imagem do conteúdo como imagem principal
+Raw Content=Conteúdo original
+
+#memeber
+welcomeToLeanote=Bem-vindo
+accountInfo=Informações da conta
+accountType=Tipo da conta
+premiumAccountType=Premium
+normalAccountType=Normal
+imageSize=Tamanho de imagem
+attachSize=Tamanho de anexo
+totalTraffic=Tráfego de Internet
+upgrade=Evoluir minha conta
+leanoteEvents=Novidade da Leanote
+addLeanoteAccount=Nova conta Leanote
+defaultComment=Sistema padrão de comentário Leanote
+upgradeAccountTips=Quero utilizar um domínio personalizado para o meu blog, <a class="btn btn-default" href="/service">Evoluir minha conta</a>
+cateIsPublicNotebook=Categoria são notas publicadas
+dragAndSort=Arraste para ordenar
+permanentLink=Link permanente
+cate=Categoria
+noCates=Sem categoria
+single=Página simples
+singleTips=Você pode incluir diversas páginas simples
+addSingle=Nova página simples
+updateSingle=Atualizar página simples
+inputSingleTitle=O título é obrigatório
+saveSort=Ordenação gravada
+pagingAndSort=Configurações de paginação e ordenação
+perPageSize=Itens por página
+sortField=Campo de ordenação
+sortType=Tipo de ordenação
+publicTime=Data/hora da publicação
+createdTime=Data de criação
+updatedTime=Data de atualização
+desc=Desc
+asc=Asc
+postList=Lista de postagens
+hasSelfDefined=Definido
+noSelfDefined=Não definido
+setAbstract=Configurações do resumo
+title=Título
+content=Conteúdo
+
+addTheme=Novo tema
+importTheme=Importar tema
+exportTheme=Exportar tema
+export=Exportar
+preview=Pré-visualização
+edit=Editar
+use=Usar
+install=Instalar
+currentTheme=Tema atual
+myOtherThemes=Meus outros tema
+leanoteThemeMarket=Venda de temas da Leanote
+updateTheme=Atualizar tema
+tplStyleScript=template, style, script
+newFile=Novo arquivo
+image=Imagem
+currentFile=Arquivo atual
+tpl=Template
+style=Style
+script=Script
+header=Cabeçalho
+footer=Rodapé
+index=Início
+cate=Categoria
+search=Pesquisa
+single=Página simples
+archive=Arquivo
+post=Post
+tags=Tags
+tag_posts=Postagens de tags
+share_comment=Comentários
+themeJson=Configurações de tema
+paging=Paginação
+highlight=Realce de código
+
+# member title
+Leanote Member Center=Membro Central Leanote
+Username=Usuário
+Email=E-mail
+Password=Senha
+Avatar=Avatar
+Add Account=Incluir conta
+Update Post Abstract=Atualizar resumo da postagem
+Blog Base Info=Informações básicas do blog
+Comment=Comentário
+Posts=Postagens
+Domain=Domínio
+Paging=Paginação
+Category=Categoria
+Add Single=Incluir página simples
+Update Single=Atualizar página simples
+Single=Página simples
+Theme=Tema
+Upate Theme=Atualizar tema
+
+group=Grupo
+newGroup=Novo grupo
+deleteGroup=Excluir grupo
+addMemberTips=Informar nome de usuário ou e-mail para incluir o membro
+deleteMember=Excluir membro
+forbiddenNotMyGroup=Você não possui autorização de acesso porque você não é o dono do grupo
+userExistsInGroup=O membro já está neste grupo
+notMyGroup=Você não é o dono do grupo
+
+
+# view js
+Are you sure ?=Você tem certeza ?
+Are you sure to install it ?=Você tem certeza que deseja instalar ?
+Are you sure to delete=Você tem certeza que deseja excluir
+Success=Sucesso
+Error=Erro
+File exists=Arquivo existente
+Delete file=Excluir arquivo
+No images=Sem imagens
+Filename=Arquivo
+Group Title=Título do grupo
+
