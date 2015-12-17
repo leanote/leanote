@@ -1,0 +1,91 @@
+# blog
+
+blogNavs=Navegação
+quickLinks=Links rápidos
+latestPosts=Últimas postagens
+
+noBlog=Sem blog
+noTag=Sem tag
+blogClass=Categoria
+updatedTime=Enviado em
+createdTime=Criado em
+fullBlog=Blog completo
+blogNav=Navegação do blog
+more=Mais...
+previous=Anterior
+next=Próximo
+
+#
+# set blog
+#
+blogSet=Configuração do blog
+baseInfoSet=Informações básicas
+commentSet=Comentário
+themeSet=Tema
+theme=Tema
+blogName=Título
+blogLogo=Logo
+blogDesc=Descrição
+aboutMe=Sobre mim
+
+#domain
+domainSet=Domímio
+subDomain=Subdomínio
+domain=Domain personalizado
+
+# theme
+elegant=Elegante
+navFixed=Navegação fixada à esquerda
+
+openComment=Abrir commentário?
+chooseComment=Sistema de comentário
+disqusHelp=Favor insira seu Disqus Id
+needHelp=Precisa de ajuda?
+blogLogoTips=Envie uma imagem para substituir o título do blog
+saveSuccess=Gravado com sucesso
+
+community=Comunidade
+home=Home
+none=Nada
+moreShare=Mais
+sinaWeibo=Weibo
+weixin=Weichat
+tencentWeibo=Tencent Weibo
+qqZone=QQ Zone
+renren=Renren
+report=Relatório
+like=Gostei
+unlike=Não gostei
+viewers=Visualizadores
+author=Autor
+delete=Excluir
+reply=Responder
+comment=Comentar
+comments=Comentários
+cancel=Cancelar
+confirm=Confirmar
+signIn=Sign In
+signUp=Sign Up
+submitComment=Submeter
+reportReason1=Conteúdos hostis
+reportReason2=Publicidade de spam
+reportReason3=Conteúdos ilegais
+reportReason4=Não deve abrir a discussão de conteúdo político
+other=Outro
+reportReason=Razão
+chooseReason=Por favor selecione a razão do relatório
+reportSuccess=Relatório enviado com sucesso, iremos notificar o acordo com o autor, obrigado pela supervisão
+error=Erro
+reportComment?=Denunciar este comentário?
+reportBlog?=Denunciar este blog?
+confirmDeleteComment=Você tem certeza?
+scanQRCode=Abrir weichat e escanear o código QR
+justNow=Agota
+minutesAgo=minutos atrás
+hoursAgo=horás atrás
+daysAgo=dias atrás
+weeksAgo=semanas atrás
+monthsAgo=meses atrás
+
+
+a=a

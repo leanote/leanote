@@ -271,10 +271,12 @@ gulp.task('i18n', function() {
     genI18nJsFile('blog.zh', [], keys);
     genI18nJsFile('blog.en', [], keys);
     genI18nJsFile('blog.fr', [], keys);
+    genI18nJsFile('blog.pt', [], keys);
 
     genI18nJsFile('msg.fr', ['member.fr', 'markdown.fr', 'album.fr'], keys);
     genI18nJsFile('msg.zh', ['member.zh', 'markdown.zh', 'album.zh'], keys);
     genI18nJsFile('msg.en', ['member.en', 'markdown.en', 'album.en'], keys);
+    genI18nJsFile('msg.pt', ['member.pt', 'markdown.pt', 'album.pt'], keys);
 });
 
 // 合并album需要的js

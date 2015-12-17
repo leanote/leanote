@@ -1,0 +1,281 @@
+# leanote
+app=Leanote
+moto=Mais que um bloco de notas!
+moto2=Conhecimento, Blog, Compartilhamento, Cooperação... tudo em Leanote
+moto3=Breve mas não simples
+fork github=Fork Leanote no Github
+
+# Home
+openSource=leanote.org
+forgetPassword = Esqueceu sua senha?
+or=ou
+try=Tente isso
+3th=Contas de terceiros
+usernameOrEmail=Nome de usuário ou e-mail
+password=Senha
+home=Página inicial
+desktopApp=Aplicativo
+aboutLeanote=Sobre Leanote
+suggestions=Sugestões
+yourSuggestions=Sugestões
+leanoteBlog=Blog
+knowledge=Conhecimento
+knowledgeInfo=Use Leanote como uma nota, gerencie seu conhecimento no Leanote.
+share=Compartilhamento
+shareInfo=Compartilhe seu conhecimento com amigos no Leanote.
+cooperation=Cooperação
+cooperationInfo=Coopere com amigos para aprimorar o conhecimento deles.
+blog=Blog
+blogInfo=Você pode publicar seu conhecimento e leanote no seu blog!
+suggestionsInfo=Ajude-nos a melhorar nosso serviço
+yourContact=Seu contato
+emailOrOthers=E-mail ou outra forma de contato
+captcha=Captcha
+reloadCaptcha=Recarregar Captcha
+captchaError=Captcha inválido
+inputCaptcha=Captcha é obrigatório
+noTag=Sem Tags
+
+hi=Hi
+welcomeUseLeanote=Bem-vindo!
+myNote=Minha nota
+curUser=E-mail
+
+# form
+submit=submeter
+Submit=Submeter
+register=Sign up
+login=Sign in
+Password=Senha
+password2=Confirmação de senha
+email=E-mail
+inputUsername=Nome de usuário (e-mail) é obrigatório
+inputEmail=E-mail é obrigatório
+wrongEmail=E-mail inválido
+wrongUsernameOrPassword=Nome de usuário ou senha inválida
+inputPassword=Senha é obrigatória
+inputLoginPasswordTips=Favor informar a senha
+wrongPassword=Senha inválida
+logining=Sign in
+loginSuccess=Login com sucesso
+ing=Processando
+use = Use
+hadAcount = Já possui uma conta?
+hasAcount = Não possui uma conta?
+signInWithThird=Entrar com outra conta
+
+# sign in
+registerSuccessAndRdirectToNote=Registro com sucesso, redirecionando...
+userHasBeenRegistered=%s já está registrado
+
+# find password
+passwordTips=O tamanho deve ser de pelo menos 6 caracteres
+findPassword=Recuperar senha
+findPasswordSendEmailOver=Nós já enviamos o link de recuperação de senha para o seu e-mail, por favor verifique o seu e-mail
+checkEmai=Verificar e-mail
+findPasswordTimeout=prazo
+reFindPassword=Recuperar senha novamente
+updatePassword=Alterar a senha
+updatePasswordSuccessRedirectToLogin=Senha alterada com sucesso e redirecionado para a página de login...
+inputPassword2=Favor informar sua senha novamente
+confirmPassword=Favor confirmar a seua senha
+notGoodPassword=Esta não é uma boa senha, o tamanho deve ser de pelo menos 6 caracteres
+
+# note
+myBlog=Blog
+history=Histórico
+save=Salvar
+editorTips=Dicas
+editorTipsInfo=<h4>1. Atalhos</h4>ctrl+shift+c Alternar código<h4>2. shift+enter Sair do bloco atual</h4> ex.: <img src="/images/outofcode.png" style="width: 90px"/> neste caso você pode usar shift+enter para sair do bloco atual.
+newNote=Nova nota
+newMarkdownNote=Nova nota em Markdown
+noNoteNewNoteTips=O bloco de notas está vazio porque não...
+canntNewNoteTips=Desculpe, não é possível uma nova nota aqui, favor escolher um caderno primeiro.
+new=Novo
+newMarkdown=Nova nota em markdown
+clickAddTag=Clique para incluir uma tag
+notebook=Bloco de notas
+note=Nota
+myNotebook=Meu bloco de notas
+addNotebook=Incluir bloco de notas
+search=Pesquisar
+clearSearch=Limpar pesquisa
+all=Recentes
+trash=Lixo
+delete=Excluir
+unTitled=Sem título
+defaultShare=Compartilhamento padrão
+leftHidden=Ocultar barra deslizante
+leftShow=Mostrar barra deslizante
+nav=Navegação da nota
+writingMode=Modo de escrita
+normalMode=Modo normal
+saving=Salvando
+saveSuccess=Salvo com sucesso
+SearchNote=Pequisar nota
+SearchNotebook=Pesquisar bloco de notas
+Choose File=Escolher arquivo
+Download All=Download de tudo
+Information=Informação
+
+Toggle Modify with Readonly=Alternar modificação somente leitura
+
+update=Alterar
+create=Criar
+
+demoRegister=<a href="/register">Registrar</a>
+
+close=Fechar
+cancel=Cancelar
+send=Enviar
+
+# tag
+tag=Tag
+myTag=Minha tag
+red=vermelho
+yellow=amarelo
+blue=azul
+green=verde
+
+# setting
+accountSetting=Conta
+logout=Logout
+basicInfo=Básico
+basicInfoSet=Configurações básicad do blog
+updateEmail=Alterar e-mail
+usernameSetting=Alterar nome de usuário
+chooseImage=Escolher imagem
+oldPassword=Senha anterior
+newPassword=Nova senha
+admin=Administrador
+
+# theme
+default=Padrõa
+simple=Simples
+
+# tinymce
+uploadImage=Enviar imagem
+
+# blog
+aboutMe=Sobre mim
+blogSet=Configurações do Blog
+
+# index
+discussion=Discussão
+download=Download
+howToInstallLeanote=Como instalar o leanote
+
+# 
+attachments = Anexos
+donate = Doação
+
+# contextmenu
+shareToFriends=Compartilhar com amigos
+publicAsBlog=Publicar como blog
+cancelPublic=Cancelar publicação
+move=Mover
+copy=Copiar
+rename=Renomear
+exportPdf=Exportar PDF
+addChildNotebook=Incluir bloco de notas filho
+deleteAllShared=Excluir usuário compartilhad
+deleteSharedNotebook=Excluir bloco de notas compartilhado
+copyToMyNotebook=Copiar para meu bloco de notas
+
+# note-dev
+emailInSending=Enviando para 
+checkEmail=Verificar e-mail
+setUsername=Configurar nome de usuário
+setUsernameTips=Seu e-mail atual é: <code>%s</code>. Você pode configurar um nome de usuário único. <br />O tamanho do nome de usuário deve ser de pelo menos 4 caracteres e não pode conter caracteres especiais.
+currentEmail=Seu e-mail atual é: <code>%s</code> 
+updateEmail=Alterar e-mail
+updateEmailTips=Você deve verificar o e-mail antes de alterar o e-mail. O e-mail verificado será sua nova conta.
+sendVerifiedEmail=Enviar e-mail de verificação
+verified=Verificado
+unVerified=Não verificado
+verifiedNow=Verificar agora
+resendVerifiedEmail=Reenviar e-mail de verificação
+
+# share
+defaulthhare=Padrão
+addShare=Adicionar amigo
+friendEmail=E-mail do amigo
+permission=Permissão
+readOnly=Somente leitura
+writable=Escrita
+inputFriendEmail=O e-mail do amigo é obrigatório
+clickToChangePermission=Clique para alterar a permissão
+sendInviteEmailToYourFriend=Enviar convite por e-mail para seu amigo
+copySuccess=Copiado com sucesso
+copyFailed=Falha ao copiar
+friendNotExits=Seu amigo não possui uma conta, link para o registro: %s
+emailBodyRequired=Corpo do e-mail body é obrigatório
+clickToCopy=Clique para copiar
+sendSuccess=sucesso
+inviteEmailBody=Olá, eu sou %s, %s é incrível, vamos lá!
+
+# history
+historiesNum=Nós gravamos pelo menos os <b>10</b> últimas históricos de cada nota
+noHistories=Sem histórico
+datetime=Data/hora
+restoreFromThisVersion=Restaurar a partir desta versão
+confirmBackup=Você tem certeza que deseja restaurar a partir desta versão? Nós faremos backup da nota atual.
+createAccount=Criar conta
+createAccountSuccess=Conta criada com sucesso
+createAccountFailed=Falha na criação da conta
+thirdCreateAcountTips=Você está usando conta de terceiros para login %(app)s, você pode criar uma %(app)s conta também. <br />Depois de criar %(app)s conta, você pode usar a conta e a conta de terceiros para fazer login %(app)s.
+
+# valid msg
+inputUsername=Informe o nome de usuário
+updateUsernameSuccess=Alteração do nome de usuário com sucesso
+usernameIsExisted=Nome de usuário existente
+noSpecialChars=Nome de usuário não pode conter caracteres especiais
+minLength=O tamanho mínimo é %s
+errorEmail=Favor informar o e-mail corretamente
+verifiedEmaiHasSent=O e-mail de verificação foi enviado, favor verificar o seu e-mail.
+emailSendFailed=Falha ao enviar o e-mail
+inputPassword=A senha é obrigatória
+inputNewPassword=A nova senha é obrigatória
+inputPassword2=Favor informar a nova senha novamene
+errorPassword=O tamanho da senha deve ser de pelo menos 6 caracteres e uma senha segura
+oldPasswordError=A senha antiga não confere
+confirmPassword=Senha não confere
+updatePasswordSuccess=Alteração de senha com sucesso
+errorDomain=O domínio personalizado é inválido, ex.: www.myblog.com
+domainExisted=O domínio personalizado já existe
+errorSubDomain=Favor informar um subdomínio válido, o tamanho deve ser de pelo menos 4 caracteres e não deve conter caracteres especiais
+subDomainExisted=O subdomínio já existe
+domainNotPointToLeanote=O domínio personalizado não pode ser d.leanote.com
+errorPerPageSize=Tamanho de página está errado
+errorSortField=Campo de ordenação está errado
+themeValidHasRoundInclude=ALERTA: Templates tem referência circular!
+
+# share
+tokenExpired=Token Expirado
+Share=Compartilhar
+hasSharedThisNote=compartilhou esta nota
+inputSharePwd=Favor informar a senha
+shareToGroup=Compartilhar para o grupo
+shareByPwd=Compartilhar pela senha
+groupName=Nome do grupo
+operation=Operação
+groupAndMemberManage=Gereciar grupos/membros
+shareToGroupTips=Se você compartilhar esta nota com o grupo, o membro pertencente ao grupo irá ter direito de acesso a esta nota
+shared=Compartilhado
+notShared=Não compartilhado
+shareLink=Link compartilhado
+sharePwd=Senha de acesso
+cancelShare=Cancelar
+getShareLinkAndPwd=Pegar link e senha
+
+# Common
+created=Criado
+updated=Alterado
+modify=Modificar
+Search=Pesquisar
+Save Success=Salvo com sucesso
+Please save note firstly!=Favor salvar a nota primeiro!
+Please sign in firstly!=Favor entrar primento!
+
+# error 
+notFound=Esta página não pode ser encontrada.

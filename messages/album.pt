@@ -1,0 +1,31 @@
+
+# album image
+Images=Imagens
+Upload=Enviar
+Image URL=Imagem URL
+Albums=Álbuns
+Default=Padrão
+File title search=Busca pelo título do arquivo
+Go to upload images=Ir para envio de imagens
+Rename=Renomear
+Add=Incluir
+Add Album=Incluir álbum
+Add Image=Incluir imagem
+Can't load this url=Não é possível carregar esta URL
+No Images=Sem imagens
+Click to upload images Or Drop images to here=Clique para fazer o envio de imagens or arraste imagens aqui
+
+Cannot delete default album=Não é possível excluir o álbum padrão
+Cannot rename default album=Não é possível renomear o álbum padrão
+This album has images, please delete it's images at first.=Este álbum tem imagens, favor excluir elas antes.
+
+Rename Album=Renomear Álbum
+Add Success!=Incluído com sucesso!
+Rename Success!=Renomeado com sucesso!
+Delete Success!=Excluído com sucesso!
+Are you sure to delete this image ?=Vocês tem certeza que deseja excluir esta imagem ?
+click to remove this image=clique para excluir esta imagem
+error=erro
+Error=Erro
+Prev=Anterior
+Next=Próxima
