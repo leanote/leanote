@@ -72,7 +72,7 @@ Support us, [donate us](http://leanote.org/#donate). And thanks [donators](http:
 * [Leanote iOS](https://github.com/leanote/leanote-ios), [Download From App Store](https://itunes.apple.com/en/app/leanote/id1022302858?mt=8)
 * [Leanote Android](https://github.com/leanote/leanote-android), development phase
 
-Yare are welcome to join us.
+You are welcome to join us.
 
 ## 9. Support & Join us
 
