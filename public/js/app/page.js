@@ -1017,6 +1017,7 @@ LeaAce = {
 			$pre.attr("contenteditable", false); // ? 避免tinymce编辑
 			var aceEditor = ace.edit(id);
 
+			aceEditor.container.style.lineHeight = 1.5;
 			aceEditor.setTheme("ace/theme/tomorrow");
 
 			var brush = me.getPreBrush($pre);
@@ -1029,6 +1030,7 @@ LeaAce = {
 			if (!b || b === 'false') {
 				b = 'javascript';
 			}
+			
 			aceEditor.session.setMode("ace/mode/" + b);
 			aceEditor.session.setOption("useWorker", false); // 不用语法检查
 			// retina
