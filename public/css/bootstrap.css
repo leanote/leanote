@@ -7141,3 +7141,6 @@ td.visible-print {
 #content .MathJax * {
     font-size: inherit;
 }
+.m-todo-item {
+  list-style: none;
+}
