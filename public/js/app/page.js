@@ -528,7 +528,8 @@ function initEditor() {
 		// content_css 不再需要
 		// content_css : [LEA.sPath + "/css/editor/editor.css"], // .concat(em.getWritingCss()),
 		skin : "custom",
-		language: LEA.locale, // 语言
+		// tinymce just support en & zh lang currently
+		language: LEA.locale != 'en' && LEA.locale != 'zh' ? 'en' : LEA.locale,
 		plugins : [
 				"autolink link leaui_image lists hr", "paste",
 				"searchreplace leanote_nav leanote_code tabfocus",
