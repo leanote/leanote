@@ -111,7 +111,7 @@ saving=Sauvegarde
 saveSuccess=Sauvegarde réussie
 SearchNote=Chercher une note
 SearchNotebook=Chercher un bloc-note
-Toggle Modify with Readonly=Toggle Modify with Readonly
+Toggle Modify with Readonly=Passer d'écriture à lecture seule
 
 update=Mettre à jour
 create=Créer
@@ -245,30 +245,30 @@ themeValidHasRoundInclude=WARNING: Les modèles ont des références circulaires
 
 # share
 tokenExpired=Token Expired
-Share=Share
-hasSharedThisNote=has shared this note
-inputSharePwd=Please input password
-shareToGroup=Share to group
-shareByPwd=Share by password
-groupName=Group Name
-operation=Operation
-groupAndMemberManage=Manage group/member
-shareToGroupTips=If you share your note to group, the member belongs to group will have the right to access the note
-shared=Shared
-notShared=Not shared
-shareLink=Share link
-sharePwd=Access password
-cancelShare=Cancel
-getShareLinkAndPwd=Get link and password
+Share=Partager
+hasSharedThisNote=a partagé cette note
+inputSharePwd=Veuillez entrer le mot de passe
+shareToGroup=Partager avec le groupe
+shareByPwd=Partager via un mot de passe
+groupName=Nom du groupe
+operation=Opération
+groupAndMemberManage=Gérer le groupe/les membres
+shareToGroupTips=Si vous partagez cette note avec le groupe, les membres auront le droit d'y accéder.
+shared=Partagé
+notShared=Non partagé
+shareLink=Partager le lien
+sharePwd=Accès au mot de passe
+cancelShare=Annuler 
+getShareLinkAndPwd=Obtenir le lien et le mot de passe
 
 # Common
 created=Créé
 updated=Mis à jour
 modify=Modifier
-Search=Search
-Save Success=Save Success
-Please save note firstly!=Please save note firstly!
-Please sign in firstly!=Please sign in firstly!
+Search=Chercher
+Save Success=Sauvegardé avec succès
+Please save note firstly!=Veuillez d'abord enregistrer votre note!
+Please sign in firstly!=Veuillez d'abord vous enregistrer!
 
 # error 
 notFound=Page introuvable.
