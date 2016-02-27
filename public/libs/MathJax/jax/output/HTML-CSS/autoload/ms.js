@@ -1,7 +1,7 @@
 /*
  *  /MathJax/jax/output/HTML-CSS/autoload/ms.js
  *
- *  Copyright (c) 2009-2014 The MathJax Consortium
+ *  Copyright (c) 2009-2015 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,4 +16,4 @@
  *  limitations under the License.
  */
 
-MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function(){var c="2.4.0";var a=MathJax.ElementJax.mml,b=MathJax.OutputJax["HTML-CSS"];a.ms.Augment({toHTML:function(e){e=this.HTMLhandleSize(this.HTMLcreateSpan(e));var d=this.getValues("lquote","rquote");var f=this.data.join("");this.HTMLhandleVariant(e,this.HTMLgetVariant(),d.lquote+f+d.rquote);this.HTMLhandleSpace(e);this.HTMLhandleColor(e);this.HTMLhandleDir(e);return e}});a.ms.prototype.defaults.mathvariant="monospace";MathJax.Hub.Startup.signal.Post("HTML-CSS ms Ready");MathJax.Ajax.loadComplete(b.autoloadDir+"/ms.js")});
+MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function(){var c="2.6.0";var a=MathJax.ElementJax.mml,b=MathJax.OutputJax["HTML-CSS"];a.ms.Augment({toHTML:function(e){e=this.HTMLhandleSize(this.HTMLcreateSpan(e));var d=this.getValues("lquote","rquote","mathvariant");if(!this.hasValue("lquote")||d.lquote==='"'){d.lquote="\u201C"}if(!this.hasValue("rquote")||d.rquote==='"'){d.rquote="\u201D"}if(d.lquote==="\u201C"&&d.mathvariant==="monospace"){d.lquote='"'}if(d.rquote==="\u201D"&&d.mathvariant==="monospace"){d.rquote='"'}var f=d.lquote+this.data.join("")+d.rquote;this.HTMLhandleVariant(e,this.HTMLgetVariant(),f);this.HTMLhandleSpace(e);this.HTMLhandleColor(e);this.HTMLhandleDir(e);return e}});MathJax.Hub.Startup.signal.Post("HTML-CSS ms Ready");MathJax.Ajax.loadComplete(b.autoloadDir+"/ms.js")});

@@ -1,7 +1,7 @@
 /*
  *  /MathJax/extensions/TeX/autobold.js
  *
- *  Copyright (c) 2009-2014 The MathJax Consortium
+ *  Copyright (c) 2009-2015 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,4 +16,4 @@
  *  limitations under the License.
  */
 
-MathJax.Extension["TeX/autobold"]={version:"2.4.0"};MathJax.Hub.Register.StartupHook("TeX Jax Ready",function(){var a=MathJax.InputJax.TeX;a.prefilterHooks.Add(function(d){var c=d.script.parentNode.insertBefore(document.createElement("span"),d.script);c.visibility="hidden";c.style.fontFamily="Times, serif";c.appendChild(document.createTextNode("ABCXYZabcxyz"));var b=c.offsetWidth;c.style.fontWeight="bold";if(b&&c.offsetWidth===b){d.math="\\boldsymbol{"+d.math+"}"}c.parentNode.removeChild(c)});MathJax.Hub.Startup.signal.Post("TeX autobold Ready")});MathJax.Ajax.loadComplete("[MathJax]/extensions/TeX/autobold.js");
+MathJax.Extension["TeX/autobold"]={version:"2.6.0"};MathJax.Hub.Register.StartupHook("TeX Jax Ready",function(){var a=MathJax.InputJax.TeX;a.prefilterHooks.Add(function(d){var c=d.script.parentNode.insertBefore(document.createElement("span"),d.script);c.visibility="hidden";c.style.fontFamily="Times, serif";c.appendChild(document.createTextNode("ABCXYZabcxyz"));var b=c.offsetWidth;c.style.fontWeight="bold";if(b&&c.offsetWidth===b){d.math="\\boldsymbol{"+d.math+"}"}c.parentNode.removeChild(c)});MathJax.Hub.Startup.signal.Post("TeX autobold Ready")});MathJax.Ajax.loadComplete("[MathJax]/extensions/TeX/autobold.js");
