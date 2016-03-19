@@ -15,7 +15,7 @@ var base = leanoteBase + '/public'; // public base
 var noteDev = leanoteBase + '/app/views/note/note-dev.html';
 var noteProBase = leanoteBase + '/app/views/note';
 
-var confFile = './conf/app.conf';
+var messagesPath = leanoteBase + 'messages';
 
 // 合并Js, 这些js都是不怎么修改, 且是依赖
 // 840kb, 非常耗时!!
@@ -207,6 +207,7 @@ gulp.task('i18n', function() {
     ls(leanoteBase + '/app/views');
 
     console.log('parsed');
+    var langs = {}; // zh-cn: 1
 
     // msg.zh
     function getAllMsgs(fname) {
@@ -229,6 +230,18 @@ gulp.task('i18n', function() {
             }
         }
         return msg;
+    }
+
+    // 得到所有的语言的后缀
+    // 返回{en-us: 1, }
+    function getAllLangs() {
+        var langs = {};
+        var files = fs.readdirSync(messagesPath);  
+        for(fn in files) {
+            var fname = files[fn]; 
+            langs[fname.split('.')[1]] = 1;
+        }
+        return langs;
     }
 
     // msg.zh, msg.js
@@ -267,21 +280,20 @@ gulp.task('i18n', function() {
         fs.writeFile(base + '/js/i18n/' + toFilename, str);
     }
 
-    // get all langs
-    /**
-     * i18n.languages=en-us,zh-cn,zh-hk,pt-pt,fr-fr
-     */
-    var langs = ['zh-cn', 'zh-hk', 'en-us', 'fr-fr', 'pt-pt'];
-    var config = fs.readFileSync(confFile, 'utf-8');
-    var langMatch = confFile.match(/i18n.languages=(.*)/);
-    if (langMatch) {
-        langs = langMatch[1].replace(/ /g, '').split(',');
+    function genTinymceLang(lang) {
+        var msgs = getAllMsgs(leanoteBase + 'messages/tinymce_editor.' + lang);
+        var str = 'tinymce.addI18n("' + lang + '",' + JSON.stringify(msgs) + ');';
+        fs.writeFile(base + '/tinymce/langs/' + lang + '.js', str);
     }
-    for (var i = 0; i < langs.length; ++i) {
-        var lang = langs[i];
+
+    var langs = getAllLangs();
+    for (var lang in langs) {
         genI18nJsFile('blog.' + lang, [], keys);
         genI18nJsFile('msg.' + lang, ['member.' + lang, 'markdown.' + lang, 'album.' + lang], keys);
+
+        genTinymceLang(lang);
     }
+    
 });
 
 // 合并album需要的js
