@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/leanote/leanote/app/info"
+	"github.com/leanote/leanote/app/lea/i18n"
 	"github.com/revel/revel"
 	"gopkg.in/mgo.v2/bson"
 	//	. "github.com/leanote/leanote/app/lea"
@@ -181,13 +182,17 @@ func (c BaseController) E404() revel.Result {
 // 设置本地
 func (c BaseController) SetLocale() string {
 	locale := string(c.Request.Locale) // zh-CN
+	// lang := locale
+	// if strings.Contains(locale, "-") {
+	// 	pos := strings.Index(locale, "-")
+	// 	lang = locale[0:pos]
+	// }
+	// if lang != "zh" && lang != "en" {
+	// 	lang = "en"
+	// }
 	lang := locale
-	if strings.Contains(locale, "-") {
-		pos := strings.Index(locale, "-")
-		lang = locale[0:pos]
-	}
-	if lang != "zh" && lang != "en" && lang != "fr" && lang != "pt" {
-		lang = "en"
+	if !i18n.HasLang(locale) {
+		lang = i18n.GetDefaultLang()
 	}
 	c.RenderArgs["locale"] = lang
 	c.RenderArgs["siteUrl"] = configService.GetSiteUrl()

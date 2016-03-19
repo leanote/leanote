@@ -1,4 +1,5 @@
-tinymce.addI18n('en',{
+// TODO
+tinymce.addI18n('pt-pt',{
 "Cut": "Cut",
 "Header 2": "Header 2",
 "Your browser doesn't support direct access to the clipboard. Please use the Ctrl+X\/C\/V keyboard shortcuts instead.": "Your browser doesn't support direct access to the clipboard. Please use the Ctrl+X\/C\/V keyboard shortcuts instead.",

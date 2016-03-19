@@ -1,0 +1,31 @@
+
+# album image
+Images=圖片
+Upload=上傳
+Image URL=圖片地址
+Albums=相冊
+Default=默認
+File title search=通過標題搜索
+Go to upload images=去上傳圖片
+Rename=重命名
+Add=添加
+Add Album=添加相冊
+Add Image=添加圖片
+Can't load this url=不能載入該圖片
+No Images=無圖片
+Click to upload images Or Drop images to here=點擊上傳圖片或將圖片拖至此
+
+Cannot delete default album=不能刪除默認相冊
+Cannot rename default album=不能重命名默認相冊
+This album has images, please delete it's images at first.=相冊內有圖片, 不能刪除
+
+Rename Album=重命名
+Add Success!=添加成功!
+Rename Success!=重命名成功!
+Delete Success!=刪除成功
+Are you sure to delete this image ?=確定刪除該圖片?
+click to remove this image=刪除圖片
+error=錯誤
+Error=錯誤
+Prev=上壹頁
+Next=下壹頁

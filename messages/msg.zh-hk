@@ -1,0 +1,317 @@
+# leanote
+app=Leanote
+moto=不只是筆記!
+moto2=知識管理, 博客, 分享, 協作... 盡在Leanote
+moto3=簡約而不簡單
+fork github=Github 源碼
+
+# 首頁
+openSource=開源
+Desktop App=桌面客戶端
+forgetPassword = 忘記密碼?
+or=或
+try=體驗壹下
+3th=第三方登錄
+usernameOrEmail=用戶名或Email
+password=密碼
+home=主頁
+desktopApp=客戶端
+aboutLeanote=關於Leanote
+suggestions=建議
+yourSuggestions=幫助完善Leanote
+leanoteBlog=官方博客
+knowledge=知識
+knowledgeInfo=leanote是壹個筆記, 妳可以用它來管理自己的知識.
+share=分享
+shareInfo=妳也可以將知識分享給妳的好友.
+cooperation=協作
+cooperationInfo=分享給好友的同時也可以讓妳的好友和妳壹起來完善它.
+blog=博客
+blogInfo=將筆記公開, 讓知識傳播的更遠!
+suggestionsInfo=幫助我們完善leanote
+yourContact=您的聯系方式
+emailOrOthers=Email或其它聯系方式
+captcha=驗證碼
+reloadCaptcha=刷新驗證碼
+captchaError=驗證碼錯誤
+inputCaptcha=請輸入驗證碼
+noTag=無標簽
+
+hi=Hi
+welcomeUseLeanote=Welcome!
+myNote=My note
+curUser=Email
+
+# form
+submit=提交
+Submit=提交
+register=註冊
+login=登錄
+Password=密碼
+password2=請確認密碼
+email=Email
+inputUsername=請輸入用戶名或Email
+inputEmail=請輸入Email
+wrongEmail=Email錯誤
+wrongUsernameOrPassword=用戶名或密碼錯誤
+inputPassword=請輸入密碼
+inputLoginPasswordTips=請輸入登錄密碼
+wrongPassword=密碼錯誤
+logining=登錄
+loginSuccess=登錄成功
+
+hi=Hi
+welcomeUseLeanote=歡迎使用leanote
+myNote=我的筆記
+curUser=當前登錄帳戶
+
+# form
+submit=提交
+login=登錄
+register=註冊
+password2=確認密碼
+email=Email
+inputUsername=請輸入用戶名或Email
+inputEmail=請輸入Email
+wrongEmail=Email格式有誤
+wrongUsernameOrPassword=用戶名或密碼有誤
+inputPassword=請輸入密碼
+wrongPassword=密碼有誤
+logining=正在登錄
+loginSuccess=登錄成功, 正在跳轉
+ing=正在處理
+use = 使用
+hadAcount = 已有帳戶?
+hasAcount = 還無帳戶?
+signInWithThird=使用第三方帳號登錄
+
+# 註冊
+registerSuccessAndRdirectToNote=註冊成功, 正在跳轉...
+userHasBeenRegistered=%s已被註冊
+
+# 找回密碼
+passwordTips=密碼至少6位
+findPassword=找回密碼
+findPasswordSendEmailOver=已經將修改密碼的鏈接發送到您的郵箱, 請查收郵件.
+checkEmai=查收郵箱
+updatePassword=修改密碼
+findPasswordTimeout=鏈接已過期
+reFindPassword=重新找回密碼
+updatePassword=修改密碼
+updatePasswordSuccessRedirectToLogin=修改成功, 正在跳轉到登錄頁
+inputPassword2=請再次輸入密碼
+confirmPassword=兩次密碼輸入不壹致
+notGoodPassword=密碼至少6位
+
+# 筆記主頁
+myBlog=我的博客
+history=歷史記錄
+save=保存
+editorTips=幫助
+editorTipsInfo=<h4>1. 快捷鍵</h4>ctrl+shift+c 代碼塊切換 <h4>2. shift+enter 跳出當前區域</h4>比如在代碼塊中<img src="/images/outofcode.png" style="width: 90px"/>按shift+enter可跳出當前代碼塊.
+newNote=新建普通筆記
+newMarkdownNote=新建Markdown筆記
+noNoteNewNoteTips=該筆記本下空空如也...何不
+canntNewNoteTips=Sorry, 這裏不能添加筆記的. 妳需要先選擇壹個筆記本.
+new=新建
+newMarkdown=新建Markdown筆記
+clickAddTag=點擊添加標簽
+notebook=筆記本
+note=筆記
+myNotebook=我的筆記本
+addNotebook=添加筆記本
+search=搜索
+clearSearch=清除搜索
+all=最新
+trash=廢紙簍
+delete=刪除
+unTitled=無標題
+defaultShare=默認分享
+leftHidden=隱藏左側
+leftShow=展開左側
+nav=文檔導航
+writingMode=寫作模式
+normalMode=普通模式
+saving=正在保存
+saveSuccess=保存成功
+SearchNote=搜索筆記
+SearchNotebook=搜索筆記本
+Choose File=選擇文件
+Download All=下載全部
+Information=信息
+Are you sure to delete it ?=確認刪除?
+Insert link into content=將附件鏈接插入到內容中
+Download=下載
+Delete=刪除
+Drop images to here=將圖片拖動至此
+Toggle Modify with Readonly=編輯與只讀切換
+
+update=更新
+create=創建
+Update Time=更新時間
+Create Time=創建時間
+Post Url=博文鏈接
+
+demoRegister=<a href="/register">立即註冊</a>
+
+close=關閉
+cancel=取消
+send=發送
+
+# 標簽
+tag=標簽
+myTag=我的標簽
+red=紅色
+yellow=黃色
+blue=藍色
+green=綠色
+
+# 設置
+accountSetting=帳戶設置
+logout=退出
+basicInfo=基本信息
+basicInfoSet=博客基本設置
+updateEmail=修改Email
+usernameSetting=用戶名設置
+chooseImage=選擇圖片
+oldPassword=舊密碼
+newPassword=新密碼
+admin=後臺管理
+
+default=默認
+simple=簡約
+
+# tinymce
+uploadImage=上傳圖片
+
+# blog
+aboutMe=關於我
+blogSet=博客設置
+
+# error 
+notFound=該頁面不存在
+
+# index
+discussion=社區討論
+download=下載
+howToInstallLeanote=leanote安裝步驟
+
+# 
+attachments = 附件
+donate = 捐贈
+
+# contextmenu
+shareToFriends=分享給好友
+publicAsBlog=公開為博客
+cancelPublic=取消公開為博客
+move=移動
+copy=復制
+rename=重命名
+exportPdf=導出PDF
+addChildNotebook=添加子筆記本
+deleteAllShared=刪除所有共享
+deleteSharedNotebook=刪除共享筆記本
+copyToMyNotebook=復制到我的筆記本
+
+####note-dev
+emailInSending=正在發送郵件到
+checkEmail=查看郵件
+setUsername=用戶名設置
+setUsernameTips=妳的郵箱是 <code>%s</code>, 可以再設置壹個唯壹的用戶名.<br />用戶名至少4位, 不可含特殊字符.
+currentEmail=當前郵箱為: <code>%s</code> 
+updateEmail=修改郵箱
+updateEmailTips=郵箱修改後, 驗證之後才有效, 驗證之後新的郵箱地址將會作為登錄帳號使用.
+sendVerifiedEmail=發送驗證郵箱
+sendSuccess=發送成功
+sendFailed=發送失敗
+verified=已驗證
+unVerified=未驗證
+verifiedNow=現在去驗證
+resendVerifiedEmail=重新發送驗證郵件
+# 分享
+defaultShare=默認分享
+addShare=添加分享
+friendEmail=好友郵箱
+permission=權限
+readOnly=只讀
+writable=可寫
+inputFriendEmail=請輸入好友郵箱
+clickToChangePermission=點擊改變權限
+sendInviteEmailToYourFriend=發送邀請email給Ta
+copySuccess=復制成功
+copyFailed=對不起, 復制失敗, 請自行復制
+friendNotExits=該用戶還沒有註冊%s, 復制邀請鏈接發送給Ta, 邀請鏈接: %s
+emailBodyRequired=郵件內容不能為空
+clickToCopy=點擊復制
+sendSuccess=發送成功
+inviteEmailBody=Hi, 妳好, 我是%s, %s非常好用, 快來註冊吧!
+<span></span> notes selected=當前選中了 <span></span> 篇筆記
+
+# 歷史記錄
+historiesNum=leanote會保存筆記的最近<b>10</b>份歷史記錄
+noHistories=無歷史記錄
+datetime=日期
+restoreFromThisVersion=從該版本還原
+confirmBackup=確定要從該版還原? 還原前leanote會備份當前版本到歷史記錄中.
+createAccount=創建帳號
+createAccountSuccess=帳號創建成功
+createAccountFailed=帳號創建失敗
+thirdCreateAcountTips=您現在使用的是第三方帳號登錄%(app)s, 您也可以註冊%(app)s帳號登錄, 趕緊註冊壹個吧. <br />註冊成功後仍可以使用第三方帳號登錄leanote並管理您現有的筆記.
+
+## valid msg
+cannotUpdateDemo=抱歉, Demo用戶不允許修改
+inputUsername=請輸入用戶名
+updateUsernameSuccess=用戶名修改成功
+usernameIsExisted=用戶名已存在
+noSpecialChars=不能包含特殊字符
+minLength=長度至少為%s
+errorEmail=請輸入正確的email
+verifiedEmaiHasSent=驗證郵件已發送, 請及時查閱郵件並驗證.
+emailSendFailed=郵件發送失敗
+inputPassword=請輸入密碼
+inputNewPassword=請輸入新密碼
+inputPassword2=請輸入確認密碼
+errorPassword=請輸入長度不少於6位的密碼, 盡量復雜
+oldPasswordError=舊密碼錯誤
+confirmPassword=兩次密碼輸入不正確
+updatePasswordSuccess=修改密碼成功
+errorDomain=請輸入正確的域名, 如www.myblog.com
+domainExisted=域名已存在
+errorSubDomain=請輸入正確的博客子域名, 長度至少為4, 不能包含特殊字符
+subDomainExisted=博客子域名已存在
+domainNotPointToLeanote=該域名還未指向 d.leanote.com, 請稍後再試
+errorPerPageSize=每頁記錄數至少為1
+errorSortField=排序類型錯誤
+themeValidHasRoundInclude=警告: 模板存在循環引用問題!
+
+#share
+tokenExpired = 會話已過期
+Share=分享
+hasSharedThisNote=分享了筆記
+inputSharePwd=您需要輸入分享密碼才能查看
+shareToGroup=分享給項目組
+shareByPwd=通過密碼分享
+groupName=分組名
+operation=操作
+groupAndMemberManage=項目組/成員管理
+shareToGroupTips=將筆記/筆記本分享給項目組後, 該組下的用戶便擁有了該筆記/筆記本
+shared=已分享
+notShared=未分享
+shareLink=分享鏈接
+sharePwd=查看密碼
+cancelShare=取消分享
+getShareLinkAndPwd=生成該筆記的分享鏈接和密碼
+
+#############
+# 通用
+#############
+created=創建
+updated=更新
+modify=修改
+Search=搜索
+Save Success=保存成功
+Please save note firstly!=請先保存筆記!
+Please sign in firstly!=妳還沒有登錄, 請先登錄!
+
+# 必須要加這個, 奇怪
+[CN]

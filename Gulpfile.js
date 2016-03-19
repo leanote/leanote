@@ -268,15 +268,17 @@ gulp.task('i18n', function() {
     // 必须要的
     // keys.push();
 
-    genI18nJsFile('blog.zh', [], keys);
-    genI18nJsFile('blog.en', [], keys);
-    genI18nJsFile('blog.fr', [], keys);
-    genI18nJsFile('blog.pt', [], keys);
+    genI18nJsFile('blog.zh-cn', [], keys);
+    genI18nJsFile('blog.zh-hk', [], keys);
+    genI18nJsFile('blog.en-us', [], keys);
+    genI18nJsFile('blog.fr-fr', [], keys);
+    genI18nJsFile('blog.pt-pt', [], keys);
 
-    genI18nJsFile('msg.fr', ['member.fr', 'markdown.fr', 'album.fr'], keys);
-    genI18nJsFile('msg.zh', ['member.zh', 'markdown.zh', 'album.zh'], keys);
-    genI18nJsFile('msg.en', ['member.en', 'markdown.en', 'album.en'], keys);
-    genI18nJsFile('msg.pt', ['member.pt', 'markdown.pt', 'album.pt'], keys);
+    genI18nJsFile('msg.fr-fr', ['member.fr-fr', 'markdown.fr-fr', 'album.fr-fr'], keys);
+    genI18nJsFile('msg.zh-cn', ['member.zh-cn', 'markdown.zh-cn', 'album.zh-cn'], keys);
+    genI18nJsFile('msg.zh-hk', ['member.zh-hk', 'markdown.zh-hk', 'album.zh-hk'], keys);
+    genI18nJsFile('msg.en-us', ['member.en-us', 'markdown.en-us', 'album.en-us'], keys);
+    genI18nJsFile('msg.pt-pt', ['member.pt-pt', 'markdown.pt-pt', 'album.pt-pt'], keys);
 });
 
 // 合并album需要的js
