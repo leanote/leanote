@@ -14,7 +14,7 @@ const (
 	CurrentLocaleRenderArg = "currentLocale" // The key for the current locale render arg value
 
 	messageFilesDirectory = "messages"
-	messageFilePattern    = `^\w+\.[a-zA-Z]{2}\-[a-zA-Z]{2}$`
+	messageFilePattern    = `^\w+\.conf$`
 	unknownValueFormat    = "??? %s ???"
 	defaultLanguageOption = "i18n.default_language"
 	localeCookieConfigKey = "i18n.cookie"
@@ -107,13 +107,28 @@ func parseLocale(locale string) (language, region string) {
 func loadMessages(path string) {
 	messages = make(map[string]*config.Config)
 
-	if error := filepath.Walk(path, loadMessageFile); error != nil && !os.IsNotExist(error) {
+	if error := filepath.Walk(path, loadEachMessageLang); error != nil && !os.IsNotExist(error) {
 		// ERROR.Println("Error reading messages files:", error)
 	}
 }
 
+// 加载每一个文件夹
+func loadEachMessageLang(parentPath string, parentInfo os.FileInfo, osError error) (err error) {
+	if !parentInfo.IsDir() {
+		return nil
+	}
+
+	if err := filepath.Walk(parentPath, func(path string, info os.FileInfo, osError error) error {
+		return loadMessageFile(parentInfo.Name(), path, info, osError)
+
+	}); err != nil && !os.IsNotExist(err) {
+		// ERROR.Println("Error reading messages files:", error)
+	}
+	return err
+}
+
 // Load a single message file
-func loadMessageFile(path string, info os.FileInfo, osError error) error {
+func loadMessageFile(locale string, path string, info os.FileInfo, osError error) error {
 	if osError != nil {
 		return osError
 	}
@@ -125,7 +140,7 @@ func loadMessageFile(path string, info os.FileInfo, osError error) error {
 		if config, error := parseMessagesFile(path); error != nil {
 			return error
 		} else {
-			locale := parseLocaleFromFileName(info.Name())
+			// locale := parseLocaleFromFileName(info.Name())
 			// revel.TRACE.Print(locale + "----locale")
 
 			// If we have already parsed a message file for this locale, merge both
