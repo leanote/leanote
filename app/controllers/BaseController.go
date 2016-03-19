@@ -20,6 +20,11 @@ type BaseController struct {
 	*revel.Controller
 }
 
+// 覆盖revel.Message
+func (c *BaseController) Message(message string, args ...interface{}) (value string) {
+	return i18n.Message(c.Request.Locale, message, args...)
+}
+
 func (c BaseController) GetUserId() string {
 	if userId, ok := c.Session["UserId"]; ok {
 		return userId
