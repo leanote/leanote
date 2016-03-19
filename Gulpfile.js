@@ -239,19 +239,18 @@ gulp.task('i18n', function() {
         var files = fs.readdirSync(messagesPath);  
         for(fn in files) {
             var fname = files[fn]; 
-            langs[fname.split('.')[1]] = 1;
+            if (fname.indexOf('-') > 0) {
+                langs[fname] = 1;
+            }
         }
         return langs;
     }
 
     // msg.zh, msg.js
-    function genI18nJsFile(fromFilename, otherNames, keys) {
+    function genI18nJsFile(targetFilename, lang, fromFilenames, keys) {
         var msgs = {};
-        otherNames.unshift(fromFilename);
-        // console.log(fromFilename);
-        // console.log(otherNames);
-        otherNames.forEach(function (name) {
-            var tmpMsgs = getAllMsgs(leanoteBase + '/messages/' + name);
+        fromFilenames.forEach(function (name) {
+            var tmpMsgs = getAllMsgs(leanoteBase + '/messages/' + lang + '/' + name + '.conf');
             for (var i in tmpMsgs) {
                 msgs[i] = tmpMsgs[i];
             }
@@ -276,20 +275,20 @@ gulp.task('i18n', function() {
             '}';
 
         // 写入到文件中
-        var toFilename = fromFilename + '.js';
+        var toFilename = targetFilename + '.' + lang + '.js';
         fs.writeFile(base + '/js/i18n/' + toFilename, str);
     }
 
     function genTinymceLang(lang) {
-        var msgs = getAllMsgs(leanoteBase + 'messages/tinymce_editor.' + lang);
+        var msgs = getAllMsgs(leanoteBase + 'messages/' + lang + '/tinymce_editor.conf');
         var str = 'tinymce.addI18n("' + lang + '",' + JSON.stringify(msgs) + ');';
         fs.writeFile(base + '/tinymce/langs/' + lang + '.js', str);
     }
 
     var langs = getAllLangs();
     for (var lang in langs) {
-        genI18nJsFile('blog.' + lang, [], keys);
-        genI18nJsFile('msg.' + lang, ['member.' + lang, 'markdown.' + lang, 'album.' + lang], keys);
+        genI18nJsFile('blog', lang, ['blog'], keys);
+        genI18nJsFile('msg', lang, ['msg', 'member', 'markdown', 'album'], keys);
 
         genTinymceLang(lang);
     }
