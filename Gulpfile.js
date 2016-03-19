@@ -15,6 +15,8 @@ var base = leanoteBase + '/public'; // public base
 var noteDev = leanoteBase + '/app/views/note/note-dev.html';
 var noteProBase = leanoteBase + '/app/views/note';
 
+var confFile = './conf/app.conf';
+
 // 合并Js, 这些js都是不怎么修改, 且是依赖
 // 840kb, 非常耗时!!
 gulp.task('concatDepJs', function() {
@@ -265,20 +267,21 @@ gulp.task('i18n', function() {
         fs.writeFile(base + '/js/i18n/' + toFilename, str);
     }
 
-    // 必须要的
-    // keys.push();
-
-    genI18nJsFile('blog.zh-cn', [], keys);
-    genI18nJsFile('blog.zh-hk', [], keys);
-    genI18nJsFile('blog.en-us', [], keys);
-    genI18nJsFile('blog.fr-fr', [], keys);
-    genI18nJsFile('blog.pt-pt', [], keys);
-
-    genI18nJsFile('msg.fr-fr', ['member.fr-fr', 'markdown.fr-fr', 'album.fr-fr'], keys);
-    genI18nJsFile('msg.zh-cn', ['member.zh-cn', 'markdown.zh-cn', 'album.zh-cn'], keys);
-    genI18nJsFile('msg.zh-hk', ['member.zh-hk', 'markdown.zh-hk', 'album.zh-hk'], keys);
-    genI18nJsFile('msg.en-us', ['member.en-us', 'markdown.en-us', 'album.en-us'], keys);
-    genI18nJsFile('msg.pt-pt', ['member.pt-pt', 'markdown.pt-pt', 'album.pt-pt'], keys);
+    // get all langs
+    /**
+     * i18n.languages=en-us,zh-cn,zh-hk,pt-pt,fr-fr
+     */
+    var langs = ['zh-cn', 'zh-hk', 'en-us', 'fr-fr', 'pt-pt'];
+    var config = fs.readFileSync(confFile, 'utf-8');
+    var langMatch = confFile.match(/i18n.languages=(.*)/);
+    if (langMatch) {
+        langs = langMatch[1].replace(/ /g, '').split(',');
+    }
+    for (var i = 0; i < langs.length; ++i) {
+        var lang = langs[i];
+        genI18nJsFile('blog.' + lang, [], keys);
+        genI18nJsFile('msg.' + lang, ['member.' + lang, 'markdown.' + lang, 'album.' + lang], keys);
+    }
 });
 
 // 合并album需要的js
