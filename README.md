@@ -79,7 +79,7 @@ You are welcome to join us.
 * Email: leanote@leanote.com
 * [Leanote BBS](http://bbs.leanote.com)
 * [Leanote Google Group](https://groups.google.com/forum/#!forum/leanote)
-* QQ Group: 256076853, 158716820
+* QQ Group: 326073529, 256076853, 158716820
 
 -----------------------------------------------------------------------
 
@@ -160,6 +160,6 @@ Leanote还有很多问题, 如果你喜欢它, 欢迎加入我们一起完善Lea
 ## 联系&加入我们
 * Email: leanote@leanote.com
 * [Leanote 社区](http://bbs.leanote.com)
-* QQ群: 256076853, 158716820(已满)
+* QQ群: 326073529, 256076853, 158716820
 * [Leanote Google Group](https://groups.google.com/forum/#!forum/leanote)
 
