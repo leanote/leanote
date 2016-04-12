@@ -614,7 +614,7 @@ listStr=addAnchors(listStr);listStr=listStr.replace(/\n{2,}(?=\\x03)/,"\n");list
 		// 加载mathJax
 		if(mdText.indexOf('$') !== -1) {
 			// loadJs("http://leanote.com/public/libs/MathJax/MathJax.js?config=TeX-AMS_HTML", function() {
-			loadJs("http://cdn.bootcss.com/mathjax/2.5.3/MathJax.js?config=TeX-AMS_HTML", function() {
+			loadJs("https://cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS_HTML", function() {
 				if(!m) {
 					var m = initMathJax();
 				}
