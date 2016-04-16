@@ -455,6 +455,11 @@ func (this *NoteService) UpdateNote(updatedUserId, noteId string, needUpdate bso
 			if !note.IsBlog {
 				needUpdate["PublicTime"] = needUpdate["UpdatedTime"]
 			}
+
+			// 重新计算tags
+			go (func() {
+				blogService.ReCountBlogTags(userId)
+			})()
 		}
 	}
 
