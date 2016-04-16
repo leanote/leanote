@@ -163,6 +163,8 @@ textarea#wmd-input {
   font-family:  @aceFontFamily;
 }
 
+/*
+
 // markdown editor ace
 @mdAceTextColor: #2C3E50; // #04294E; // #384654;
 @mdAceHeadingColor: #000; // 1a2026
@@ -295,8 +297,152 @@ textarea#wmd-input {
     background-color: rgb(101, 189, 119, 0.9);
   }
 }
+*/
 
 // markdown todo list
 .m-todo-item {
     list-style: none;
+}
+
+
+// markdown editor ace
+@mdAceTextColor: #333333; // #04294E; // #384654;
+@mdAceHeadingColor: #1d3e81; // 1a2026
+@mdAceBlockquoteColor: #003873;
+@mdAceCursorColor: #243342;
+
+@mdAceTextColor: #000;
+@mdAceTagColor: #1d3e81; // rgba(87, 108, 130, 0.6);
+
+textarea#wmd-input {
+  color: #000 !important;
+}
+
+#wmd-input {
+  .ace_cjk {
+    color: inherit;
+  }
+  .ace_searchbtn_close {
+      margin: 0px;
+  }
+  .ace_content {
+    padding-top: 5px;
+  }
+  &.ace_editor {
+    color: @mdAceTextColor;
+  }
+  &.ace-tm {
+    background-color: #ffffff;
+  }
+  &.ace-tm .ace_text-input {
+    box-sizing: initial;
+  }
+  &.ace-tm .ace_marker-layer .ace_active-line {
+    background-color: rgba(89, 128, 166, 0.05);
+  }
+  &.ace-tm .ace_cursor {
+    color: @mdAceCursorColor;
+  }
+  // 左侧的线
+  &.ace-tm .ace_print-margin {
+    background: none;
+    // background-color: rgba(89, 128, 166, 0.05);
+  }
+  &.ace-tm .ace_markup.ace_heading {
+    color: @mdAceTextColor;
+    font-weight: bold;
+    &.ace_1,&.ace_2,&.ace_3,&.ace_4,&.ace_5 {
+      color: @mdAceTagColor;
+    }
+  }
+  &.ace-tm .ace_markup.ace_list {
+    color: @mdAceTextColor;
+  }
+  &.ace-tm .ace_constant.ace_language {
+    color: @mdAceTagColor;
+    font-weight: normal;
+  }
+  &.ace-tm .ace_meta.ace_tag {
+    color: #384654;
+    font-style: italic;
+    font-weight: bold;
+    // background-color: rgba(0, 0, 0, 0.04);
+  }
+  &.ace-tm .ace_keyword.ace_operator {
+    color: #384654;
+    background-color: transparent;
+  }
+  &.ace-tm .ace_storage,
+  &.ace-tm .ace_keyword {
+    color: #384654;
+    // background-color: rgba(0, 0, 0, 0.04);
+    font-weight: bold;
+  }
+  &.ace-tm .ace_entity.ace_name.ace_function {
+    color: #1a2026;
+    font-weight: bold;
+  }
+  &.ace-tm .ace_string {
+    color: #384654;
+    font-style: italic;
+    // background-color: rgba(0, 0, 0, 0.04);
+  }
+  &.ace-tm .ace_invalid {
+    color: inherit;
+    background: inherit;
+  }
+  &.ace-tm .ace_strong {
+    color: @mdAceTextColor;
+    font-weight: bold;
+  }
+  &.ace-tm .ace_emphasis {
+    color: @mdAceTextColor;
+    font-style: italic;
+  }
+  &.ace-tm .ace_blockquote {
+    color: @mdAceTextColor;
+  }
+  &.ace-tm .ace_code {
+    color: #1a2026;
+    // background-color: rgba(0, 0, 0, 0.04);
+  }
+  &.ace-tm .ace_code_block {
+    color: #1a2026;
+  }
+  &.ace-tm .ace_link {
+    color: @mdAceTextColor;
+    background-color: transparent;
+    text-decoration: underline;
+  }
+  .ace_underline {
+    color: @mdAceHeadingColor;
+    text-decoration: none;
+
+  }
+  &.ace-tm .ace_description {
+    color: #576c82;
+  }
+  &.ace-tm .ace_constant {
+    color: #384654;
+  }
+  &.ace-tm .ace_comment {
+    color: rgba(87, 108, 130, 0.6);
+    font-style: italic;
+  }
+  &.ace-tm .ace_marker-layer .misspelled {
+    position: absolute;
+    z-index: -2;
+    border-bottom: 1px dotted red;
+    margin-bottom: -1px;
+  }
+
+  // vim cursor
+  &.normal-mode .ace_cursor {
+      // background-color: #003A92;
+  }
+  // emacs cursor
+  &.emacs-mode .ace_cursor {
+    border: 2px rgba(101, 189, 119, 0.8) solid !important;
+    background-color: rgb(101, 189, 119, 0.9);
+  }
 }

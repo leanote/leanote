@@ -12054,8 +12054,16 @@ define('extensions/markdownExtra',[
     };
 
     function onToggleMode(editor) {
+        // 不能加linenums, 加了后, uml不能显示
+        // 但是, 有人说没有行号了, 很不好
+        // 怎么办
         editor.hooks.chain("onPreviewRefresh", function () {
-            $('#preview-contents pre').addClass('prettyprint'); // 不能加linenums, 加了后, uml不能显示
+            $('#preview-contents pre code').each(function () {
+                var classes = $(this).attr('class');
+                if (classes != 'language-flow' && classes != 'language-sequence') {
+                    $(this).parent().addClass('prettyprint linenums'); 
+                }
+            });
             prettify.prettyPrint();
         });
     }
@@ -17643,7 +17651,7 @@ requirejs.config({
     paths: {
         underscore: 'bower-libs/underscore/underscore',
         crel: 'bower-libs/crel/crel',
-        mathjax: 'libs/MathJax/MathJax.js?config=TeX-AMS_HTML',
+        mathjax: 'libs/MathJax/MathJax.js?a=1&config=TeX-AMS_HTML',
         requirejs: 'bower-libs/requirejs/require',
         'google-code-prettify': 'bower-libs/google-code-prettify/src/prettify',
         'jquery-waitforimages': 'bower-libs/waitForImages/jquery.waitforimages',

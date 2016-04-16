@@ -253,46 +253,50 @@
 
 // markdown preview link
 #preview-contents {
+  font-size: 16px;
   text-align: justify;
   padding: 5px;
   a {
-      color: #2a6496;
-      text-decoration: underline;
+      color: #08c;
+      text-decoration: none;
       &:hover {
-          // text-decoration: underline !important;
+          text-decoration: underline !important;
       }
   }
-  p,
+  p {
+      margin: 0 0 0.3em;
+      line-height: 24px;
+  }
   blockquote {
-    margin: 0 0 0.3em;
+      margin: 0 0 0.3em;
   }
   hr {
-    margin: 2em 0;
+      margin: 2em 0;
   }
   img {
-    max-width: 100%;
+      max-width: 100%;
   }
   .sequence-diagram,
   .flow-chart {
-    text-align: center;
-    margin-bottom: 0.3em;
+      text-align: center;
+      margin-bottom: 0.3em;
   }
   .sequence-diagram text,
   .flow-chart text {
-    font-size: 15px !important;
-    font-family: "Source Sans Pro", sans-serif !important;
+      font-size: 15px !important;
+      font-family: "Source Sans Pro", sans-serif !important;
   }
   .sequence-diagram [fill="#ffffff"],
   .flow-chart [fill="#ffffff"] {
-    fill: #f8f8f8;
+      fill: #f8f8f8;
   }
   .sequence-diagram [stroke="#000000"],
   .flow-chart [stroke="#000000"] {
-    stroke: #3f3f3f;
+      stroke: #3f3f3f;
   }
   .sequence-diagram text[stroke="#000000"],
   .flow-chart text[stroke="#000000"] {
-    stroke: none;
+      stroke: none;
   }
   .sequence-diagram [fill="#000"],
   .flow-chart [fill="#000"],
@@ -300,166 +304,249 @@
   .flow-chart [fill="#000000"],
   .sequence-diagram [fill="black"],
   .flow-chart [fill="black"] {
-    fill: #3f3f3f;
+      fill: #3f3f3f;
   }
   
   /* Definition list */
   dt,
   dd {
-    margin-top: 5px;
-    margin-bottom: 5px;
+      margin-top: 5px;
+      margin-bottom: 5px;
   }
   dd {
-    margin-left: 40px;
+      margin-left: 40px;
   }
 
   blockquote {
-    border-left-width: 10px;
-    background-color: rgba(128, 128, 128, 0.05);
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    padding: 15px 20px;
+      border-left-width: 10px;
+      background-color: rgba(128, 128, 128, 0.05);
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
+      padding: 15px 20px;
   }
   blockquote p {
-    margin-bottom: 0.3em;
-    font-size: 1em;
-    line-height: 1.45;
+      margin-bottom: 0.3em;
+      font-size: 1em;
+      line-height: 1.45;
   }
   blockquote ul:last-child,
   blockquote ol:last-child {
-    margin-bottom: 0;
+      margin-bottom: 0;
   }
-
+  ul, ol {
+      padding: 0;
+      margin: 0 0 10px 25px;
+  }
+  .toc ul ul, .toc ul ol, .toc ol ol, .toc ol ul {
+      margin-bottom: 0;
+  }
+  li {
+      line-height: 27px
+  }
+  ol.linenums>li {
+      line-height: 20px
+  }
   .toc ul {
-    list-style-type: none;
-    margin-bottom: 15px;
+      list-style-type: none;
+      margin-bottom: 15px;
   }
   .footnote {
-    vertical-align: top;
-    position: relative;
-    top: -0.5em;
-    font-size: 0.8em;
+      vertical-align: top;
+      position: relative;
+      top: -0.5em;
+      font-size: 0.8em;
+  }
+  .preview-content>p, .preview-content>pre, .preview-content>blockquote {
+      margin: 0 0 20px
+  }
+  table {
+      width: 100%;
+      margin-bottom: 20px;
+      tbody>tr:nth-child(2n+1)>td, tbody>tr:nth-child(2n+1)>th {
+          background-color: rgba(102,128,153,.05);
+      }
+  }
+  blockquote {
+      padding: 10px 15px;
+      border-left: 10px solid #D6DBDF;
+      background: none repeat scroll 0 0 rgba(102,128,153,.05);
+  }
+  pre {
+      border-width: 0;
+      padding: 10px 15px;
+      background: none repeat scroll 0 0 rgba(102,128,153,.05)
+  }
+  dl {
+      margin-bottom: 20px
+  }
+  dt, dd {
+      margin-bottom: 5px;
+      margin-top: 5px;
+      line-height: 27px
+  }
+  dt {
+      font-weight: 700
+  }
+  dd {
+      margin-left: 40px
+  }
+  h1 {
+      margin: 30px 0 20px;
+      font-size: 30px; 
+  }
+  h2 {
+      margin: 30px 0 20px;
+      font-size: 26px
+  }
+  h3 {
+      margin: 20px 0 15px;
+      font-size: 21px
+  }
+  h4 {
+      font-size: 18px
+  }
+  h5,h6 {
+      font-size: 16px
+  }
+  code, pre {
+      font-size: 14px
+  }
+  .element-center {
+      text-align: center;
+      margin: 0 auto
+  }
+  .preview-container {
+      overflow: auto
+  }
+  .m-todo-item input {
+      margin-left: -20px;
   }
 }
-  /* Pretty printing styles. Used with prettify.js. */
-  pre.prettyprint * {
-    font-family: @aceFontFamily; /// Monaco, Menlo, Consolas, "Courier New", monospace,  "microsoft yahei";
-  }
-  pre.prettyprint {
-    white-space: pre-wrap;
-    white-space: -moz-pre-wrap;
-    white-space: -pre-wrap;
-    white-space: -o-pre-wrap;
-    word-wrap: break-word;
-  }
-  code.prettyprint,
-  pre.prettyprint {
-    padding: 8px;
-    background-color: #f0f0f0;
-    border: 1px solid #e1e1e8;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    -o-border-radius: 3px;
-    -ms-border-radius: 3px;
-    -khtml-border-radius: 3px;
-    border-radius: 3px;
-    display: block;
-  }
 
-  code.prettyprint ol.linenums,
-  pre.prettyprint ol.linenums {
-    padding: 0 0 0 30px;
-    margin: 0;
-  }
-  code.prettyprint ol.linenums li,
-  pre.prettyprint ol.linenums li {
-    padding-left: 0;
-    color: #bebec5;
-    line-height: 20px;
-  }
-  code.prettyprint .com,
-  pre.prettyprint .com {
-    color: #93a1a1;
-    font-style: italic;
-  }
-  code.prettyprint .lit,
-  pre.prettyprint .lit {
-    color: #195f91;
-  }
-  code.prettyprint .pun,
-  pre.prettyprint .pun {
-    color: #93a1a1;
-  }
-  code.prettyprint .opn,
-  pre.prettyprint .opn {
-    color: #93a1a1;
-  }
-  code.prettyprint .clo,
-  pre.prettyprint .clo {
-    color: #93a1a1;
-  }
-  code.prettyprint .fun,
-  pre.prettyprint .fun {
-    color: #dc322f;
-  }
-  code.prettyprint .str,
-  pre.prettyprint .str {
-    color: #dd1144;
-  }
-  code.prettyprint .atv,
-  pre.prettyprint .atv {
-    color: #dd1144;
-  }
-  code.prettyprint .kwd,
-  pre.prettyprint .kwd {
-    color: #1e347b;
-  }
-  code.prettyprint .tag,
-  pre.prettyprint .tag {
-    color: #1e347b;
-  }
-  code.prettyprint .typ,
-  pre.prettyprint .typ {
-    color: #008080;
-  }
-  code.prettyprint .atn,
-  pre.prettyprint .atn {
-    color: #008080;
-  }
-  code.prettyprint .dec,
-  pre.prettyprint .dec {
-    color: #008080;
-  }
-  code.prettyprint .var,
-  pre.prettyprint .var {
-    color: #008080;
-  }
-  code.prettyprint .pln,
-  pre.prettyprint .pln {
-    color: #48484c;
-  }
-  a code {
-    color: inherit;
-  }
-  pre {
-    word-break: break-word;
-  }
-  code,
-  pre {
-    font-family: @aceFontFamily; // "Source Code Pro", monospace, "microsoft yahei";
-    font-size: 0.9em;
-  }
-  code {
-    white-space: normal;
-  }
-  pre {
-    border-radius: 5px;
-  }
-  pre.prettyprint {
-    text-align: start;
-    border: 0;
-    padding: 10px 20px;
-  }
-  pre.prettyprint code {
-    background-color: transparent !important;
-  }
+/* Pretty printing styles. Used with prettify.js. */
+pre.prettyprint * {
+  font-family: @aceFontFamily; /// Monaco, Menlo, Consolas, "Courier New", monospace,  "microsoft yahei";
+}
+pre.prettyprint {
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+
+  box-shadow: 0 1px 2px rgba(255, 255, 255, 0.1) inset, 40px 0 0 rgba(102, 128, 153, 0.05) inset, 0 1px 0 rgba(102, 128, 153, 0.05);
+}
+code.prettyprint,
+pre.prettyprint {
+  padding: 8px;
+  background-color: #f0f0f0;
+  border: 1px solid #e1e1e8;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -o-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -khtml-border-radius: 3px;
+  border-radius: 3px;
+  display: block;
+}
+
+code.prettyprint ol.linenums,
+pre.prettyprint ol.linenums {
+  padding: 0 0 0 30px;
+  margin: 0;
+}
+code.prettyprint ol.linenums li,
+pre.prettyprint ol.linenums li {
+  color: #bebec5;
+  line-height: 20px;
+}
+#preview-contents pre ol li {
+  padding-left: 10px;
+}
+code.prettyprint .com,
+pre.prettyprint .com {
+  color: #93a1a1;
+  font-style: italic;
+}
+code.prettyprint .lit,
+pre.prettyprint .lit {
+  color: #195f91;
+}
+code.prettyprint .pun,
+pre.prettyprint .pun {
+  color: #93a1a1;
+}
+code.prettyprint .opn,
+pre.prettyprint .opn {
+  color: #93a1a1;
+}
+code.prettyprint .clo,
+pre.prettyprint .clo {
+  color: #93a1a1;
+}
+code.prettyprint .fun,
+pre.prettyprint .fun {
+  color: #dc322f;
+}
+code.prettyprint .str,
+pre.prettyprint .str {
+  color: #dd1144;
+}
+code.prettyprint .atv,
+pre.prettyprint .atv {
+  color: #dd1144;
+}
+code.prettyprint .kwd,
+pre.prettyprint .kwd {
+  color: #1e347b;
+}
+code.prettyprint .tag,
+pre.prettyprint .tag {
+  color: #1e347b;
+}
+code.prettyprint .typ,
+pre.prettyprint .typ {
+  color: #008080;
+}
+code.prettyprint .atn,
+pre.prettyprint .atn {
+  color: #008080;
+}
+code.prettyprint .dec,
+pre.prettyprint .dec {
+  color: #008080;
+}
+code.prettyprint .var,
+pre.prettyprint .var {
+  color: #008080;
+}
+code.prettyprint .pln,
+pre.prettyprint .pln {
+  color: #48484c;
+}
+a code {
+  color: inherit;
+}
+pre {
+  word-break: break-word;
+}
+code,
+pre {
+  font-family: @aceFontFamily; // "Source Code Pro", monospace, "microsoft yahei";
+  font-size: 0.9em;
+}
+code {
+  white-space: normal;
+}
+pre {
+  border-radius: 5px;
+}
+pre.prettyprint {
+  text-align: start;
+  border: 0;
+  padding: 10px 20px;
+}
+pre.prettyprint code {
+  background-color: transparent !important;
+}
+
