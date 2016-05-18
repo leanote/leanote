@@ -34,7 +34,7 @@ To be honest, our inspiration comes from Evernote. We use Evernote to manage our
 
 Leanote contains: Leanote Web & Server (this repository), [Desktop app](https://github.com/leanote/desktop-app), [iOS](https://github.com/leanote/leanote-ios), [Android](https://github.com/leanote/leanote-android). And all the products are open source!
 
-You can install Leanote on your server, and use Leanote App (Desktop, iOs, Android) to sync notes with your self-hosted server.
+You can install Leanote on your server, and use Leanote App (Desktop, iOS, Android) to sync notes with your self-hosted server.
 
 Welcome to sign up on https://leanote.com, Leanote team provide a stable and reliable service for you.
 
