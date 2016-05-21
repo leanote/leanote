@@ -16,12 +16,15 @@
 		<script src="/public/admin/js/ie/excanvas.js"></script>
 	<![endif]-->
 </head>
-<body class="">
+<body class="lang-{{$.locale}}">
 	<section class="vbox">
 		<header class="bg-dark dk header navbar navbar-fixed-top-xs">
-			<div class="navbar-header aside-md clearfix" id="logo">
-				<a href="/admin/index" class="navbar-brand" data-toggle="fullscreen"></a>
-				<div>Admin</div>
+
+			<div class="navbar-header logo-ctn">
+				<a href="/admin/index" class="navbar-brand clearfix" data-toggle="fullscreen">
+					<span id="logo"></span>
+					<span class="logo-title">Admin</span>
+				</a>
 			</div>
 			
 			<ul class="nav navbar-nav navbar-right m-n hidden-xs nav-user">
@@ -37,16 +40,16 @@
 				</li>
 				<li class="hidden-xs">
 					<a href="http://lea.leanote.com" class="dk" target="_blank">
-						lea++
+						Leanote Explore
 					</a>
 				</li>
 				<li class="hidden-xs">
-					<a href="/note" class="dk" target="_blank">
+					<a href="/note" class="dk">
 						My Note
 					</a>
 				</li>
 				<li class="hidden-xs">
-					<a href="/blog" class="dk" target="_blank">
+					<a href="/blog" class="dk">
 						My Blog
 					</a>
 				</li>

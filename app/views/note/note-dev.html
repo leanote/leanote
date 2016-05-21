@@ -39,7 +39,7 @@ function log(o) {
 }
 </script>
 </head>
-<body>
+<body class="lang-{{$.locale}}">
 	<div id="page">
 		<div id="pageInner">
 
@@ -47,17 +47,10 @@ function log(o) {
 			<!-- <div id="headerContainer"> -->
 			<div id="header">
 
-			<!--  
-				<div id="headerLeft" class="pull-left">
-				</div>
-			-->
-				<div id="logo" class="pull-left">
-					<!--<span>lea</span>note -->
-					<!--<img style="height: 45px;" src="/images/logo/leanote_white.png" title="leanote, 不一样的笔记" alt="leanote">-->
-				</div>
+				<a id="logo" href="/" title="Leanote {{msg . "home"}}" class="pull-left"></a>
 				<div id="switcher" class="pull-left">
-					 <i class="fa fa-align-justify" id="leftSwitcher" title="{{msg . "leftHidden"}}"></i>
-					 <span id="leftSwitcher2" title="{{msg . "leftShow"}}"></span>
+					 <i class="fa fa-dedent" id="leftSwitcher" title="{{msg . "leftHidden"}}"></i>
+					 <span id="leftSwitcher2" class="fa fa-indent" title="{{msg . "leftShow"}}"></span>
 				</div>
 				<!-- search -->
 				<div class="pull-left" id="searchWrap">

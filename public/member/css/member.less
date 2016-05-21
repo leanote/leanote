@@ -40,16 +40,8 @@
 }
 */
 /* leanote */
-@font-face {
-	font-family: 'leanote';
-	src:url('../../fonts/leanote-font2/leanote.eot?-vcf23i');
-	src:url('../../fonts/leanote-font2/leanote.eot?#iefix-vcf23i') format('embedded-opentype'),
-		url('../../fonts/leanote-font2/leanote.ttf?-vcf23i') format('truetype'),
-		url('../../fonts/leanote-font2/leanote.woff?-vcf23i') format('woff'),
-		url('../../fonts/leanote-font2/leanote.svg?-vcf23i#leanote') format('svg');
-	font-weight: normal;
-	font-style: normal;
-}
+
+@import "../../css/theme/includes/icon.less";
 
 @selectionBg: @aBlackColor;
 @selectionColor: #fff;
@@ -126,28 +118,21 @@ a {
   padding: 0 3px;
   margin-top: 10px;
 }
-#logo {
+.logo-ctn {
 	display: block;
-	.logo-icon {
-		font-family: 'leanote' !important;
-		font-style: normal;
-		font-weight: normal;
-		font-variant: normal;
-		text-transform: none;
-		font-size: 32px;
-		display: block;
+	#logo {
 		float: left;
-		padding-right: 0px;
+		padding-right: 3px;
+		&:before {
+			line-height: 38px;
+    		font-size: 28px;
+		}
 	}
 	.logo-title {
 		float: left;
 		line-height: 50px;
 	}
-	.logo-icon:before {
-		content: "\e601";
-	}
 }
-
 
 //
 //------------
@@ -2038,7 +2023,7 @@ body.container {
 
 .navbar-brand {
 	text-align: center;
-	font-size: 20px;
+	font-size: 14px;
 	line-height: 50px;
 	display: inline-block;
 	padding: 0 15px;
@@ -4897,12 +4882,4 @@ body.container {
 }
 .tool-split, .mce-tinymce-inline {
 	display: none !important;
-}
-
-.nav-h1 {
-	text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    display: inline-block;
-    width: 130px;
 }

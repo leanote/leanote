@@ -16,24 +16,24 @@
 		<script src="/public/admin/js/ie/excanvas.js"></script>
 	<![endif]-->
 </head>
-<body class="">
+<body class="lang-{{$.locale}}">
 	<section class="vbox">
 		<header class="bg-dark dk header navbar navbar-fixed-top-xs">
-			<div class="navbar-header aside-md" id="logo">
+			<div class="navbar-header aside-md logo-ctn">
 				<a href="/member" class="navbar-brand clearfix" data-toggle="fullscreen">
-					<span class="logo-icon"></span>
+					<span id="logo"></span>
 					<span class="logo-title">{{msg . "memberCenter"}}</span>
 				</a>
 			</div>
 			
 			<ul class="nav navbar-nav navbar-right m-n hidden-xs nav-user">
 				<li class="hidden-xs">
-					<a href="/note" class="dk" target="_blank">
+					<a href="/note" class="dk">
 						{{msg . "myNote"}}
 					</a>
 				</li>
 				<li class="hidden-xs">
-					<a href="/blog/{{$.session.Username}}" class="dk" target="_blank">
+					<a href="/blog/{{$.session.Username}}" class="dk">
 						{{msg . "myBlog"}}
 					</a>
 				</li>

@@ -1,4 +1,46 @@
 @font-face {
+  font-family: 'leanote';
+  src: url('../../fonts/leanote-font3/leanote.eot?-vcf23i');
+  src: url('../../fonts/leanote-font3/leanote.eot?#iefix-vcf23i') format('embedded-opentype'), url('../../fonts/leanote-font3/leanote.ttf?-vcf23i') format('truetype'), url('../../fonts/leanote-font3/leanote.woff?-vcf23i') format('woff'), url('../../fonts/leanote-font3/leanote.svg?-vcf23i#leanote') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+#logo,
+.mce-i-mind,
+.mce-i-ace-pre,
+.lea-icon {
+  font-family: 'leanote' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.icon-markdown:before {
+  content: "\e604";
+}
+.mce-i-mind:before {
+  content: "\e602";
+}
+.mce-i-ace-pre:before {
+  content: "\e603";
+}
+#logo:before {
+  content: "\e901";
+  line-height: 1;
+  margin-top: 5px;
+  display: inline-block;
+  vertical-align: top;
+}
+#logo.icon-only:before {
+  content: "\e902";
+}
+.lang-zh-cn #logo:before {
+  content: "\e900";
+}
+@font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 300;
@@ -22,14 +64,6 @@
   font-weight: 400;
   src: local('Open Sans Italic'), local('OpenSans-Italic'), url('../../fonts/open-sans2/xjAJXh38I15wypJXxuGMBobN6UDyHWBl620a-IRfuBk.woff') format('woff');
 }
-/* leanote */
-@font-face {
-  font-family: 'leanoteregular';
-  src: url('../../fonts/leanote/leanote-regular-webfont.eot');
-  src: url('../../fonts/leanote/leanote-regular-webfont.eot?#iefix') format('embedded-opentype'), url('../../fonts/leanote/leanote-regular-webfont.woff') format('woff'), url('../../fonts/leanote/leanote-regular-webfont.ttf') format('truetype'), url('../../fonts/leanote/leanote-regular-webfont.svg#leanoteregular') format('svg');
-  font-weight: normal;
-  font-style: normal;
-}
 ::selection {
   background: #000000;
   color: #ffffff;
@@ -52,19 +86,20 @@ h2,
 h3 {
   font-family: 'Open Sans', '微软雅黑', Arial, Tahoma, sans-serif;
 }
-#logo a {
-  font-family: "leanoteregular";
-  font-size: 32px;
+.logo-ctn {
   display: block;
-  float: left;
-  margin-top: -5px;
 }
-#logo div {
+.logo-ctn #logo {
+  float: left;
+  padding-right: 3px;
+}
+.logo-ctn #logo:before {
+  line-height: 38px;
+  font-size: 28px;
+}
+.logo-ctn .logo-title {
   float: left;
   line-height: 50px;
-}
-#logo a:before {
-  content: "a";
 }
 .animated {
   -webkit-animation-fill-mode: both;

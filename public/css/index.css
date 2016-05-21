@@ -68,6 +68,7 @@ a:hover {
   height: 50px;
   display: inline-block;
   margin-top: -5px;
+  padding: 8px;
 }
 #headerContainer .navbar-nav a {
   line-height: 60px;
@@ -687,14 +688,13 @@ input,
   opacity: 0;
 }
 .footer-leanote {
-	margin-top: 20px;
-	color: #475F77;
-	text-align: center;
+  margin-top: 20px;
+  color: #475F77;
+  text-align: center;
 }
 #footer .footer-leanote a {
-	color: #475F77;
+  color: #475F77;
 }
-
 /* news */
 .index-news a:hover {
   text-decoration: underline !important;

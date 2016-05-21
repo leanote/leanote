@@ -20,24 +20,35 @@
 #notebookMin,
 .ui-loader,
 #md-section-helper,
-.writing-mobile-hide
+.writing-mobile-hide,
+.tips-ctn,
+#wmd-undo-button,
+#wmd-redo-button,
+#wmd-hr-button,
+#wmd-help-button
 {
 	display: none !important;
 }
+
 *,
 .ztree li a.level0 span,
 .ztree li a.level1 span,
-.label
 {
 	font-size: 16px;
 }
+
 .label i {
 	opacity: 1;
-	width: 20px;
+	width: 12px;
 	&:hover, &:focus {
 		color: @green !important;
 	}
 }
+
+#leftSwitcher:before {
+    content: "\f039";
+}
+
 a:focus, a:hover, a:active {
 	color: @green !important;
 }
@@ -89,6 +100,7 @@ a:focus, a:hover, a:active {
 		visibility: hidden !important;
 	}
 	left: 0 !important;
+	padding-left: 0;
 }
 #note.editor-show {
 	visibility: visible;
@@ -147,7 +159,7 @@ a:focus, a:hover, a:active {
 }
 #tag {
 	position: absolute;
-	right: 140px;
+	right: 124px;
 	left:0;
 	top:0;
 	bottom:0;
@@ -186,8 +198,9 @@ a:focus, a:hover, a:active {
 #left-column {
 	width: 100% !important;
 }
-#mdEditor #wmd-input {
-	font-size: 16px;
+
+#mdEditor #wmd-input * {
+	font-size: 14px;
 }
 
 .new-markdown-text-abbr, .new-note-text-abbr {
@@ -266,6 +279,9 @@ a:focus, a:hover, a:active {
 #editorContent .ace-tomorrow {
 	padding: 0;
 }
+#note, #editor, #mdEditor {
+	left: 0;
+}
 
 // readonly
 
@@ -288,9 +304,10 @@ a:focus, a:hover, a:active {
 		-webkit-overflow-scrolling: touch !important; 
 	}
 	.preview-container {
-		left: 10px;
+		left: 5px;
 	}
 }
+
 
 }
 
@@ -317,23 +334,13 @@ a:focus, a:hover, a:active {
 #tag {
 	position: absolute;
 	right: 310px;
-	left:0;
+	left: 0;
 	top:0;
 	bottom:0;
 	overflow: hidden;
+	padding-left: 5px;
 
-	#tags {
-		position: absolute;
-		left: 50px;
-		right: 0;
-		top: 0;
-		bottom: 0;
-		overflow-y: hidden;
-		overflow-x: scroll;
-		position: absolute;
-		line-height: 40px;
-		line-height: inherit !important;
-	}
+	
 	#tagDropdown {
 		float: left;
 		width: 50px;
@@ -353,6 +360,18 @@ a:focus, a:hover, a:active {
 	}
 }
 
+#tags {
+		position: absolute;
+		left: 50px;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		overflow-y: hidden;
+		overflow-x: scroll;
+		position: absolute;
+		line-height: 40px;
+		line-height: inherit !important;
+	}
 }
 
 @media screen and (max-width: 800px) {
@@ -392,7 +411,7 @@ a:focus, a:hover, a:active {
 
 #tag {
 	position: absolute;
-	right: 160px;
+	right: 124px;
 	left:0;
 	top:0;
 	bottom:0;
@@ -460,7 +479,7 @@ a:focus, a:hover, a:active {
 	width: 100% !important;
 }
 #mdEditor #wmd-input {
-	font-size: 16px;
+	font-size: 14px;
 }
 
 .my-link {
@@ -482,7 +501,7 @@ a:focus, a:hover, a:active {
 
 // 有一些toolbar不能显示
 .wmd-button-bar-inner {
-  overflow: scroll;
+  // overflow: scroll;
   height: 30px;
 }
 
@@ -500,6 +519,121 @@ a:focus, a:hover, a:active {
 	.preview-container {
 		left: 10px;
 	}
+}
+#searchNote {
+	margin-top: 2px;
+}
+
+#noteTitle {
+	// padding: 0;
+}
+
+#tags {
+	.label, .label i {
+		font-size: 10px;
+	}
+}
+
+.mobile-hide {
+	display: none;
+}
+.mobile-show {
+	display: block;
+}
+
+#editorContent, #mdEditor {
+	bottom: 0 !important;
+}
+
+#mdEditor .layout-wrapper-l3, #editorContent {
+	margin-top: 0;
+	border: none;
+}
+
+// iframe插件 视频
+.leanote-plugin {
+	@pluginHeaderHeight: 40px;
+	#header {
+		height: @pluginHeaderHeight;
+	}
+	#mainContainer {
+		top: @pluginHeaderHeight;
+	}
+	.profile-img {
+	  line-height: @pluginHeaderHeight - 3;
+	}
+
+	#switcher i {
+	    padding: 11px 0;
+	}
+	#searchNote {
+	    padding-top: 1px;
+	}
+	#newNoteWrap {
+	   line-height: 22px;
+	}
+	#leanoteMsg {
+		margin-top: 0;
+	}
+
+	*,
+	.ztree li a.level0 span,
+	.ztree li a.level1 span,
+	#noteItemList .item-setting, #noteItemList .item-blog {
+		font-size: 14px;
+	}
+	h1, h2, h3, h4, h5 {
+	}
+	.leanoteNav h1 {
+		font-size: 16px;
+	}
+	h1 {
+		font-size: 24px;
+	}
+	h2 {
+		font-size: 20px;
+	}
+	h3 {
+		font-size: 18px;
+	}
+	h4 {
+		font-size: 16px;
+	}
+	#noteItemList .item-setting, #noteItemList .item-blog {
+		width: 23px;
+		padding: 1px;
+	}
+
+	#noteItemList .item {
+	    height: 69px;
+	}
+	#noteItemList .item-thumb {
+	    width: 60px;
+	    height: 60px;
+	    margin-top: 0px;
+	}
+
+	#preview-contents {
+		padding-left: 0;
+	}
+
+	#msg {
+		font-size: 12px;
+	}
+
+	#noteInfo {
+		width: 265px;
+	}
+	#noteInfo table th {
+	    min-width: 72px;
+	}
+	#noteInfo .post-url-wrap span {
+	    word-break: break-all;
+	}
+}
+
+.extension-preview-buttons {
+	border: none;
 }
 
 }

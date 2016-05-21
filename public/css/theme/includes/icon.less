@@ -1,0 +1,51 @@
+@font-face {
+  font-family: 'leanote';
+  src:url('../../fonts/leanote-font3/leanote.eot?-vcf23i');
+  src:url('../../fonts/leanote-font3/leanote.eot?#iefix-vcf23i') format('embedded-opentype'),
+    url('../../fonts/leanote-font3/leanote.ttf?-vcf23i') format('truetype'),
+    url('../../fonts/leanote-font3/leanote.woff?-vcf23i') format('woff'),
+    url('../../fonts/leanote-font3/leanote.svg?-vcf23i#leanote') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+#logo,
+.mce-i-mind,
+.mce-i-ace-pre,
+.lea-icon
+{
+  font-family: 'leanote' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.icon-markdown:before {
+  content: "\e604";
+}
+.mce-i-mind:before {
+  content: "\e602";
+}
+.mce-i-ace-pre:before {
+  content: "\e603";
+}
+
+#logo:before {
+    content: "\e901";
+    line-height: 1;
+    margin-top: 5px;
+    display: inline-block;
+    vertical-align: top;
+}
+#logo.icon-only:before {
+    content: "\e902";
+}
+.lang-zh-cn {
+   #logo:before {
+    content: "\e900";
+   } 
+}

@@ -27,10 +27,45 @@
 /* leanote */
 @font-face {
   font-family: 'leanote';
-  src: url('../../fonts/leanote-font2/leanote.eot?-vcf23i');
-  src: url('../../fonts/leanote-font2/leanote.eot?#iefix-vcf23i') format('embedded-opentype'), url('../../fonts/leanote-font2/leanote.ttf?-vcf23i') format('truetype'), url('../../fonts/leanote-font2/leanote.woff?-vcf23i') format('woff'), url('../../fonts/leanote-font2/leanote.svg?-vcf23i#leanote') format('svg');
+  src: url('../../fonts/leanote-font3/leanote.eot?-vcf23i');
+  src: url('../../fonts/leanote-font3/leanote.eot?#iefix-vcf23i') format('embedded-opentype'), url('../../fonts/leanote-font3/leanote.ttf?-vcf23i') format('truetype'), url('../../fonts/leanote-font3/leanote.woff?-vcf23i') format('woff'), url('../../fonts/leanote-font3/leanote.svg?-vcf23i#leanote') format('svg');
   font-weight: normal;
   font-style: normal;
+}
+#logo,
+.mce-i-mind,
+.mce-i-ace-pre,
+.lea-icon {
+  font-family: 'leanote' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.icon-markdown:before {
+  content: "\e604";
+}
+.mce-i-mind:before {
+  content: "\e602";
+}
+.mce-i-ace-pre:before {
+  content: "\e603";
+}
+#logo:before {
+  content: "\e901";
+  line-height: 1;
+  margin-top: 5px;
+  display: inline-block;
+  vertical-align: top;
+}
+#logo.icon-only:before {
+  content: "\e902";
+}
+.lang-zh-cn #logo:before {
+  content: "\e900";
 }
 ::selection {
   background: #000000;
@@ -117,26 +152,20 @@ a {
   padding: 0 3px;
   margin-top: 10px;
 }
-#logo {
+.logo-ctn {
   display: block;
 }
-#logo .logo-icon {
-  font-family: 'leanote' !important;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  font-size: 32px;
-  display: block;
+.logo-ctn #logo {
   float: left;
-  padding-right: 0px;
+  padding-right: 3px;
 }
-#logo .logo-title {
+.logo-ctn #logo:before {
+  line-height: 38px;
+  font-size: 28px;
+}
+.logo-ctn .logo-title {
   float: left;
   line-height: 50px;
-}
-#logo .logo-icon:before {
-  content: "\e601";
 }
 .animated {
   -webkit-animation-fill-mode: both;
@@ -1741,7 +1770,7 @@ body.container {
 }
 .navbar-brand {
   text-align: center;
-  font-size: 20px;
+  font-size: 14px;
   line-height: 50px;
   display: inline-block;
   padding: 0 15px;
@@ -4356,11 +4385,4 @@ fieldset[disabled] .btn-gplus.active {
 .tool-split,
 .mce-tinymce-inline {
   display: none !important;
-}
-.nav-h1 {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  display: inline-block;
-  width: 130px;
 }
