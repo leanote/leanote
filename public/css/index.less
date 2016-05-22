@@ -13,6 +13,8 @@
 @containerWidth: 945px;
 @titleColor: #5AD4A0;
 
+@import "./theme/includes/icon.less";
+
 // font
 @font-face {
   font-family: 'Open Sans';
@@ -37,6 +39,12 @@
   font-style: italic;
   font-weight: 400;
   src: local('Open Sans Italic'), local('OpenSans-Italic'), url('../fonts/open-sans2/xjAJXh38I15wypJXxuGMBobN6UDyHWBl620a-IRfuBk.woff') format('woff');
+}
+
+#logo {
+	font-size: 32px;
+	color: #000;
+    padding-top: 8px;
 }
 
 /*"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue", Helvetica, "Microsoft Yahei", Verdana, Simsun, "Segoe UI", "Segoe UI Web Regular", "Segoe UI Symbol",  "BBAlpha Sans", "S60 Sans", Arial, sans-serif;*/
@@ -74,9 +82,8 @@ a:hover {
 	box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.1);
 	margin: 0;
 	.navbar-brand {
-		padding: 0;
 		padding-left: 10px;
-		line-height: @headerHeight;
+		// line-height: @headerHeight;
 		img {
 			height: 50px;
 			display: inline-block;
