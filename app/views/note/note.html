@@ -6,8 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <meta name="apple-touch-fullscreen" content="yes">
 <meta name=”apple-mobile-web-app-capable” content=”yes” />
-<meta name="keywords" content="leanote,leanote.com">
-<meta name="description" content="Leanote, {{msg $ "moto"}}">
+<meta name="keywords" content="leanote,leanote.com,蚂蚁笔记">
+<meta name="description" content="Leanote, 蚂蚁笔记, {{msg $ "moto"}}">
 <title>Leanote, {{msg $ "moto"}}</title>
 <link href="/css/bootstrap-min.css" rel="stylesheet" />
 <!-- 先加载, 没有样式, 宽度不定 -->
@@ -35,7 +35,7 @@ function log(o) {
 }
 </script>
 </head>
-<body class="lang-{{$.locale}}">
+<body class="leanote-plugin lang-{{$.locale}}">
 	<div id="page">
 		<div id="pageInner">
 			<!-- 头部 -->
@@ -117,9 +117,9 @@ function log(o) {
 					</span>
 				</div>
 					
-				<div class="pull-right" style="margin: 0 10px" id="myProfile">
+				<div class="pull-right" id="myProfile">
 					<div class="dropdown">
-						<a class="dropdown-toggle" title="{{.userInfo.Username}}" data-toggle="dropdown" style="line-height: 60px;"> 
+						<a class="dropdown-toggle profile-img" title="{{.userInfo.Username}}" data-toggle="dropdown"> 
 							<img alt="{{.userInfo.Username}}" title="{{.userInfo.Username}}" src="{{if .userInfo.Logo}}{{.userInfo.Logo}}{{else}}/images/blog/default_avatar.png{{end}}" id="myAvatar"/> 
 							<span class="username">
 								{{.userInfo.Username}}
