@@ -86,6 +86,9 @@ h2,
 h3 {
   font-family: 'Open Sans', '微软雅黑', Arial, Tahoma, sans-serif;
 }
+.navbar-brand {
+  height: 45px;
+}
 .logo-ctn {
   display: block;
 }

@@ -79,6 +79,12 @@ func (c AdminSetting) ExportPdf(path string) revel.Result {
 	return c.RenderJson(re)
 }
 
+func (c AdminSetting) DoSiteUrl(siteUrl string) revel.Result {
+	re := info.NewRe()
+	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "siteUrl", siteUrl)
+	return c.RenderJson(re)
+}
+
 // SubDomain
 func (c AdminSetting) SubDomain() revel.Result {
 	c.RenderArgs["str"] = configService.GlobalStringConfigs

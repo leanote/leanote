@@ -50,12 +50,12 @@ table tr:nth-child(2n) {
 		{{ if .userBlog.Logo}}
 			<img src="{{.userBlog.Logo}}" id="logo">
 		{{else}}
-			<img src="{{$.siteUrl}}/images/blog/default_avatar.png" id="logo">
+			<img src="/images/blog/default_avatar.png" id="logo">
 		{{end}}
 		{{.userInfo.Username}}
 	-->
 		{{if .blog.Tags}}
-			<img src="{{$.siteUrl}}/images/blog/tag.png" id="tag">
+			<img src="/images/blog/tag.png" id="tag">
 			{{blogTagsForExport $ .blog.Tags}}
 		{{end}}
 	</div>
@@ -79,7 +79,7 @@ table tr:nth-child(2n) {
 <!--
 <div id="footer">
 	<p class="split"></p>
-	<a href="http://leanote.com"><img src="{{.siteUrl}}/images/logo/leanote_icon_blue.png" id="leanote_logo"/></a>
+	<a href="http://leanote.com"><img src="/images/logo/leanote_icon_blue.png" id="leanote_logo"/></a>
 	<p>
 		<a href="http://leanote.com">Leanote</a>
 		<br />
@@ -88,10 +88,10 @@ table tr:nth-child(2n) {
 </div>
 -->
 
-<script src="{{.siteUrl}}/js/jquery-1.9.0.min.js"></script>
+<script src="/js/jquery-1.9.0.min.js"></script>
 
-<link href="{{.siteUrl}}/public/js/google-code-prettify/prettify.css" type="text/css" rel="stylesheet">
-<script src="{{.siteUrl}}/public/js/google-code-prettify/prettify.js"></script>
+<link href="/public/js/google-code-prettify/prettify.css" type="text/css" rel="stylesheet">
+<script src="/public/js/google-code-prettify/prettify.js"></script>
 
 <script>
 function ok() {

@@ -110,7 +110,7 @@ func (this *UserService) setUserLogo(user *info.User) {
 	}
 	if user.Logo != "" && !strings.HasPrefix(user.Logo, "http") {
 		user.Logo = strings.Trim(user.Logo, "/")
-		user.Logo = configService.GetSiteUrl() + "/" + user.Logo
+		user.Logo = "/" + user.Logo
 	}
 }
 

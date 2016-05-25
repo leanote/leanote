@@ -44,7 +44,7 @@
 					    	<a class="btn btn-default btn-sm btn-export"><span class="fa fa-download"></span> {{msg $ "export"}}</a>
 					    	<!-- 必须是自己的主题 -->
 					    	{{if .activeTheme.ThemeId}}
-						    	<a class="btn btn-default btn-sm" href="{{$.siteUrl}}/preview?themeId={{.activeTheme.ThemeId.Hex}}" target="_blank"><span class="fa fa-eye"></span> {{msg $ "preview"}}</a>
+						    	<a class="btn btn-default btn-sm" href="/preview?themeId={{.activeTheme.ThemeId.Hex}}" target="_blank"><span class="fa fa-eye"></span> {{msg $ "preview"}}</a>
 					    	{{end}}
 					    	<a class="btn btn-primary btn-sm" target="_blank" href="/member/blog/updateTheme?themeId={{if .activeTheme.ThemeId}}{{.activeTheme.ThemeId.Hex}}{{end}}"><span class="fa fa-pencil"></span> {{msg $ "edit"}}</a>
 				    	</div>
@@ -84,7 +84,7 @@
 				    	<div class="btn-group" data-id="{{.ThemeId.Hex}}">
 					    	<a class="btn btn-default btn-sm btn-delete" data-loading-text="..."><span class="fa fa-remove"></span> {{msg $ "delete"}}</a>
 					    	<a class="btn btn-default btn-sm btn-export"><span class="fa fa-download"></span> {{msg $ "export"}}</a>
-					    	<a class="btn btn-default btn-sm" href="{{$.siteUrl}}/preview?themeId={{.ThemeId.Hex}}" target="_blank"><span class="fa fa-eye"></span> {{msg $ "preview"}}</a>
+					    	<a class="btn btn-default btn-sm" href="/preview?themeId={{.ThemeId.Hex}}" target="_blank"><span class="fa fa-eye"></span> {{msg $ "preview"}}</a>
 					    	<a class="btn btn-default btn-sm"  target="_blank" href="/member/blog/updateTheme?themeId={{.ThemeId.Hex}}"><span class="fa fa-pencil"></span> {{msg $ "edit"}}</a>
 					    	<a class="btn btn-primary btn-sm btn-active" data-loading-text="..."><span class="fa fa-check"></span> {{msg $ "use"}}</a>
 					    	{{if $.isAdmin}}

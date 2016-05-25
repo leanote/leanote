@@ -67,10 +67,20 @@ func (this *ConfigService) InitGlobalConfigs() bool {
 		}
 	}
 
+	// site URL
+	if s, ok := this.GlobalStringConfigs["siteUrl"]; !ok || s != "" {
+		this.GlobalStringConfigs["siteUrl"] = this.siteUrl
+	}
+
 	return true
 }
 
 func (this *ConfigService) GetSiteUrl() string {
+	s := this.GetGlobalStringConfig("siteUrl")
+	if s != "" {
+		return s
+	}
+
 	return this.siteUrl
 }
 func (this *ConfigService) GetAdminUsername() string {
@@ -498,42 +508,25 @@ func (this *ConfigService) GetDefaultDomain() string {
 	return defaultDomain
 }
 
-// 包含http://
-func (this *ConfigService) GetDefaultUrl() string {
-	return schema + defaultDomain
-}
-
 // note
 func (this *ConfigService) GetNoteDomain() string {
-	subDomain := this.GetGlobalStringConfig("noteSubDomain")
-	if subDomain != "" {
-		return subDomain + port
-	}
-	return this.GetDefaultDomain() + "/note"
+	return "/note"
 }
 func (this *ConfigService) GetNoteUrl() string {
-	return schema + this.GetNoteDomain()
+	return this.GetNoteDomain()
 }
 
 // blog
 func (this *ConfigService) GetBlogDomain() string {
-	subDomain := this.GetGlobalStringConfig("blogSubDomain")
-	if subDomain != "" {
-		return subDomain + port
-	}
-	return this.GetDefaultDomain() + "/blog"
+	return "/blog"
 }
 func (this *ConfigService) GetBlogUrl() string {
-	return schema + this.GetBlogDomain()
+	return this.GetBlogDomain()
 }
 
 // lea
 func (this *ConfigService) GetLeaDomain() string {
-	subDomain := this.GetGlobalStringConfig("leaSubDomain")
-	if subDomain != "" {
-		return subDomain + port
-	}
-	return this.GetDefaultDomain() + "/lea"
+	return "/lea"
 }
 func (this *ConfigService) GetLeaUrl() string {
 	return schema + this.GetLeaDomain()
