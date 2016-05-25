@@ -157,14 +157,20 @@
     font-style: normal;
 }
 
-
 textarea#wmd-input {
   color: #000 !important;
-  font-family:  @aceFontFamily;
+}
+
+// 为了防止vim在linux下光标混乱的问题
+.ace_editor {
+    font-family: @aceFontFamily;
+  // font-family: @aceFontFamily !important; // 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro';
+}
+.ace_editor *  {
+    font-family: inherit;
 }
 
 /*
-
 // markdown editor ace
 @mdAceTextColor: #2C3E50; // #04294E; // #384654;
 @mdAceHeadingColor: #000; // 1a2026
