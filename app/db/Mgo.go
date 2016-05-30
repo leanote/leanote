@@ -166,6 +166,216 @@ func Init(url, dbname string) {
 
 	// session
 	Sessions = Session.DB(dbname).C("sessions")
+
+	collectionNames, err := Session.DB(dbname).CollectionNames()
+
+	// 如果没有表, 则表示是第一次安装
+	if (err != nil || len(collectionNames) == 0) {
+		Log("init db index")
+		initIndex(dbname)
+	}
+}
+
+func initIndex(dbname string) {
+	// 索引
+	indexes := map[string][]mgo.Index{
+		"notebooks": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"UserId"},
+				    Background: true,
+				},
+			},
+		"notes": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"UserId"},
+				    Background: true,
+				},
+				mgo.Index{
+				    Key: []string{"IsTrash"},
+				    Background: true,
+				},
+				mgo.Index{
+				    Key: []string{"UrlTitle"},
+				    Background: true,
+				},
+				mgo.Index{
+				    Key: []string{"IsBlog"},
+				    Background: true,
+				},
+				mgo.Index{
+				    Key: []string{"CreatedTime"},
+				    Background: true,
+				},
+				mgo.Index{
+				    Key: []string{"UpdatedTime"},
+				    Background: true,
+				},
+				mgo.Index{
+				    Key: []string{"PublicTime"},
+				    Background: true,
+				},
+				mgo.Index{
+				    Key: []string{"RecommendTime"},
+				    Background: true,
+				},
+				mgo.Index{
+				    Key: []string{"NotebookId"},
+				    Background: true,
+				},
+				mgo.Index{
+				    Key: []string{"UserId", "IsBlog"},
+				    Background: true,
+				},
+			},
+		"note_contents": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"UserId"},
+				    Background: true,
+				},
+			},
+		"note_content_histories": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"UserId"},
+				    Background: true,
+				},
+			},
+		"share_notes": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"UserId"},
+				    Background: true,
+				},
+				mgo.Index{
+				    Key: []string{"ToUserId"},
+				    Background: true,
+				},
+			},
+		"share_notebooks": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"UserId"},
+				    Background: true,
+				},
+				mgo.Index{
+				    Key: []string{"ToUserId"},
+				    Background: true,
+				},
+			},
+		"has_share_notes": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"UserId", "ToUserId"},
+				    Background: true,
+				    Unique: true,
+				},
+			},
+		"users": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"Email"},
+				    Background: true,
+				},
+				mgo.Index{
+				    Key: []string{"Username"},
+				    Background: true,
+				},
+			},
+		"groups": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"UserId"},
+				    Background: true,
+				},
+			},
+		"group_users": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"GroupId"},
+				    Background: true,
+				},
+			},
+		"tags": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"UserId"},
+				    Background: true,
+				},
+			},
+		"note_tags": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"UserId", "TagId"},
+				    Background: true,
+				},
+				mgo.Index{
+				    Key: []string{"UserId"},
+				    Background: true,
+				},
+			},
+		"tag_count": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"UserId"},
+				    Background: true,
+				},
+			},
+		"blog_singles": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"UserId"},
+				    Background: true,
+				},
+			},
+		"blog_likes": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"NoteId"},
+				    Background: true,
+				},
+			},
+		"blog_comments": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"NoteId"},
+				    Background: true,
+				},
+			},
+		"themes": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"UserId"},
+				    Background: true,
+				},
+			},
+		"note_images": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"ImageId"},
+				    Background: true,
+				},
+				mgo.Index{
+				    Key: []string{"NoteId"},
+				    Background: true,
+				},
+			},
+		"albums": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"UserId"},
+				    Background: true,
+				},
+			},
+		"files": []mgo.Index{
+				mgo.Index{
+				    Key: []string{"UserId"},
+				    Background: true,
+				},
+			},
+		"attachs": []mgo.Index{
+			mgo.Index{
+			    Key: []string{"NoteId"},
+			    Background: true,
+			},
+		},
+		"sessions": []mgo.Index{
+			mgo.Index{
+			    Key: []string{"SessionId"},
+			    Background: true,
+			},
+		},
+	}
+
+	for collection, ins := range indexes {
+		col := Session.DB(dbname).C(collection)
+		for _, in := range ins {
+			col.EnsureIndex(in)
+		}
+	}
 }
 
 func close() {
