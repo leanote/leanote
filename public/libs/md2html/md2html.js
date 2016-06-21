@@ -291,7 +291,8 @@ listStr=addAnchors(listStr);listStr=listStr.replace(/\n{2,}(?=\\x03)/,"\n");list
 		                styles: "safe",
 		                fontsize: "all"
 		            }
-		        }
+		        },
+		        equationNumbers: { autoNumber: "AMS" }
 		    },
 		    messageStyle: "none"
 		});
