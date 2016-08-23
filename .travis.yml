@@ -1,5 +1,5 @@
 language: go
-go: 1.3
+go: 1.4
 
 services:
   - mongodb # 2.4.12
