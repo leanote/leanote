@@ -10,7 +10,7 @@ Leanote, not just a notepad!
 
 **Highlighted Features**
 
-* Note-taking made easy: Leanote incorporates a clean and intuitive interface, the `tinymce` rich-text editor and a dedicated *markdown* editor, making your writing/typing more efficient and enjoyable.
+* Note-taking made easy: Leanote incorporates a clean and intuitive interface, the `tinymce` rich-text editor and a dedicated *markdown* editor, making your writing/typing more efficient and enjoyable. For more advanced users, we even offer `Vim` and `Emacs` writing modes to help boost your writing speed to another level. 
 * Knowledge management: The flexible and versatile notebook-note-tagging system of Leanote makes it an ideal tool for knowledge management.
 * Sharing: Share your knowledge, thoughts and experiences with friends via Leanote. Invite your friends to join your notepad in the cloud.
 * Cooperating: Collaborate with colleagues to improve skills, fertilize ideas and brainstorm on the fly.
@@ -20,6 +20,7 @@ Leanote, not just a notepad!
 
 * Markdown syntax support
 * Distraction-free writing mode
+* `Vim` and `Emacs` editing mode
 * Export notes to PDFs
 * Batch note operation
 * Customizable themes for blogging
@@ -30,6 +31,7 @@ We have been using the popular note-taking software/service `Evernote` as our kn
 
 * A more powerful editor: `Evernote`'s editor lacks the functionalities of **document navigation**, **syntax based code rendering** (as a programmer, syntax highlighted code rendering is a necessity), **image resizing** and so forth.
 * Everybody loves *markdown*, however `Evernote` simply wouldn't add it despite of years' of requests from users. So we will do the favor and bring a *markdown* enabled editor to you, guess what, it is also rendered in real-time!
+* If you a developer and miss the `Vim` or `Emacs` ways of writing, we offer you the choice of `Vim` and `Emacs` editting modes. Equipped   with *markdown* syntax for text formatting, you will never need to touch your mouse while writing.
 * We love managing knowledge and thoughts as much as sharing them, so everybody has their own note account (`Evernote`, `Onenote`, `Google doc`, `Wiz note` etc.) and social media account (`Facebook`, `Wordpress`, blogs, etc.). But why can’t those two be one? Leanote makes this first step to bridge the private note-taking and public knowledge sharing seamlessly.
 * A complete and all-platform (sorry Windows phone) covering software suite: that includes Leanote Web & Server (this repository), [Desktop app](https://github.com/leanote/desktop-app), [iOS](https://github.com/leanote/leanote-ios), [Android](https://github.com/leanote/leanote-android). And they are all open source!
 * ......
@@ -106,7 +108,7 @@ Leanote, 不只是笔记!
 
 **特性**
 
-* 高效笔记：Leanote 有易操作的界面, 包含一款富文本编辑器和Markdown编辑器，让您的笔记记录更轻松和高效。
+* 高效笔记：Leanote 有易操作的界面, 包含一款富文本编辑器和Markdown编辑器，让您的笔记记录更轻松和高效。对高阶用户，我们还提供`Vim` 和`Emacs` 编辑模式，助推你的写作速度更上层楼。
 * 知识管理:  Leanote 灵活而强大的“笔记本-笔记-标签”系统，让它成为你个人知识管理的利器。
 * 分享: 你可以通过Leanote同好友分享知识、想法和经历, 邀请好友加入你的笔记簿，通过云端交流信息。
 * 协作: Leanote协助你与同事之间相互协作，激荡新思路，随时随地头脑风暴。
@@ -116,6 +118,7 @@ Leanote, 不只是笔记!
 
 * 支持Markdown编辑
 * 写作模式
+* `Vim` 及 `Emacs` 编辑模式
 * 支持PDF导出
 * 支持批量操作
 * 博客自定义主题, 实现高度定制化
@@ -124,6 +127,7 @@ Leanote, 不只是笔记!
 我们都曾是`Evernote`的忠实粉丝, 一直以来`Evernote`都是我们日常知识管理的有效工具。于是我们决定重新创造一款工具，提供`Evernote`所能提供的功能，同时弥补`Evernote`的不足，比如：
 * 功能更强的文本编辑器：`Evernote`的编辑器不能满足我们的需求, 不能实现文档导航、不能贴代码(格式会乱掉, 作为程序员, 代码是我们的基本需求啊), 图片不能缩放等。
 * `Evernote` 不支持所有人都喜爱的markdown语法，于是我们为Leanote配备了一款可以实时渲染的markdown编辑器。
+* 如果你是一名开发者，觉得手指怀念`Vim` 或 `Emacs` 了，那么我们还提供给你`Vim` 和 `Emacs` 写作模式，配合*markdown*的格式编辑，写作的时候再也不用去碰鼠标了。
 * 知识积累和知识分享同样重要，因此大家都有自己的笔记账号和社交账号。但为什么这两者不能合二为一呢? Leanote 做到了将二者无缝衔接。
 * 一套完整的、全平台覆盖的软件套装，包括了web、桌面、安卓、IOS设备，而且全部开源！
 * 还有...
