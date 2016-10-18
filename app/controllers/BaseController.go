@@ -200,8 +200,7 @@ func (c BaseController) SetLocale() string {
 		lang = i18n.GetDefaultLang()
 	}
 	c.RenderArgs["locale"] = lang
-	c.RenderArgs["siteUrl"] = configService.GetSiteUrl()
-
+	c.RenderArgs["siteUrl"] = configService.GetProxyUrl()
 	c.RenderArgs["blogUrl"] = configService.GetBlogUrl()
 	c.RenderArgs["leaUrl"] = configService.GetLeaUrl()
 	c.RenderArgs["noteUrl"] = configService.GetNoteUrl()

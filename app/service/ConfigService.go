@@ -19,6 +19,7 @@ import (
 type ConfigService struct {
 	adminUserId   string
 	siteUrl       string
+	proxyUrl      string
 	adminUsername string
 	// 全局的
 	GlobalAllConfigs    map[string]interface{}
@@ -41,6 +42,7 @@ func (this *ConfigService) InitGlobalConfigs() bool {
 		this.adminUsername = "admin"
 	}
 	this.siteUrl, _ = revel.Config.String("site.url")
+	this.proxyUrl, _ = revel.Config.String("proxy.url")
 
 	userInfo := userService.GetUserInfoByAny(this.adminUsername)
 	if userInfo.UserId == "" {
@@ -82,6 +84,15 @@ func (this *ConfigService) GetSiteUrl() string {
 	}
 
 	return this.siteUrl
+}
+
+func (this *ConfigService) GetProxyUrl() string {
+	s := this.GetGlobalStringConfig("proxyUrl")
+	if s != "" {
+		return s
+	}
+
+	return this.proxyUrl
 }
 func (this *ConfigService) GetAdminUsername() string {
 	return this.adminUsername
