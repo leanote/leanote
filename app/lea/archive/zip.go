@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"strings"
+	"github.com/leanote/leanote/app/lea"
 )
 
 // main functions shows how to TarGz a directory/file and
@@ -144,10 +145,16 @@ func Unzip(srcFilePath string, destDirPath string) (ok bool, msg string) {
 	}
 	defer r.Close()
 	for _, f := range r.File {
-		//		fmt.Println("FileName : ", f.Name); // j/aaa.zip
+		// fmt.Println("FileName : ", f.Name); // j/aaa.zip
 		rc, err := f.Open()
 		if err != nil {
 			panic(err)
+		}
+
+		// 包含恶意目录
+		if strings.Contains(f.Name, "../") {
+			lea.LogW("恶意文件", f.Name);
+			continue
 		}
 
 		// 把首文件夹去掉, 即j去掉, 分离出文件夹和文件名
