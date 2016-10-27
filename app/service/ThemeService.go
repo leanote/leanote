@@ -266,6 +266,11 @@ func (this *ThemeService) GetDefaultThemes() (themes []info.Theme) {
 
 // 得到模板内容
 func (this *ThemeService) GetTplContent(userId, themeId, filename string) string {
+	// 防止用"../../来获取其它文件"
+	if (strings.Contains(filename, "../")) {
+		return ""
+	}
+	
 	path := this.GetThemeAbsolutePath(userId, themeId) + "/" + filename
 	return GetFileStrContent(path)
 }
