@@ -8,7 +8,7 @@ function retIsOk(ret) {
 	return false;
 }
 
-var urlPrefix = UrlPrefix;
+var urlPrefix = '';
 var getMsg = parent.getMsg;
 if (!getMsg) {
 	getMsg = function(msg) {

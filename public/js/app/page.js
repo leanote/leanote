@@ -523,8 +523,8 @@ function initEditor() {
 		
 		// fix TinyMCE Removes site base url
 		// http://stackoverflow.com/questions/3360084/tinymce-removes-site-base-urls
-		convert_urls:true,
-		relative_urls:false,
+		convert_urls: false, // true会将url变成../api/
+		relative_urls: true,
 		remove_script_host:false,
 		
 		selector : "#editorContent",

@@ -1,6 +1,5 @@
 // for editor.
 // drag image to editor
-var urlPrefix = UrlPrefix; // window.location.protocol + "//" + window.location.host;
 define('editor_drop_paste', ['fileupload'], function() {
 
 	// 在toggle成pre或ace时
@@ -125,8 +124,7 @@ define('editor_drop_paste', ['fileupload'], function() {
 				(function(data) {
 					ajaxPost("/file/copyImage", {userId: UserInfo.UserId, fileId: fileId, toUserId: curNote.UserId}, function(re) {
 						if(reIsOk(re) && re.Id) {
-							var urlPrefix = window.location.protocol + "//" + window.location.host;
-							data.src = urlPrefix + "/api/file/getImage?fileId=" + re.Id;
+							data.src = "/api/file/getImage?fileId=" + re.Id;
 						}
 						renderImage(data);
 					});
@@ -180,7 +178,7 @@ define('editor_drop_paste', ['fileupload'], function() {
 	            if (data.result.Ok == true) {
 	                data.context.remove();
 	                // life
-	                var data2 = {src: urlPrefix + "/api/file/getImage?fileId=" + data.result.Id}
+	                var data2 = {src: "/api/file/getImage?fileId=" + data.result.Id}
 	                insertImage(data2);
 	            } else {
 	                data.context.empty();
@@ -339,80 +337,20 @@ define('editor_drop_paste', ['fileupload'], function() {
 					data.process = process;
 		            var jqXHR = data.submit();
 	        	}, 20);
-	            
-				/*
-				d.id = '__mcenew' + (new Date()).getTime();
-				d.src = "http://leanote.com/images/loading-24.gif"; // 写死了
-				var img = '<img src="' + d.src + '" id="' + d.id + '" />';
-				editor.insertContent(img);
-				var imgElm = $(d.id);
-				data.imgId = d.id;
-				data.context = imgElm;
-				*/
-
-	        	/*
-	        	// 上传之
-		      	var c = new FormData;
-			    c.append("from", "pasteImage");
-			    // var d;
-			    // d = $.ajaxSettings.xhr();
-			    // d.withCredentials = i;var d = {};
-			    
-				// 先显示loading...
-				var editor = tinymce.EditorManager.activeEditor; 
-				var dom = editor.dom;
-				var d = {};						
-				d.id = '__mcenew';
-				d.src = "http://leanote.com/images/loading-24.gif"; // 写死了
-				editor.insertContent(dom.createHTML('img', d));
-				var imgElm = dom.get('__mcenew');
-			    $.ajax({url: "/file/pasteImage", contentType:false, processData:false , data: c, type: "POST"}
-			    	).done(function(re) {
-			    		if(!re || typeof re != "object" || !re.Ok) {
-			    			// 删除
-			    			dom.remove(imgElm);
-			    			return;
-			    		}
-			    		// 这里, 如果图片宽度过大, 这里设置成500px
-						var urlPrefix = UrlPrefix; // window.location.protocol + "//" + window.location.host;
-						var src = urlPrefix + "/api/file/getImage?fileId=" + re.Id;
-						getImageSize(src, function(wh) {
-							// life 4/25
-							if(wh && wh.width) {
-								if(wh.width > 600) {
-									wh.width = 600;
-								}
-								d.width = wh.width;
-								dom.setAttrib(imgElm, 'width', d.width);
-							}
-							dom.setAttrib(imgElm, 'src', src);
-						});
-						dom.setAttrib(imgElm, 'id', null);
-			    	});
-			    };
-			    reader.readAsDataURL(blob);
-			    */
 	        },
 	
 	        done: function(e, data) {
 	            if (data.result.Ok == true) {
 		    		// 这里, 如果图片宽度过大, 这里设置成500px
 		    		var re = data.result;
-					var urlPrefix = UrlPrefix; // window.location.protocol + "//" + window.location.host;
-					var src = urlPrefix + "/api/file/getImage?fileId=" + re.Id;
+					var src = "/api/file/getImage?fileId=" + re.Id;
 
 					if(curNote && !curNote.IsMarkdown) {
 						data.process.replace(src);
 					} else {
 						MD && MD.insertLink(src, 'title', true);
 					}
-					
-					/*
-					getImageSize(src, function() {
-						$img.attr('src', src);
-						$img.removeAttr('id');
-					});
-					*/
+				
 	            } else {
 					data.process.remove();
 	            }

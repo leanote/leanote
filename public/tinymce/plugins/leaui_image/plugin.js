@@ -110,13 +110,8 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 						var data = datas[i];
 						var src = data.src;
 						// the network image
-						var trueSrc;
-						if(src.indexOf("http://") != -1 || src.indexOf("https://") != -1) {
-							trueSrc = src;
-						} else {
-							trueSrc = url + "/" + src;
-						}
-						data.src = trueSrc;
+						var trueSrc = src;
+						data.src = src;
 						
 						var renderImage = function(data) {
 							// 这里, 如果图片宽度过大, 这里设置成500px
@@ -125,7 +120,7 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 								var imgElm;
 								// 先显示loading...
 								d.id = '__mcenew' + i;
-								d.src = "http://leanote.com/images/loading-24.gif";
+								d.src = "/images/loading-24.gif";
 								imgElm = dom.createHTML('img', d);
 								editor.insertContent(imgElm);
 								imgElm = dom.get(d.id);
@@ -164,8 +159,7 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 								(function(data) {
 									ajaxPost("/file/copyImage", {userId: UserInfo.UserId, fileId: fileId, toUserId: curNote.UserId}, function(re) {
 										if(reIsOk(re) && re.Id) {
-											var urlPrefix = UrlPrefix; // window.location.protocol + "//" + window.location.host;
-											data.src = urlPrefix + "/api/file/getImage?fileId=" + re.Id;
+											data.src = "/api/file/getImage?fileId=" + re.Id;
 										}
 										renderImage(data);
 									});
