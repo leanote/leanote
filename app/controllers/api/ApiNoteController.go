@@ -166,18 +166,20 @@ func (c ApiNote) fixPostNotecontent(noteOrContent *info.ApiNote) {
 			if file.LocalFileId != "" {
 				LogJ(file)
 				if !file.IsAttach {
-					reg, _ := regexp.Compile(`"https*://[^/]*?/api/file/getImage\?fileId=`+file.LocalFileId)
+					// <img src="https://"
+					// ![](http://demo.leanote.top/api/file/getImage?fileId=5863219465b68e4fd5000001)
+					reg, _ := regexp.Compile(`https*://[^/]*?/api/file/getImage\?fileId=`+file.LocalFileId)
 					// Log(reg)
-					noteOrContent.Content = reg.ReplaceAllString(noteOrContent.Content, `"/api/file/getImage?fileId=`+file.FileId)  
+					noteOrContent.Content = reg.ReplaceAllString(noteOrContent.Content, `/api/file/getImage?fileId=`+file.FileId)  
 
 					// // "http://a.com/api/file/getImage?fileId=localId" => /api/file/getImage?fileId=serverId
 					// noteOrContent.Content = strings.Replace(noteOrContent.Content, 
 					// 	baseUrl + "/api/file/getImage?fileId="+file.LocalFileId, 
 					// 	"/api/file/getImage?fileId="+file.FileId, -1)
 				} else {
-					reg, _ := regexp.Compile(`"https*://[^/]*?/api/file/getAttach\?fileId=`+file.LocalFileId)
+					reg, _ := regexp.Compile(`https*://[^/]*?/api/file/getAttach\?fileId=`+file.LocalFileId)
 					Log(reg)
-					noteOrContent.Content = reg.ReplaceAllString(noteOrContent.Content, `"/api/file/getAttach?fileId=`+file.FileId)  
+					noteOrContent.Content = reg.ReplaceAllString(noteOrContent.Content, `/api/file/getAttach?fileId=`+file.FileId)  
 					/*
 					noteOrContent.Content = strings.Replace(noteOrContent.Content, 
 						baseUrl + "/api/file/getAttach?fileId="+file.LocalFileId, 
