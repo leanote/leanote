@@ -606,5 +606,5 @@ func (this *ConfigService) HomePageIsAdminsBlog() bool {
 }
 
 func (this *ConfigService) GetVersion() string {
-	return "2.2"
+	return "2.2.1"
 }
