@@ -863,7 +863,13 @@ func (this *NoteService) searchNoteFromContent(notes []info.Note, userId, key st
 	notes2 := this.ListNotesByNoteIds(noteIds2)
 
 	// 合并之
-	notes = append(notes, notes2...)
+	// 不能是删除的
+	for _, n := range notes2 {
+		if !n.IsDeleted && !n.IsTrash {
+			// notes = append(notes, notes2...)
+			notes = append(notes, n)
+		}
+	}
 	return notes
 }
 
