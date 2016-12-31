@@ -18,8 +18,6 @@ script:
   - mongo --version
   - mongorestore -h localhost -d leanote --directoryperdb ./mongodb_backup/leanote_install_data/
 
-  - go test github.com/leanote/leanote/app/tests
-
   # gen tmp/main.go, routes/routes.go
   - go run app/cmd/main.go
   # build
