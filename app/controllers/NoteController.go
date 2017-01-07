@@ -338,6 +338,8 @@ func (c Note) ToPdf(noteId, appKey string) revel.Result {
 		siteUrlPattern = strings.Replace(siteUrlPattern, "http", "https*", 1)
 	}
 
+	siteUrlPattern = "(?:" + siteUrlPattern + ")*"
+
 	regImage, _ := regexp.Compile(`<img .*?(src=('|")` + siteUrlPattern + `/(file/outputImage|api/file/getImage)\?fileId=([a-z0-9A-Z]{24})("|'))`)
 
 	findsImage := regImage.FindAllStringSubmatch(contentStr, -1) // 查找所有的
