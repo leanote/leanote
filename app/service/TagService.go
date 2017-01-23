@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/leanote/leanote/app/db"
 	"github.com/leanote/leanote/app/info"
-	//	. "github.com/leanote/leanote/app/lea"
+		. "github.com/leanote/leanote/app/lea"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 )
@@ -61,6 +61,14 @@ func (this *TagService) AddOrUpdateTag(userId string, tag string) info.NoteTag {
 		noteTag.Count = count
 		noteTag.UpdatedTime = time.Now()
 		//		noteTag.Usn = userService.IncrUsn(userId), 更新count而已
+
+		// 之前删除过的, 现在要添加回来了
+		if noteTag.IsDeleted {
+			Log("之前删除过的, 现在要添加回来了:  " + tag)
+			noteTag.Usn = userService.IncrUsn(userId)
+			noteTag.IsDeleted = false
+		}
+
 		db.UpdateByIdAndUserId(db.NoteTags, noteTag.TagId.Hex(), userId, noteTag)
 		return noteTag
 	}
