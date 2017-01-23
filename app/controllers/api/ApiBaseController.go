@@ -142,10 +142,10 @@ func (c ApiBaseContrller) upload(name string, noteId string, isAttach bool) (ok 
 	// 生成新的文件名
 	filename := handel.Filename
 	_, ext := SplitFilename(filename)
-	if ext != ".gif" && ext != ".jpg" && ext != ".png" && ext != ".bmp" && ext != ".jpeg" {
-		msg = "notImage"
-		return
-	}
+	// if ext != ".gif" && ext != ".jpg" && ext != ".png" && ext != ".bmp" && ext != ".jpeg" {
+	// 	msg = "notImage"
+	// 	return
+	// }
 
 	filename = newGuid + ext
 	data, err := ioutil.ReadAll(file)
