@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="title" content="Leaui Mind Map">
+    <link href="ui/theme/default/css/default.all.css?_=1" type="text/css" rel="stylesheet" />
+    <style>
+    #loading {
+        position: fixed;
+        z-index: 100;
+        left: 0;
+        right: 0;
+        background: #fff;
+        bottom: 0;
+        top: 0;
+    }
+    #loading .ld {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        width: 60px;
+        margin-left: -30px;
+        text-align: center;
+        color: #666;
+    }
+    #loading img {
+        width: 60px;
+    }
+</style>
+</head>
+
+<body>
+<div id="loading">
+<div class="ld">
+<img src="img/loading.gif" alt="loading" />
+Loading...
+</div></div>
+<div id="content-wrapper">
+    <div id="panel"></div>
+    <div id="kityminder" onselectstart="return false">
+    </div>
+</div>
+</body>
+
+<script src="main.min.js?_=2" charset="utf-8"></script>
+<script src="config.js?_=2" charset="utf-8"></script>
+<script src="lang/zh-cn/zh-cn.js?_=2" charset="utf-8"></script>
+<script src="lang/en-us/en-us.js?_=2" charset="utf-8"></script>
+<script>
+
+$(function() {
+    zip.inflateJSPath = null;
+});
+var langs;
+try {
+    if(parent.LEA.locale.indexOf('zh') >= 0)  {
+         window.KITYMINDER_CONFIG.lang = 'zh-cn';
+    }
+} catch(e) {
+}
+
+// create km instance
+km = KM.getMinder('kityminder', window.KITYMINDER_CONFIG);
+
+// init ui for instance
+km.initUI(function () {
+    $('#loading').hide();
+});
+if (parent && parent.LEAUI_MIND) {
+    var json = parent.LEAUI_MIND.json;
+    if (json) {
+        try {
+            var json = JSON.parse(json);
+            km.importJson(json);
+        } catch(e) {console.log(e)};
+    }
+}
+
+</script>
+</html>

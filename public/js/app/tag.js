@@ -210,6 +210,8 @@ Tag.removeTag = function($target) {
 		tag = Tag.mapCn2En[tag] || tag;
 	}
 	Note.curChangedSaveIt(true, function() {
+		return;
+
 		ajaxPost("/tag/updateTag", {tag: tag}, function(ret) {
 			if(reIsOk(ret)) {
 				Tag.addTagNav(ret.Item);
@@ -236,6 +238,17 @@ Tag.renderTagNav = function(tags) {
 		text = trimTitle(text);
 		var classes = Tag.classes[tag] || "label label-default";
 		$("#tagNav").append(tt('<li data-tag="?"><a> <span class="?">?</span> <span class="tag-delete">X</span></li>', tag, classes, text));
+	}
+};
+
+Tag.deleteTag = function(title) {
+	var me = this;
+	for(var i = 0; i < this.tags.length; ++i) {
+		var tag = this.tags[i];
+		if (tag.Tag == title) {
+			this.tags.splice(i, 1);
+			break;
+		}
 	}
 };
 
@@ -328,6 +341,9 @@ $(function() {
 					var item = re.Item; // 被删除的
 					Note.deleteNoteTag(item, tag);
 					$li.remove();
+
+					// 删除tags
+					Tag.deleteTag(tag);
 				}
 			});
 		};

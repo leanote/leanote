@@ -24,6 +24,10 @@
 					<label>Password</label>
 					<input type="text" class="form-control" name="emailPassword" value="{{.str.emailPassword}}" placeholder="">
 				</div>
+				<div class="form-group">
+					<label>SSL ?</label>
+					<input type="checkbox" class="form-control" name="emailSSL" {{if .str.emailSSL}}checked="checked"{{end}} value="1">
+				</div>
 			</div>
 			
 			<footer class="panel-footer text-right bg-light lter">

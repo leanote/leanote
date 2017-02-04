@@ -39899,13 +39899,8 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 						var data = datas[i];
 						var src = data.src;
 						// the network image
-						var trueSrc;
-						if(src.indexOf("http://") != -1 || src.indexOf("https://") != -1) {
-							trueSrc = src;
-						} else {
-							trueSrc = url + "/" + src;
-						}
-						data.src = trueSrc;
+						var trueSrc = src;
+						data.src = src;
 						
 						var renderImage = function(data) {
 							// 这里, 如果图片宽度过大, 这里设置成500px
@@ -39914,7 +39909,7 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 								var imgElm;
 								// 先显示loading...
 								d.id = '__mcenew' + i;
-								d.src = "http://leanote.com/images/loading-24.gif";
+								d.src = "/images/loading-24.gif";
 								imgElm = dom.createHTML('img', d);
 								editor.insertContent(imgElm);
 								imgElm = dom.get(d.id);
@@ -39953,8 +39948,7 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 								(function(data) {
 									ajaxPost("/file/copyImage", {userId: UserInfo.UserId, fileId: fileId, toUserId: curNote.UserId}, function(re) {
 										if(reIsOk(re) && re.Id) {
-											var urlPrefix = UrlPrefix; // window.location.protocol + "//" + window.location.host;
-											data.src = urlPrefix + "/api/file/getImage?fileId=" + re.Id;
+											data.src = "/api/file/getImage?fileId=" + re.Id;
 										}
 										renderImage(data);
 									});
@@ -40012,6 +40006,85 @@ tinymce.PluginManager.add('leaui_image', function(editor, url) {
 	    	e.stopPropagation();
     	}
     });
+});
+/**
+ * leaui mind map plugin
+ * copyright leaui
+ * leaui.com
+ */
+var LEAUI_MIND = {};
+tinymce.PluginManager.add('leaui_mindmap', function(editor, url) {
+	
+	function showDialog() {
+		var dom = editor.dom;
+
+		var content = editor.selection.getContent();
+		// get images and attrs
+		var p = /<img.*?\/>/g;
+		var images = content.match(p);
+		var newNode = document.createElement("p");
+		LEAUI_MIND = {};
+		for(var i in images) {
+			newNode.innerHTML = images[i];
+			var imgElm = newNode.firstChild;
+			if(imgElm && imgElm.nodeName == "IMG") {
+				LEAUI_MIND.json = dom.getAttrib(imgElm, 'data-mind-json');
+				break;
+			}
+		}
+
+		function GetTheHtml(){
+			var lang = editor.settings.language;
+			var u = url + '/mindmap/index.html?i=1';
+			var html = '<iframe id="leauiMindMapIfr" src="'+ u + '?' + new Date().getTime() + '&lang=' + lang + '" frameborder="0"></iframe>';
+			return html;
+		}
+
+		var w = window.innerWidth - 10;
+		var h = window.innerHeight - 150;
+
+		win = editor.windowManager.open({
+			title: "Mind Map",
+			width : w,
+			height : h,
+			html: GetTheHtml(),
+			buttons: [
+				{
+					text: 'Cancel',
+					onclick: function() {
+						this.parent().parent().close();
+					}
+				},
+				{
+				text: 'Insert',
+				subtype: 'primary',
+				onclick: function(e) {
+					var me = this;
+					var _iframe = document.getElementById('leauiMindMapIfr').contentWindow;
+					var km = _iframe.km;
+					// window.km= km;
+					// return
+					km.exportData('png').then(function(data) {
+						var json = JSON.stringify(km.exportJson());
+						// console.log(json);
+						var img = '<img src="' + data + '" data-mce-src="-" data-mind-json=\'' + json + '\'>';
+						editor.insertContent(img);
+
+						me.parent().parent().close();
+					});
+					return;
+				}
+				}]
+		});
+	}
+	
+	editor.addButton('leaui_mindmap', {
+		// image: url + '/icon.png',
+		icon: 'mind',
+		tooltip: 'Insert/edit mind map',
+		onclick: showDialog,
+		stateSelector: 'img[data-mind-json]'
+	});
 });
 /**
  * plugin.js

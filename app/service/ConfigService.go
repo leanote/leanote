@@ -49,7 +49,8 @@ func (this *ConfigService) InitGlobalConfigs() bool {
 	this.adminUserId = userInfo.UserId.Hex()
 
 	configs := []info.Config{}
-	db.ListByQ(db.Configs, bson.M{"UserId": userInfo.UserId}, &configs)
+	// db.ListByQ(db.Configs, bson.M{"UserId": userInfo.UserId}, &configs)
+	db.ListByQ(db.Configs, bson.M{}, &configs)
 
 	for _, config := range configs {
 		if config.IsArr {
@@ -96,7 +97,7 @@ func (this *ConfigService) updateGlobalConfig(userId, key string, value interfac
 	if _, ok := this.GlobalAllConfigs[key]; !ok {
 		// 需要添加
 		config := info.Config{ConfigId: bson.NewObjectId(),
-			UserId:      bson.ObjectIdHex(userId),
+			UserId:      bson.ObjectIdHex(userId), // 没用
 			Key:         key,
 			IsArr:       isArr,
 			IsMap:       isMap,
@@ -141,7 +142,8 @@ func (this *ConfigService) updateGlobalConfig(userId, key string, value interfac
 			i["ValueStr"] = v
 			this.GlobalStringConfigs[key] = v
 		}
-		return db.UpdateByQMap(db.Configs, bson.M{"UserId": bson.ObjectIdHex(userId), "Key": key}, i)
+		// return db.UpdateByQMap(db.Configs, bson.M{"UserId": bson.ObjectIdHex(userId), "Key": key}, i)
+		return db.UpdateByQMap(db.Configs, bson.M{"Key": key}, i)
 	}
 }
 
@@ -604,5 +606,5 @@ func (this *ConfigService) HomePageIsAdminsBlog() bool {
 }
 
 func (this *ConfigService) GetVersion() string {
-	return "2.0"
+	return "2.3"
 }

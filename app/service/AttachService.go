@@ -119,6 +119,7 @@ func (this *AttachService) DeleteAllAttachs(noteId, userId string) bool {
 }
 
 // delete attach
+// 删除附件为什么要incrNoteUsn ? 因为可能没有内容要修改的
 func (this *AttachService) DeleteAttach(attachId, userId string) (bool, string) {
 	attach := info.Attach{}
 	db.Get(db.Attachs, attachId, &attach)

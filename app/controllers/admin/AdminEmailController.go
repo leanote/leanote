@@ -74,12 +74,13 @@ func (c AdminEmail) DoToImage(toImageBinPath string) revel.Result {
 	return c.RenderJson(re)
 }
 
-func (c AdminEmail) Set(emailHost, emailPort, emailUsername, emailPassword string) revel.Result {
+func (c AdminEmail) Set(emailHost, emailPort, emailUsername, emailPassword, emailSSL string) revel.Result {
 	re := info.NewRe()
 	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "emailHost", emailHost)
 	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "emailPort", emailPort)
 	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "emailUsername", emailUsername)
 	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "emailPassword", emailPassword)
+	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "emailSSL", emailSSL)
 
 	return c.RenderJson(re)
 }

@@ -148,7 +148,7 @@ func init() {
 			}
 
 			classes += " label-post"
-			var url = tagPostUrl + "/" + url.QueryEscape(tag)
+			var url = tagPostUrl + "/" + tag
 			tagStr += "<a class=\"" + classes + "\" href=\"" + url + "\">" + str + "</a>"
 			if i != lenTags-1 {
 				tagStr += " "
@@ -230,7 +230,7 @@ func init() {
 				classes += " label-default"
 			}
 			classes += " label-post"
-			var url = tagPostUrl + url.QueryEscape(tag)
+			var url = tagPostUrl + tag
 			tagStr += "<a class=\"" + classes + "\" href=\"" + url + "\">" + str + "</a>"
 			if i != lenTags-1 {
 				tagStr += " "

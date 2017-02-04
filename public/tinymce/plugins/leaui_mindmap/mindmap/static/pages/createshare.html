@@ -1,0 +1,64 @@
+<h2 id="current-share-header">$lang.current_share</h2>
+<form id="share-select">
+    <div id="shared-tip"></div>
+    <fieldset id="no-share">
+        <legend>
+            <label>
+                <input name="sharetype" type="radio" value="none" checked />
+                $lang.none_share
+            </label>
+        </legend>
+        <div class="share-description">
+            $lang.none_share_description
+        </div>
+    </fieldset>
+    <fieldset id="public-share">
+        <legend>
+            <label>
+                <input name="sharetype" type="radio" value="public"/>
+                $lang.public_share
+            </label>
+        </legend>
+        <div class="share-description">$lang.public_share_description</div>
+        <div class="share-body">
+            <h3>$lang.url_share</h3>
+            <p>
+                <input id="share-url" class="fui-widget fui-selectable" type="url" readonly value="http://naotu.baidu.com/?shareId=kcev3dd" />
+                <button id="copy-share-url" data-clipboard-target="share-url" type="button">$lang.copy</button>
+            </p>
+            <p class="share-qr-code"></p>
+            <h3>$lang.sns_share</h3>
+            <p id="share-platform" class="bdsharebuttonbox">
+                <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+                <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+                <a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a>
+                <a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>
+                <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+            </p>
+        </div>
+
+    </fieldset>
+
+    <fieldset id="password-share" disabled>
+        <legend>
+            <label>
+                <input name="sharetype" type="radio" value="password" disabled />
+                $lang.password_share
+            </label>
+        </legend>
+        <div class="share-description">$lang.password_share_description</div>
+        <div class="share-body">$lang.ondev</div>
+    </fieldset>
+
+    <fieldset id="email-share" disabled>
+        <legend>
+            <label>
+                <input name="sharetype" type="radio" value="email" disabled />
+                $lang.email_share
+            </label>
+        </legend>
+        <div class="share-description">$lang.email_share_description</div>
+        <div class="share-body">$lang.ondev</div>
+    </fieldset>
+
+</form>

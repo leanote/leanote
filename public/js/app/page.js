@@ -523,8 +523,8 @@ function initEditor() {
 		
 		// fix TinyMCE Removes site base url
 		// http://stackoverflow.com/questions/3360084/tinymce-removes-site-base-urls
-		convert_urls:true,
-		relative_urls:false,
+		convert_urls: false, // true会将url变成../api/
+		relative_urls: true,
 		remove_script_host:false,
 		
 		selector : "#editorContent",
@@ -534,10 +534,10 @@ function initEditor() {
 		skin : "custom",
 		language: LEA.locale, // 语言
 		plugins : [
-				"autolink link leaui_image lists hr", "paste",
+				"autolink link leaui_image leaui_mindmap lists hr", "paste",
 				"searchreplace leanote_nav leanote_code tabfocus",
 				"table textcolor" ], // nonbreaking directionality charmap
-		toolbar1 : "formatselect | forecolor backcolor | bold italic underline strikethrough | leaui_image | leanote_code leanote_inline_code | bullist numlist | alignleft aligncenter alignright alignjustify",
+		toolbar1 : "formatselect | forecolor backcolor | bold italic underline strikethrough | leaui_image leaui_mindmap | leanote_code leanote_inline_code | bullist numlist | alignleft aligncenter alignright alignjustify",
 		toolbar2 : "outdent indent blockquote | link unlink | table | hr removeformat | subscript superscript |searchreplace | pastetext | leanote_ace_pre | fontselect fontsizeselect",
 
 		// 使用tab键: http://www.tinymce.com/wiki.php/Plugin3x:nonbreaking

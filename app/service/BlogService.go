@@ -673,19 +673,18 @@ func (this *BlogService) LikeBlog(noteId, userId string) (ok bool, isLike bool) 
 
 	noteIdO := bson.ObjectIdHex(noteId)
 	userIdO := bson.ObjectIdHex(userId)
-	var n int
 	if !db.Has(db.BlogLikes, bson.M{"NoteId": noteIdO, "UserId": userIdO}) {
-		n = 1
 		// 添加之
 		db.Insert(db.BlogLikes, info.BlogLike{LikeId: bson.NewObjectId(), NoteId: noteIdO, UserId: userIdO, CreatedTime: time.Now()})
 		isLike = true
 	} else {
 		// 已点过, 那么删除之
-		n = -1
 		db.Delete(db.BlogLikes, bson.M{"NoteId": noteIdO, "UserId": userIdO})
 		isLike = false
 	}
-	ok = db.Update(db.Notes, bson.M{"_id": noteIdO}, bson.M{"$inc": bson.M{"LikeNum": n}})
+	
+	count := db.Count(db.BlogLikes, bson.M{"NoteId": noteIdO})
+	ok = db.UpdateByQI(db.Notes, bson.M{"_id": noteIdO}, bson.M{"LikeNum": count})
 
 	return
 }

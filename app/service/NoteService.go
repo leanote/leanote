@@ -415,9 +415,15 @@ func (this *NoteService) UpdateNote(updatedUserId, noteId string, needUpdate bso
 		}
 	}
 
+	/*
+	// 这里不再判断, 因为controller已经判断了, 删除附件会新增, 所以不用判断
 	if usn > 0 && note.Usn != usn {
+		Log("有冲突!!")
+		Log(note.Usn)
+		Log(usn)
 		return false, "conflict", 0
 	}
+	*/
 
 	// 是否已自定义
 	if note.IsBlog && note.HasSelfDefined {
@@ -857,7 +863,13 @@ func (this *NoteService) searchNoteFromContent(notes []info.Note, userId, key st
 	notes2 := this.ListNotesByNoteIds(noteIds2)
 
 	// 合并之
-	notes = append(notes, notes2...)
+	// 不能是删除的
+	for _, n := range notes2 {
+		if !n.IsDeleted && !n.IsTrash {
+			// notes = append(notes, notes2...)
+			notes = append(notes, n)
+		}
+	}
 	return notes
 }
 
@@ -1017,6 +1029,8 @@ func (this *NoteService) FixContentBad(content string, isMarkdown bool) string {
 	return content
 }
 
+// 得到笔记的内容, 此时将笔记内的链接转成标准的Leanote Url
+// 将笔记的图片, 附件链接转换成 site.url/file/getImage?fileId=xxx,  site.url/file/getAttach?fileId=xxxx
 // 性能更好, 5倍的差距
 func (this *NoteService) FixContent(content string, isMarkdown bool) string {
 	baseUrl := configService.GetSiteUrl()
@@ -1029,12 +1043,19 @@ func (this *NoteService) FixContent(content string, isMarkdown bool) string {
 	} else {
 		baseUrlPattern = strings.Replace(baseUrl, "http://", "https*://", 1)
 	}
+	baseUrlPattern = "(?:" + baseUrlPattern + ")*"
+
+	Log(baseUrlPattern)
 
 	patterns := []map[string]string{
+		map[string]string{"src": "src", "middle": "/api/file/getImage", "param": "fileId", "to": "getImage?fileId="},
 		map[string]string{"src": "src", "middle": "/file/outputImage", "param": "fileId", "to": "getImage?fileId="},
+		
 		map[string]string{"src": "href", "middle": "/attach/download", "param": "attachId", "to": "getAttach?fileId="},
+		map[string]string{"src": "href", "middle": "/api/file/getAtach", "param": "fileId", "to": "getAttach?fileId="},
+
 		// 该链接已失效, 不再支持
-		map[string]string{"src": "href", "middle": "/attach/downloadAll", "param": "noteId", "to": "getAllAttachs?noteId="},
+		// map[string]string{"src": "href", "middle": "/attach/downloadAll", "param": "noteId", "to": "getAllAttachs?noteId="},
 	}
 
 	for _, eachPattern := range patterns {
@@ -1055,6 +1076,8 @@ func (this *NoteService) FixContent(content string, isMarkdown bool) string {
 				reg, _ = regexp.Compile("<a(?:[^>]+?)(?:" + eachPattern["src"] + `=['"]*` + baseUrlPattern + eachPattern["middle"] + `\?` + eachPattern["param"] + `=(?:[a-z0-9A-Z]{24})["']*)[^>]*>`)
 				reg2, _ = regexp.Compile("<a(?:[^>]+?)(" + eachPattern["src"] + `=['"]*` + baseUrlPattern + eachPattern["middle"] + `\?` + eachPattern["param"] + `=([a-z0-9A-Z]{24})["']*)[^>]*>`)
 			}
+
+			Log(reg2)
 
 			content = reg.ReplaceAllStringFunc(content, func(str string) string {
 				// str=这样的

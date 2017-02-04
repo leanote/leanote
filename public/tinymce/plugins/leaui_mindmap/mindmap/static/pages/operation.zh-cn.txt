@@ -1,0 +1,43 @@
+## 节点操作
+
+`Enter`: 插入兄弟节点
+`Tab`, `Insert`: 插入子节点
+`Shift` + `Tab`: 导航到父节点
+`Delete`: 删除节点
+`Up`, `Down`, `Left`, `Right`: 节点导航
+`Alt` + `Up`, `Down`: 向上/向下调整顺序
+`/`: 展开/收起节点
+`F2`: 编辑节点
+`Shift` + `Enter`: 文本换行
+`Ctrl` + `A`: 全选节点
+`Ctrl` + `C`: 复制节点
+`Ctrl` + `X`: 剪切节点
+`Ctrl` + `V`: 粘贴节点
+`Ctrl` + `B`: 加粗
+`Ctrl` + `I`: 斜体
+`Ctrl` + `F`: 查找节点
+
+## 视野控制
+
+`Ctrl` + `ESC`: 全屏切换
+`Alt` + `拖动` or `右键拖动`: 拖动视野
+`滚轮` or `触摸板`: 移动视野
+`Ctrl` + `Up`, `Down`, `Left`, `Right`: 视野导航
+`空白处双击`, `Ctrl + Enter`: 居中根节点
+`Ctrl` + `+`, `-`: 放大/缩小视野
+
+## 文件操作
+
+`Ctrl` + `Alt` + `N`: 新建
+`Ctrl` + `S`: 保存
+`Ctrl` + `Shift` + `S`: 另存为
+`Ctrl` + `Alt` + `S`: 分享
+
+## 布局
+
+`Ctrl` + `Shift` + `L`: 整理布局
+
+## 后悔药
+
+`Ctrl` + `Z`: 撤销
+`Ctrl` + `Y`: 重做

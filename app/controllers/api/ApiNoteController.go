@@ -8,8 +8,9 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"os"
 	"os/exec"
-	"strings"
+	// "strings"
 	"time"
+	"regexp"
 	//	"github.com/leanote/leanote/app/types"
 	//	"io/ioutil"
 	//	"fmt"
@@ -158,11 +159,33 @@ func (c ApiNote) fixPostNotecontent(noteOrContent *info.ApiNote) {
 	if noteOrContent.Content == "" {
 		return
 	}
+
 	files := noteOrContent.Files
 	if files != nil && len(files) > 0 {
 		for _, file := range files {
 			if file.LocalFileId != "" {
-				noteOrContent.Content = strings.Replace(noteOrContent.Content, "fileId="+file.LocalFileId, "fileId="+file.FileId, -1)
+				LogJ(file)
+				if !file.IsAttach {
+					// <img src="https://"
+					// ![](http://demo.leanote.top/api/file/getImage?fileId=5863219465b68e4fd5000001)
+					reg, _ := regexp.Compile(`https*://[^/]*?/api/file/getImage\?fileId=`+file.LocalFileId)
+					// Log(reg)
+					noteOrContent.Content = reg.ReplaceAllString(noteOrContent.Content, `/api/file/getImage?fileId=`+file.FileId)  
+
+					// // "http://a.com/api/file/getImage?fileId=localId" => /api/file/getImage?fileId=serverId
+					// noteOrContent.Content = strings.Replace(noteOrContent.Content, 
+					// 	baseUrl + "/api/file/getImage?fileId="+file.LocalFileId, 
+					// 	"/api/file/getImage?fileId="+file.FileId, -1)
+				} else {
+					reg, _ := regexp.Compile(`https*://[^/]*?/api/file/getAttach\?fileId=`+file.LocalFileId)
+					Log(reg)
+					noteOrContent.Content = reg.ReplaceAllString(noteOrContent.Content, `/api/file/getAttach?fileId=`+file.FileId)  
+					/*
+					noteOrContent.Content = strings.Replace(noteOrContent.Content, 
+						baseUrl + "/api/file/getAttach?fileId="+file.LocalFileId, 
+						"/api/file/getAttach?fileId="+file.FileId, -1)
+					*/
+				}
 			}
 		}
 	}
@@ -352,6 +375,7 @@ func (c ApiNote) UpdateNote(noteOrContent info.ApiNote) revel.Result {
 		Log("conflict")
 		return c.RenderJson(re)
 	}
+	Log("没有冲突")
 
 	// 如果传了files
 	// TODO 测试
