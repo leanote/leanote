@@ -12039,7 +12039,22 @@ define('extensions/markdownExtra',[
             "def_list",
             "attr_list",
             "footnotes",
-            "smartypants",
+            // smartypants不要, 因为它把'和"转成了中文引号, --转成了一个–
+            // "smartypants", // https://daringfireball.net/projects/smartypants/
+            /*s
+            SmartyPants is a free web publishing plug-in for Movable Type, Blosxom, and BBEdit that easily translates plain ASCII punctuation characters into “smart” typographic punctuation HTML entities.
+SmartyPants can perform the following transformations:
+
+Straight quotes ( " and ' ) into “curly” quote HTML entities
+Backticks-style quotes (``like this'') into “curly” quote HTML entities
+Dashes (“--” and “---”) into en- and em-dash entities
+Three consecutive dots (“...”) into an ellipsis entity
+This means you can write, edit, and save your posts using plain old ASCII straight quotes, plain dashes, and plain dots, but your published posts (and final HTML output) will appear with smart quotes, em-dashes, and proper ellipses.
+
+SmartyPants is a combination plug-in — a single plug-in file that works with Movable Type, Blosxom, and BBEdit. It can also be used from a Unix-style command-line.
+
+SmartyPants does not modify characters within <pre>, <code>, <kbd>, or <script> tag blocks. Typically, these tags are used to display text where smart quotes and other “smart punctuation” would not be appropriate, such as source code or example markup.
+             */
             "strikethrough",
             "newlines",
         ],
@@ -13377,7 +13392,8 @@ define('extensions/htmlSanitizer',[
 		"samp,small,span,strike,strong,sub,sup,time,tt,u,var,input"));
 
 	// Special Elements (can contain anything)
-	var specialElements = makeMap("script,style");
+	// var specialElements = makeMap("script,style"); //  style为什么需要, 是因为表格style="align:left"
+	var specialElements = makeMap("script"); //  style为什么需要, 是因为表格style="align:left"
 
 	// benweet: Add iframe
 	// blockElements.iframe = true;
@@ -13395,7 +13411,7 @@ define('extensions/htmlSanitizer',[
 			'color,cols,colspan,compact,coords,dir,face,headers,height,hreflang,hspace,' +
 			'ismap,lang,language,nohref,nowrap,rel,rev,rows,rowspan,rules,' +
 			'scope,scrolling,shape,size,span,start,summary,target,title,type,' +
-			'valign,value,vspace,width,checked'));
+			'valign,value,vspace,width,checked,style')); // style为什么需要, 是因为表格style="align:left"
 
 	// benweet: Add id and allowfullscreen (YouTube iframe)
 	validAttrs.id = true;
