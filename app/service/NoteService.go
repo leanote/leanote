@@ -62,6 +62,35 @@ func (this *NoteService) GetNoteAndContent(noteId, userId string) (noteAndConten
 	return info.NoteAndContent{note, noteContent}
 }
 
+func (this *NoteService) GetNoteBySrc(src, userId string) (note info.Note) {
+	note = info.Note{}
+	if src == "" {
+		return
+	}
+
+	notes := []info.Note{}
+	q := db.Notes.Find(bson.M{
+		"UserId": bson.ObjectIdHex(userId),
+		"Src":    src,
+	})
+	q.Sort("-Usn").Limit(1).All(&notes)
+	if len(notes) > 0 {
+		return notes[0]
+	}
+	// db.GetByQ(db.Notes, bson.M{"Src": src, "UserId": bson.ObjectIdHex(userId), "IsDeleted": false}, &note)
+	return
+}
+
+func (this *NoteService) GetNoteAndContentBySrc(src, userId string) (noteId string, noteAndContent info.NoteAndContentSep) {
+	note := this.GetNoteBySrc(src, userId)
+	if (note.NoteId != "") {
+		noteId = note.NoteId.Hex()
+		noteContent := this.GetNoteContent(note.NoteId.Hex(), userId)
+		return noteId, info.NoteAndContentSep{note, noteContent}
+	}
+	return
+}
+
 // 获取同步的笔记
 // > afterUsn的笔记
 func (this *NoteService) GetSyncNotes(userId string, afterUsn, maxEntry int) []info.ApiNote {

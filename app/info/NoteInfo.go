@@ -15,6 +15,8 @@ type Note struct {
 	Title         string        `Title` // 标题
 	Desc          string        `Desc`  // 描述, 非html
 
+	Src string   `Src,omitempty` // 来源, 2016/4/22
+
 	ImgSrc string   `ImgSrc` // 图片, 第一张缩略图地址
 	Tags   []string `Tags,omitempty`
 
@@ -92,6 +94,7 @@ type NoteOrContent struct {
 	UserId     string
 	Title      string
 	Desc       string
+	Src        string
 	ImgSrc     string
 	Tags       string
 	Content    string
@@ -100,4 +103,10 @@ type NoteOrContent struct {
 	IsMarkdown bool
 	FromUserId string // 为共享而新建
 	IsBlog     bool   // 是否是blog, 更新note不需要修改, 添加note时才有可能用到, 此时需要判断notebook是否设为Blog
+}
+
+// 分开的
+type NoteAndContentSep struct {
+	NoteInfo Note
+	NoteContentInfo NoteContent
 }

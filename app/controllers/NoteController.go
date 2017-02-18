@@ -156,6 +156,16 @@ func (c Note) GetNoteAndContent(noteId string) revel.Result {
 	return c.RenderJson(noteService.GetNoteAndContent(noteId, c.GetUserId()))
 }
 
+func (c Note) GetNoteAndContentBySrc(src string) revel.Result {
+	noteId, noteAndContent := noteService.GetNoteAndContentBySrc(src, c.GetUserId())
+	ret := info.Re{}
+	if noteId != "" {
+		ret.Ok = true
+		ret.Item = noteAndContent
+	}
+	return c.RenderJson(ret)
+}
+
 // 得到内容
 func (c Note) GetNoteContent(noteId string) revel.Result {
 	noteContent := noteService.GetNoteContent(noteId, c.GetUserId())
@@ -177,6 +187,7 @@ func (c Note) UpdateNoteOrContent(noteOrContent info.NoteOrContent) revel.Result
 			NoteId:     bson.ObjectIdHex(noteOrContent.NoteId),
 			NotebookId: bson.ObjectIdHex(noteOrContent.NotebookId),
 			Title:      noteOrContent.Title,
+			Src: noteOrContent.Src, // 来源
 			Tags:       strings.Split(noteOrContent.Tags, ","),
 			Desc:       noteOrContent.Desc,
 			ImgSrc:     noteOrContent.ImgSrc,

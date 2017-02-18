@@ -40,6 +40,7 @@ POST	/findPasswordUpdate							Auth.FindPasswordUpdate
 * /note/setNote2Blog Note.SetNote2Blog
 * /note/exportPdf Note.ExportPDF
 * /note/toPdf Note.ToPdf
+* /note/getNoteAndContentBySrc Note.GetNoteAndContentBySrc
 # pjax
 GET     /note/:noteId   	                        Note.Index
 
