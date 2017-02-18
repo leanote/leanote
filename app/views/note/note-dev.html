@@ -345,63 +345,74 @@ function log(o) {
 					</div>
 					<div id="noteList">
 					<div class="clearfix" id="notesAndSort" style="position: relative">
+
 						<div class="pull-left">
 							<!-- 我的笔记本 -->
 							<div class="dropdown" id="myNotebookNavForListNav">
-								<a class="ios7-a dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">
+								<a class="ios7-a">
 									<span id="curNotebookForListNote">{{msg . "all"}}</span>
-									<!--
-									<i class="fa fa-angle-down"></i>
-									-->
 								</a>
-								<!-- 如果notebook过多, 则会产生滚动 弃用
-								<div class="dropdown-menu dropdown-list" style="left: 5px;">
-									<ul role="menu" aria-labelledby="dropdownMenu1" id="notebookNavForListNote"></ul>
-								</div>
-								-->
 							</div>
 							
 							<!-- 共享的笔记本 -->
 							<div class="dropdown" id="sharedNotebookNavForListNav" style="display: none">
-								<a class="ios7-a dropdown-toggle" id="dropdownMenu2" data-toggle="dropdown">
+								<a class="ios7-a">
 									<span id="curSharedNotebookForListNote">{{msg . "all"}}</span>
-									<!--
-									<i class="fa fa-angle-down"></i>
-									-->
 								</a>
-								<ul class="dropdown-menu" role="menu"
-									aria-labelledby="dropdownMenu2" style="left: 5px;" id="sharedNotebookNavForListNote">
-								</ul>
 							</div>
-
 						</div>
 
-						<div class="pull-left" id="tagSearch" style="line-height: 38px">
-						</div>
+						<!-- tag search -->
+						<div class="pull-left" id="tagSearch"></div>
+
+						<!-- sort type -->
 						<div id="sortType">
 							<div class="dropdown">
 								<a class="ios7-a dropdown-toggle" id="dropdownMenu1"
 									data-toggle="dropdown"> 
-									<!--  
-									<i class="fa fa-sort-alpha-asc">
-									</i>Sort <i class="fa fa-angle-down"></i>
-									-->
+									</i><i class="fa fa-th-list"></i>
 								</a>
-								<!--
 								<ul class="dropdown-menu" role="menu"
 									aria-labelledby="dropdownMenu1"
-									style="right: 3px; ! important; left: -100px; min-width: 100px;">
-									<li role="presentation"><a role="menuitem" tabindex="-1"
-										href="#">创建日期</a></li>
-									<li role="presentation"><a role="menuitem" tabindex="-1"
-										href="#">修改日期</a></li>
-									<li role="presentation"><a role="menuitem" tabindex="-1"
-										href="#">标题</a></li>
+									>
+
+									<li role="presentation"><a data-view="snippet" class="view-style view-snippet" role="menuitem">
+										<i class="fa fa-check"></i>
+										{{leaMsg . "Snippet View"}}
+									</a></li>
+									<li role="presentation"><a data-view="list" class="view-style view-list" role="menuitem">
+										<i class="fa fa-check"></i>
+										{{leaMsg . "List View"}}
+									</a></li>
 									<li role="presentation" class="divider"></li>
-									<li role="presentation"><a role="menuitem" tabindex="-1"
-										href="#">Separated </a></li>
+									<li role="presentation"><a data-sorter="dateCreatedASC" class="sorter-style sorter-dateCreatedASC" role="menuitem">
+										<i class="fa fa-check"></i>
+										{{leaMsg . "Date Created"}} <i class="fa fa-sort-alpha-asc"></i>
+									</a></li>
+									<li role="presentation"><a data-sorter="dateCreatedDESC" class="sorter-style sorter-dateCreatedDESC" role="menuitem">
+										<i class="fa fa-check"></i>
+										{{leaMsg . "Date Created"}} <i class="fa fa-sort-alpha-desc"></i>
+									</a></li>
+									<li role="presentation" class="divider"></li>
+									<li role="presentation"><a data-sorter="dateUpdatedASC" class="sorter-style sorter-dateUpdatedASC" role="menuitem">
+										<i class="fa fa-check"></i>
+										{{leaMsg . "Date Updated"}} <i class="fa fa-sort-alpha-asc"></i>
+									</a></li>
+									<li role="presentation"><a data-sorter="dateUpdatedDESC" class="sorter-style sorter-dateUpdatedDESC checked" role="menuitem">
+										<i class="fa fa-check"></i>
+										{{leaMsg . "Date Updated"}} <i class="fa fa-sort-alpha-desc"></i>
+									</a></li>
+									<li role="presentation" class="divider"></li>
+									<li role="presentation"><a data-sorter="titleASC" class="sorter-style sorter-titleASC" role="menuitem">
+										<i class="fa fa-check"></i>
+										{{leaMsg . "Title"}} <i class="fa fa-sort-alpha-asc"></i>
+										
+									</a></li>
+									<li role="presentation"><a data-sorter="titleDESC" class="sorter-style sorter-titleDESC" role="menuitem">
+										<i class="fa fa-check"></i>
+										{{leaMsg . "Title"}} <i class="fa fa-sort-alpha-desc"></i>
+									</a></li>
 								</ul>
-								-->
 							</div>
 						</div>
 					</div>
@@ -856,7 +867,7 @@ function log(o) {
 </div>
 
 <script>
-var LEA = {};
+var LEA = {sPath: ''};
 LEA.locale = "{{.locale}}";
 var UrlPrefix = '{{.siteUrl}}';
 var UserInfo = {{.userInfo|jsonJs}};

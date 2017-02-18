@@ -527,7 +527,7 @@ Notebook.changeNotebookNavForNewNote = function(notebookId, title) {
 			Notebook.changeNotebookNavForNewNote(notebookId, title);
 		}
 	}
-}
+};
 
 // 改变导航, 两处
 // 单击左侧, 单击新建下拉时调用
@@ -544,7 +544,7 @@ Notebook.toggleToMyNav = function(userId, notebookId) {
 	
 	// 搜索tag隐藏
 	$("#tagSearch").hide();
-}
+};
 Notebook.changeNotebookNav = function(notebookId) {
 	Notebook.curNotebookId = notebookId;
 	Notebook.toggleToMyNav();
@@ -615,7 +615,7 @@ Notebook.changeNotebook = function(notebookId, callback) {
 			if(callback) {
 				callback(cacheNotes);
 			} else {
-				Note.renderNotesAndFirstOneContent(cacheNotes);
+				Note.renderNotesAndFirstOneContent(cacheNotes, true);
 			}
 			return;
 		} 
@@ -628,7 +628,7 @@ Notebook.changeNotebook = function(notebookId, callback) {
 			if(callback) {
 				callback(cacheNotes);
 			} else {
-				Note.renderNotesAndFirstOneContent(cacheNotes);
+				Note.renderNotesAndFirstOneContent(cacheNotes, true);
 			}
 			return;
 		} else {
@@ -653,7 +653,7 @@ Notebook.changeNotebook = function(notebookId, callback) {
 			if(callback) {
 				callback(cacheNotes);
 			} else {
-				Note.renderNotesAndFirstOneContent(cacheNotes);
+				Note.renderNotesAndFirstOneContent(cacheNotes, false);
 			}
 			me.hideNoteAndEditorLoading();
 		});
@@ -728,19 +728,22 @@ Notebook.setNotebook2Blog = function(target) {
 	// 那么, 如果当前是该notebook下, 重新渲染之
 	if(Notebook.curNotebookId == notebookId) {
 		if(isBlog) {
-			$("#noteList .item-blog").show();
+			$('.item').addClass('item-b');
 		} else {
-			$("#noteList .item-blog").hide();
+			$('.item').removeClass('item-b');
 		}
-		
 	// 如果当前在所有笔记本下
 	} else if(Notebook.curNotebookId == Notebook.allNotebookId){
 		$("#noteItemList .item").each(function(){
 			var noteId = $(this).attr("noteId");
 			var note = Note.cache[noteId];
 			if(note.NotebookId == notebookId) {
-				if(isBlog) $(this).find(".item-blog").show();
-				else $(this).find(".item-blog").hide();
+				if (isBlog) {
+					$(this).addClass('item-b');
+				}
+				else {
+					$(this).removeClass('item-b');
+				}
 			}
 		});
 	}

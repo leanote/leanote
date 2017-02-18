@@ -1,6 +1,16 @@
 // 主页渲染
 //-------------
 
+function sendLog (key, value) {
+	if (!key) {
+		return;
+	}
+	if (!value) {
+		value = '';
+	}
+	ajaxGet('/index/log', {key: key, value: value});
+}
+
 //----------------------
 // 编辑器模式
 function editorMode() {
@@ -88,7 +98,7 @@ editorMode.prototype.normalMode = function() {
 	var $themeLink = $("#themeLink");
 	// 如果之前不是normal才换
 	if(this.$themeLink.attr('href').indexOf('writting-overwrite.css') != -1) {
-		this.$themeLink.attr("href", "/css/theme/" + theme);
+		this.$themeLink.attr("href", LEA.sPath + "/css/theme/" + theme);
 	}
 	
 	$("#noteList").width(UserInfo.NoteListWidth);
@@ -103,7 +113,7 @@ editorMode.prototype.writtingMode = function() {
 		return;
 	}
 	if(this.$themeLink.attr('href').indexOf('writting-overwrite.css') == -1) {
-		this.$themeLink.attr("href", "/css/theme/writting-overwrite.css");
+		this.$themeLink.attr("href", LEA.sPath + "/css/theme/writting-overwrite.css");
 	}
 
 	/*
@@ -237,7 +247,7 @@ var Resize = {
 				$('.preview-container').show();
 				self.rightColumn.css('left', everLeftWidth).width('auto');
 				
-				if(MD) {
+				if(MD) { 
 					MD.resize();
 				}
 			}
@@ -582,7 +592,7 @@ function initEditor() {
 		if (LEA.isLogout) {
 			return;
 		}
-    	Note.curChangedSaveIt(true);
+    	Note.curChangedSaveIt(true, null, {refresh: true});
 	}
 
 	// 全局快捷键
@@ -594,7 +604,7 @@ function initEditor() {
 	    if(ctrlOrMetaKey) {
 			// 保存
 		    if (num == 83 ) { // ctrl + s or command + s
-		    	Note.curChangedSaveIt();
+		    	Note.curChangedSaveIt(true, null, {ctrls: true});
 		    	e.preventDefault();
 		    	return false;
 		    }
@@ -654,6 +664,11 @@ function scrollTo(self, tagName, text) {
 		*/
 		return;
 	}
+}
+
+function hideMask () {
+	$("#mainMask").html("");
+	$("#mainMask").hide(100);
 }
 
 //--------------
@@ -722,7 +737,7 @@ function scrollTo(self, tagName, text) {
 		if (arr.length == 2) {
 			id = arr[1];
 		}
-		$("#themeLink").attr("href", "/css/theme/" + val + ".css?id=" + id);
+		$("#themeLink").attr("href", LEA.sPath + "/css/theme/" + val + ".css?id=" + id);
 		ajaxPost("/user/updateTheme", {theme: val}, function(re) {
 			if(reIsOk(re)) {
 				UserInfo.Theme = val
@@ -812,8 +827,13 @@ function scrollTo(self, tagName, text) {
 	Resize.set3ColumnsWidth(UserInfo.NotebookWidth, UserInfo.NoteListWidth);
 	Resize.setMdColumnWidth(UserInfo.MdEditorWidth);
 	
-	if (UserInfo.LeftIsMin) {
-		minLeft(false);
+	if (!Mobile.isMobile()) {
+		if (UserInfo.LeftIsMin) {
+			minLeft(false);
+		}
+		else {
+			maxLeft(false);
+		}
 	}
 	else {
 		maxLeft(false);
@@ -822,8 +842,7 @@ function scrollTo(self, tagName, text) {
 	// end
 	// 开始时显示loading......
 	// 隐藏mask
-	$("#mainMask").html("");
-	$("#mainMask").hide(100);
+	// hideMask();
 	
 	// 4/25 防止dropdown太高
 	// dropdown
@@ -1438,45 +1457,174 @@ LeaAce = {
 	}
 };
 
+function initLeanoteIfrPlugin () {
+	// 如果在iframe下, 很可能是嵌入了leanote
+	if (self != window.parent) {
+		LEA.topInfo = {};
+		// 收到消息
+		window.addEventListener('message', function(e) {
+			console.log('child 收到消息: ')
+			console.log(e.data);
+			LEA.topInfo = e.data || {};
+			LEA.topInfo.got = true;
+		}, false);
+		if (window.parent.postMessage) {
+			window.parent.postMessage('leanote', '*');
+		}
+	}
+}
+
+// 通过src得到note
+function getNoteBySrc(src, callback) {
+	ajaxGet('/note/getNoteAndContentBySrc', {src: src}, function (ret) {
+		if (ret && ret.Ok) {
+			var data = ret.Item;
+			if (data) {
+				var noteInfo = data.NoteInfo;
+				var contentInfo = data.NoteContentInfo;
+				for (var i in contentInfo) {
+					noteInfo[i] = contentInfo[i];
+				}
+				callback(noteInfo);
+			}
+			else {
+				callback();
+			}
+		}
+		else {
+			callback();
+		}
+	});
+}
+
+// 得到top的info's src
+var _topInfoStart = (new Date()).getTime();
+function getTopInfoSrc (callback) {
+	if (LEA.topInfo.got) {
+		return callback(LEA.topInfo.src);
+	}
+	else {
+		// 超过1000ms, 不行
+		if ((new Date()).getTime() - _topInfoStart > 2000) {
+			return callback();
+		}
+		setTimeout(function () {
+			getTopInfoSrc(callback);
+		}, 10);
+	}
+}
+
 // note.html调用
 // 实始化页面
 function initPage() {
-	// 不要用$(function() {}) 因为要等到<script>都加载了才执行
-	// $(function() {
-		Notebook.renderNotebooks(notebooks);
-		Share.renderShareNotebooks(sharedUserInfos, shareNotebooks);
-		
-		// 如果初始打开的是共享的笔记
-		// 那么定位到我的笔记
-		if(curSharedNoteNotebookId) {
-			Share.firstRenderShareNote(curSharedUserId, curSharedNoteNotebookId, curNoteId);
-		// 初始打开的是我的笔记
-		} else {
-			Note.setNoteCache(noteContentJson);
-			Note.renderNotes(notes);
-			if(curNoteId) {
-				// 指定某个note时才target notebook, /note定位到最新
-				// ie10&+要setTimeout
-				setTimeout(function() {
-					Note.changeNoteForPjax(curNoteId, true, curNotebookId);
+	initLeanoteIfrPlugin();
+	if (LEA.topInfo) {
+		getTopInfoSrc(function (src) {
+			if (src) {
+				getNoteBySrc (src, function (srcNote) {
+					_initPage(srcNote, true);
 				});
-				if(!curNotebookId) {
-					Notebook.selectNotebook($(tt('#notebook [notebookId="?"]', Notebook.allNotebookId)));
+			} else {
+				_initPage(false, true);
+			}
+		});
+	}
+	else {
+		_initPage();
+	}
+}
+
+function _initPage(srcNote, isTop) {
+	if (srcNote) {
+		curNoteId = srcNote.NoteId;
+		curNotebookId = srcNote.NotebookId;
+		noteContentJson = srcNote; // 当前笔记变成我的
+	}
+	else if(isTop) {
+		curNoteId = null;
+	}
+
+	Notebook.renderNotebooks(notebooks);
+	Share.renderShareNotebooks(sharedUserInfos, shareNotebooks);
+	
+	// 如果初始打开的是共享的笔记
+	// 那么定位到我的笔记
+	if(curSharedNoteNotebookId) {
+		Share.firstRenderShareNote(curSharedUserId, curSharedNoteNotebookId, curNoteId);
+	// 初始打开的是我的笔记
+	} else {
+		Note.setNoteCache(noteContentJson);
+		// 判断srcNote是否在notes中
+		var isExists = false;
+		if (isTop && srcNote && notes) {
+			for (var i = 0; i < notes.length; ++i) {
+				var note = notes[i];
+				if (note.NoteId === srcNote.NoteId) {
+					isExists = true;
+					notes.splice(i, 1);
+					notes.unshift(srcNote);
+					break;
 				}
 			}
-		}
-
-		// 指定笔记, 也要保存最新笔记
-		if(latestNotes.length > 0) {
-			for(var i = 0; i < latestNotes.length; ++i) {
-				Note.addNoteCache(latestNotes[i]);
+			if (!isExists) {
+				notes.unshift(srcNote);
 			}
 		}
-		
-		Tag.renderTagNav(tagsJson);
-		// init notebook后才调用
-		initSlimScroll();
 
-		LeaAce.handleEvent();
-	// });
+		Note.renderNotes(notes);
+
+		if(curNoteId) {
+			// 指定某个note时才target notebook, /note定位到最新
+			// ie10&+要setTimeout
+			setTimeout(function() {
+				Note.changeNoteForPjax(curNoteId, true, curNotebookId);
+				if (isTop) {
+					Note.toggleWriteable();
+					setTimeout(function () {
+						Note.toggleWriteable();
+					}, 100);
+					// 如果是markdown
+					setTimeout(function () {
+						Note.toggleWriteable();
+					}, 1000);
+				}
+			});
+			if(!curNotebookId) {
+				Notebook.selectNotebook($(tt('#notebook [notebookId="?"]', Notebook.allNotebookId)));
+			}
+		}
+	}
+
+	// 指定笔记, 也要保存最新笔记
+	if(latestNotes.length > 0) {
+		for(var i = 0; i < latestNotes.length; ++i) {
+			Note.addNoteCache(latestNotes[i]);
+		}
+	}
+	
+	Tag.renderTagNav(tagsJson);
+	// init notebook后才调用
+	initSlimScroll();
+
+	LeaAce.handleEvent();
+
+	// 如果是插件, 则切换到编辑页, 并切换到写作模式
+	if (isTop) {
+		Mobile.toEditor();
+
+		// 如果没有, 则新建之
+		if (!srcNote) {
+			Note.newNote();
+			Note.toggleWriteable(true);
+			setTimeout(function () {
+				Note.toggleWriteable(true);
+			}, 100);
+			// 如果是markdown
+			setTimeout(function () {
+				Note.toggleWriteable(true);
+			}, 1000);
+		}
+	}
+
+	hideMask();
 }

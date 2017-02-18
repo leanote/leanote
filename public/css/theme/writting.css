@@ -808,10 +808,12 @@ a:hover {
   vertical-align: middle;
   visibility: hidden;
 }
-#inviteFriends {
+#inviteFriends,
+#upgradeAccount {
   position: relative;
 }
-#inviteFriends .dot {
+#inviteFriends .dot,
+#upgradeAccount .dot {
   display: inline-block;
   position: absolute;
   right: -8px;
@@ -820,6 +822,12 @@ a:hover {
   height: 8px;
   border-radius: 50%;
   background: #FF9263;
+}
+#upgradeAccountModal .label {
+  font-size: 12px;
+}
+#upgradeAccountModal .a {
+  color: #428bca;
 }
 #inviteUrl {
   width: 400px;
@@ -1884,6 +1892,37 @@ textarea#wmd-input {
   margin-top: 5px;
   background-color: #fff;
 }
+#noteItemList.list .item {
+  height: 30px !important;
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid #ebeff2;
+  margin: 0 -5px;
+}
+#noteItemList.list .item.item-b .item-blog {
+  display: none;
+}
+#noteItemList.list .item.item-b:hover .item-blog {
+  display: block;
+}
+#noteItemList.list .item-thumb {
+  display: none;
+}
+#noteItemList.list .item-blog {
+  display: none;
+  top: auto;
+  bottom: 5px;
+  right: 25px;
+}
+#noteItemList.list .item-setting {
+  bottom: 5px;
+}
+#noteItemList.list .item-title {
+  border: none;
+}
+#noteItemList.list .item-desc {
+  right: 0 !important;
+}
 #noteItemList .item:hover,
 #noteItemList .contextmenu-hover {
   background-color: #ddd !important;
@@ -1979,6 +2018,10 @@ textarea#wmd-input {
 }
 #noteItemList .item-blog {
   top: 1px;
+  display: none;
+}
+#noteItemList .item-b .item-blog {
+  display: block;
 }
 #noteItemList .item-setting {
   bottom: 0;
@@ -1986,6 +2029,20 @@ textarea#wmd-input {
 }
 #noteItemList .item:hover .item-setting {
   display: block;
+}
+.sorter-style .fa-check:before,
+.view-style .fa-check:before {
+  content: "";
+}
+.sorter-style.checked .fa-check:before,
+.view-style.checked .fa-check:before {
+  content: "\f00c";
+}
+#sortType .dropdown-menu {
+  right: -1px !important;
+}
+#tagSearch {
+  line-height: 34px;
 }
 /**
  * 工具栏

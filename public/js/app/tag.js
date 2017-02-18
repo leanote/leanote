@@ -236,8 +236,10 @@ Tag.renderTagNav = function(tags) {
 			var text = Tag.mapEn2Cn[tag] || text;
 		}
 		text = trimTitle(text);
-		var classes = Tag.classes[tag] || "label label-default";
-		$("#tagNav").append(tt('<li data-tag="?"><a> <span class="?">?</span> <span class="tag-delete">X</span></li>', tag, classes, text));
+		if (text) {
+			var classes = Tag.classes[tag] || "label label-default";
+			$("#tagNav").append(tt('<li data-tag="?"><a> <span class="?">?</span> <span class="tag-delete">X</span></li>', tag, classes, text));
+		}
 	}
 };
 
@@ -367,6 +369,7 @@ $(function() {
 		
 		$("#tagSearch").html($li.html()).show();
 		$("#tagSearch .tag-delete").remove();
+		Note.listIsIn(true, false);
 		
 		showLoading();
 		ajaxGet("/note/searchNoteByTags", {tags: [tag]}, function(notes) {
@@ -375,7 +378,7 @@ $(function() {
 				// 和note搜索一样
 				// 设空, 防止发生上述情况
 				// Note.curNoteId = "";
-				
+
 				Note.renderNotes(notes);
 				if(!isEmpty(notes)) {
 					Note.changeNote(notes[0].NoteId);

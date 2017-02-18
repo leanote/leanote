@@ -208,7 +208,7 @@ Share.toggleToSharedNav = function(userId, notebookId) {
 	var self = this;
 	// for list
 	$("#curNotebookForListNote").html(Share.notebookCache[notebookId].Title + '(' + Share.sharedUserInfos[userId].Username + ")");
-	
+	Note.listIsIn(false, false, true);
 	// for new
 	// 如果该用户下有新建的note, 那么列出, 如果没有, 则列出我的笔记
 	var forNew = Share.userNavs[userId].forNew;
