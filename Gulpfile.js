@@ -28,7 +28,7 @@ gulp.task('concatDepJs', function() {
         'js/jQuery-slimScroll-1.3.0/jquery.slimscroll-min.js',
         'js/contextmenu/jquery.contextmenu-min.js',
         'js/bootstrap-min.js',
-        'js/object_id-min.js',
+        'js/object_id.js',
     ];
 
     for(var i in jss) {
