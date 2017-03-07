@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+	<title>上传图片</title>
+	<link href="/css/bootstrap.css" rel="stylesheet" type="text/css">
+	<link href="/css/plugin.css" rel="stylesheet" type="text/css">
+	
+<style>
+#upload_target {border:0; margin:0; padding:0; width:0; height:0; display:none;}
+.upload_infobar {display:none; font-size:12pt; background:#fff; margin-top:10px; border-radius:5px;}
+.upload_infobar img.spinner {margin-right:10px;}
+.upload_infobar a {color:#0000cc;}
+#upload_additional_info {font-size:10pt; padding-left:26px;}
+
+#the_plugin_name {margin:15px 0 0 0;}
+#the_plugin_name, #the_plugin_name a {color:#777; font-size:9px;}
+#the_plugin_name a {text-decoration:none;}
+#the_plugin_name a:hover {color:#333;}
+
+/* this class makes the upload script output visible */
+.upload_target_visible {width:100%!important; height:200px!important; border:1px solid #000!important; display:block!important}	
+
+/*-------------*/
+#dropbox{
+	border-radius:3px;
+	position: relative;
+	min-height: 200px;
+	overflow: hidden;
+	padding-bottom: 40px;
+	border: 1px solid #ccc;
+    width: 100%;
+    background-color:#eee;
+}
+#dropbox .message {
+	font-size: 12px;
+    text-align: center;
+    padding-top: 80px;
+    display: block;
+}
+#dropbox .message i {
+	color:#ccc;
+	font-size:10px;
+}
+#dropbox:before {
+	border-radius:3px 3px 0 0;
+}
+
+</style>
+</head>
+
+<body>
+	<ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a href="#upload" data-toggle="tab">上传图片</a></li>
+        <li class=""><a href="#url" data-toggle="tab">图片URL</a></li>
+	</ul>
+	<!-- Tab panes -->
+	<div class="tab-content">
+
+	  <div class="tab-pane active" id="upload" style="margin-top: 10px;">
+		<!--ci/index.php/upload/english-->
+		<form class="form-inline" id="upl" name="upl" action="/file/uploadImage" method="post" enctype="multipart/form-data" target="upload_target" onsubmit="jbImagesDialog.inProgress();">
+			
+			<div id="upload_in_progress" class="upload_infobar">
+				<img src="img/spinner.gif" width="16" height="16" class="spinner">Upload in progress&hellip; 
+				<div id="upload_additional_info"></div>
+			</div>
+
+			<div id="upload_infobar" class="alert alert-warning" style="display: none; margin-bottom: 10px;"></div>	
+			
+			<p id="upload_form_container">
+				<input id="uploader" name="file" type="file" class="form-control" onChange="document.upl.submit(); jbImagesDialog.inProgress();">
+			</p>
+		</form>
+		<iframe id="upload_target" name="upload_target" src="#"></iframe>
+		
+		<div id="dropbox">
+			<div class="message">
+				或将图片拖到这里上传.
+				<div class="progress">
+				  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0"  aria-valuemin="0" aria-valuemax="100">
+				  </div>
+				</div>
+			</div>
+		</div>
+	  </div>
+
+	  <div class="tab-pane" id="url" style="margin-top: 10px;">
+	  	<form class="form-inline" id="imageSrc2">
+		  	<table style="width: 100%">
+		  		<tr>
+			  		<th style="width: 50px"><label for="imageSrc">地址</label></th>
+			  		<td><input type="url" id="imageSrc" name="src" class="form-control"></td>
+			  	</tr>
+	  	  		<tr>
+			  		<th><label for="imageWidth">大小</label></th>
+			  		<td>
+				      	<input type="text" class="form-control" id="imageWidth" name="width" style="width: 100px; display: inline-block"/>
+				      	X
+				      	<input type="text" class="form-control" id="imageHeight" name="height" style="width: 100px; display: inline-block"/>
+				      	<label>
+					      	<input type="checkbox" checked="checked" id="autoScale"/>
+					      	按比例缩放
+				      	</label>
+			  		</td>
+			  	</tr>
+		  	</table>
+		</form>
+	  </div>
+	</div>
+	
+	<div id="bottomBtns">
+		<div>
+			<button class="btn btn-success" id="insertCodeBtn" onclick="insertImage();">确定</button>
+			<button class="btn btn-default" id="closeBtn" onclick="closeWin()">关闭</button>
+		</div>
+	</div>
+	
+	<script src="/js/jquery-1.9.0.min.js"></script>
+	<script src="/js/bootstrap.js"></script>	
+	<script type="text/javascript" src="js/dialog.js"></script>
+	<script type="text/javascript" src="js/jquery.filedrop.js"></script>
+	<script type="text/javascript" src="js/drop.js"></script>
+</body>
+</html>

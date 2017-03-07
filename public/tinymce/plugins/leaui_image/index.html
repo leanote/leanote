@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+    TinyMCE 4 Leaui Image Manager
+</title>
+
+<link href="public/bootstrap3/css/bootstrap.css" rel="stylesheet" media="screen">
+<link href="public/css/style.css" rel="stylesheet" />
+
+<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+<!--[if lt IE 9]>
+    <script src="public/js/html5shiv.js">
+    </script>
+<![endif]-->
+
+</head>
+<body class="md" id="body">
+<div style="margin: 3px;">
+	<div class="holder"></div>
+
+    <div class="tabs">
+      <ul id="myTab" class="nav nav-tabs">
+        <li class="active"><a href="#images" data-toggle="tab">Images</a></li>
+        <li class=""><a href="#uploadTab" data-toggle="tab">Upload</a></li>
+        <li class=""><a href="#url" data-toggle="tab">URL</a></li>
+      </ul>
+      <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade active in" id="images">
+        	<!-- tools -->
+        	<div>
+				<form class="form-inline" role="form">
+				  <div class="form-group">
+				    <label class="control-label" for="albums">Albums:</label>
+				  </div>
+				  <div class="form-group">
+				    	<select class="form-control" id="albumsForList">
+				    		<option value="">Default</option>
+						</select>
+				  </div>
+				  <div class="form-group">
+				  	<input class="form-control" type="text" id="key" placeholder="file title search"/>
+				  </div>
+				  <div class="form-group">
+				  	&nbsp;&nbsp;<a href="javascript:;" title="refresh" id="refresh"><span class="glyphicon glyphicon-refresh"></span></a>
+				  </div>
+				</form>
+			</div>
+
+			<div id="imagePage">
+				<ul id="imageList" class="clearfix">
+				</ul>
+
+				<!-- pagination -->
+				<div id="paginationContainer">
+					<ul class="pagination">
+					</ul>
+				</div>
+
+				<div id="imageMask">
+					<div id="noImages">
+						<p>No Images!</p>
+						<btn class="btn btn-default" id="goAddImageBtn">Go to upload images</btn>
+					</div>
+					<div id="loading">
+						loading....
+					</div>
+				</div>
+			</div>
+        </div>
+        <div class="tab-pane fade" id="uploadTab">
+            <div>
+               <form class="form-inline" role="form">
+				  <div class="form-group" id="albumSelect">
+					    <label class="control-label" for="albums">Albums:</label>
+					    
+				    	<select class="form-control" id="albumsForUpload">
+				    		<option value="">Default</option>
+						</select>
+
+						<a href="javascript:;" id="deleteAlbumBtn">Delete</a> | 
+						<a href="javascript:;" id="renameAlbumBtn">Rename</a> |
+						<a href="javascript:;" id="addAlbumBtn">Add</a> 
+				  </div>
+				  
+				  <!-- rename or add album -->
+				  <div class="form-group" style="display: none" id="addOrUpdateAlbumForm">
+				      <input type="text" class="form-control" style="width: 150px" id="albumName">
+				      <button class="btn btn-success" type="button" id="addOrUpdateAlbumBtn">Add Album</button>
+				      <button class="btn btn-default" type="button" id="cancelAlbumBtn">Cancel</button>
+				  </div>
+
+				  <div class="form-group">
+			        <span id="msg" class="alert alert-success" style="padding: 3px; display: none"></span>
+				  </div>
+				</form> 
+            </div>
+
+            <form id="upload" method="post" action="/file/uploadImageLeaui" enctype="multipart/form-data" style="margin-top: 5px;">
+                <div id="drop">
+                    <a class="btn btn-default">
+                        Click to upload images Or Drop images to here
+                    </a>
+                    <input type="file" name="file" multiple />
+                </div>
+                <ul id="upload-msg">
+                </ul>
+            </form>
+        </div>
+
+        <div class="tab-pane fade" id="url">
+        	<form class="form-inline" id="imageUrlForm" style="">
+        		<div class="form-group">
+				    <label class="control-label" for="imageUrl">URL:</label>
+				</div>
+				<div class="form-group">
+					<input type="text" class="form-control" id="imageUrl" size="51"/>
+				</div>
+				<div class="form-group">
+					<button class="btn btn-success" id="addImageUrlBtn">Add Image</button>
+				</div>
+				<div class="form-group">
+					<div class="alert alert-danger" id="msgForUrl" 
+        			style="display: none; padding: 5px; width: 150px;">
+        				Can't load this url
+        			</div>
+				</div>
+			</form>
+			</div>
+      </div>
+    </div>
+
+    <ul id="preview" class="clearfix">
+    </ul>
+
+    <div id="previewAttrs" style="margin-left: 10px">
+    	<form class="form-inline" role="form">
+		  <div class="form-group">
+	    	<input class="form-control" id="attrTitle" placeholder="title" size="20" disabled/>
+	    	<input class="form-control" id="attrWidth" placeholder="width" size="5" disabled/> X 
+	    	<input class="form-control" id="attrHeight" placeholder="height" size="5" disabled/>
+	    	<label><input type="checkbox" value="1"  id="attrConstrain" disabled/> Constrain proportions</label>
+		  </div>
+		</form>
+    </div>
+</div>
+</body>
+
+<script>
+// javascript global configration
+var G = {};
+G.imageSrcPrefix = 'upload';
+G.perPageItems = 12;
+G.maxSelected = 1;
+/*
+var url = location.href;
+var classes = "";
+if(url.indexOf("md=1") >= 0) {
+	classes = "md";
+	document.getElementById("body").className = classes;
+}
+*/
+</script>
+
+<script src="public/js/jquery.js"></script>
+<script src="public/bootstrap3/js/bootstrap.min.js"></script>
+<script src="public/js/jquery.ui.widget.js"></script>
+<script src="public/js/jquery.fileupload.js"></script>
+<script src="public/js/jquery.iframe-transport.js"></script>
+<script src="public/js/jquery.pagination.js"></script>
+<!--
+<script src="public/js/jquery.lazyload.min.js"></script>
+-->
+<script src="public/js/main.js"></script>
+</html>

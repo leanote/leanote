@@ -70,6 +70,7 @@ if (parent && parent.LEAUI_MIND) {
     var json = parent.LEAUI_MIND.json;
     if (json) {
         try {
+            json = json.replace(/Ж/g, "'");
             var json = JSON.parse(json);
             km.importJson(json);
         } catch(e) {console.log(e)};
