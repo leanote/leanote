@@ -28,12 +28,12 @@ func (c ApiAuth) Login(email, pwd string) revel.Result {
 	if err == nil {
 		token := bson.NewObjectId().Hex()
 		sessionService.SetUserId(token, userInfo.UserId.Hex())
-		return c.RenderJson(info.AuthOk{Ok: true, Token: token, UserId: userInfo.UserId, Email: userInfo.Email, Username: userInfo.Username})
+		return c.RenderJSON(info.AuthOk{Ok: true, Token: token, UserId: userInfo.UserId, Email: userInfo.Email, Username: userInfo.Username})
 	} else {
 		// 登录错误, 则错误次数++
 		msg = "wrongUsernameOrPassword"
 	}
-	return c.RenderJson(info.ApiRe{Ok: false, Msg: c.Message(msg)})
+	return c.RenderJSON(info.ApiRe{Ok: false, Msg: c.Message(msg)})
 }
 
 // 注销
@@ -43,7 +43,7 @@ func (c ApiAuth) Logout() revel.Result {
 	sessionService.Clear(token)
 	re := info.NewApiRe()
 	re.Ok = true
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 注册
@@ -53,17 +53,17 @@ func (c ApiAuth) Register(email, pwd string) revel.Result {
 	re := info.NewApiRe()
 	if !configService.IsOpenRegister() {
 		re.Msg = "notOpenRegister" // 未开放注册
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 
 	if re.Ok, re.Msg = Vd("email", email); !re.Ok {
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 	if re.Ok, re.Msg = Vd("password", pwd); !re.Ok {
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 
 	// 注册
 	re.Ok, re.Msg = authService.Register(email, pwd, "")
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }

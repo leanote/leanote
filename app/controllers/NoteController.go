@@ -36,7 +36,7 @@ func (c Note) Index(noteId, online string) revel.Result {
 		return c.Redirect("/login")
 	}
 
-	c.RenderArgs["openRegister"] = configService.IsOpenRegister()
+	c.ViewArgs["openRegister"] = configService.IsOpenRegister()
 
 	// 已登录了, 那么得到所有信息
 	notebooks := notebookService.GetNotebooks(userId)
@@ -58,16 +58,16 @@ func (c Note) Index(noteId, online string) revel.Result {
 				noteContent = noteService.GetNoteContent(noteId, noteOwner)
 
 				hasRightNoteId = true
-				c.RenderArgs["curNoteId"] = noteId
-				c.RenderArgs["curNotebookId"] = note.NotebookId.Hex()
+				c.ViewArgs["curNoteId"] = noteId
+				c.ViewArgs["curNotebookId"] = note.NotebookId.Hex()
 
 				// 打开的是共享的笔记, 那么判断是否是共享给我的默认笔记
 				if noteOwner != c.GetUserId() {
 					if shareService.HasReadPerm(noteOwner, c.GetUserId(), noteId) {
 						// 不要获取notebook下的笔记
 						// 在前端下发请求
-						c.RenderArgs["curSharedNoteNotebookId"] = note.NotebookId.Hex()
-						c.RenderArgs["curSharedUserId"] = noteOwner
+						c.ViewArgs["curSharedNoteNotebookId"] = note.NotebookId.Hex()
+						c.ViewArgs["curSharedUserId"] = noteOwner
 						// 没有读写权限
 					} else {
 						hasRightNoteId = false
@@ -97,7 +97,7 @@ func (c Note) Index(noteId, online string) revel.Result {
 
 			// 得到最近的笔记
 			_, latestNotes := noteService.ListNotes(c.GetUserId(), "", false, c.GetPage(), 50, defaultSortField, false, false)
-			c.RenderArgs["latestNotes"] = latestNotes
+			c.ViewArgs["latestNotes"] = latestNotes
 		}
 
 		// 没有传入笔记
@@ -106,27 +106,27 @@ func (c Note) Index(noteId, online string) revel.Result {
 			_, notes = noteService.ListNotes(c.GetUserId(), "", false, c.GetPage(), 50, defaultSortField, false, false)
 			if len(notes) > 0 {
 				noteContent = noteService.GetNoteContent(notes[0].NoteId.Hex(), userId)
-				c.RenderArgs["curNoteId"] = notes[0].NoteId.Hex()
+				c.ViewArgs["curNoteId"] = notes[0].NoteId.Hex()
 			}
 		}
 	}
 
 	// 当然, 还需要得到第一个notes的content
 	//...
-	c.RenderArgs["isAdmin"] = configService.GetAdminUsername() == userInfo.Username
+	c.ViewArgs["isAdmin"] = configService.GetAdminUsername() == userInfo.Username
 
-	c.RenderArgs["userInfo"] = userInfo
-	c.RenderArgs["notebooks"] = notebooks
-	c.RenderArgs["shareNotebooks"] = shareNotebooks // note信息在notes列表中
-	c.RenderArgs["sharedUserInfos"] = sharedUserInfos
+	c.ViewArgs["userInfo"] = userInfo
+	c.ViewArgs["notebooks"] = notebooks
+	c.ViewArgs["shareNotebooks"] = shareNotebooks // note信息在notes列表中
+	c.ViewArgs["sharedUserInfos"] = sharedUserInfos
 
-	c.RenderArgs["notes"] = notes
-	c.RenderArgs["noteContentJson"] = noteContent
-	c.RenderArgs["noteContent"] = noteContent.Content
+	c.ViewArgs["notes"] = notes
+	c.ViewArgs["noteContentJson"] = noteContent
+	c.ViewArgs["noteContent"] = noteContent.Content
 
-	c.RenderArgs["tags"] = tagService.GetTags(c.GetUserId())
+	c.ViewArgs["tags"] = tagService.GetTags(c.GetUserId())
 
-	c.RenderArgs["globalConfigs"] = configService.GetGlobalConfigForUser()
+	c.ViewArgs["globalConfigs"] = configService.GetGlobalConfigForUser()
 
 	// return c.RenderTemplate("note/note.html")
 
@@ -142,18 +142,18 @@ func (c Note) Index(noteId, online string) revel.Result {
 // 否则, 转向登录页面
 func (c Note) ListNotes(notebookId string) revel.Result {
 	_, notes := noteService.ListNotes(c.GetUserId(), notebookId, false, c.GetPage(), pageSize, defaultSortField, false, false)
-	return c.RenderJson(notes)
+	return c.RenderJSON(notes)
 }
 
 // 得到trash
 func (c Note) ListTrashNotes() revel.Result {
 	_, notes := noteService.ListNotes(c.GetUserId(), "", true, c.GetPage(), pageSize, defaultSortField, false, false)
-	return c.RenderJson(notes)
+	return c.RenderJSON(notes)
 }
 
 // 得到note和内容
 func (c Note) GetNoteAndContent(noteId string) revel.Result {
-	return c.RenderJson(noteService.GetNoteAndContent(noteId, c.GetUserId()))
+	return c.RenderJSON(noteService.GetNoteAndContent(noteId, c.GetUserId()))
 }
 
 func (c Note) GetNoteAndContentBySrc(src string) revel.Result {
@@ -163,13 +163,13 @@ func (c Note) GetNoteAndContentBySrc(src string) revel.Result {
 		ret.Ok = true
 		ret.Item = noteAndContent
 	}
-	return c.RenderJson(ret)
+	return c.RenderJSON(ret)
 }
 
 // 得到内容
 func (c Note) GetNoteContent(noteId string) revel.Result {
 	noteContent := noteService.GetNoteContent(noteId, c.GetUserId())
-	return c.RenderJson(noteContent)
+	return c.RenderJSON(noteContent)
 }
 
 // 这里不能用json, 要用post
@@ -201,7 +201,7 @@ func (c Note) UpdateNoteOrContent(noteOrContent info.NoteOrContent) revel.Result
 			Abstract: noteOrContent.Abstract}
 
 		note = noteService.AddNoteAndContentForController(note, noteContent, c.GetUserId())
-		return c.RenderJson(note)
+		return c.RenderJSON(note)
 	}
 
 	noteUpdate := bson.M{}
@@ -248,7 +248,7 @@ func (c Note) UpdateNoteOrContent(noteOrContent info.NoteOrContent) revel.Result
 	Log(contentOk)
 	Log(contentMsg)
 
-	return c.RenderJson(true)
+	return c.RenderJSON(true)
 }
 
 // 删除note/ 删除别人共享给我的笔记
@@ -258,19 +258,19 @@ func (c Note) DeleteNote(noteIds []string, isShared bool) revel.Result {
 		for _, noteId := range noteIds {
 			trashService.DeleteNote(noteId, c.GetUserId())
 		}
-		return c.RenderJson(true)
+		return c.RenderJSON(true)
 	}
 
 	for _, noteId := range noteIds {
 		trashService.DeleteSharedNote(noteId, c.GetUserId())
 	}
 
-	return c.RenderJson(true)
+	return c.RenderJSON(true)
 }
 
 // 删除trash, 已弃用, 用DeleteNote
 func (c Note) DeleteTrash(noteId string) revel.Result {
-	return c.RenderJson(trashService.DeleteTrash(noteId, c.GetUserId()))
+	return c.RenderJSON(trashService.DeleteTrash(noteId, c.GetUserId()))
 }
 
 // 移动note
@@ -279,7 +279,7 @@ func (c Note) MoveNote(noteIds []string, notebookId string) revel.Result {
 	for _, noteId := range noteIds {
 		noteService.MoveNote(noteId, notebookId, userId)
 	}
-	return c.RenderJson(true)
+	return c.RenderJSON(true)
 }
 
 // 复制note
@@ -292,7 +292,7 @@ func (c Note) CopyNote(noteIds []string, notebookId string) revel.Result {
 	re := info.NewRe()
 	re.Ok = true
 	re.Item = copyNotes
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 复制别人共享的笔记给我
@@ -305,7 +305,7 @@ func (c Note) CopySharedNote(noteIds []string, notebookId, fromUserId string) re
 	re := info.NewRe()
 	re.Ok = true
 	re.Item = copyNotes
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 //------------
@@ -313,13 +313,13 @@ func (c Note) CopySharedNote(noteIds []string, notebookId, fromUserId string) re
 // 通过title搜索
 func (c Note) SearchNote(key string) revel.Result {
 	_, blogs := noteService.SearchNote(key, c.GetUserId(), c.GetPage(), pageSize, "UpdatedTime", false, false)
-	return c.RenderJson(blogs)
+	return c.RenderJSON(blogs)
 }
 
 // 通过tags搜索
 func (c Note) SearchNoteByTags(tags []string) revel.Result {
 	_, blogs := noteService.SearchNoteByTags(tags, c.GetUserId(), c.GetPage(), pageSize, "UpdatedTime", false)
-	return c.RenderJson(blogs)
+	return c.RenderJSON(blogs)
 }
 
 // 生成PDF
@@ -397,11 +397,11 @@ func (c Note) ToPdf(noteId, appKey string) revel.Result {
 	} else {
 		note.Tags = nil
 	}
-	c.RenderArgs["blog"] = note
-	c.RenderArgs["content"] = contentStr
-	c.RenderArgs["userInfo"] = userInfo
+	c.ViewArgs["blog"] = note
+	c.ViewArgs["content"] = contentStr
+	c.ViewArgs["userInfo"] = userInfo
 	userBlog := blogService.GetUserBlog(noteUserId)
-	c.RenderArgs["userBlog"] = userBlog
+	c.ViewArgs["userBlog"] = userBlog
 
 	return c.RenderTemplate("file/pdf.html")
 }
@@ -488,5 +488,5 @@ func (c Note) SetNote2Blog(noteIds []string, isBlog, isTop bool) revel.Result {
 	for _, noteId := range noteIds {
 		noteService.ToBlog(c.GetUserId(), noteId, isBlog, isTop)
 	}
-	return c.RenderJson(true)
+	return c.RenderJSON(true)
 }

@@ -46,7 +46,7 @@ func (c AdminBaseController) getSorter(sorterField string, isAsc bool, okSorter 
 	} else {
 		isAsc = false
 	}
-	c.RenderArgs["sorter"] = sorter
+	c.ViewArgs["sorter"] = sorter
 	return sorterField, isAsc
 }
 

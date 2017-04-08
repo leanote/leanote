@@ -30,7 +30,7 @@ func (c ApiFile) CopyImage(userId, fileId, toUserId string) revel.Result {
 
 	re.Ok, re.Id = fileService.CopyImage(userId, fileId, toUserId)
 
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // get all images by userId with page
@@ -39,19 +39,19 @@ func (c ApiFile) GetImages(albumId, key string, page int) revel.Result {
 	re := info.NewRe()
 	re.Ok = true
 	re.Item = imagesPage
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 func (c ApiFile) UpdateImageTitle(fileId, title string) revel.Result {
 	re := info.NewRe()
 	re.Ok = fileService.UpdateImageTitle(c.getUserId(), fileId, title)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 func (c ApiFile) DeleteImage(fileId string) revel.Result {
 	re := info.NewRe()
 	re.Ok, re.Msg = fileService.DeleteImage(c.getUserId(), fileId)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 */

@@ -23,7 +23,7 @@ func (c ApiTag) GetSyncTags(afterUsn, maxEntry int) revel.Result {
 		maxEntry = 100
 	}
 	tags := tagService.GeSyncTags(c.getUserId(), afterUsn, maxEntry)
-	return c.RenderJson(tags)
+	return c.RenderJSON(tags)
 }
 
 // 添加Tag
@@ -44,7 +44,7 @@ func (c ApiTag) GetSyncTags(afterUsn, maxEntry int) revel.Result {
 */
 func (c ApiTag) AddTag(tag string) revel.Result {
 	ret := tagService.AddOrUpdateTag(c.getUserId(), tag)
-	return c.RenderJson(ret)
+	return c.RenderJSON(ret)
 }
 
 // 删除标签
@@ -52,5 +52,5 @@ func (c ApiTag) AddTag(tag string) revel.Result {
 func (c ApiTag) DeleteTag(tag string, usn int) revel.Result {
 	re := info.NewReUpdate()
 	re.Ok, re.Msg, re.Usn = tagService.DeleteTagApi(c.getUserId(), tag, usn)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }

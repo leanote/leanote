@@ -49,8 +49,8 @@ $.bootstrapJsUrl
 
 func (c Blog) render(templateName string, themePath string) revel.Result {
 	isPreview := false
-	if c.RenderArgs["isPreview"] != nil {
-		themePath2 := c.RenderArgs["themePath"]
+	if c.ViewArgs["isPreview"] != nil {
+		themePath2 := c.ViewArgs["themePath"]
 		if themePath2 == nil {
 			return c.E404()
 		}
@@ -59,9 +59,9 @@ func (c Blog) render(templateName string, themePath string) revel.Result {
 		c.setPreviewUrl()
 
 		// 因为common的themeInfo是从UserBlog.ThemeId来取的, 所以这里要fugai下
-		c.RenderArgs["themeInfo"] = c.RenderArgs["themeInfoPreview"]
+		c.ViewArgs["themeInfo"] = c.ViewArgs["themeInfoPreview"]
 	}
-	return blog.RenderTemplate(templateName, c.RenderArgs, revel.BasePath+"/"+themePath, isPreview)
+	return blog.RenderTemplate(templateName, c.ViewArgs, revel.BasePath+"/"+themePath, isPreview)
 }
 
 // 404
@@ -125,19 +125,19 @@ func (c Blog) setPreviewUrl() {
 	archiveUrl = blogUrl + "/archives/" + userIdOrEmail // blog.leanote.com/archive/userId
 	tagsUrl = blogUrl + "/tags/" + userIdOrEmail        // blog.leanote.com/archive/userId
 
-	c.RenderArgs["indexUrl"] = indexUrl
-	c.RenderArgs["cateUrl"] = cateUrl
-	c.RenderArgs["postUrl"] = postUrl
-	c.RenderArgs["searchUrl"] = searchUrl
-	c.RenderArgs["singleUrl"] = singleUrl // 单页
-	c.RenderArgs["archiveUrl"] = archiveUrl
-	c.RenderArgs["archivesUrl"] = archiveUrl // 别名
-	c.RenderArgs["tagsUrl"] = tagsUrl
-	c.RenderArgs["tagPostsUrl"] = blogUrl + "/tag/" + userIdOrEmail
-	c.RenderArgs["tagUrl"] = c.RenderArgs["tagPostsUrl"]
+	c.ViewArgs["indexUrl"] = indexUrl
+	c.ViewArgs["cateUrl"] = cateUrl
+	c.ViewArgs["postUrl"] = postUrl
+	c.ViewArgs["searchUrl"] = searchUrl
+	c.ViewArgs["singleUrl"] = singleUrl // 单页
+	c.ViewArgs["archiveUrl"] = archiveUrl
+	c.ViewArgs["archivesUrl"] = archiveUrl // 别名
+	c.ViewArgs["tagsUrl"] = tagsUrl
+	c.ViewArgs["tagPostsUrl"] = blogUrl + "/tag/" + userIdOrEmail
+	c.ViewArgs["tagUrl"] = c.ViewArgs["tagPostsUrl"]
 
 	// themeBaseUrl 本theme的路径url, 可以加载js, css, images之类的
-	c.RenderArgs["themeBaseUrl"] = "/" + theme.Path
+	c.ViewArgs["themeBaseUrl"] = "/" + theme.Path
 }
 
 // 各种地址设置
@@ -152,36 +152,36 @@ func (c Blog) setUrl(userBlog info.UserBlog, userInfo info.User) {
 	// 分类
 	// 搜索
 	// 查看
-	c.RenderArgs["siteUrl"] = siteUrl
-	c.RenderArgs["indexUrl"] = blogUrls.IndexUrl
-	c.RenderArgs["cateUrl"] = blogUrls.CateUrl
-	c.RenderArgs["postUrl"] = blogUrls.PostUrl
-	c.RenderArgs["searchUrl"] = blogUrls.SearchUrl
-	c.RenderArgs["singleUrl"] = blogUrls.SingleUrl // 单页
-	c.RenderArgs["archiveUrl"] = blogUrls.ArchiveUrl
-	c.RenderArgs["archivesUrl"] = blogUrls.ArchiveUrl // 别名
-	c.RenderArgs["tagsUrl"] = blogUrls.TagsUrl
-	c.RenderArgs["tagPostsUrl"] = blogUrls.TagPostsUrl
-	c.RenderArgs["tagUrl"] = blogUrls.TagPostsUrl // 别名
+	c.ViewArgs["siteUrl"] = siteUrl
+	c.ViewArgs["indexUrl"] = blogUrls.IndexUrl
+	c.ViewArgs["cateUrl"] = blogUrls.CateUrl
+	c.ViewArgs["postUrl"] = blogUrls.PostUrl
+	c.ViewArgs["searchUrl"] = blogUrls.SearchUrl
+	c.ViewArgs["singleUrl"] = blogUrls.SingleUrl // 单页
+	c.ViewArgs["archiveUrl"] = blogUrls.ArchiveUrl
+	c.ViewArgs["archivesUrl"] = blogUrls.ArchiveUrl // 别名
+	c.ViewArgs["tagsUrl"] = blogUrls.TagsUrl
+	c.ViewArgs["tagPostsUrl"] = blogUrls.TagPostsUrl
+	c.ViewArgs["tagUrl"] = blogUrls.TagPostsUrl // 别名
 
 	// themeBaseUrl 本theme的路径url, 可以加载js, css, images之类的
-	c.RenderArgs["themeBaseUrl"] = "/" + userBlog.ThemePath
+	c.ViewArgs["themeBaseUrl"] = "/" + userBlog.ThemePath
 
 	// 其它static js
-	c.RenderArgs["jQueryUrl"] = "/js/jquery-1.9.0.min.js"
+	c.ViewArgs["jQueryUrl"] = "/js/jquery-1.9.0.min.js"
 
-	c.RenderArgs["prettifyJsUrl"] = "/js/google-code-prettify/prettify.js"
-	c.RenderArgs["prettifyCssUrl"] = "/js/google-code-prettify/prettify.css"
+	c.ViewArgs["prettifyJsUrl"] = "/js/google-code-prettify/prettify.js"
+	c.ViewArgs["prettifyCssUrl"] = "/js/google-code-prettify/prettify.css"
 
-	c.RenderArgs["blogCommonJsUrl"] = "/public/blog/js/common.js"
+	c.ViewArgs["blogCommonJsUrl"] = "/public/blog/js/common.js"
 
-	c.RenderArgs["shareCommentCssUrl"] = "/public/blog/css/share_comment.css"
-	c.RenderArgs["shareCommentJsUrl"] = "/public/blog/js/share_comment.js"
+	c.ViewArgs["shareCommentCssUrl"] = "/public/blog/css/share_comment.css"
+	c.ViewArgs["shareCommentJsUrl"] = "/public/blog/js/share_comment.js"
 
-	c.RenderArgs["fontAwesomeUrl"] = "/css/font-awesome-4.2.0/css/font-awesome.css"
+	c.ViewArgs["fontAwesomeUrl"] = "/css/font-awesome-4.2.0/css/font-awesome.css"
 
-	c.RenderArgs["bootstrapCssUrl"] = "/css/bootstrap.css"
-	c.RenderArgs["bootstrapJsUrl"] = "/js/bootstrap-min.js"
+	c.ViewArgs["bootstrapCssUrl"] = "/css/bootstrap.css"
+	c.ViewArgs["bootstrapJsUrl"] = "/js/bootstrap-min.js"
 }
 
 // 笔记本分类
@@ -265,8 +265,8 @@ func (c Blog) getCates(userBlog info.UserBlog) {
 		}
 	}
 
-	c.RenderArgs["cates"] = cates
-	c.RenderArgs["catesTree"] = catesTree
+	c.ViewArgs["cates"] = cates
+	c.ViewArgs["catesTree"] = catesTree
 }
 
 // 单页
@@ -281,7 +281,7 @@ func (c Blog) getSingles(userId string) {
 			singles2[i] = map[string]string{"title": page["Title"], "singleId": page["SingleId"]}
 		}
 	*/
-	c.RenderArgs["singles"] = singles
+	c.ViewArgs["singles"] = singles
 }
 
 // $.blog = {userId, title, subTitle, desc, openComment, }
@@ -300,11 +300,11 @@ func (c Blog) setBlog(userBlog info.UserBlog, userInfo info.User) {
 		"SubDomain":   userBlog.SubDomain,
 		"Domain":      userBlog.Domain,
 	}
-	c.RenderArgs["blogInfo"] = blogInfo
+	c.ViewArgs["blogInfo"] = blogInfo
 }
 
 func (c Blog) setPaging(pageInfo info.Page) {
-	c.RenderArgs["paging"] = pageInfo
+	c.ViewArgs["paging"] = pageInfo
 }
 
 // 公共
@@ -315,13 +315,13 @@ func (c Blog) blogCommon(userId string, userBlog info.UserBlog, userInfo info.Us
 			return false, userBlog
 		}
 	}
-	//	c.RenderArgs["userInfo"] = userInfo
+	//	c.ViewArgs["userInfo"] = userInfo
 
 	// 最新笔记
 	_, recentBlogs := blogService.ListBlogs(userId, "", 1, 5, userBlog.SortField, userBlog.IsAsc)
-	c.RenderArgs["recentPosts"] = blogService.FixBlogs(recentBlogs)
-	c.RenderArgs["latestPosts"] = c.RenderArgs["recentPosts"]
-	c.RenderArgs["tags"] = blogService.GetBlogTags(userId)
+	c.ViewArgs["recentPosts"] = blogService.FixBlogs(recentBlogs)
+	c.ViewArgs["latestPosts"] = c.ViewArgs["recentPosts"]
+	c.ViewArgs["tags"] = blogService.GetBlogTags(userId)
 
 	// 语言, url地址
 	c.SetLocale()
@@ -331,7 +331,7 @@ func (c Blog) blogCommon(userId string, userBlog info.UserBlog, userInfo info.Us
 		userBlog = blogService.GetUserBlog(userId)
 	}
 	c.setBlog(userBlog, userInfo)
-	//	c.RenderArgs["userBlog"] = userBlog
+	//	c.ViewArgs["userBlog"] = userBlog
 
 	// 分类导航
 	c.getCates(userBlog)
@@ -342,12 +342,12 @@ func (c Blog) blogCommon(userId string, userBlog info.UserBlog, userInfo info.Us
 	c.setUrl(userBlog, userInfo)
 
 	// 当前分类Id, 全设为""
-	c.RenderArgs["curCateId"] = ""
-	c.RenderArgs["curSingleId"] = ""
+	c.ViewArgs["curCateId"] = ""
+	c.ViewArgs["curSingleId"] = ""
 
 	// 得到主题信息
 	themeInfo := themeService.GetThemeInfo(userBlog.ThemeId.Hex(), userBlog.Style)
-	c.RenderArgs["themeInfo"] = themeInfo
+	c.ViewArgs["themeInfo"] = themeInfo
 
 	//	Log(">>")
 	//	Log(userBlog.Style)
@@ -404,9 +404,9 @@ func (c Blog) Tags(userIdOrEmail string) (re revel.Result) {
 		return c.e404(userBlog.ThemePath) // 404 TODO 使用用户的404
 	}
 
-	c.RenderArgs["curIsTags"] = true
+	c.ViewArgs["curIsTags"] = true
 	tags := blogService.GetBlogTags(userId)
-	c.RenderArgs["tags"] = tags
+	c.ViewArgs["tags"] = tags
 	return c.render("tags.html", userBlog.ThemePath)
 }
 
@@ -443,15 +443,15 @@ func (c Blog) Tag(userIdOrEmail, tag string) (re revel.Result) {
 		tag = userIdOrEmail
 	}
 
-	c.RenderArgs["curIsTagPosts"] = true
-	c.RenderArgs["curTag"] = tag
+	c.ViewArgs["curIsTagPosts"] = true
+	c.ViewArgs["curTag"] = tag
 	page := c.GetPage()
 	pageInfo, blogs := blogService.SearchBlogByTags([]string{tag}, userId, page, userBlog.PerPageSize, userBlog.SortField, userBlog.IsAsc)
 	c.setPaging(pageInfo)
 
-	c.RenderArgs["posts"] = blogService.FixBlogs(blogs)
-	tagPostsUrl := c.RenderArgs["tagPostsUrl"].(string)
-	c.RenderArgs["pagingBaseUrl"] = tagPostsUrl + "/" + tag
+	c.ViewArgs["posts"] = blogService.FixBlogs(blogs)
+	tagPostsUrl := c.ViewArgs["tagPostsUrl"].(string)
+	c.ViewArgs["pagingBaseUrl"] = tagPostsUrl + "/" + tag
 
 	return c.render("tag_posts.html", userBlog.ThemePath)
 }
@@ -490,16 +490,16 @@ func (c Blog) Archives(userIdOrEmail string, cateId string, year, month int) (re
 	}
 
 	arcs := blogService.ListBlogsArchive(userId, notebookId, year, month, "PublicTime", false)
-	c.RenderArgs["archives"] = arcs
+	c.ViewArgs["archives"] = arcs
 
-	c.RenderArgs["curIsArchive"] = true
+	c.ViewArgs["curIsArchive"] = true
 	if notebookId != "" {
 		notebook := notebookService.GetNotebookById(notebookId)
-		c.RenderArgs["curCateTitle"] = notebook.Title
-		c.RenderArgs["curCateId"] = notebookId
+		c.ViewArgs["curCateTitle"] = notebook.Title
+		c.ViewArgs["curCateId"] = notebookId
 	}
-	c.RenderArgs["curYear"] = year
-	c.RenderArgs["curMonth"] = month
+	c.ViewArgs["curYear"] = year
+	c.ViewArgs["curMonth"] = month
 
 	return c.render("archive.html", userBlog.ThemePath)
 }
@@ -541,15 +541,15 @@ func (c Blog) Cate(userIdOrEmail string, notebookId string) (re revel.Result) {
 	page := c.GetPage()
 	pageInfo, blogs := blogService.ListBlogs(userId, notebookId2, page, userBlog.PerPageSize, userBlog.SortField, userBlog.IsAsc)
 	blogs2 := blogService.FixBlogs(blogs)
-	c.RenderArgs["posts"] = blogs2
+	c.ViewArgs["posts"] = blogs2
 
 	c.setPaging(pageInfo)
 
-	c.RenderArgs["curCateTitle"] = notebook.Title
-	c.RenderArgs["curCateId"] = notebookId2
-	cateUrl := c.RenderArgs["cateUrl"].(string)
-	c.RenderArgs["pagingBaseUrl"] = cateUrl + "/" + notebookId
-	c.RenderArgs["curIsCate"] = true
+	c.ViewArgs["curCateTitle"] = notebook.Title
+	c.ViewArgs["curCateId"] = notebookId2
+	cateUrl := c.ViewArgs["cateUrl"].(string)
+	c.ViewArgs["pagingBaseUrl"] = cateUrl + "/" + notebookId
+	c.ViewArgs["curIsCate"] = true
 
 	return c.render("cate.html", userBlog.ThemePath)
 }
@@ -594,12 +594,12 @@ func (c Blog) Index(userIdOrEmail string) (re revel.Result) {
 	page := c.GetPage()
 	pageInfo, blogs := blogService.ListBlogs(userId, "", page, userBlog.PerPageSize, userBlog.SortField, userBlog.IsAsc)
 	blogs2 := blogService.FixBlogs(blogs)
-	c.RenderArgs["posts"] = blogs2
+	c.ViewArgs["posts"] = blogs2
 
 	c.setPaging(pageInfo)
-	c.RenderArgs["pagingBaseUrl"] = c.RenderArgs["indexUrl"]
+	c.ViewArgs["pagingBaseUrl"] = c.ViewArgs["indexUrl"]
 
-	c.RenderArgs["curIsIndex"] = true
+	c.ViewArgs["curIsIndex"] = true
 
 	return c.render("index.html", userBlog.ThemePath)
 }
@@ -631,9 +631,9 @@ func (c Blog) Post(userIdOrEmail, noteId string) (re revel.Result) {
 	}
 
 	post := blogService.FixBlog(blogInfo)
-	c.RenderArgs["post"] = post
-	// c.RenderArgs["userInfo"] = userInfo
-	c.RenderArgs["curIsPost"] = true
+	c.ViewArgs["post"] = post
+	// c.ViewArgs["userInfo"] = userInfo
+	c.ViewArgs["curIsPost"] = true
 
 	// 上一篇, 下一篇
 	var baseTime interface{}
@@ -649,10 +649,10 @@ func (c Blog) Post(userIdOrEmail, noteId string) (re revel.Result) {
 
 	prePost, nextPost := blogService.PreNextBlog(userId, userBlog.SortField, userBlog.IsAsc, post.NoteId, baseTime)
 	if prePost.NoteId != "" {
-		c.RenderArgs["prePost"] = prePost
+		c.ViewArgs["prePost"] = prePost
 	}
 	if nextPost.NoteId != "" {
-		c.RenderArgs["nextPost"] = nextPost
+		c.ViewArgs["nextPost"] = nextPost
 	}
 	return c.render("post.html", userBlog.ThemePath)
 }
@@ -682,7 +682,7 @@ func (c Blog) Single(userIdOrEmail, singleId string) (re revel.Result) {
 		panic("")
 	}
 
-	c.RenderArgs["single"] = map[string]interface{}{
+	c.ViewArgs["single"] = map[string]interface{}{
 		"SingleId":    single.SingleId.Hex(),
 		"Title":       single.Title,
 		"UrlTitle":    single.UrlTitle,
@@ -690,8 +690,8 @@ func (c Blog) Single(userIdOrEmail, singleId string) (re revel.Result) {
 		"CreatedTime": single.CreatedTime,
 		"UpdatedTime": single.UpdatedTime,
 	}
-	c.RenderArgs["curSingleId"] = single.SingleId.Hex()
-	c.RenderArgs["curIsSingle"] = true
+	c.ViewArgs["curSingleId"] = single.SingleId.Hex()
+	c.ViewArgs["curIsSingle"] = true
 
 	return c.render("single.html", userBlog.ThemePath)
 }
@@ -716,7 +716,7 @@ func (c Blog) Search(userIdOrEmail, keywords string) (re revel.Result) {
 	} else {
 		userInfo = userService.GetUserInfoByAny(userIdOrEmail)
 	}
-	//	c.RenderArgs["userInfo"] = userInfo
+	//	c.ViewArgs["userInfo"] = userInfo
 	userId = userInfo.UserId.Hex()
 	var ok = false
 	if ok, userBlog = c.blogCommon(userId, userBlog, userInfo); !ok {
@@ -727,11 +727,11 @@ func (c Blog) Search(userIdOrEmail, keywords string) (re revel.Result) {
 	pageInfo, blogs := blogService.SearchBlog(keywords, userId, page, userBlog.PerPageSize, userBlog.SortField, userBlog.IsAsc)
 	c.setPaging(pageInfo)
 
-	c.RenderArgs["posts"] = blogService.FixBlogs(blogs)
-	c.RenderArgs["keywords"] = keywords
-	searchUrl, _ := c.RenderArgs["searchUrl"].(string)
-	c.RenderArgs["pagingBaseUrl"] = searchUrl + "?keywords=" + keywords
-	c.RenderArgs["curIsSearch"] = true
+	c.ViewArgs["posts"] = blogService.FixBlogs(blogs)
+	c.ViewArgs["keywords"] = keywords
+	searchUrl, _ := c.ViewArgs["searchUrl"].(string)
+	c.ViewArgs["pagingBaseUrl"] = searchUrl + "?keywords=" + keywords
+	c.ViewArgs["curIsSearch"] = true
 
 	return c.render("search.html", userBlog.ThemePath)
 }
@@ -741,7 +741,7 @@ func (c Blog) setRenderUserInfo(userInfo info.User) {
 	if userInfo.Username == "" {
 		userInfo.Username = userInfo.Email
 	}
-	c.RenderArgs["userInfo"] = userInfo
+	c.ViewArgs["userInfo"] = userInfo
 }
 
 //----------------
@@ -753,7 +753,7 @@ func (c Blog) GetPostStat(noteId string) revel.Result {
 	re.Ok = true
 	statInfo := blogService.GetBlogStat(noteId)
 	re.Item = statInfo
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // jsonP
@@ -778,7 +778,7 @@ func (c Blog) GetLikes(noteId string, callback string) revel.Result {
 	result["hasMoreLikedUser"] = hasMoreLikedUser
 
 	re.Item = result
-	return c.RenderJsonP(callback, re)
+	return c.RenderJSONP(callback, re)
 }
 func (c Blog) GetLikesAndComments(noteId, callback string) revel.Result {
 	userId := c.GetUserId()
@@ -806,13 +806,13 @@ func (c Blog) GetLikesAndComments(noteId, callback string) revel.Result {
 	result["comments"] = comments
 	result["commentUserInfo"] = commentUserInfo
 	re.Item = result
-	return c.RenderJsonP(callback, re)
+	return c.RenderJSONP(callback, re)
 }
 
 func (c Blog) IncReadNum(noteId string) revel.Result {
 	re := info.NewRe()
 	re.Ok = blogService.IncReadNum(noteId)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 点赞, 要用jsonp
@@ -820,7 +820,7 @@ func (c Blog) LikePost(noteId string, callback string) revel.Result {
 	re := info.NewRe()
 	userId := c.GetUserId()
 	re.Ok, re.Item = blogService.LikeBlog(noteId, userId)
-	return c.RenderJsonP(callback, re)
+	return c.RenderJSONP(callback, re)
 }
 func (c Blog) GetComments(noteId string, callback string) revel.Result {
 	// 评论
@@ -836,24 +836,24 @@ func (c Blog) GetComments(noteId string, callback string) revel.Result {
 	re.Item = result
 
 	if callback != "" {
-		return c.RenderJsonP(callback, result)
+		return c.RenderJSONP(callback, result)
 	}
 
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // jsonp
 func (c Blog) DeleteComment(noteId, commentId string, callback string) revel.Result {
 	re := info.NewRe()
 	re.Ok = blogService.DeleteComment(noteId, commentId, c.GetUserId())
-	return c.RenderJsonP(callback, re)
+	return c.RenderJSONP(callback, re)
 }
 
 // jsonp
 func (c Blog) CommentPost(noteId, content, toCommentId string, callback string) revel.Result {
 	re := info.NewRe()
 	re.Ok, re.Item = blogService.Comment(noteId, toCommentId, c.GetUserId(), content)
-	return c.RenderJsonP(callback, re)
+	return c.RenderJSONP(callback, re)
 }
 
 // jsonp
@@ -862,7 +862,7 @@ func (c Blog) LikeComment(commentId string, callback string) revel.Result {
 	ok, isILikeIt, num := blogService.LikeComment(commentId, c.GetUserId())
 	re.Ok = ok
 	re.Item = bson.M{"IsILikeIt": isILikeIt, "Num": num}
-	return c.RenderJsonP(callback, re)
+	return c.RenderJSONP(callback, re)
 }
 
 // 显示分类的最近博客, jsonp
@@ -898,5 +898,5 @@ func (c Blog) ListCateLatest(notebookId, callback string) revel.Result {
 	re := info.NewRe()
 	re.Ok = true
 	re.List = blogs
-	return c.RenderJsonP(callback, re)
+	return c.RenderJSONP(callback, re)
 }

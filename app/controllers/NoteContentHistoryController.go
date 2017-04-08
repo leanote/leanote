@@ -12,5 +12,5 @@ type NoteContentHistory struct {
 func (c NoteContentHistory) ListHistories(noteId string) revel.Result {
 	histories := noteContentHistoryService.ListHistories(noteId, c.GetUserId())
 
-	return c.RenderJson(histories)
+	return c.RenderJSON(histories)
 }

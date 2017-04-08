@@ -17,29 +17,29 @@ type Auth struct {
 //--------
 // 登录
 func (c Auth) Login(email, from string) revel.Result {
-	c.RenderArgs["title"] = c.Message("login")
-	c.RenderArgs["subTitle"] = c.Message("login")
-	c.RenderArgs["email"] = email
-	c.RenderArgs["from"] = from
-	c.RenderArgs["openRegister"] = configService.IsOpenRegister()
+	c.ViewArgs["title"] = c.Message("login")
+	c.ViewArgs["subTitle"] = c.Message("login")
+	c.ViewArgs["email"] = email
+	c.ViewArgs["from"] = from
+	c.ViewArgs["openRegister"] = configService.IsOpenRegister()
 
-	sessionId := c.Session.Id()
+	sessionId := c.Session.ID()
 	if sessionService.LoginTimesIsOver(sessionId) {
-		c.RenderArgs["needCaptcha"] = true
+		c.ViewArgs["needCaptcha"] = true
 	}
 
 	c.SetLocale()
 
 	if c.Has("demo") {
-		c.RenderArgs["demo"] = true
-		c.RenderArgs["email"] = "demo@leanote.com"
+		c.ViewArgs["demo"] = true
+		c.ViewArgs["email"] = "demo@leanote.com"
 	}
 	return c.RenderTemplate("home/login.html")
 }
 
 // 为了demo和register
 func (c Auth) doLogin(email, pwd string) revel.Result {
-	sessionId := c.Session.Id()
+	sessionId := c.Session.ID()
 	var msg = ""
 
 	userInfo, err := authService.Login(email, pwd)
@@ -49,13 +49,13 @@ func (c Auth) doLogin(email, pwd string) revel.Result {
 	} else {
 		c.SetSession(userInfo)
 		sessionService.ClearLoginTimes(sessionId)
-		return c.RenderJson(info.Re{Ok: true})
+		return c.RenderJSON(info.Re{Ok: true})
 	}
 
-	return c.RenderJson(info.Re{Ok: false, Item: sessionService.LoginTimesIsOver(sessionId), Msg: c.Message(msg)})
+	return c.RenderJSON(info.Re{Ok: false, Item: sessionService.LoginTimesIsOver(sessionId), Msg: c.Message(msg)})
 }
 func (c Auth) DoLogin(email, pwd string, captcha string) revel.Result {
-	sessionId := c.Session.Id()
+	sessionId := c.Session.ID()
 	var msg = ""
 
 	// > 5次需要验证码, 直到登录成功
@@ -70,16 +70,16 @@ func (c Auth) DoLogin(email, pwd string, captcha string) revel.Result {
 		} else {
 			c.SetSession(userInfo)
 			sessionService.ClearLoginTimes(sessionId)
-			return c.RenderJson(info.Re{Ok: true})
+			return c.RenderJSON(info.Re{Ok: true})
 		}
 	}
 
-	return c.RenderJson(info.Re{Ok: false, Item: sessionService.LoginTimesIsOver(sessionId), Msg: c.Message(msg)})
+	return c.RenderJSON(info.Re{Ok: false, Item: sessionService.LoginTimesIsOver(sessionId), Msg: c.Message(msg)})
 }
 
 // 注销
 func (c Auth) Logout() revel.Result {
-	sessionId := c.Session.Id()
+	sessionId := c.Session.ID()
 	sessionService.Clear(sessionId)
 	c.ClearSession()
 	return c.Redirect("/login")
@@ -92,7 +92,7 @@ func (c Auth) Demo() revel.Result {
 
 	userInfo, err := authService.Login(email, pwd)
 	if err != nil {
-		return c.RenderJson(info.Re{Ok: false})
+		return c.RenderJSON(info.Re{Ok: false})
 	} else {
 		c.SetSession(userInfo)
 		return c.Redirect("/note")
@@ -107,11 +107,11 @@ func (c Auth) Register(from, iu string) revel.Result {
 		return c.Redirect("/index")
 	}
 	c.SetLocale()
-	c.RenderArgs["from"] = from
-	c.RenderArgs["iu"] = iu
+	c.ViewArgs["from"] = from
+	c.ViewArgs["iu"] = iu
 
-	c.RenderArgs["title"] = c.Message("register")
-	c.RenderArgs["subTitle"] = c.Message("register")
+	c.ViewArgs["title"] = c.Message("register")
+	c.ViewArgs["subTitle"] = c.Message("register")
 	return c.RenderTemplate("home/register.html")
 }
 func (c Auth) DoRegister(email, pwd, iu string) revel.Result {
@@ -145,22 +145,22 @@ func (c Auth) DoRegister(email, pwd, iu string) revel.Result {
 // 找回密码
 func (c Auth) FindPassword() revel.Result {
 	c.SetLocale()
-	c.RenderArgs["title"] = c.Message("findPassword")
-	c.RenderArgs["subTitle"] = c.Message("findPassword")
+	c.ViewArgs["title"] = c.Message("findPassword")
+	c.ViewArgs["subTitle"] = c.Message("findPassword")
 	return c.RenderTemplate("home/find_password.html")
 }
 func (c Auth) DoFindPassword(email string) revel.Result {
 	pwdService.FindPwd(email)
 	re := info.NewRe()
 	re.Ok = true
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 点击链接后, 先验证之
 func (c Auth) FindPassword2(token string) revel.Result {
 	c.SetLocale()
-	c.RenderArgs["title"] = c.Message("findPassword")
-	c.RenderArgs["subTitle"] = c.Message("findPassword")
+	c.ViewArgs["title"] = c.Message("findPassword")
+	c.ViewArgs["subTitle"] = c.Message("findPassword")
 	if token == "" {
 		return c.RenderTemplate("find_password2_timeout.html")
 	}
@@ -168,10 +168,10 @@ func (c Auth) FindPassword2(token string) revel.Result {
 	if !ok {
 		return c.RenderTemplate("home/find_password2_timeout.html")
 	}
-	c.RenderArgs["findPwd"] = findPwd
+	c.ViewArgs["findPwd"] = findPwd
 
-	c.RenderArgs["title"] = c.Message("updatePassword")
-	c.RenderArgs["subTitle"] = c.Message("updatePassword")
+	c.ViewArgs["title"] = c.Message("updatePassword")
+	c.ViewArgs["subTitle"] = c.Message("updatePassword")
 
 	return c.RenderTemplate("home/find_password2.html")
 }

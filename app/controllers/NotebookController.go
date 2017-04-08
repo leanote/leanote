@@ -14,18 +14,18 @@ type Notebook struct {
 }
 
 func (c Notebook) Index(notebook info.Notebook, i int, name string) revel.Result {
-	return c.RenderJson(notebook)
+	return c.RenderJSON(notebook)
 }
 
 // 得到用户的所有笔记本
 func (c Notebook) GetNotebooks() revel.Result {
 	re := notebookService.GetNotebooks(c.GetUserId())
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 func (c Notebook) DeleteNotebook(notebookId string) revel.Result {
 	re, msg := notebookService.DeleteNotebook(c.GetUserId(), notebookId)
-	return c.RenderJson(info.Re{Ok: re, Msg: msg})
+	return c.RenderJSON(info.Re{Ok: re, Msg: msg})
 }
 
 // 添加notebook
@@ -41,21 +41,21 @@ func (c Notebook) AddNotebook(notebookId, title, parentNotebookId string) revel.
 	re, notebook := notebookService.AddNotebook(notebook)
 
 	if re {
-		return c.RenderJson(notebook)
+		return c.RenderJSON(notebook)
 	} else {
-		return c.RenderJson(false)
+		return c.RenderJSON(false)
 	}
 }
 
 // 修改标题
 func (c Notebook) UpdateNotebookTitle(notebookId, title string) revel.Result {
-	return c.RenderJson(notebookService.UpdateNotebookTitle(notebookId, c.GetUserId(), title))
+	return c.RenderJSON(notebookService.UpdateNotebookTitle(notebookId, c.GetUserId(), title))
 }
 
 // 排序
 // 无用
 // func (c Notebook) SortNotebooks(notebookId2Seqs map[string]int) revel.Result {
-// 	return c.RenderJson(notebookService.SortNotebooks(c.GetUserId(), notebookId2Seqs))
+// 	return c.RenderJSON(notebookService.SortNotebooks(c.GetUserId(), notebookId2Seqs))
 // }
 
 // 调整notebooks, 可能是排序, 可能是移动到其它笔记本下
@@ -70,11 +70,11 @@ func (c Notebook) DragNotebooks(data string) revel.Result {
 	info := DragNotebooksInfo{}
 	json.Unmarshal([]byte(data), &info)
 
-	return c.RenderJson(notebookService.DragNotebooks(c.GetUserId(), info.CurNotebookId, info.ParentNotebookId, info.Siblings))
+	return c.RenderJSON(notebookService.DragNotebooks(c.GetUserId(), info.CurNotebookId, info.ParentNotebookId, info.Siblings))
 }
 
 // 设置notebook <-> blog
 func (c Notebook) SetNotebook2Blog(notebookId string, isBlog bool) revel.Result {
 	re := notebookService.ToBlog(c.GetUserId(), notebookId, isBlog)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }

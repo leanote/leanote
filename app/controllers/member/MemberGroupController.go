@@ -14,8 +14,8 @@ type MemberGroup struct {
 func (c MemberGroup) Index() revel.Result {
 	c.SetUserInfo()
 	c.SetLocale()
-	c.RenderArgs["title"] = c.Message("My Group")
-	c.RenderArgs["groups"] = groupService.GetGroupsAndUsers(c.GetUserId())
+	c.ViewArgs["title"] = c.Message("My Group")
+	c.ViewArgs["groups"] = groupService.GetGroupsAndUsers(c.GetUserId())
 	return c.RenderTemplate("member/group/index.html")
 }
 
@@ -23,13 +23,13 @@ func (c MemberGroup) Index() revel.Result {
 func (c MemberGroup) AddGroup(title string) revel.Result {
 	re := info.NewRe()
 	re.Ok, re.Item = groupService.AddGroup(c.GetUserId(), title)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 func (c MemberGroup) UpdateGroupTitle(groupId, title string) revel.Result {
 	re := info.NewRe()
 	re.Ok = groupService.UpdateGroupTitle(c.GetUserId(), groupId, title)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 func (c MemberGroup) DeleteGroup(groupId string) revel.Result {

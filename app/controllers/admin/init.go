@@ -91,7 +91,7 @@ func AuthInterceptor(c *revel.Controller) revel.Result {
 	if c.Request.Header.Get("X-Requested-With") == "XMLHttpRequest" {
 		re := info.NewRe()
 		re.Msg = "NOTLOGIN"
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 
 	return c.Redirect("/login")

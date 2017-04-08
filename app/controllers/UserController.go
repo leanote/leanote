@@ -21,8 +21,8 @@ type User struct {
 
 func (c User) Account(tab int) revel.Result {
 	userInfo := c.GetUserInfo()
-	c.RenderArgs["userInfo"] = userInfo
-	c.RenderArgs["tab"] = tab
+	c.ViewArgs["userInfo"] = userInfo
+	c.ViewArgs["tab"] = tab
 	c.SetLocale()
 	return c.RenderTemplate("user/account.html")
 }
@@ -70,18 +70,18 @@ func (c User) UpdateTheme(theme string) revel.Result {
 	if re.Ok {
 		c.UpdateSession("Theme", theme)
 	}
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 发送邀请链接
 func (c User) SendRegisterEmail(content, toEmail string) revel.Result {
 	re := info.NewRe()
 	if content == "" || !IsEmail(toEmail) {
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 
 	re.Ok = emailService.SendInviteEmail(c.GetUserInfo(), toEmail, content)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 //---------------------------
@@ -90,7 +90,7 @@ func (c User) SendRegisterEmail(content, toEmail string) revel.Result {
 func (c User) ReSendActiveEmail() revel.Result {
 	re := info.NewRe()
 	re.Ok = emailService.RegisterSendActiveEmail(c.GetUserInfo(), c.GetEmail())
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 通过点击链接
@@ -100,10 +100,10 @@ func (c User) UpdateEmail(token string) revel.Result {
 
 	ok, msg, email := userService.UpdateEmail(token)
 
-	c.RenderArgs["title"] = "验证邮箱"
-	c.RenderArgs["ok"] = ok
-	c.RenderArgs["msg"] = msg
-	c.RenderArgs["email"] = email
+	c.ViewArgs["title"] = "验证邮箱"
+	c.ViewArgs["ok"] = ok
+	c.ViewArgs["msg"] = msg
+	c.ViewArgs["email"] = email
 
 	// 修改session
 	if ok {
@@ -124,10 +124,10 @@ func (c User) ActiveEmail(token string) revel.Result {
 		c.UpdateSession("Verified", "1")
 	}
 
-	c.RenderArgs["title"] = "验证邮箱"
-	c.RenderArgs["ok"] = ok
-	c.RenderArgs["msg"] = msg
-	c.RenderArgs["email"] = email
+	c.ViewArgs["title"] = "验证邮箱"
+	c.ViewArgs["ok"] = ok
+	c.ViewArgs["msg"] = msg
+	c.ViewArgs["email"] = email
 
 	return c.RenderTemplate("user/active_email.html")
 }
@@ -144,7 +144,7 @@ func (c User) UpdateColumnWidth(notebookWidth, noteListWidth, mdEditorWidth int)
 
 		LogJ(c.Session)
 	}
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 func (c User) UpdateLeftIsMin(leftIsMin bool) revel.Result {
 	re := info.NewRe()
@@ -156,5 +156,5 @@ func (c User) UpdateLeftIsMin(leftIsMin bool) revel.Result {
 			c.UpdateSession("LeftIsMin", "0")
 		}
 	}
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }

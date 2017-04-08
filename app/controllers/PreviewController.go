@@ -32,10 +32,10 @@ func (c Preview) getPreviewThemeAbsolutePath(themeId string) bool {
 	}
 	theme := themeService.GetTheme(c.GetUserId(), themeId)
 
-	c.RenderArgs["isPreview"] = true
-	c.RenderArgs["themeId"] = themeId
-	c.RenderArgs["themeInfoPreview"] = theme.Info
-	c.RenderArgs["themePath"] = theme.Path
+	c.ViewArgs["isPreview"] = true
+	c.ViewArgs["themeId"] = themeId
+	c.ViewArgs["themeInfoPreview"] = theme.Info
+	c.ViewArgs["themePath"] = theme.Path
 	if theme.Path == "" {
 		return false
 	}
@@ -47,7 +47,7 @@ func (c Preview) Index(userIdOrEmail string, themeId string) revel.Result {
 		return c.E404()
 	}
 	return c.Blog.Index(c.GetUserId())
-	//	return blog.RenderTemplate("index.html", c.RenderArgs, c.getPreviewThemeAbsolutePath(themeId))
+	//	return blog.RenderTemplate("index.html", c.ViewArgs, c.getPreviewThemeAbsolutePath(themeId))
 }
 
 func (c Preview) Tag(userIdOrEmail, tag string) revel.Result {
@@ -62,42 +62,42 @@ func (c Preview) Tags(userIdOrEmail string) revel.Result {
 	}
 	return c.Blog.Tags(c.GetUserId())
 	//	if tag == "" {
-	//		return blog.RenderTemplate("tags.html", c.RenderArgs, c.getPreviewThemeAbsolutePath(""))
+	//		return blog.RenderTemplate("tags.html", c.ViewArgs, c.getPreviewThemeAbsolutePath(""))
 	//	}
-	//	return blog.RenderTemplate("tag_posts.html", c.RenderArgs, c.getPreviewThemeAbsolutePath(""))
+	//	return blog.RenderTemplate("tag_posts.html", c.ViewArgs, c.getPreviewThemeAbsolutePath(""))
 }
 func (c Preview) Archives(userIdOrEmail string, notebookId string, year, month int) revel.Result {
 	if !c.getPreviewThemeAbsolutePath("") {
 		return c.E404()
 	}
 	return c.Blog.Archives(c.GetUserId(), notebookId, year, month)
-	//	return blog.RenderTemplate("archive.html", c.RenderArgs, c.getPreviewThemeAbsolutePath(""))
+	//	return blog.RenderTemplate("archive.html", c.ViewArgs, c.getPreviewThemeAbsolutePath(""))
 }
 func (c Preview) Cate(userIdOrEmail, notebookId string) revel.Result {
 	if !c.getPreviewThemeAbsolutePath("") {
 		return c.E404()
 	}
 	return c.Blog.Cate(userIdOrEmail, notebookId)
-	//	return blog.RenderTemplate("cate.html", c.RenderArgs, c.getPreviewThemeAbsolutePath(""))
+	//	return blog.RenderTemplate("cate.html", c.ViewArgs, c.getPreviewThemeAbsolutePath(""))
 }
 func (c Preview) Post(userIdOrEmail, noteId string) revel.Result {
 	if !c.getPreviewThemeAbsolutePath("") {
 		return c.E404()
 	}
 	return c.Blog.Post(userIdOrEmail, noteId)
-	//	return blog.RenderTemplate("view.html", c.RenderArgs, c.getPreviewThemeAbsolutePath(""))
+	//	return blog.RenderTemplate("view.html", c.ViewArgs, c.getPreviewThemeAbsolutePath(""))
 }
 func (c Preview) Single(userIdOrEmail, singleId string) revel.Result {
 	if !c.getPreviewThemeAbsolutePath("") {
 		return c.E404()
 	}
 	return c.Blog.Single(userIdOrEmail, singleId)
-	//	return blog.RenderTemplate("single.html", c.RenderArgs, c.getPreviewThemeAbsolutePath(""))
+	//	return blog.RenderTemplate("single.html", c.ViewArgs, c.getPreviewThemeAbsolutePath(""))
 }
 func (c Preview) Search(userIdOrEmail, keywords string) revel.Result {
 	if !c.getPreviewThemeAbsolutePath("") {
 		return c.E404()
 	}
 	return c.Blog.Search(c.GetUserId(), keywords)
-	//	return blog.RenderTemplate("search.html", c.RenderArgs, c.getPreviewThemeAbsolutePath(""))
+	//	return blog.RenderTemplate("search.html", c.ViewArgs, c.getPreviewThemeAbsolutePath(""))
 }

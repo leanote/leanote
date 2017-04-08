@@ -53,7 +53,7 @@ func (c ApiNotebook) GetSyncNotebooks(afterUsn, maxEntry int) revel.Result {
 		maxEntry = 100
 	}
 	notebooks := notebookService.GeSyncNotebooks(c.getUserId(), afterUsn, maxEntry)
-	return c.RenderJson(c.fixNotebooks(notebooks))
+	return c.RenderJSON(c.fixNotebooks(notebooks))
 }
 
 // 得到用户的所有笔记本
@@ -61,7 +61,7 @@ func (c ApiNotebook) GetSyncNotebooks(afterUsn, maxEntry int) revel.Result {
 // info.SubNotebooks
 func (c ApiNotebook) GetNotebooks() revel.Result {
 	notebooks := notebookService.GeSyncNotebooks(c.getUserId(), 0, 99999)
-	return c.RenderJson(c.fixNotebooks(notebooks))
+	return c.RenderJSON(c.fixNotebooks(notebooks))
 }
 
 // 添加notebook
@@ -77,9 +77,9 @@ func (c ApiNotebook) AddNotebook(title, parentNotebookId string, seq int) revel.
 	re := info.NewRe()
 	re.Ok, notebook = notebookService.AddNotebook(notebook)
 	if !re.Ok {
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
-	return c.RenderJson(c.fixNotebook(&notebook))
+	return c.RenderJSON(c.fixNotebook(&notebook))
 }
 
 // 修改笔记
@@ -91,10 +91,10 @@ func (c ApiNotebook) UpdateNotebook(notebookId, title, parentNotebookId string, 
 	if !ok {
 		re.Ok = false
 		re.Msg = msg
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 	LogJ(notebook)
-	return c.RenderJson(c.fixNotebook(&notebook))
+	return c.RenderJSON(c.fixNotebook(&notebook))
 }
 
 // 删除笔记本
@@ -102,5 +102,5 @@ func (c ApiNotebook) UpdateNotebook(notebookId, title, parentNotebookId string, 
 func (c ApiNotebook) DeleteNotebook(notebookId string, usn int) revel.Result {
 	re := info.NewApiRe()
 	re.Ok, re.Msg = notebookService.DeleteNotebookForce(c.getUserId(), notebookId, usn)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }

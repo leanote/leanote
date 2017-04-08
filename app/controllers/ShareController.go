@@ -33,7 +33,7 @@ func (c Share) AddShareNote(noteId string, emails []string, perm int) revel.Resu
 		}
 	}
 
-	return c.RenderJson(status)
+	return c.RenderJSON(status)
 }
 
 // 添加共享notebook
@@ -53,7 +53,7 @@ func (c Share) AddShareNotebook(notebookId string, emails []string, perm int) re
 		}
 	}
 
-	return c.RenderJson(status)
+	return c.RenderJSON(status)
 }
 
 // 得到notes
@@ -63,10 +63,10 @@ func (c Share) ListShareNotes(notebookId, userId string) revel.Result {
 	var notes []info.ShareNoteWithPerm
 	if notebookId == "" {
 		notes = shareService.ListShareNotes(c.GetUserId(), userId, c.GetPage(), pageSize, defaultSortField, false)
-		return c.RenderJson(notes)
+		return c.RenderJSON(notes)
 	} else {
 		// 有notebookId的
-		return c.RenderJson(shareService.ListShareNotesByNotebookId(notebookId, c.GetUserId(), userId, c.GetPage(), pageSize, defaultSortField, false))
+		return c.RenderJSON(shareService.ListShareNotesByNotebookId(notebookId, c.GetUserId(), userId, c.GetPage(), pageSize, defaultSortField, false))
 	}
 }
 
@@ -74,7 +74,7 @@ func (c Share) ListShareNotes(notebookId, userId string) revel.Result {
 // sharedUserId 是谁的笔记
 func (c Share) GetShareNoteContent(noteId, sharedUserId string) revel.Result {
 	noteContent := shareService.GetShareNoteContent(noteId, c.GetUserId(), sharedUserId)
-	return c.RenderJson(noteContent)
+	return c.RenderJSON(noteContent)
 }
 
 // 查看note的分享信息
@@ -85,13 +85,13 @@ func (c Share) ListNoteShareUserInfo(noteId string) revel.Result {
 	note := noteService.GetNote(noteId, c.GetUserId())
 
 	noteShareUserInfos := shareService.ListNoteShareUserInfo(noteId, c.GetUserId())
-	c.RenderArgs["noteOrNotebookShareUserInfos"] = noteShareUserInfos
+	c.ViewArgs["noteOrNotebookShareUserInfos"] = noteShareUserInfos
 
-	c.RenderArgs["noteOrNotebookShareGroupInfos"] = shareService.GetNoteShareGroups(noteId, c.GetUserId())
+	c.ViewArgs["noteOrNotebookShareGroupInfos"] = shareService.GetNoteShareGroups(noteId, c.GetUserId())
 
-	c.RenderArgs["isNote"] = true
-	c.RenderArgs["noteOrNotebookId"] = note.NoteId.Hex()
-	c.RenderArgs["title"] = note.Title
+	c.ViewArgs["isNote"] = true
+	c.ViewArgs["noteOrNotebookId"] = note.NoteId.Hex()
+	c.ViewArgs["title"] = note.Title
 
 	return c.RenderTemplate("share/note_notebook_share_user_infos.html")
 }
@@ -99,14 +99,14 @@ func (c Share) ListNotebookShareUserInfo(notebookId string) revel.Result {
 	notebook := notebookService.GetNotebook(notebookId, c.GetUserId())
 
 	notebookShareUserInfos := shareService.ListNotebookShareUserInfo(notebookId, c.GetUserId())
-	c.RenderArgs["noteOrNotebookShareUserInfos"] = notebookShareUserInfos
+	c.ViewArgs["noteOrNotebookShareUserInfos"] = notebookShareUserInfos
 
-	c.RenderArgs["noteOrNotebookShareGroupInfos"] = shareService.GetNotebookShareGroups(notebookId, c.GetUserId())
-	LogJ(c.RenderArgs["noteOrNotebookShareGroupInfos"])
+	c.ViewArgs["noteOrNotebookShareGroupInfos"] = shareService.GetNotebookShareGroups(notebookId, c.GetUserId())
+	LogJ(c.ViewArgs["noteOrNotebookShareGroupInfos"])
 
-	c.RenderArgs["isNote"] = false
-	c.RenderArgs["noteOrNotebookId"] = notebook.NotebookId.Hex()
-	c.RenderArgs["title"] = notebook.Title
+	c.ViewArgs["isNote"] = false
+	c.ViewArgs["noteOrNotebookId"] = notebook.NotebookId.Hex()
+	c.ViewArgs["title"] = notebook.Title
 
 	return c.RenderTemplate("share/note_notebook_share_user_infos.html")
 }
@@ -114,38 +114,38 @@ func (c Share) ListNotebookShareUserInfo(notebookId string) revel.Result {
 //------------
 // 改变share note 权限
 func (c Share) UpdateShareNotePerm(noteId string, perm int, toUserId string) revel.Result {
-	return c.RenderJson(shareService.UpdateShareNotePerm(noteId, perm, c.GetUserId(), toUserId))
+	return c.RenderJSON(shareService.UpdateShareNotePerm(noteId, perm, c.GetUserId(), toUserId))
 }
 
 // 改变share notebook 权限
 func (c Share) UpdateShareNotebookPerm(notebookId string, perm int, toUserId string) revel.Result {
-	return c.RenderJson(shareService.UpdateShareNotebookPerm(notebookId, perm, c.GetUserId(), toUserId))
+	return c.RenderJSON(shareService.UpdateShareNotebookPerm(notebookId, perm, c.GetUserId(), toUserId))
 }
 
 //---------------
 // 删除share note
 func (c Share) DeleteShareNote(noteId string, toUserId string) revel.Result {
-	return c.RenderJson(shareService.DeleteShareNote(noteId, c.GetUserId(), toUserId))
+	return c.RenderJSON(shareService.DeleteShareNote(noteId, c.GetUserId(), toUserId))
 }
 
 // 删除share notebook
 func (c Share) DeleteShareNotebook(notebookId string, toUserId string) revel.Result {
-	return c.RenderJson(shareService.DeleteShareNotebook(notebookId, c.GetUserId(), toUserId))
+	return c.RenderJSON(shareService.DeleteShareNotebook(notebookId, c.GetUserId(), toUserId))
 }
 
 // 删除share note, 被共享方删除
 func (c Share) DeleteShareNoteBySharedUser(noteId string, fromUserId string) revel.Result {
-	return c.RenderJson(shareService.DeleteShareNote(noteId, fromUserId, c.GetUserId()))
+	return c.RenderJSON(shareService.DeleteShareNote(noteId, fromUserId, c.GetUserId()))
 }
 
 // 删除share notebook, 被共享方删除
 func (c Share) DeleteShareNotebookBySharedUser(notebookId string, fromUserId string) revel.Result {
-	return c.RenderJson(shareService.DeleteShareNotebook(notebookId, fromUserId, c.GetUserId()))
+	return c.RenderJSON(shareService.DeleteShareNotebook(notebookId, fromUserId, c.GetUserId()))
 }
 
 // 删除fromUserId分享给我的所有note, notebook
 func (c Share) DeleteUserShareNoteAndNotebook(fromUserId string) revel.Result {
-	return c.RenderJson(shareService.DeleteUserShareNoteAndNotebook(fromUserId, c.GetUserId()))
+	return c.RenderJSON(shareService.DeleteUserShareNoteAndNotebook(fromUserId, c.GetUserId()))
 }
 
 //-------------
@@ -155,14 +155,14 @@ func (c Share) DeleteUserShareNoteAndNotebook(fromUserId string) revel.Result {
 func (c Share) AddShareNoteGroup(noteId, groupId string, perm int) revel.Result {
 	re := info.NewRe()
 	re.Ok = shareService.AddShareNoteGroup(c.GetUserId(), noteId, groupId, perm)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 删除
 func (c Share) DeleteShareNoteGroup(noteId, groupId string) revel.Result {
 	re := info.NewRe()
 	re.Ok = shareService.DeleteShareNoteGroup(c.GetUserId(), noteId, groupId)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 更新, 也是一样, 先删后加
@@ -176,14 +176,14 @@ func (c Share) UpdateShareNoteGroupPerm(noteId, groupId string, perm int) revel.
 func (c Share) AddShareNotebookGroup(notebookId, groupId string, perm int) revel.Result {
 	re := info.NewRe()
 	re.Ok = shareService.AddShareNotebookGroup(c.GetUserId(), notebookId, groupId, perm)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 删除
 func (c Share) DeleteShareNotebookGroup(notebookId, groupId string) revel.Result {
 	re := info.NewRe()
 	re.Ok = shareService.DeleteShareNotebookGroup(c.GetUserId(), notebookId, groupId)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 更新, 也是一样, 先删后加

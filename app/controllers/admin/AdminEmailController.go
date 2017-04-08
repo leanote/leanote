@@ -23,8 +23,8 @@ func (c AdminEmail) Email() revel.Result {
 func (c AdminEmail) Blog() revel.Result {
 	recommendTags := configService.GetGlobalArrayConfig("recommendTags")
 	newTags := configService.GetGlobalArrayConfig("newTags")
-	c.RenderArgs["recommendTags"] = strings.Join(recommendTags, ",")
-	c.RenderArgs["newTags"] = strings.Join(newTags, ",")
+	c.ViewArgs["recommendTags"] = strings.Join(recommendTags, ",")
+	c.ViewArgs["newTags"] = strings.Join(newTags, ",")
 	return c.RenderTemplate("admin/setting/blog.html")
 }
 func (c AdminEmail) DoBlogTag(recommendTags, newTags string) revel.Result {
@@ -33,14 +33,14 @@ func (c AdminEmail) DoBlogTag(recommendTags, newTags string) revel.Result {
 	re.Ok = configService.UpdateGlobalArrayConfig(c.GetUserId(), "recommendTags", strings.Split(recommendTags, ","))
 	re.Ok = configService.UpdateGlobalArrayConfig(c.GetUserId(), "newTags", strings.Split(newTags, ","))
 
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // demo
 // blog标签设置
 func (c AdminEmail) Demo() revel.Result {
-	c.RenderArgs["demoUsername"] = configService.GetGlobalStringConfig("demoUsername")
-	c.RenderArgs["demoPassword"] = configService.GetGlobalStringConfig("demoPassword")
+	c.ViewArgs["demoUsername"] = configService.GetGlobalStringConfig("demoUsername")
+	c.ViewArgs["demoPassword"] = configService.GetGlobalStringConfig("demoPassword")
 	return c.RenderTemplate("admin/setting/demo.html")
 }
 func (c AdminEmail) DoDemo(demoUsername, demoPassword string) revel.Result {
@@ -48,30 +48,30 @@ func (c AdminEmail) DoDemo(demoUsername, demoPassword string) revel.Result {
 
 	userInfo, err := authService.Login(demoUsername, demoPassword)
 	if err != nil {
-		return c.RenderJson(info.Re{Ok: false})
+		return c.RenderJSON(info.Re{Ok: false})
 	}
 	if userInfo.UserId == "" {
 		re.Msg = "The User is Not Exists"
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 
 	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "demoUserId", userInfo.UserId.Hex())
 	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "demoUsername", demoUsername)
 	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "demoPassword", demoPassword)
 
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // ToImage
 // 长微博的bin路径phantomJs
 func (c AdminEmail) ToImage() revel.Result {
-	c.RenderArgs["toImageBinPath"] = configService.GetGlobalStringConfig("toImageBinPath")
+	c.ViewArgs["toImageBinPath"] = configService.GetGlobalStringConfig("toImageBinPath")
 	return c.RenderTemplate("admin/setting/toImage.html")
 }
 func (c AdminEmail) DoToImage(toImageBinPath string) revel.Result {
 	re := info.NewRe()
 	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "toImageBinPath", toImageBinPath)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 func (c AdminEmail) Set(emailHost, emailPort, emailUsername, emailPassword, emailSSL string) revel.Result {
@@ -82,7 +82,7 @@ func (c AdminEmail) Set(emailHost, emailPort, emailUsername, emailPassword, emai
 	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "emailPassword", emailPassword)
 	re.Ok = configService.UpdateGlobalStringConfig(c.GetUserId(), "emailSSL", emailSSL)
 
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 func (c AdminEmail) Template() revel.Result {
 	re := info.NewRe()
@@ -108,7 +108,7 @@ func (c AdminEmail) Template() revel.Result {
 			if !ok {
 				re.Ok = false
 				re.Msg = "Error key: " + key + "<br />" + msg
-				return c.RenderJson(re)
+				return c.RenderJSON(re)
 			} else {
 				configService.UpdateGlobalStringConfig(userId, key, v)
 			}
@@ -116,7 +116,7 @@ func (c AdminEmail) Template() revel.Result {
 	}
 
 	re.Ok = true
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 发送Email
@@ -127,7 +127,7 @@ func (c AdminEmail) SendEmailToEmails(sendEmails, latestEmailSubject, latestEmai
 
 	if latestEmailSubject == "" || latestEmailBody == "" {
 		re.Msg = "subject or body is blank"
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 
 	if saveAsOldEmail {
@@ -140,7 +140,7 @@ func (c AdminEmail) SendEmailToEmails(sendEmails, latestEmailSubject, latestEmai
 	emails := strings.Split(sendEmails, "\n")
 
 	re.Ok, re.Msg = emailService.SendEmailToEmails(emails, latestEmailSubject, latestEmailBody)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 发送Email
@@ -151,7 +151,7 @@ func (c AdminEmail) SendToUsers2(emails, latestEmailSubject, latestEmailBody str
 
 	if latestEmailSubject == "" || latestEmailBody == "" {
 		re.Msg = "subject or body is blank"
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 
 	if saveAsOldEmail {
@@ -168,7 +168,7 @@ func (c AdminEmail) SendToUsers2(emails, latestEmailSubject, latestEmailBody str
 
 	re.Ok, re.Msg = emailService.SendEmailToUsers(users, latestEmailSubject, latestEmailBody)
 
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // send Email dialog
@@ -176,9 +176,9 @@ func (c AdminEmail) SendEmailDialog(emails string) revel.Result {
 	emailsArr := strings.Split(emails, ",")
 	emailsNl := strings.Join(emailsArr, "\n")
 
-	c.RenderArgs["emailsNl"] = emailsNl
-	c.RenderArgs["str"] = configService.GlobalStringConfigs
-	c.RenderArgs["map"] = configService.GlobalMapConfigs
+	c.ViewArgs["emailsNl"] = emailsNl
+	c.ViewArgs["str"] = configService.GlobalStringConfigs
+	c.ViewArgs["map"] = configService.GlobalMapConfigs
 
 	return c.RenderTemplate("admin/email/emailDialog.html")
 }
@@ -190,7 +190,7 @@ func (c AdminEmail) SendToUsers(userFilterEmail, userFilterWhiteList, userFilter
 
 	if latestEmailSubject == "" || latestEmailBody == "" {
 		re.Msg = "subject or body is blank"
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 
 	if saveAsOldEmail {
@@ -204,33 +204,33 @@ func (c AdminEmail) SendToUsers(userFilterEmail, userFilterWhiteList, userFilter
 	if users == nil || len(users) == 0 {
 		re.Ok = false
 		re.Msg = "no users"
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 
 	re.Ok, re.Msg = emailService.SendEmailToUsers(users, latestEmailSubject, latestEmailBody)
 	if !re.Ok {
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 
 	re.Ok = true
 	re.Msg = "users:" + strconv.Itoa(len(users))
 
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 删除emails
 func (c AdminEmail) DeleteEmails(ids string) revel.Result {
 	re := info.NewRe()
 	re.Ok = emailService.DeleteEmails(strings.Split(ids, ","))
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 func (c AdminEmail) List(sorter, keywords string) revel.Result {
 	pageNumber := c.GetPage()
 	sorterField, isAsc := c.getSorter("CreatedTime", false, []string{"email", "ok", "subject", "createdTime"})
 	pageInfo, emails := emailService.ListEmailLogs(pageNumber, userPageSize, sorterField, isAsc, keywords)
-	c.RenderArgs["pageInfo"] = pageInfo
-	c.RenderArgs["emails"] = emails
-	c.RenderArgs["keywords"] = keywords
+	c.ViewArgs["pageInfo"] = pageInfo
+	c.ViewArgs["emails"] = emails
+	c.ViewArgs["keywords"] = keywords
 	return c.RenderTemplate("admin/email/list.html")
 }

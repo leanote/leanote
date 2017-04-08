@@ -24,9 +24,9 @@ type File struct {
 func (c File) UploadBlogLogo() revel.Result {
 	re := c.uploadImage("blogLogo", "")
 
-	c.RenderArgs["fileUrlPath"] = re.Id
-	c.RenderArgs["resultCode"] = re.Code
-	c.RenderArgs["resultMsg"] = re.Msg
+	c.ViewArgs["fileUrlPath"] = re.Id
+	c.ViewArgs["resultCode"] = re.Code
+	c.ViewArgs["resultMsg"] = re.Msg
 
 	return c.RenderTemplate("file/blog_logo.html")
 }
@@ -54,16 +54,16 @@ func (c File) PasteImage(noteId string) revel.Result {
 		}
 	}
 
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 头像设置
 func (c File) UploadAvatar() revel.Result {
 	re := c.uploadImage("logo", "")
 
-	c.RenderArgs["fileUrlPath"] = re.Id
-	c.RenderArgs["resultCode"] = re.Code
-	c.RenderArgs["resultMsg"] = re.Msg
+	c.ViewArgs["fileUrlPath"] = re.Id
+	c.ViewArgs["resultCode"] = re.Code
+	c.ViewArgs["resultMsg"] = re.Msg
 
 	if re.Ok {
 		re.Ok = userService.UpdateAvatar(c.GetUserId(), re.Id)
@@ -72,13 +72,13 @@ func (c File) UploadAvatar() revel.Result {
 		}
 	}
 
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // leaui image plugin upload image
 func (c File) UploadImageLeaui(albumId string) revel.Result {
 	re := c.uploadImage("", albumId)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 上传图片, 公用方法
@@ -201,19 +201,19 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 // get all images by userId with page
 func (c File) GetImages(albumId, key string, page int) revel.Result {
 	re := fileService.ListImagesWithPage(c.GetUserId(), albumId, key, page, 12)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 func (c File) UpdateImageTitle(fileId, title string) revel.Result {
 	re := info.NewRe()
 	re.Ok = fileService.UpdateImageTitle(c.GetUserId(), fileId, title)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 func (c File) DeleteImage(fileId string) revel.Result {
 	re := info.NewRe()
 	re.Ok, re.Msg = fileService.DeleteImage(c.GetUserId(), fileId)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 //-----------
@@ -235,7 +235,7 @@ func (c File) OutputImage(noteId, fileId string) revel.Result {
 func (c File) CopyImage(userId, fileId, toUserId string) revel.Result {
 	re := info.NewRe()
 	re.Ok, re.Id = fileService.CopyImage(userId, fileId, toUserId)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 复制外网的图片
@@ -251,13 +251,13 @@ func (c File) CopyHttpImage(src string) revel.Result {
 	dir := revel.BasePath + "/" + fileUrlPath
 	err := os.MkdirAll(dir, 0755)
 	if err != nil {
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 	filesize, filename, _, ok := netutil.WriteUrl(src, dir)
 
 	if !ok {
 		re.Msg = "copy error"
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 
 	// File
@@ -273,5 +273,5 @@ func (c File) CopyHttpImage(src string) revel.Result {
 	//	re.Item = fileInfo.Path
 	re.Ok, re.Msg = fileService.AddImage(fileInfo, "", c.GetUserId(), true)
 
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }

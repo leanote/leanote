@@ -24,7 +24,7 @@ type Attach struct {
 // 上传附件
 func (c Attach) UploadAttach(noteId string) revel.Result {
 	re := c.uploadAttach(noteId)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 func (c Attach) uploadAttach(noteId string) (re info.Re) {
 	var fileId = ""
@@ -118,7 +118,7 @@ func (c Attach) uploadAttach(noteId string) (re info.Re) {
 func (c Attach) DeleteAttach(attachId string) revel.Result {
 	re := info.NewRe()
 	re.Ok, re.Msg = attachService.DeleteAttach(attachId, c.GetUserId())
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // get all attachs by noteId
@@ -126,7 +126,7 @@ func (c Attach) GetAttachs(noteId string) revel.Result {
 	re := info.NewRe()
 	re.Ok = true
 	re.List = attachService.ListAttachs(noteId, c.GetUserId())
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 下载附件

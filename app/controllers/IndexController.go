@@ -23,8 +23,8 @@ func (c Index) Default() revel.Result {
 // leanote展示页, 没有登录的, 或已登录明确要进该页的
 func (c Index) Index() revel.Result {
 	c.SetUserInfo()
-	c.RenderArgs["title"] = "leanote"
-	c.RenderArgs["openRegister"] = configService.GlobalStringConfigs["openRegister"]
+	c.ViewArgs["title"] = "leanote"
+	c.ViewArgs["openRegister"] = configService.GlobalStringConfigs["openRegister"]
 	c.SetLocale()
 
 	return c.RenderTemplate("home/index.html")
@@ -40,5 +40,5 @@ func (c Index) Suggestion(addr, suggestion string) revel.Result {
 		emailService.SendEmail("leanote@leanote.com", "建议", "UserId: "+c.GetUserId()+" <br /> Suggestions: "+suggestion)
 	}()
 
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }

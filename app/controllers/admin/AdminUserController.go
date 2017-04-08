@@ -23,9 +23,9 @@ func (c AdminUser) Index(sorter, keywords string, pageSize int) revel.Result {
 	}
 	sorterField, isAsc := c.getSorter("CreatedTime", false, []string{"email", "username", "verified", "createdTime", "accountType"})
 	pageInfo, users := userService.ListUsers(pageNumber, pageSize, sorterField, isAsc, keywords)
-	c.RenderArgs["pageInfo"] = pageInfo
-	c.RenderArgs["users"] = users
-	c.RenderArgs["keywords"] = keywords
+	c.ViewArgs["pageInfo"] = pageInfo
+	c.ViewArgs["users"] = users
+	c.ViewArgs["keywords"] = keywords
 	return c.RenderTemplate("admin/user/list.html")
 }
 
@@ -53,7 +53,7 @@ func (c AdminUser) Register(email, pwd string) revel.Result {
 // 修改帐户
 func (c AdminUser) ResetPwd(userId string) revel.Result {
 	userInfo := userService.GetUserInfo(userId)
-	c.RenderArgs["userInfo"] = userInfo
+	c.ViewArgs["userInfo"] = userInfo
 	return c.RenderTemplate("admin/user/reset_pwd.html")
 }
 

@@ -28,7 +28,7 @@ func (c ApiUser) Info() revel.Result {
 
 	userInfo := c.getUserInfo()
 	if userInfo.UserId == "" {
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 	apiUser := info.ApiUser{
 		UserId:   userInfo.UserId.Hex(),
@@ -37,7 +37,7 @@ func (c ApiUser) Info() revel.Result {
 		Logo:     userInfo.Logo,
 		Verified: userInfo.Verified,
 	}
-	return c.RenderJson(apiUser)
+	return c.RenderJSON(apiUser)
 }
 
 // 修改用户名
@@ -46,15 +46,15 @@ func (c ApiUser) UpdateUsername(username string) revel.Result {
 	re := info.NewApiRe()
 	if c.GetUsername() == "demo" {
 		re.Msg = "cannotUpdateDemo"
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 
 	if re.Ok, re.Msg = Vd("username", username); !re.Ok {
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 
 	re.Ok, re.Msg = userService.UpdateUsername(c.getUserId(), username)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 修改密码
@@ -63,23 +63,23 @@ func (c ApiUser) UpdatePwd(oldPwd, pwd string) revel.Result {
 	re := info.NewApiRe()
 	if c.GetUsername() == "demo" {
 		re.Msg = "cannotUpdateDemo"
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 	if re.Ok, re.Msg = Vd("password", oldPwd); !re.Ok {
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 	if re.Ok, re.Msg = Vd("password", pwd); !re.Ok {
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 	re.Ok, re.Msg = userService.UpdatePwd(c.getUserId(), oldPwd, pwd)
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 // 获得同步状态
 // [OK]
 func (c ApiUser) GetSyncState() revel.Result {
 	ret := bson.M{"LastSyncUsn": userService.GetUsn(c.getUserId()), "LastSyncTime": time.Now().Unix()}
-	return c.RenderJson(ret)
+	return c.RenderJSON(ret)
 }
 
 // 头像设置
@@ -91,11 +91,11 @@ func (c ApiUser) UpdateLogo() revel.Result {
 
 	if ok {
 		ok = userService.UpdateAvatar(c.getUserId(), url)
-		return c.RenderJson(map[string]string{"Logo": url})
+		return c.RenderJSON(map[string]string{"Logo": url})
 	} else {
 		re := info.NewApiRe()
 		re.Msg = msg
-		return c.RenderJson(re)
+		return c.RenderJSON(re)
 	}
 }
 

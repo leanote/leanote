@@ -180,7 +180,7 @@ func (c BaseController) GetTotalPage(page, count int) int {
 
 //-------------
 func (c BaseController) E404() revel.Result {
-	c.RenderArgs["title"] = "404"
+	c.ViewArgs["title"] = "404"
 	return c.NotFound("", nil)
 }
 
@@ -199,12 +199,12 @@ func (c BaseController) SetLocale() string {
 	if !i18n.HasLang(locale) {
 		lang = i18n.GetDefaultLang()
 	}
-	c.RenderArgs["locale"] = lang
-	c.RenderArgs["siteUrl"] = configService.GetSiteUrl()
+	c.ViewArgs["locale"] = lang
+	c.ViewArgs["siteUrl"] = configService.GetSiteUrl()
 
-	c.RenderArgs["blogUrl"] = configService.GetBlogUrl()
-	c.RenderArgs["leaUrl"] = configService.GetLeaUrl()
-	c.RenderArgs["noteUrl"] = configService.GetNoteUrl()
+	c.ViewArgs["blogUrl"] = configService.GetBlogUrl()
+	c.ViewArgs["leaUrl"] = configService.GetLeaUrl()
+	c.ViewArgs["noteUrl"] = configService.GetNoteUrl()
 
 	return lang
 }
@@ -212,9 +212,9 @@ func (c BaseController) SetLocale() string {
 // 设置userInfo
 func (c BaseController) SetUserInfo() info.User {
 	userInfo := c.GetUserInfo()
-	c.RenderArgs["userInfo"] = userInfo
+	c.ViewArgs["userInfo"] = userInfo
 	if userInfo.Username == configService.GetAdminUsername() {
-		c.RenderArgs["isAdmin"] = true
+		c.ViewArgs["isAdmin"] = true
 	}
 	return userInfo
 }
@@ -230,11 +230,11 @@ func (c BaseController) RenderTemplateStr(templatePath string) string {
 
 	tpl := &revel.RenderTemplateResult{
 		Template:   template,
-		RenderArgs: c.RenderArgs, // 把args给它
+		ViewArgs: c.ViewArgs, // 把args给它
 	}
 
 	var buffer bytes.Buffer
-	tpl.Template.Render(&buffer, c.RenderArgs)
+	tpl.Template.Render(&buffer, c.ViewArgs)
 	return buffer.String()
 }
 
@@ -263,5 +263,5 @@ func (c BaseController) RenderRe(re info.Re) revel.Result {
 	if strings.HasPrefix(re.Msg, "???") {
 		re.Msg = oldMsg
 	}
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }

@@ -75,7 +75,7 @@ func AuthInterceptor(c *revel.Controller) revel.Result {
 	noToken := false
 	if token == "" {
 		// 若无, 则取sessionId
-		token = c.Session.Id()
+		token = c.Session.ID()
 		noToken = true
 	}
 	c.Session["_token"] = token
@@ -106,7 +106,7 @@ func AuthInterceptor(c *revel.Controller) revel.Result {
 	// 没有登录, 返回错误的信息, 需要登录
 	re := info.NewApiRe()
 	re.Msg = "NOTLOGIN"
-	return c.RenderJson(re)
+	return c.RenderJSON(re)
 }
 
 func init() {
