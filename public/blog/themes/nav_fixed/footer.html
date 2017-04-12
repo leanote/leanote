@@ -63,10 +63,13 @@ function search(e) {
 	if(!keywords) {
 		location.href = "{{$.searchUrl}}";
 	} else {
-		var tpl = '<form action="{{$.searchUrl}}" method="get">';
-		tpl += '<input name="keywords" value="' + keywords + '" />';
-		tpl += "</form";
-		$(tpl).submit();
+		var tpl = '<form style="display: none" action="{{$.searchUrl}}" method="get">';
+        tpl += '<input name="keywords" value="' + keywords + '" />';
+        tpl += "</form";
+        var $tpl = $(tpl);
+        $('body').append($tpl)
+        $tpl.submit();
+        $tpl.remove();
 	}
 }
 </script>
