@@ -18,7 +18,7 @@ var userPageSize = 10
 
 func (c AdminUser) Index(sorter, keywords string, pageSize int) revel.Result {
 	pageNumber := c.GetPage()
-	if userPageSize == 0 {
+	if pageSize == 0 {
 		pageSize = userPageSize
 	}
 	sorterField, isAsc := c.getSorter("CreatedTime", false, []string{"email", "username", "verified", "createdTime", "accountType"})
