@@ -600,6 +600,7 @@ define("tinymce/dom/Selection", [
 			}
 
 			if (!self.tridentSel) {
+				/*
 				sel = self.getSel();
 
 				if (sel) {
@@ -621,6 +622,59 @@ define("tinymce/dom/Selection", [
 					// adding range isn't always successful so we need to check range count otherwise an exception can occur
 					self.selectedRange = sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
 				}
+				*/
+				// https://github.com/tinymce/tinymce/blob/518a3bff9a5b5922e647db7b0b2d000d4d4c752f/js/tinymce/classes/dom/Selection.js
+				sel = self.getSel();
+
+				var evt = self.editor.fire('SetSelectionRange', {range: rng});
+				rng = evt.range;
+
+				if (sel) {
+					self.explicitRange = rng;
+
+					try {
+						sel.removeAllRanges();
+						sel.addRange(rng);
+					} catch (ex) {
+						// IE might throw errors here if the editor is within a hidden container and selection is changed
+					}
+
+					// Forward is set to false and we have an extend function
+					if (forward === false && sel.extend) {
+						sel.collapse(rng.endContainer, rng.endOffset);
+						sel.extend(rng.startContainer, rng.startOffset);
+					}
+
+					// adding range isn't always successful so we need to check range count otherwise an exception can occur
+					self.selectedRange = sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
+				}
+
+				// WebKit egde case selecting images works better using setBaseAndExtent when the image is floated
+				if (!rng.collapsed && rng.startContainer == rng.endContainer && sel.setBaseAndExtent && !Env.ie) {
+					if (rng.endOffset - rng.startOffset < 2) {
+						if (rng.startContainer.hasChildNodes()) {
+							var node = rng.startContainer.childNodes[rng.startOffset];
+							if (node && node.tagName == 'IMG') {
+								sel.setBaseAndExtent(
+									rng.startContainer,
+									rng.startOffset,
+									rng.endContainer,
+									rng.endOffset
+								);
+
+								// Since the setBaseAndExtent is fixed in more recent Blink versions we
+								// need to detect if it's doing the wrong thing and falling back to the
+								// crazy incorrect behavior api call since that seems to be the only way
+								// to get it to work on Safari WebKit as of 2017-02-23
+								if (sel.anchorNode !== rng.startContainer || sel.focusNode !== rng.endContainer) {
+									sel.setBaseAndExtent(node, 0, node, 1);
+								}
+							}
+						}
+					}
+				}
+
+				self.editor.fire('AfterSetSelectionRange', {range: rng});
 			} else {
 				// Is W3C Range fake range on IE
 				if (rng.cloneRange) {
