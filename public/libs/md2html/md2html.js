@@ -234,7 +234,9 @@ listStr=addAnchors(listStr);listStr=listStr.replace(/\n{2,}(?=\\x03)/,"\n");list
 	            elementList.push(new TocElement(elt.tagName, createAnchor(elt), elt.textContent));
 	        });
 	        elementList = groupTags(elementList);
-	        return '<div class="toc">\n<ul>\n' + elementList.join("") + '</ul>\n</div>\n';
+			var result = elementList.join("");
+			result = result.replace('li', 'div class="toc"').replace('li$', 'div');
+            return result;
 	    }
 
 	    toc.convert = function(previewContentsElt) {
