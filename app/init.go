@@ -129,7 +129,7 @@ func init() {
 		if tags == nil || len(tags) == 0 {
 			return ""
 		}
-		locale, _ := renderArgs[revel.CurrentLocaleRenderArg].(string)
+		locale, _ := renderArgs[revel.CurrentLocaleViewArg].(string)
 		tagStr := ""
 		lenTags := len(tags)
 
@@ -183,7 +183,7 @@ func init() {
 	}
 
 	revel.TemplateFuncs["msg"] = func(renderArgs map[string]interface{}, message string, args ...interface{}) template.HTML {
-		str, ok := renderArgs[revel.CurrentLocaleRenderArg].(string)
+		str, ok := renderArgs[revel.CurrentLocaleViewArg].(string)
 		if !ok {
 			return ""
 		}
@@ -192,7 +192,7 @@ func init() {
 
 	// 不用revel的msg
 	revel.TemplateFuncs["leaMsg"] = func(renderArgs map[string]interface{}, key string) template.HTML {
-		locale, _ := renderArgs[revel.CurrentLocaleRenderArg].(string)
+		locale, _ := renderArgs[revel.CurrentLocaleViewArg].(string)
 		str := i18n.Message(locale, key)
 		if strings.HasPrefix(str, "???") {
 			str = key
@@ -205,7 +205,7 @@ func init() {
 		if tags == nil || len(tags) == 0 {
 			return ""
 		}
-		locale, _ := renderArgs[revel.CurrentLocaleRenderArg].(string)
+		locale, _ := renderArgs[revel.CurrentLocaleViewArg].(string)
 		tagStr := ""
 		lenTags := len(tags)
 
@@ -307,7 +307,7 @@ func init() {
 
 	// http://stackoverflow.com/questions/14226416/go-lang-templates-always-quotes-a-string-and-removes-comments
 	revel.TemplateFuncs["rawMsg"] = func(renderArgs map[string]interface{}, message string, args ...interface{}) template.JS {
-		str, ok := renderArgs[revel.CurrentLocaleRenderArg].(string)
+		str, ok := renderArgs[revel.CurrentLocaleViewArg].(string)
 		if !ok {
 			return ""
 		}
