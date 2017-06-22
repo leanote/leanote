@@ -48,6 +48,7 @@ log.error.prefix = "ERROR "
 i18n.default_language=en-us
 
 module.static=github.com/revel/modules/static
+module.static=github.com/leanote/leanote/vendor/github.com/revel/modules/static
 
 [dev]
 mode.dev=true

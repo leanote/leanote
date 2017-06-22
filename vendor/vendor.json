@@ -1,0 +1,139 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "CsLOOvSS/njdzi2XZwcUei1Sfkc=",
+			"path": "code.google.com/p/cascadia",
+			"revision": "4a84b694f664",
+			"revisionTime": "2014-01-17T06:19:03Z"
+		},
+		{
+			"checksumSHA1": "cUsRK2q2zwGsqKYcV6WBJSmYrmc=",
+			"path": "code.google.com/p/go.net/html",
+			"revision": "da30b75b9205",
+			"revisionTime": "2013-12-13T05:04:21Z"
+		},
+		{
+			"checksumSHA1": "QcFaAgjOlEg8FAjmOEG5feC7DBs=",
+			"path": "code.google.com/p/go.net/html/atom",
+			"revision": "da30b75b9205",
+			"revisionTime": "2013-12-13T05:04:21Z"
+		},
+		{
+			"checksumSHA1": "mMxnY2oCX9MgWs6WywvOwk96lDg=",
+			"path": "github.com/PuerkitoBio/goquery",
+			"revision": "e273eed13ebb7b924f3a763d0f21898d6f02d285",
+			"revisionTime": "2013-12-03T00:52:21Z"
+		},
+		{
+			"checksumSHA1": "icpCH3YuHsVobNkCCz6NUv69aFc=",
+			"path": "github.com/agtorre/gocolorize",
+			"revision": "99fea4bc9517f07eea8194702cb7076f4845b7de",
+			"revisionTime": "2017-02-17T02:13:38Z"
+		},
+		{
+			"checksumSHA1": "mA7isU/nIAT5ytwIzK65H0vlVqI=",
+			"path": "github.com/klauspost/compress/flate",
+			"revision": "f3dce52e0576655d55fd69e74b63da96ad1108f3",
+			"revisionTime": "2017-05-28T13:23:59Z"
+		},
+		{
+			"checksumSHA1": "kWBC7CTgppTdJFXizt4XkURbyCE=",
+			"path": "github.com/klauspost/compress/gzip",
+			"revision": "f3dce52e0576655d55fd69e74b63da96ad1108f3",
+			"revisionTime": "2017-05-28T13:23:59Z"
+		},
+		{
+			"checksumSHA1": "+azPXaZpPF14YHRghNAer13ThQU=",
+			"path": "github.com/klauspost/compress/zlib",
+			"revision": "f3dce52e0576655d55fd69e74b63da96ad1108f3",
+			"revisionTime": "2017-05-28T13:23:59Z"
+		},
+		{
+			"checksumSHA1": "iKPMvbAueGfdyHcWCgzwKzm8WVo=",
+			"path": "github.com/klauspost/cpuid",
+			"revision": "09cded8978dc9e80714c4d85b0322337b0a1e5e0",
+			"revisionTime": "2016-03-02T07:53:16Z"
+		},
+		{
+			"checksumSHA1": "CoEBOYCjkx/0q2dcm6iGp2jGZjU=",
+			"path": "github.com/revel/config",
+			"revision": "662332b741dd464a886ab0901379c02b9bc5dc30",
+			"revisionTime": "2017-03-24T17:50:30Z"
+		},
+		{
+			"checksumSHA1": "kvXOsEZJFaHIXmIogT0EJprZno0=",
+			"path": "github.com/revel/revel",
+			"revision": "82f20b40b667424de214a95607e67da67f39455a",
+			"revisionTime": "2017-06-07T04:40:13Z"
+		},
+		{
+			"checksumSHA1": "UpD3DOBV4ke+MSUYOotu4qciG7A=",
+			"path": "github.com/robfig/config",
+			"revision": "0f78529c8c7e3e9a25f15876532ecbc07c7d99e6",
+			"revisionTime": "2014-12-07T22:47:36Z"
+		},
+		{
+			"checksumSHA1": "wtQXDLDa/OJuf3N+jviyY6pYNNA=",
+			"path": "github.com/robfig/pathtree",
+			"revision": "41257a1839e945fce74afd070e02bab2ea2c776a",
+			"revisionTime": "2014-01-21T04:10:23Z"
+		},
+		{
+			"checksumSHA1": "vE43s37+4CJ2CDU6TlOUOYE0K9c=",
+			"path": "golang.org/x/crypto/bcrypt",
+			"revision": "aedad9a179ec1ea11b7064c57cbc6dc30d7724ec",
+			"revisionTime": "2015-07-28T17:55:38Z"
+		},
+		{
+			"checksumSHA1": "udD2DzUPFZbMVXP0VNADhef4zKk=",
+			"path": "golang.org/x/crypto/blowfish",
+			"revision": "aedad9a179ec1ea11b7064c57cbc6dc30d7724ec",
+			"revisionTime": "2015-07-28T17:55:38Z"
+		},
+		{
+			"checksumSHA1": "7EZyXN0EmZLgGxZxK01IJua4c8o=",
+			"path": "golang.org/x/net/websocket",
+			"revision": "057a25b06247e0c51ba15d8ae475feb2fcb72164",
+			"revisionTime": "2017-06-20T20:31:43Z"
+		},
+		{
+			"checksumSHA1": "Tkb1hBdBWeO7SGjixS2Hm48F6+s=",
+			"path": "golang.org/x/sys/unix",
+			"revision": "fb4cac33e3196ff7f507ab9b2d2a44b0142f5b5a",
+			"revisionTime": "2017-06-14T06:48:48Z"
+		},
+		{
+			"checksumSHA1": "eIhF+hmL/XZhzTiAwhLD0M65vlY=",
+			"path": "gopkg.in/fsnotify.v1",
+			"revision": "629574ca2a5df945712d3079857300b5e4da0236",
+			"revisionTime": "2016-10-11T02:33:12Z"
+		},
+		{
+			"checksumSHA1": "21kXunz3lhbp7DjhcxOeTYiHnT8=",
+			"path": "gopkg.in/mgo.v2",
+			"revision": "c6a7dce14133ccac2dcac3793f1d6e2ef048503a",
+			"revisionTime": "2015-01-24T11:37:22Z"
+		},
+		{
+			"checksumSHA1": "YKTYgORc5YB1D9IVHM/6bcjfDjc=",
+			"path": "gopkg.in/mgo.v2/bson",
+			"revision": "c6a7dce14133ccac2dcac3793f1d6e2ef048503a",
+			"revisionTime": "2015-01-24T11:37:22Z"
+		},
+		{
+			"checksumSHA1": "+1WDRPaOphSCmRMxVPIPBV4aubc=",
+			"path": "gopkg.in/mgo.v2/internal/scram",
+			"revision": "c6a7dce14133ccac2dcac3793f1d6e2ef048503a",
+			"revisionTime": "2015-01-24T11:37:22Z"
+		},
+		{
+			"checksumSHA1": "CNUEVcGPN2Xo1YdBcPOm0wnPlE4=",
+			"path": "gopkg.in/mgo.v2/sasl",
+			"revision": "c6a7dce14133ccac2dcac3793f1d6e2ef048503a",
+			"revisionTime": "2015-01-24T11:37:22Z"
+		}
+	],
+	"rootPath": "github.com/leanote/leanote"
+}
