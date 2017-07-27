@@ -11,6 +11,7 @@ import (
 	"regexp"
 	"strings"
 	"time"
+	"runtime"
 	//	"github.com/leanote/leanote/app/types"
 	//	"io/ioutil"
 	"fmt"
@@ -463,6 +464,9 @@ func (c Note) ExportPdf(noteId string) revel.Result {
 	}
 
 	cmd := exec.Command("/bin/sh", "-c", cc)
+	if runtime.GOARCH == "windows" {
+		cmd = exec.Command("cmd", "/C", cc)
+	}
 	_, err := cmd.Output()
 	if err != nil {
 		return c.RenderText("export pdf error. " + fmt.Sprintf("%v", err))
