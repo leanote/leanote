@@ -447,7 +447,11 @@ func (c Note) ExportPdf(noteId string) revel.Result {
 	binPath := configService.GetGlobalStringConfig("exportPdfBinPath")
 	// 默认路径
 	if binPath == "" {
-		binPath = "/usr/local/bin/wkhtmltopdf"
+		if runtime.GOOS == "windows" {
+			binPath = `C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe`
+		} else {
+			binPath = "/usr/local/bin/wkhtmltopdf"
+		}
 	}
 
 	url := configService.GetSiteUrl() + "/note/toPdf?noteId=" + noteId + "&appKey=" + appKey
@@ -457,15 +461,28 @@ func (c Note) ExportPdf(noteId string) revel.Result {
 	// http://madalgo.au.dk/~jakobt/wkhtmltoxdoc/wkhtmltopdf_0.10.0_rc2-doc.html
 	// wkhtmltopdf参数大全
 	var cc string
+	// var cc []string
+	var ccWindows []string
 	if note.IsMarkdown {
 		cc = binPath + " --lowquality --window-status done \"" + url + "\"  \"" + path + "\"" //  \"" + cookieDomain + "\" \"" + cookieName + "\" \"" + cookieValue + "\""
+		// cc = []string{binPath, "--lowquality", "--window-status", "done", "\"" + url + "\"", "\"" + path + "\""}
+		ccWindows = []string{"/C", binPath, "--lowquality", "--window-status", "done", url, path}
 	} else {
 		cc = binPath + " --lowquality \"" + url + "\"  \"" + path + "\"" //  \"" + cookieDomain + "\" \"" + cookieName + "\" \"" + cookieValue + "\""
+		// cc = []string{binPath, "--lowquality", "\"" + url + "\"", "\"" + path + "\""}
+		ccWindows = []string{"/C", binPath, "--lowquality", url, path}
 	}
 
-	cmd := exec.Command("/bin/sh", "-c", cc)
-	if runtime.GOARCH == "windows" {
-		cmd = exec.Command("cmd", "/C", cc)
+	var cmd *exec.Cmd
+
+	// fmt.Println("-------1", runtime.GOOS, ccWindows)
+	if runtime.GOOS == "windows" {
+		fmt.Println(ccWindows)
+		// cmd = exec.Command("cmd", ccWindows...)
+		cmd = exec.Command(ccWindows[1], ccWindows[2:]...)
+	} else {
+		fmt.Println(cc)
+		cmd = exec.Command("/bin/sh", "-c", cc)
 	}
 	_, err := cmd.Output()
 	if err != nil {

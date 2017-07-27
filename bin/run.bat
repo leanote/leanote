@@ -4,13 +4,13 @@ cd..
 set SCRIPTPATH=%cd%
 
 : top src directory
-set path="%SCRIPTPATH%\bin\src\github.com\leanote"
+set leanotePath="%SCRIPTPATH%\bin\src\github.com\leanote"
 
-if not exist "%path%" mkdir "%path%"
+if not exist "%leanotePath%" mkdir "%leanotePath%"
 
 : create software link
-if exist "%path%\leanote" del /Q "%path%\leanote"
-mklink /D "%path%\leanote"  %SCRIPTPATH%
+if exist "%leanotePath%\leanote" del /Q "%leanotePath%\leanote"
+mklink /D "%leanotePath%\leanote"  %SCRIPTPATH%
 
 : set GOPATH
 set GOPATH="%SCRIPTPATH%\bin"
