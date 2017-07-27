@@ -7,7 +7,6 @@ bin/release
 bin/test.sh
 bin/tmp
 bin/test
-bin/src
 public/upload
 app/routes/routes.go
 app/tmp/main.go
