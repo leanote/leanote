@@ -210,10 +210,10 @@ func hasAcceptLanguageHeader(request *revel.Request) (bool, string) {
 
 // Determine whether the given request has a valid language cookie value.
 func hasLocaleCookie(request *revel.Request) (bool, string) {
-	if request != nil && request.Cookies() != nil {
+	if request != nil {
 		name := revel.Config.StringDefault(localeCookieConfigKey, revel.CookiePrefix+"_LANG")
 		if cookie, error := request.Cookie(name); error == nil {
-			return true, cookie.Value
+			return true, cookie.GetValue()
 		} else {
 			revel.TRACE.Printf("Unable to read locale cookie with name '%s': %s", name, error.Error())
 		}

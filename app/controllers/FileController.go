@@ -97,11 +97,27 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 		re.Ok = Ok
 	}()
 
-	file, handel, err := c.Request.FormFile("file")
-	if err != nil {
+	// file, handel, err := c.Request.FormFile("file")
+	// if err != nil {
+	// 	return re
+	// }
+	// defer file.Close()
+
+	var data []byte
+	c.Params.Bind(&data, "file")
+	handel := c.Params.Files["file"][0]
+	if data == nil || len(data) == 0 {
 		return re
 	}
-	defer file.Close()
+
+	// file, handel, err := c.Request.FormFile("file")
+	// if err != nil {
+	// 	return re
+	// }
+	// defer file.Close()
+
+	// data, err := ioutil.ReadAll(file)
+	
 
 	// 生成上传路径
 	newGuid := NewGuid()
@@ -116,7 +132,7 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 	}
 
 	dir := revel.BasePath + "/" + fileUrlPath
-	err = os.MkdirAll(dir, 0755)
+	err := os.MkdirAll(dir, 0755)
 	if err != nil {
 		return re
 	}
@@ -136,11 +152,11 @@ func (c File) uploadImage(from, albumId string) (re info.Re) {
 	}
 
 	filename = newGuid + ext
-	data, err := ioutil.ReadAll(file)
-	if err != nil {
-		LogJ(err)
-		return re
-	}
+	// data, err := ioutil.ReadAll(file)
+	// if err != nil {
+	// 	LogJ(err)
+	// 	return re
+	// }
 
 	var maxFileSize float64
 	if from == "logo" {

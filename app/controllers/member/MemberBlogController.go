@@ -351,14 +351,21 @@ func (c MemberBlog) uploadImage(themeId string) (re info.Re) {
 		re.Ok = Ok
 	}()
 
-	file, handel, err := c.Request.FormFile("file")
-	if err != nil {
+	var data []byte
+	c.Params.Bind(&data, "file")
+	handel := c.Params.Files["file"][0]
+	if data == nil || len(data) == 0 {
 		return re
 	}
-	defer file.Close()
+
+	// file, handel, err := c.Request.FormFile("file")
+	// if err != nil {
+	// 	return re
+	// }
+	// defer file.Close()
 	// 生成上传路径
 	dir := themeService.GetThemeAbsolutePath(c.GetUserId(), themeId) + "/images"
-	err = os.MkdirAll(dir, 0755)
+	err := os.MkdirAll(dir, 0755)
 	if err != nil {
 		return re
 	}
@@ -374,11 +381,11 @@ func (c MemberBlog) uploadImage(themeId string) (re info.Re) {
 	}
 
 	filename = filename
-	data, err := ioutil.ReadAll(file)
-	if err != nil {
-		LogJ(err)
-		return re
-	}
+	// data, err := ioutil.ReadAll(file)
+	// if err != nil {
+	// 	LogJ(err)
+	// 	return re
+	// }
 
 	// > 2M?
 	if len(data) > 5*1024*1024 {
@@ -441,17 +448,24 @@ func (c MemberBlog) ExportTheme(themeId string) revel.Result {
 func (c MemberBlog) ImportTheme() revel.Result {
 	re := info.NewRe()
 
-	file, handel, err := c.Request.FormFile("file")
-	if err != nil {
-		re.Msg = fmt.Sprintf("%v", err)
+	var data []byte
+	c.Params.Bind(&data, "file")
+	handel := c.Params.Files["file"][0]
+	if data == nil || len(data) == 0 {
 		return c.RenderJSON(re)
 	}
 
-	defer file.Close()
+	// file, handel, err := c.Request.FormFile("file")
+	// if err != nil {
+	// 	re.Msg = fmt.Sprintf("%v", err)
+	// 	return c.RenderJSON(re)
+	// }
+
+	// defer file.Close()
 	// 生成上传路径
 	userId := c.GetUserId()
 	dir := revel.BasePath + "/public/upload/" + userId + "/tmp"
-	err = os.MkdirAll(dir, 0755)
+	err := os.MkdirAll(dir, 0755)
 	if err != nil {
 		re.Msg = fmt.Sprintf("%v", err)
 		return c.RenderJSON(re)
@@ -467,10 +481,10 @@ func (c MemberBlog) ImportTheme() revel.Result {
 	}
 
 	filename = filename
-	data, err := ioutil.ReadAll(file)
-	if err != nil {
-		return c.RenderJSON(re)
-	}
+	// data, err := ioutil.ReadAll(file)
+	// if err != nil {
+	// 	return c.RenderJSON(re)
+	// }
 
 	// > 10M?
 	if len(data) > 10*1024*1024 {

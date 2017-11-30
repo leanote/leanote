@@ -104,16 +104,23 @@ func (c ApiUser) uploadImage() (ok bool, msg, url string) {
 	var fileUrlPath = ""
 	ok = false
 
-	file, handel, err := c.Request.FormFile("file")
-	if err != nil {
+	var data []byte
+	c.Params.Bind(&data, "file")
+	handel := c.Params.Files["file"][0]
+	if data == nil || len(data) == 0 {
 		return
 	}
-	defer file.Close()
+
+	// file, handel, err := c.Request.FormFile("file")
+	// if err != nil {
+	// 	return
+	// }
+	// defer file.Close()
 	// 生成上传路径
 	fileUrlPath = "public/upload/" + c.getUserId() + "/images/logo"
 
 	dir := revel.BasePath + "/" + fileUrlPath
-	err = os.MkdirAll(dir, 0755)
+	err := os.MkdirAll(dir, 0755)
 	if err != nil {
 		return
 	}
@@ -129,11 +136,11 @@ func (c ApiUser) uploadImage() (ok bool, msg, url string) {
 	}
 
 	filename = NewGuid() + ext
-	data, err := ioutil.ReadAll(file)
-	if err != nil {
-		LogJ(err)
-		return
-	}
+	// data, err := ioutil.ReadAll(file)
+	// if err != nil {
+	// 	LogJ(err)
+	// 	return
+	// }
 
 	// > 5M?
 	if len(data) > 5*1024*1024 {

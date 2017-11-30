@@ -14,6 +14,7 @@ import (
 	//	"path"
 	//	"strconv"
 	"net/http"
+	"io"
 )
 
 // 验证码服务
@@ -30,7 +31,8 @@ func (r Ca) Apply(req *revel.Request, resp *revel.Response) {
 func (c Captcha) Get() revel.Result {
 	c.Response.ContentType = "image/png"
 	image, str := captcha.Fetch()
-	image.WriteTo(c.Response.Out)
+	out := io.Writer(c.Response.GetWriter())
+	image.WriteTo(out)
 
 	sessionId := c.Session["_ID"]
 	//	LogJ(c.Session)

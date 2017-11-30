@@ -104,7 +104,7 @@ func (r *RenderTemplateResult) Apply(req *revel.Request, resp *revel.Response) {
 	chunked := revel.Config.BoolDefault("results.chunked", false)
 
 	// If it's a HEAD request, throw away the bytes.
-	out := io.Writer(resp.Out)
+	out := io.Writer(resp.GetWriter())
 	if req.Method == "HEAD" {
 		out = ioutil.Discard
 	}
@@ -289,7 +289,7 @@ func (r ErrorResult) Apply(req *revel.Request, resp *revel.Response) {
 	// 不是preview就不要显示错误了
 	if r.IsPreview {
 		var b bytes.Buffer
-		out := io.Writer(resp.Out)
+		out := io.Writer(resp.GetWriter())
 		//	out = ioutil.Discard
 		err = tmpl.Execute(&b, r.ViewArgs)
 		resp.WriteHeader(http.StatusOK, "text/html; charset=utf-8")

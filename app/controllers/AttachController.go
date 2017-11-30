@@ -46,14 +46,17 @@ func (c Attach) uploadAttach(noteId string) (re info.Re) {
 		return re
 	}
 
-	file, handel, err := c.Request.FormFile("file")
-	if err != nil {
-		return re
-	}
-	defer file.Close()
+	var data []byte
+	c.Params.Bind(&data, "file")
 
-	data, err := ioutil.ReadAll(file)
-	if err != nil {
+	// file, handel, err := c.Request.FormFile("file")
+	// if err != nil {
+	// 	return re
+	// }
+	// defer file.Close()
+
+	// data, err := ioutil.ReadAll(file)
+	if data == nil || len(data) == 0 {
 		return re
 	}
 	// > 5M?
@@ -71,10 +74,13 @@ func (c Attach) uploadAttach(noteId string) (re info.Re) {
 	newGuid := NewGuid()
 	filePath := "files/" + GetRandomFilePath(c.GetUserId(), newGuid) + "/attachs"
 	dir := revel.BasePath + "/" + filePath
-	err = os.MkdirAll(dir, 0755)
+	err := os.MkdirAll(dir, 0755)
 	if err != nil {
 		return re
 	}
+
+	handel := c.Params.Files["file"][0]
+
 	// 生成新的文件名
 	filename := handel.Filename
 	_, ext := SplitFilename(filename) // .doc
