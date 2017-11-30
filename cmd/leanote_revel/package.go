@@ -53,7 +53,7 @@ func packageApp(args []string) {
 	// Remove the archive if it already exists.
 	destFile := filepath.Base(revel.BasePath) + ".tar.gz"
 	if err := os.Remove(destFile); err != nil && !os.IsNotExist(err) {
-		revel.ERROR.Fatal(err)
+		revel.RevelLog.Fatal("Unable to remove target file","error",err,"file",destFile)
 	}
 
 	// Collect stuff in a temp directory.

@@ -60,11 +60,11 @@ func buildApp(args []string) {
 	}
 
 	if err := os.RemoveAll(destPath); err != nil && !os.IsNotExist(err) {
-		revel.ERROR.Fatalln(err)
+		revel.RevelLog.Fatal("Remove all error","error", err)
 	}
 
 	if err := os.MkdirAll(destPath, 0777); err != nil {
-		revel.ERROR.Fatalln(err)
+		revel.RevelLog.Fatal("makedir error","error",err)
 	}
 
 	app, reverr := harness.Build()
@@ -101,7 +101,7 @@ func buildApp(args []string) {
 			}
 			modulePath, err := revel.ResolveImportPath(moduleImportPath)
 			if err != nil {
-				revel.ERROR.Fatalln("Failed to load module %s: %s", key[len("module."):], err)
+				revel.RevelLog.Fatalf("Failed to load module %s: %s", key[len("module."):], err)
 			}
 			modulePaths[moduleImportPath] = modulePath
 		}

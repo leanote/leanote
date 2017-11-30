@@ -10,9 +10,6 @@ import (
 
 	"github.com/leanote/leanote/cmd/harness"
 	"github.com/revel/revel"
-	// "fmt"
-
-	"path/filepath"
 )
 
 var cmdRun = &Command{
@@ -54,7 +51,7 @@ func parseRunArgs(args []string) *RunArgs {
 	}
 	switch len(args) {
 	case 3:
-		// Possibile combinations
+		// Possible combinations
 		// revel run [import-path] [run-mode] [port]
 		port, err := strconv.Atoi(args[2])
 		if err != nil {
@@ -64,7 +61,7 @@ func parseRunArgs(args []string) *RunArgs {
 		inputArgs.Mode = args[1]
 		inputArgs.Port = port
 	case 2:
-		// Possibile combinations
+		// Possible combinations
 		// 1. revel run [import-path] [run-mode]
 		// 2. revel run [import-path] [port]
 		// 3. revel run [run-mode] [port]
@@ -88,11 +85,16 @@ func parseRunArgs(args []string) *RunArgs {
 			inputArgs.Port = port
 		}
 	case 1:
-		// Possibile combinations
+		// Possible combinations
 		// 1. revel run [import-path]
 		// 2. revel run [port]
 		// 3. revel run [run-mode]
-		if _, err := build.Import(args[0], "", build.FindOnly); err == nil {
+		_, err := build.Import(args[0], "", build.FindOnly)
+		if err != nil {
+			revel.RevelLog.Warn("Unable to run using an import path, assuming import path is working directory %s %s", "Argument", args[0], "error", err.Error())
+		}
+		println("Trying to build with", args[0], err)
+		if err == nil {
 			// 1st arg is the import path
 			inputArgs.ImportPath = args[0]
 		} else if port, err := strconv.Atoi(args[0]); err == nil {
@@ -107,43 +109,11 @@ func parseRunArgs(args []string) *RunArgs {
 	return &inputArgs
 }
 
-
-// findSrcPaths uses the "go/build" package to find the source root for Revel
-// and the app.
-func findSrcPaths(importPath string) (appSourcePath string) {
-	var (
-		gopaths = filepath.SplitList(build.Default.GOPATH)
-		goroot  = build.Default.GOROOT
-	)
-
-	if len(gopaths) == 0 {
-		revel.ERROR.Fatalln("GOPATH environment variable is not set. ",
-			"Please refer to http://golang.org/doc/code.html to configure your Go environment.")
-	}
-
-	if revel.ContainsString(gopaths, goroot) {
-		revel.ERROR.Fatalf("GOPATH (%s) must not include your GOROOT (%s). "+
-			"Please refer to http://golang.org/doc/code.html to configure your Go environment.",
-			gopaths, goroot)
-	}
-
-	appPkg, err := build.Import(importPath, "", build.FindOnly)
-	if err != nil {
-		revel.ERROR.Fatalln("Failed to import", importPath, "with error:", err)
-	}
-
-	return appPkg.SrcRoot
-}
-
 func runApp(args []string) {
 	runArgs := parseRunArgs(args)
 
 	// Find and parse app.conf
-	// fmt.Println(runArgs.ImportPath + "/vendor")
-	// revel.Init(runArgs.Mode, runArgs.ImportPath, runArgs.ImportPath + "/vendor")
-	srcPath := findSrcPaths(runArgs.ImportPath)
-	srcPath = ""
-	revel.Init(runArgs.Mode, runArgs.ImportPath, srcPath)
+	revel.Init(runArgs.Mode, runArgs.ImportPath, "")
 	revel.LoadMimeConfig()
 
 	// fallback to default port
@@ -151,18 +121,18 @@ func runApp(args []string) {
 		runArgs.Port = revel.HTTPPort
 	}
 
-	revel.INFO.Printf("Running %s (%s) in %s mode\n", revel.AppName, revel.ImportPath, runArgs.Mode)
-	revel.TRACE.Println("Base path:", revel.BasePath)
+	revel.RevelLog.Infof("Running %s (%s) in %s mode\n", revel.AppName, revel.ImportPath, runArgs.Mode)
+	revel.RevelLog.Debug("Base path:", "path", revel.BasePath)
 
 	// If the app is run in "watched" mode, use the harness to run it.
 	if revel.Config.BoolDefault("watch", true) && revel.Config.BoolDefault("watch.code", true) {
-		revel.TRACE.Println("Running in watched mode.")
+		revel.RevelLog.Debug("Running in watched mode.")
 		revel.HTTPPort = runArgs.Port
 		harness.NewHarness().Run() // Never returns.
 	}
 
 	// Else, just build and run the app.
-	revel.TRACE.Println("Running in live build mode.")
+	revel.RevelLog.Debug("Running in live build mode.")
 	app, err := harness.Build()
 	if err != nil {
 		errorf("Failed to build app: %s", err)

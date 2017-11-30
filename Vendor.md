@@ -1,9 +1,12 @@
 # Vendor
 
-## revel 0.18
+## Install leanote_revel cmd
+
+基于revel 0.18
 
 ```
-revel run github.com/leanote/leanote
+go install github.com/leanote/leanote/cmd/leanote_revel
+leanote_revel run github.com/leanote/leanote
 ````
 
 ## build leanote
