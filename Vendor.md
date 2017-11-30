@@ -1,8 +1,8 @@
 # Vendor
 
-## Install leanote_revel cmd
+脱离 revel 每次升级不向下兼容 的控制!! 基于revel 0.18
 
-基于revel 0.18
+## Install leanote_revel cmd
 
 ```
 go install github.com/leanote/leanote/cmd/leanote_revel
