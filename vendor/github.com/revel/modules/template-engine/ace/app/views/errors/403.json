@@ -1,0 +1,4 @@
+{
+    "title": "{{Error.Title|escapejs}}",
+    "description": "{{Error.Description|escapejs}}"
+}

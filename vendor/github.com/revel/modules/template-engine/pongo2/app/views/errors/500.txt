@@ -1,0 +1,13 @@
+{{Error.Title}}
+{{Error.Description}}
+
+{% if RunMode == "dev" %}
+{% if Error.Path %}
+----------
+In {{Error.Path}} {% if Error.Line %}(around line {{Error.Line}}){% endif %}
+
+{% for src in Error.ContextSource %}
+{% if src.IsError %}>{% else %} {% endif %} {{src.Line}}: {{src.Source}}{% endfor %}
+
+{% endif %}
+{% endif %}
