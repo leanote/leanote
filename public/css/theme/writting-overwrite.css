@@ -890,6 +890,12 @@ a:hover {
 .ace_invisible_space {
   visibility: hidden !important;
 }
+.mce-match-marker.mce-match-marker-selected {
+  background: yellow;
+}
+#mce-modal-block {
+  display: none;
+}
 #editor,
 #mdEditor {
   position: absolute;
