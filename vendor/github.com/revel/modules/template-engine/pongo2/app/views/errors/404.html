@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Not found</title>
+	</head>
+	<body>
+
+{% if DevMode %}
+
+{% include "errors/404-dev.html" %}
+
+{% else %}
+	<h1>
+		{{ Error.Title }}
+	</h1>
+	<p>
+		{{ Error.Description}}
+	</p>
+{% endif %}
+
+	</body>
+</html>

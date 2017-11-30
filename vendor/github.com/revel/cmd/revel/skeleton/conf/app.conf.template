@@ -1,0 +1,207 @@
+################################################################################
+# Revel configuration file
+# More info at http://revel.github.io/manual/appconf.html
+################################################################################
+
+# Sets `revel.AppName` for use in-app.
+# Example:
+#   `if revel.AppName {...}`
+app.name = {{ .AppName }}
+
+# A secret string which is passed to cryptographically sign the cookie to prevent
+# (and detect) user modification.
+# Keep this string secret or users will be able to inject arbitrary cookie values
+# into your application
+app.secret = {{ .Secret }}
+
+# Revel running behind proxy like nginx, haproxy, etc.
+app.behind.proxy = false
+
+
+# The IP address on which to listen.
+http.addr =
+
+# The port on which to listen.
+http.port = 9000
+
+# Whether to use SSL or not.
+http.ssl = false
+
+# Path to an X509 certificate file, if using SSL.
+#http.sslcert =
+
+# Path to an X509 certificate key, if using SSL.
+#http.sslkey =
+
+
+# Timeout specifies a time limit for request (in seconds) made by a single client.
+# A Timeout of zero means no timeout.
+http.timeout.read = 90
+http.timeout.write = 60
+
+
+# For any cookies set by Revel (Session,Flash,Error) these properties will set
+# the fields of:
+# http://golang.org/pkg/net/http/#Cookie
+#
+# Each cookie set by Revel is prefixed with this string.
+cookie.prefix = REVEL
+
+# A secure cookie has the secure attribute enabled and is only used via HTTPS,
+# ensuring that the cookie is always encrypted when transmitting from client to
+# server. This makes the cookie less likely to be exposed to cookie theft via
+# eavesdropping.
+#
+# Defaults to false. If 'http.ssl' is enabled, this will be defaulted to true.
+# This should only be true when Revel is handling SSL connections. If you are
+# using a proxy in front of revel (Nginx, Apache, etc), then this should be left
+# as false.
+# cookie.secure = false
+
+# Limit cookie access to a given domain.
+#cookie.domain =
+
+# Define when your session cookie expires.
+# Values:
+# "720h"
+#   A time duration (http://golang.org/pkg/time/#ParseDuration) after which
+#   the cookie expires and the session is invalid.
+# "session"
+#   Sets a session cookie which invalidates the session when the user close
+#   the browser.
+session.expires = 720h
+
+
+# The date format used by Revel. Possible formats defined by the Go `time`
+# package (http://golang.org/pkg/time/#Parse)
+format.date     = 2006-01-02
+format.datetime = 2006-01-02 15:04
+
+
+# Determines whether the template rendering should use chunked encoding.
+# Chunked encoding can decrease the time to first byte on the client side by
+# sending data before the entire template has been fully rendered.
+results.chunked = false
+
+
+# The default language of this application.
+i18n.default_language = en
+
+# The default format when message is missing.
+# The original message shows in %s
+#i18n.unknown_format = "??? %s ???"
+
+
+# Module to serve static content such as CSS, JavaScript and Media files
+# Allows Routes like this:
+#  `Static.ServeModule("modulename","public")`
+module.static = github.com/revel/modules/static
+
+
+
+################################################################################
+
+# Section: dev
+# This section is evaluated when running Revel in dev mode. Like so:
+#   `revel run path/to/myapp`
+[dev]
+
+# This sets `revel.DevMode` for use in-app.
+# Example:
+#   `if revel.DevMode {...}`
+#   or in your templates with
+#   `{{.DevMode}}`
+# Values:
+# "true"
+#   Sets `DevMode` to `true`.
+# "false"
+#   Sets `DevMode` to `false`.
+mode.dev = true
+
+
+# Pretty print JSON/XML when calling RenderJSON/RenderXML
+# Values:
+# "true"
+#   Enables pretty printing.
+# "false"
+#   Disables pretty printing.
+results.pretty = true
+
+
+# Watch your applicaton files for changes and automatically rebuild
+# Values:
+# "true"
+#   Enables auto rebuilding. 
+# "false"
+#   Disables auto rebuilding.
+watch = true
+
+
+# Define when to rebuild new changes.
+# Values:
+# "normal"
+#   Rebuild when a new request is received and changes have been detected.
+# "eager"
+#   Rebuild as soon as changes are detected.
+watch.mode = normal
+
+# Watch the entire `$GOPATH` for changes.
+# Values:
+# "true"
+#   Includes `$GOPATH` in watch path.
+# "false"
+#   Excludes `$GOPATH` from watch path. Default value.
+#watch.gopath = true
+
+
+# Module to run code tests in the browser
+# See:
+#   http://revel.github.io/manual/testing.html
+module.testrunner = github.com/revel/modules/testrunner
+
+
+# Where to log the various Revel logs
+# Values:
+# "off"
+#   Disable log output.
+# "stdout"
+#   Log to OS's standard output.
+# "stderr"
+#   Log to Os's standard error output. Default value.
+# "relative/path/to/log"
+#   Log to file.
+log.all.filter.module.app = stdout    # Log all loggers for the application to the stdout
+log.error.nfilter.module.app = stderr # Everything else that logs an error to stderr
+log.crit.output = stderr              # Everything that logs something as critical goes to this
+
+# Revel request access log
+# Access log line format:
+# INFO  21:53:55 static server-engine.go:169: Request Stats                             ip=127.0.0.1 path=/public/vendors/datatables.net-buttons/js/buttons.html5.min.js method=GET start=2017/08/31 21:53:55 status=200 duration_seconds=0.0002583 section=requestlog
+log.request.output = stdout
+
+
+
+################################################################################
+# Section: prod
+# This section is evaluated when running Revel in production mode. Like so:
+#   `revel run path/to/myapp prod`
+# See:
+#  [dev] section for documentation of the various settings
+[prod]
+
+mode.dev = false
+
+results.pretty = false
+
+watch = false
+
+module.testrunner =
+
+log.warn.output  = log/%(app.name)-warn.json    # Log all warn messages to file
+log.error.output = log/%(app.name)-error.json   # Log all errors to file
+log.crit.output = log/%(app.name)-critical.json # Log all critical to file
+
+# Revel request access log (json format)
+# Example:
+#   log.request.output = %(app.name)s-request.json
+log.request.output = log/%(app.name)s-requests.json
