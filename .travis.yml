@@ -16,7 +16,7 @@ install:
 
 script:
   - mongo --version
-  - mongorestore -h localhost -d leanote --dbpath ./mongodb_backup/leanote_install_data/
+  - mongorestore -h localhost -d leanote --dir ./mongodb_backup/leanote_install_data/
 
   # gen tmp/main.go, routes/routes.go
   - go run app/cmd/main.go
