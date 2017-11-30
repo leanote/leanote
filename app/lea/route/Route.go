@@ -3,7 +3,7 @@ package route
 import (
 	"github.com/leanote/leanote/app/db"
 	"github.com/revel/revel"
-		. "github.com/leanote/leanote/app/lea"
+		// . "github.com/leanote/leanote/app/lea"
 	"net/url"
 	"strings"
 )
@@ -25,7 +25,7 @@ func RouterFilter(c *revel.Controller, fc []revel.Filter) {
 		return
 	}
 
-	Log("---------" + route.Action + "  " + path)
+	// Log("---------" + route.Action + "  " + path)
 
 	// The route may want to explicitly return a 404.
 	if route.Action == "404" {

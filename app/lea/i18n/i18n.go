@@ -178,13 +178,13 @@ func init() {
 
 func I18nFilter(c *revel.Controller, fc []revel.Filter) {
 	if foundCookie, cookieValue := hasLocaleCookie(c.Request); foundCookie {
-		revel.TRACE.Printf("Found locale cookie value: %s", cookieValue)
+		// revel.TRACE.Printf("Found locale cookie value: %s", cookieValue)
 		setCurrentLocaleControllerArguments(c, cookieValue)
 	} else if foundHeader, headerValue := hasAcceptLanguageHeader(c.Request); foundHeader {
-		revel.TRACE.Printf("Found Accept-Language header value: %s", headerValue)
+		// revel.TRACE.Printf("Found Accept-Language header value: %s", headerValue)
 		setCurrentLocaleControllerArguments(c, headerValue)
 	} else {
-		revel.TRACE.Println("Unable to find locale in cookie or header, using empty string")
+		// revel.TRACE.Println("Unable to find locale in cookie or header, using empty string")
 		setCurrentLocaleControllerArguments(c, "")
 	}
 	fc[0](c, fc[1:])
@@ -215,7 +215,7 @@ func hasLocaleCookie(request *revel.Request) (bool, string) {
 		if cookie, error := request.Cookie(name); error == nil {
 			return true, cookie.GetValue()
 		} else {
-			revel.TRACE.Printf("Unable to read locale cookie with name '%s': %s", name, error.Error())
+			// revel.TRACE.Printf("Unable to read locale cookie with name '%s': %s", name, error.Error())
 		}
 	}
 

@@ -360,8 +360,8 @@ func (this *NotebookService) DragNotebooks(userId string, curNotebookId string, 
 func (this *NotebookService) ReCountNotebookNumberNotes(notebookId string) bool {
 	notebookIdO := bson.ObjectIdHex(notebookId)
 	count := db.Count(db.Notes, bson.M{"NotebookId": notebookIdO, "IsTrash": false, "IsDeleted": false})
-	Log(count)
-	Log(notebookId)
+	// Log(count)
+	// Log(notebookId)
 	return db.UpdateByQField(db.Notebooks, bson.M{"_id": notebookIdO}, "NumberNotes", count)
 }
 

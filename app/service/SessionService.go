@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/leanote/leanote/app/db"
 	"github.com/leanote/leanote/app/info"
-	. "github.com/leanote/leanote/app/lea"
+	// . "github.com/leanote/leanote/app/lea"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 	//	"strings"
@@ -66,10 +66,10 @@ func (this *SessionService) GetCaptcha(sessionId string) string {
 }
 func (this *SessionService) SetCaptcha(sessionId, captcha string) bool {
 	this.Get(sessionId)
-	Log(sessionId)
-	Log(captcha)
+	// Log(sessionId)
+	// Log(captcha)
 	ok := this.Update(sessionId, "Captcha", captcha)
-	Log(ok)
+	// Log(ok)
 	return ok
 }
 

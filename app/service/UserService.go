@@ -485,7 +485,7 @@ func (this *UserService) GetAllUserByFilter(userFilterEmail, userFilterWhiteList
 	users := []info.User{}
 	q := db.Users.Find(query)
 	q.All(&users)
-	Log(len(users))
+	// Log(len(users))
 
 	return users
 }

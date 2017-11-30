@@ -79,7 +79,6 @@ func SendEmailOld(to, subject, body string) bool {
 	err := smtp.SendMail(host+":"+port, auth, username, send_to, msg)
 
 	if err != nil {
-		Log(err)
 		return false
 	}
 	return true

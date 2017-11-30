@@ -400,9 +400,6 @@ func FixFilename(filename string) string {
 func IsValidTime(t time.Time) bool {
 	if t.Year() > 20 {
 		now := time.Now()
-		Log("------")
-		Log(t)
-		Log(now)
 		if t.Before(now) {
 			return true
 		}

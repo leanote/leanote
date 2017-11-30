@@ -234,20 +234,21 @@ func (c Note) UpdateNoteOrContent(noteOrContent info.NoteOrContent) revel.Result
 	}
 
 	//-------------
-	afterContentUsn := 0
-	contentOk := false
-	contentMsg := ""
+	// afterContentUsn := 0
+	// contentOk := false
+	// contentMsg := ""
 	if c.Has("Content") {
 		//		noteService.UpdateNoteContent(noteOrContent.UserId, c.GetUserId(),
 		//			noteOrContent.NoteId, noteOrContent.Content, noteOrContent.Abstract)
-		contentOk, contentMsg, afterContentUsn = noteService.UpdateNoteContent(c.GetUserId(),
+		// contentOk, contentMsg, afterContentUsn = 
+		noteService.UpdateNoteContent(c.GetUserId(),
 			noteOrContent.NoteId, noteOrContent.Content, noteOrContent.Abstract,
 			needUpdateNote, -1, time.Now())
 	}
 
-	Log(afterContentUsn)
-	Log(contentOk)
-	Log(contentMsg)
+	// Log("usn", "afterContentUsn", afterContentUsn + "")
+	// Log(contentOk)
+	// Log(contentMsg)
 
 	return c.RenderJSON(true)
 }

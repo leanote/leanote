@@ -183,7 +183,6 @@ func PutFileStrContent(path, content string) bool {
 	//	Log(path)
 
 	if err1 != nil {
-		Log(err1)
 		return false
 	}
 	return true

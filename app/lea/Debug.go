@@ -6,21 +6,17 @@ import (
     "github.com/revel/revel"
 )
 
-func Log(i ...interface{}) {
-    revel.INFO.Println(i...)
+func Log(msg string, i ...interface{}) {
+    revel.AppLog.Info(msg, i...)
 }
 
-func LogW(i ...interface{}) {
-    revel.WARN.Println(i...)
-}
-
-func Log1(key, i interface{}) {
-    revel.INFO.Println(key, i)
+func LogW(msg string, i ...interface{}) {
+    revel.AppLog.Warn(msg, i...)
 }
 
 func LogJ(i interface{}) {
     b, _ := json.MarshalIndent(i, "", " ")
-    revel.INFO.Println(string(b))
+    revel.AppLog.Info(string(b))
 }
 
 // 为test用

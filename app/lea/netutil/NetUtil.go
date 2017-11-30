@@ -53,7 +53,6 @@ func WriteUrl(url string, toPath string) (length int64, newFilename, path string
 func GetContent(url string) (content []byte, err error) {
 	var resp *http.Response
 	resp, err = http.Get(url)
-	Log(err)
 	if resp != nil && resp.Body != nil {
 		defer resp.Body.Close()
 	} else {
@@ -65,7 +64,6 @@ func GetContent(url string) (content []byte, err error) {
 	var buf []byte
 	buf, err = ioutil.ReadAll(resp.Body)
 	if err != nil {
-		Log(err)
 		return
 	}
 

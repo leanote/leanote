@@ -1106,7 +1106,7 @@ func (this *NoteService) FixContent(content string, isMarkdown bool) string {
 				reg2, _ = regexp.Compile("<a(?:[^>]+?)(" + eachPattern["src"] + `=['"]*` + baseUrlPattern + eachPattern["middle"] + `\?` + eachPattern["param"] + `=([a-z0-9A-Z]{24})["']*)[^>]*>`)
 			}
 
-			Log(reg2)
+			// Log(reg2)
 
 			content = reg.ReplaceAllStringFunc(content, func(str string) string {
 				// str=这样的

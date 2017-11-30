@@ -128,6 +128,8 @@ GET     /upload/*filepath                       Static.Serve("public/upload")
 # the prefix of member's controllername is "Member"
 *       /member               	MemberIndex.Index
 *       /member/index           MemberIndex.Index
+
+# 不知道为什么, group就是不行 member/blog可以
 *       /member/group/index           MemberGroup.Index
 *       /member/group/addGroup           MemberGroup.AddGroup
 *       /member/group/updateGroupTitle           MemberGroup.UpdateGroupTitle

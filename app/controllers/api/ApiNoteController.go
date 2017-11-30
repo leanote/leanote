@@ -178,7 +178,7 @@ func (c ApiNote) fixPostNotecontent(noteOrContent *info.ApiNote) {
 					// 	"/api/file/getImage?fileId="+file.FileId, -1)
 				} else {
 					reg, _ := regexp.Compile(`https*://[^/]*?/api/file/getAttach\?fileId=`+file.LocalFileId)
-					Log(reg)
+					// Log(reg)
 					noteOrContent.Content = reg.ReplaceAllString(noteOrContent.Content, `/api/file/getAttach?fileId=`+file.FileId)  
 					/*
 					noteOrContent.Content = strings.Replace(noteOrContent.Content, 
