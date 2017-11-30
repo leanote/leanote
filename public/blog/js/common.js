@@ -248,7 +248,7 @@ function genNav() {
 		var text = $(hs[i]).text(); 
 		var tagName = hs[i].tagName.toLowerCase();
 		// scrollTo在page.js中定义
-		titles += '<li class="nav-' + tagName + '"><a data-a="' + tagName + '-' + encodeURI(text)+'" onclick="scrollTo(this, \'' + tagName + '\', \'' + text + '\')">' + text + '</a></li>';
+		titles += '<li class="nav-' + tagName + '"><a data-a="' + tagName + '-' + encodeURI(text)+'" onclick="window.scrollTo(this, \'' + tagName + '\', \'' + text + '\')">' + text + '</a></li>';
 	}
 	titles += "</ul>";
 	$("#blogNavContent").html(titles);
