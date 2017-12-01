@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	. "github.com/leanote/leanote/app/lea"
 )
 
 const (
@@ -146,15 +147,15 @@ func loadMessageFile(locale string, path string, info os.FileInfo, osError error
 			// If we have already parsed a message file for this locale, merge both
 			if _, exists := messages[locale]; exists {
 				messages[locale].Merge(config)
-				revel.TRACE.Printf("Successfully merged messages for locale '%s'", locale)
+				Logf("Successfully merged messages for locale '%s'", locale)
 			} else {
 				messages[locale] = config
 			}
 
-			revel.TRACE.Println("Successfully loaded messages from file", info.Name())
+			Logf("Successfully loaded messages from file", info.Name())
 		}
 	} else {
-		revel.TRACE.Printf("Ignoring file %s because it did not have a valid extension", info.Name())
+		Logf("Ignoring file %s because it did not have a valid extension", info.Name())
 	}
 
 	return nil

@@ -10,6 +10,10 @@ func Log(msg string, i ...interface{}) {
     revel.AppLog.Info(msg, i...)
 }
 
+func Logf(msg string, i ...interface{}) {
+    revel.AppLog.Infof(msg, i...)
+}
+
 func LogW(msg string, i ...interface{}) {
     revel.AppLog.Warn(msg, i...)
 }
