@@ -9,7 +9,7 @@ SP=$(cd "$(dirname "$0")"; pwd)
 tmp="/Users/life/Desktop/leanote_release"
 
 # version
-V="v2.5"
+V="v2.6"
 
 ##=================================
 # 1. 先build 成 3个平台, 2种bit = 6种
@@ -32,7 +32,7 @@ function build()
 		suffix=".exe"
 	fi
 	
-	GOOS=$1 GOARCH=$2 go build -o leanote-$1-$2$suffix ../app/tmp
+	GOOS=$1 GOARCH=$2 go build -o leanote-$1-$2$suffix github.com/leanote/leanote/app/tmp
 }
 
 build "linux" "386";
@@ -42,7 +42,6 @@ build "linux" "arm";
 build "windows" "386";
 build "windows" "amd64";
 
-# build "darwin" "386";
 build "darwin" "amd64";
 
 
@@ -146,7 +145,6 @@ tarRelease "linux" "arm";
 tarRelease "windows" "386";
 tarRelease "windows" "amd64";
 
-# tarRelease "darwin" "386";
 tarRelease "darwin" "amd64";
 
 # BLOCK'
