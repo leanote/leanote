@@ -1,7 +1,7 @@
 #------------------------
 # leanote config
 #------------------------
-
+http.addr=0.0.0.0 # listen on all ip addresses
 http.port=9000
 
 site.url=http://localhost:9000 # or http://x.com:8080, http://www.xx.com:9000
@@ -29,7 +29,6 @@ app.secret=V85ZzBeTnzpsHyjQX4zukbQ8qqtju9y2aDM55VWxAH9Qop19poekx3xkcDVvrD0y
 # for dev
 #--------------------------------
 app.name=leanote
-http.addr=
 http.ssl=false
 cookie.httponly=false
 cookie.prefix=LEANOTE
