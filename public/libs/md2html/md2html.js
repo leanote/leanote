@@ -523,6 +523,8 @@ listStr=addAnchors(listStr);listStr=listStr.replace(/\n{2,}(?=\\x03)/,"\n");list
 
 	        var sequenceElems = previewContentsElt.querySelectorAll('.prettyprint > .language-sequence');
 	        var flowElems = previewContentsElt.querySelectorAll('.prettyprint > .language-flow');
+	        var chartElems = previewContentsElt.querySelectorAll('.prettyprint > .language-chart');
+	        var mermaidElems = previewContentsElt.querySelectorAll('.prettyprint > .language-mermaid');
 
 	        function convert() { 
 	        	_each(sequenceElems, function(elt) {
@@ -556,17 +558,48 @@ listStr=addAnchors(listStr);listStr=listStr.replace(/\n{2,}(?=\\x03)/,"\n");list
 	                    console.error(e);
 	                }
 	            });
+                _each(chartElems, function(elt) {
+                    try {
+                        var jsonObject = JSON.parse(elt.textContent);
+                        var preElt = elt.parentNode;
+                        var containerElt = crel('canvas', {
+                            //class: 'flow-chart'
+                        });
+                        preElt.parentNode.replaceChild(containerElt, preElt);
+                        var ctx = containerElt.getContext('2d');
+                        new Chart(ctx, jsonObject);
+                    }
+                    catch(e) {
+                        console.error(e);
+                    }
+                });
+                _each(mermaidElems, function(elt) {
+                    try {
+                        var text = elt.textContent;
+                        var preElt = elt.parentNode;
+                        var containerElt = crel('div', {class:'mermaid'}, text);
+                        preElt.parentNode.replaceChild(containerElt, preElt);
+                        mermaid.init({noteMargin: 10}, ".mermaid");
+                    }
+                    catch(e) {
+                        console.error(e);
+                    }
+                });
 
 	            callback && callback();
 	        }
 
-	        if(sequenceElems.length > 0 || flowElems.length > 0) {
+	        if(sequenceElems.length > 0 || flowElems.length > 0 || chartElems.length > 0) {
 	        	if(!_loadUmlJs) {
 		        	loadJs('http://leanote.com/public/libs/md2html/uml.js', function() {
-		        		_loadUmlJs = true;
-		                convert();
-		            }); 
-	        	} else {
+                        loadJs('https://cdn.bootcss.com/Chart.js/2.7.2/Chart.js', function() {
+                            loadJs('https://cdn.bootcss.com/mermaid/7.1.2/mermaid.js', function() {
+                                _loadUmlJs = true;
+                                convert();
+                            });
+                        });
+		            });
+                } else {
 	        		convert();
 	        	}
 	        } else {
