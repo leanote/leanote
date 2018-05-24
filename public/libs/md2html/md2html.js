@@ -507,6 +507,13 @@ listStr=addAnchors(listStr);listStr=listStr.replace(/\n{2,}(?=\\x03)/,"\n");list
         });
     }
 
+    function replaceContainer(text) {
+        console.log(text);
+        return text.replace(/::: (success|warning|info|danger) <br>\n(.+)\n:::/gm, function (match, level, context) {
+            return '<div class="' + level + '">' + context + '</div>';
+        });
+    }
+
 	function initUml() {
 		//===========
 		// uml
@@ -619,6 +626,7 @@ listStr=addAnchors(listStr);listStr=listStr.replace(/\n{2,}(?=\\x03)/,"\n");list
 	// extra是实时的, 同步进行
 	initMarkdownExtra();
     converter.hooks.chain("postConversion", replaceEmoji);
+    converter.hooks.chain("postConversion", replaceContainer);
 
 	var m;
 	window.md2Html = function(mdText, toElem, callback) {
