@@ -501,6 +501,12 @@ listStr=addAnchors(listStr);listStr=listStr.replace(/\n{2,}(?=\\x03)/,"\n");list
 		}
 	}
 
+    function replaceEmoji(text) {
+        return text.replace(/:([-\w]+):/g, function(match, emoji) {
+            return '<i class="em em-' + emoji + '"></i>';
+        });
+    }
+
 	function initUml() {
 		//===========
 		// uml
@@ -612,6 +618,7 @@ listStr=addAnchors(listStr);listStr=listStr.replace(/\n{2,}(?=\\x03)/,"\n");list
 
 	// extra是实时的, 同步进行
 	initMarkdownExtra();
+    converter.hooks.chain("postConversion", replaceEmoji);
 
 	var m;
 	window.md2Html = function(mdText, toElem, callback) {

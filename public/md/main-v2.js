@@ -12892,6 +12892,21 @@ define('extensions/emailConverter',[
     return emailConverter;
 });
 
+define('extensions/emojiConverter',[
+    "classes/Extension",
+], function(Extension) {
+    var emojiConverter = new Extension("emojiConverter", "Markdown Emoji", true);
+    emojiConverter.onPagedownConfigure = function(editor) {
+        editor.getConverter().hooks.chain("postConversion", function(text) {
+            return text.replace(/:([-\w]+):/g, function(match, emoji) {
+                    return '<i class="em em-' + emoji + '"></i>';
+            });
+        });
+    };
+
+    return emojiConverter;
+});
+
 define('extensions/todoList',[
     "classes/Extension",
 ], function(Extension) {
@@ -13903,6 +13918,7 @@ define('eventMgr',[
     "extensions/toc",
     "extensions/mathJax",
     "extensions/emailConverter",
+    "extensions/emojiConverter",
     "extensions/todoList",
     "extensions/scrollLink",
     "extensions/htmlSanitizer",
