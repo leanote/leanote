@@ -55,6 +55,21 @@ listStr=addAnchors(listStr);listStr=listStr.replace(/\n{2,}(?=\\x03)/,"\n");list
 	     }
 	}
 
+    function loadCss(src, callback) {
+        var _doc = document.getElementsByTagName('head')[0];
+        var css = document.createElement('link');
+        css.setAttribute('rel', 'stylesheet');
+        css.setAttribute('href', src);
+        css.setAttribute('type', 'text/css');
+        _doc.appendChild(css);
+        css.onload = css.onreadystatechange = function() {
+            if(!this.readyState || this.readyState=='loaded' || this.readyState=='complete'){
+                callback && callback();
+            }
+            css.onload = css.onreadystatechange = null;
+        }
+    }
+
 	function _each(list, callback) {
 	    if(list && list.length > 0) {
 	        for(var i = 0; i < list.length; i++) {
@@ -501,14 +516,26 @@ listStr=addAnchors(listStr);listStr=listStr.replace(/\n{2,}(?=\\x03)/,"\n");list
 		}
 	}
 
+    var _loadEmojiCss = false;
     function replaceEmoji(text) {
+        if(!_loadEmojiCss) {
+			// https://afeld.github.io/emoji-css/emoji.css
+			loadCss('/public/css/emoji.css', function () {
+				_loadEmojiCss = true;
+            });
+		}
         return text.replace(/:([-\w]+):/g, function(match, emoji) {
             return '<i class="em em-' + emoji + '"></i>';
         });
     }
 
+    var _loadBlockCss = false;
     function replaceContainer(text) {
-        console.log(text);
+        if(!_loadBlockCss) {
+            loadCss('/public/css/block-container.css', function () {
+                _loadBlockCss = true;
+            });
+        }
         return text.replace(/::: (success|warning|info|danger) <br>\n(.+)\n:::/gm, function (match, level, context) {
             return '<div class="' + level + '">' + context + '</div>';
         });
@@ -604,7 +631,7 @@ listStr=addAnchors(listStr);listStr=listStr.replace(/\n{2,}(?=\\x03)/,"\n");list
 
 	        if(sequenceElems.length > 0 || flowElems.length > 0 || chartElems.length > 0) {
 	        	if(!_loadUmlJs) {
-		        	loadJs('http://leanote.com/public/libs/md2html/uml.js', function() {
+                    loadJs('https://leanote.com/public/libs/md2html/uml.js', function() {
                         loadJs('https://cdn.bootcss.com/Chart.js/2.7.2/Chart.js', function() {
                             loadJs('https://cdn.bootcss.com/mermaid/7.1.2/mermaid.js', function() {
                                 _loadUmlJs = true;
