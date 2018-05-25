@@ -12689,7 +12689,8 @@ define('extensions/umlDiagrams',[
                     var text = elt.textContent;
                     var preElt = elt.parentNode;
                     var containerElt = crel('div', {
-                        class:'mermaid flow-chart'
+                        class: 'mermaid flow-chart',
+                        style: 'max-width: 960px; margin:0 auto;',
                     }, text);
                     preElt.parentNode.replaceChild(containerElt, preElt);
                     mermaid.init({noteMargin: 10}, ".mermaid");
