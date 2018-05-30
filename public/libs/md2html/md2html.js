@@ -629,7 +629,7 @@ listStr=addAnchors(listStr);listStr=listStr.replace(/\n{2,}(?=\\x03)/,"\n");list
 	            callback && callback();
 	        }
 
-	        if(sequenceElems.length > 0 || flowElems.length > 0 || chartElems.length > 0) {
+	        if(sequenceElems.length > 0 || flowElems.length > 0 || chartElems.length > 0 || mermaidElems.length > 0) {
 	        	if(!_loadUmlJs) {
                     loadJs('https://leanote.com/public/libs/md2html/uml.js', function() {
                         loadJs('https://cdn.bootcss.com/Chart.js/2.7.2/Chart.js', function() {
