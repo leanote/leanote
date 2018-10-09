@@ -276,13 +276,13 @@ gulp.task('i18n', function() {
 
         // 写入到文件中
         var toFilename = targetFilename + '.' + lang + '.js';
-        fs.writeFile(base + '/js/i18n/' + toFilename, str);
+        fs.writeFileSync(base + '/js/i18n/' + toFilename, str, function (err) { });
     }
 
     function genTinymceLang(lang) {
         var msgs = getAllMsgs(leanoteBase + 'messages/' + lang + '/tinymce_editor.conf');
         var str = 'tinymce.addI18n("' + lang + '",' + JSON.stringify(msgs) + ');';
-        fs.writeFile(base + '/tinymce/langs/' + lang + '.js', str);
+        fs.writeFileSync(base + '/tinymce/langs/' + lang + '.js', str);
     }
 
     var langs = getAllLangs();

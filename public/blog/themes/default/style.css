@@ -539,3 +539,7 @@ table tr:nth-child(2n) {
 .desc *, #content * {
     word-wrap: break-word;
 }
+
+code {
+    white-space: normal;
+}
