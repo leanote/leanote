@@ -616,7 +616,7 @@ func (this *NoteService) UpdateNoteContent(updatedUserId, noteId, content, abstr
 			return false, "conflict", 0
 		}
 		afterUsn = userService.IncrUsn(userId)
-		db.UpdateByIdAndUserIdField(db.Notes, noteId, userId, "Usn", usn)
+		db.UpdateByIdAndUserIdField(db.Notes, noteId, userId, "Usn", afterUsn)
 	}
 
 	if db.UpdateByIdAndUserIdMap(db.NoteContents, noteId, userId, data) {
