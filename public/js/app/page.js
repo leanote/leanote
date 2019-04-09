@@ -548,7 +548,7 @@ function initEditor() {
 				"searchreplace leanote_nav leanote_code tabfocus",
 				"table textcolor" ], // nonbreaking directionality charmap
 		toolbar1 : "formatselect | forecolor backcolor | bold italic underline strikethrough | leaui_image leaui_mindmap | leanote_code leanote_inline_code | bullist numlist | alignleft aligncenter alignright alignjustify",
-		toolbar2 : "outdent indent blockquote | link unlink | table | hr removeformat | subscript superscript |searchreplace | pastetext | leanote_ace_pre | fontselect fontsizeselect",
+		toolbar2 : "outdent indent blockquote | link unlink | table | hr removeformat | subscript superscript | searchreplace | pastetext | leanote_ace_pre | fontselect fontsizeselect",
 
 		// 使用tab键: http://www.tinymce.com/wiki.php/Plugin3x:nonbreaking
 		// http://stackoverflow.com/questions/13543220/tiny-mce-how-to-allow-people-to-indent
