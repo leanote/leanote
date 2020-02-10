@@ -398,7 +398,7 @@ background-position:-1px -670px
   -webkit-animation: pulldown .2s;
   animation: pulldown .2s;
   /*
-  transform: scale(1, 1); 
+  transform: scale(1, 1);
   -webkit-transform: scale(1, 1);
   -moz-transform: scale(1, 1);
   -o-transform: scale(1, 1);
@@ -410,22 +410,22 @@ background-position:-1px -670px
   /*
   -webkit-transform: scale(0, 0);
   -webkit-transform-origin: top;
-  -webkit-animation-fill-mode: forwards;  
+  -webkit-animation-fill-mode: forwards;
   -webkit-transition: all 0.2s cubic-bezier(0.34, 1.21, 0.4, 1);
-  
+
   -o-transform: scale(0, 0);
   -o-transform-origin: top;
-  -o-animation-fill-mode: forwards;  
+  -o-animation-fill-mode: forwards;
   -o-transition: all 0.2s cubic-bezier(0.34, 1.21, 0.4, 1);
-  
+
   -moz-transform: scale(0, 0);
   -moz-transform-origin: top;
-  -moz-animation-fill-mode: forwards;  
+  -moz-animation-fill-mode: forwards;
   -moz-transition: all 0.2s cubic-bezier(0.34, 1.21, 0.4, 1);
-  
+
   transform: scale(0, 0);
   transform-origin: top;
-  animation-fill-mode: forwards; 
+  animation-fill-mode: forwards;
   transition: all 0.2s cubic-bezier(0.34, 1.21, 0.4, 1);
   */
 }
@@ -1963,8 +1963,13 @@ textarea#wmd-input {
   max-width: 100px;
 }
 .item-title {
+  text-overflow: ellipsis;
+  overflow-wrap: break-word;
+  width: 80%;
+  white-space: nowrap;
+  font-weight: 500;
   /*font-weight: 400;*/
-  font-size: 16px;
+  font-size: 14px;
   height: 22px;
   line-height: 20px;
   overflow: hidden;
@@ -1986,6 +1991,10 @@ textarea#wmd-input {
   right: 100px;
 }
 .item-info {
+  /*border-bottom: 1px solid #ebeff2;*/
+  /* border-top: 1px solid; */
+  background: #ebeff2;
+  font-size: 12px;
   margin: 0;
   white-space: nowrap;
   text-overflow: ellipsis;
