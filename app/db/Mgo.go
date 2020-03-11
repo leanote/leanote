@@ -76,6 +76,11 @@ func Init(url, dbname string) {
 			// get dbname from urlEnv
 			urls := strings.Split(url, "/")
 			dbname = urls[len(urls)-1]
+
+			if strings.Contains(dbname, "?") {
+				urls = strings.Split(dbname, "?")
+				dbname = urls[0]
+			}
 		}
 	}
 	if dbname == "" {
