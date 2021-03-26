@@ -4,7 +4,7 @@
 
 # Comma delimited list of folders that are included with the package, or build commands
 # If you want to not include folders within these ones prefix the folder with a . to make it hidden
-package.folders = conf, public, messages, app/views
+package.folders = conf, public, messages, mongodb_backup, app/views
 
 
 #------------------------
