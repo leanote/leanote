@@ -1,3 +1,0 @@
-Sqlite Auth driver
-==================
-

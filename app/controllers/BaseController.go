@@ -27,7 +27,7 @@ func (c *BaseController) Message(message string, args ...interface{}) (value str
 
 func (c BaseController) GetUserId() string {
 	if userId, ok := c.Session["UserId"]; ok {
-		return userId
+		return userId.(string)
 	}
 	return ""
 }
@@ -47,51 +47,30 @@ func (c BaseController) GetObjectUserId() bson.ObjectId {
 
 func (c BaseController) GetEmail() string {
 	if email, ok := c.Session["Email"]; ok {
-		return email
+		return email.(string)
 	}
 	return ""
 }
 
 func (c BaseController) GetUsername() string {
 	if email, ok := c.Session["Username"]; ok {
-		return email
+		return email.(string)
 	}
 	return ""
 }
 
 // 得到用户信息
 func (c BaseController) GetUserInfo() info.User {
-	if userId, ok := c.Session["UserId"]; ok && userId != "" {
+    userId := c.GetUserId()
+	if userId != "" {
 		return userService.GetUserInfo(userId)
-		/*
-			notebookWidth, _ := strconv.Atoi(c.Session["NotebookWidth"])
-			noteListWidth, _ := strconv.Atoi(c.Session["NoteListWidth"])
-			mdEditorWidth, _ := strconv.Atoi(c.Session["MdEditorWidth"])
-			LogJ(c.Session)
-			user := info.User{UserId: bson.ObjectIdHex(userId),
-				Email: c.Session["Email"],
-				Logo: c.Session["Logo"],
-				Username: c.Session["Username"],
-				UsernameRaw: c.Session["UsernameRaw"],
-				Theme: c.Session["Theme"],
-				NotebookWidth: notebookWidth,
-				NoteListWidth: noteListWidth,
-				MdEditorWidth: mdEditorWidth,
-				}
-			if c.Session["Verified"] == "1" {
-				user.Verified = true
-			}
-			if c.Session["LeftIsMin"] == "1" {
-				user.LeftIsMin = true
-			}
-			return user
-		*/
 	}
 	return info.User{}
 }
 
 func (c BaseController) GetUserAndBlogUrl() info.UserAndBlogUrl {
-	if userId, ok := c.Session["UserId"]; ok && userId != "" {
+    userId := c.GetUserId()
+	if userId != "" {
 		return userService.GetUserAndBlogUrl(userId)
 	}
 	return info.UserAndBlogUrl{}
@@ -103,7 +82,7 @@ func (c BaseController) GetSession(key string) string {
 	if !ok {
 		v = ""
 	}
-	return v
+	return v.(string)
 }
 func (c BaseController) SetSession(userInfo info.User) {
 	if userInfo.UserId.Hex() != "" {

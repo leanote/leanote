@@ -83,7 +83,7 @@ func AuthInterceptor(c *revel.Controller) revel.Result {
 
 	// 验证是否已登录
 	// 必须是管理员
-	if username, ok := c.Session["Username"]; ok && username == configService.GetAdminUsername() {
+	if username, ok := c.Session["Username"]; ok && username.(string) == configService.GetAdminUsername() {
 		return nil // 已登录
 	}
 

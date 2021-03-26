@@ -1,3 +1,7 @@
+test-results/
+tmp/
+routes/
+.none
 /src
 pkg
 bin2
@@ -14,7 +18,8 @@ app/tmp/main.go
 .settings
 .project
 public/config.codekit
-files
+files/
 /node_modules
 .idea
 *.iml
+target/

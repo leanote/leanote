@@ -25,7 +25,7 @@ func (c Preview) getPreviewThemeAbsolutePath(themeId string) bool {
 	if themeId != "" {
 		c.Session["themeId"] = themeId // 存到session中, 下次的url就不能带了, 待优化, 有时会取不到
 	} else {
-		themeId = c.Session["themeId"] // 直接从session中获取
+		themeId = c.GetSession("themeId") // 直接从session中获取
 	}
 	if themeId == "" {
 		return false

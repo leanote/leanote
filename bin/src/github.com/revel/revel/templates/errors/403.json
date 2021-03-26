@@ -1,4 +1,0 @@
-{
-    "title": "{{js .Error.Title}}",
-    "description": "{{js .Error.Description}}"
-}

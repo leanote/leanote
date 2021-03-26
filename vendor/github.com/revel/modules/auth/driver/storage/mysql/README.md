@@ -1,3 +1,0 @@
-Mysql Auth driver
-==================
-

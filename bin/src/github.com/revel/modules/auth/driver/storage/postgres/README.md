@@ -1,3 +1,0 @@
-Postgresql Auth driver
-==================
-
