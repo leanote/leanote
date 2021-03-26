@@ -50,7 +50,7 @@ More information about how to install Leanote please see:
     * [Windows](https://github.com/leanote/leanote/wiki/leanote-source-installation-on-Windows-(En))
     * [Mac and Linux](https://github.com/leanote/leanote/wiki/leanote-binary-installation-on-Mac-and-Linux-(En))
 * Leanote source installation tutorial:
-    * [Windows](https://github.com/leanote/leanote/wiki/leanote-source-installation-on-Windows-(En))
+    <!-- * [Windows](https://github.com/leanote/leanote/wiki/leanote-source-installation-on-Windows-(En)) -->
     * [Mac and Linux](https://github.com/leanote/leanote/wiki/Leanote-source-installation-on-Mac-and-Linux-(En))
 
 ## 4. Documentation
@@ -145,7 +145,7 @@ Leanote云笔记产品包括: Leanote Web & Server(即本仓库), 桌面客户�
     * [Windows](https://github.com/leanote/leanote/wiki/Leanote%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%89%88%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B---Windows)
     * [Mac, Linux](https://github.com/leanote/leanote/wiki/leanote%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
 * Leanote源码详细安装教程:
-    * [Windows](https://github.com/leanote/leanote/wiki/Leanote-%E6%BA%90%E7%A0%81%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B----Windows)
+    <!-- * [Windows](https://github.com/leanote/leanote/wiki/Leanote-%E6%BA%90%E7%A0%81%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B----Windows) -->
     * [Mac, Linux](https://github.com/leanote/leanote/wiki/leanote%E5%BC%80%E5%8F%91%E7%89%88%E8%AF%A6%E7%BB%86%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B)
 
 ## 4. 相关文档
