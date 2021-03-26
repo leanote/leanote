@@ -7,7 +7,7 @@ services:
 install:
   - go version
   - export PATH=$PATH:$HOME/gopath/bin
-  - go get -v github.com/leanote/leanote/app
+  # - go get -v github.com/leanote/leanote/app
   - go get -u github.com/revel/cmd/revel
   # - ls $GOPATH/src/github.com/revel/
   # - go get github.com/revel/moudle/revel
@@ -17,10 +17,16 @@ install:
   - ls
 
 script:
+  - wget https://github.com/leanote/leanote/archive/refs/heads/master.zip
+  - unzip master.zip
+  - mv leanote-master leanote
+  - cd leanote
+
   - mongo --version
   - mongorestore -h localhost -d leanote --dir ./mongodb_backup/leanote_install_data/
 
-  - cd $GOPATH/src/github.com/leanote/leanote/sh
+  - cd ./sh
+  # - cd $GOPATH/src/github.com/leanote/leanote/sh
   - sh run.sh &
 
   # gen tmp/main.go, routes/routes.go
@@ -29,6 +35,7 @@ script:
   #- go build -o leanote github.com/leanote/leanote/app/tmp
   # run with port 9000
   #- ./leanote -importPath=github.com/leanote/leanote -runMode=dev -port=9000 &
+
   - sleep 10s;
   # test
   - curl http://localhost:9000
