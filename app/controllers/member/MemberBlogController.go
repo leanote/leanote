@@ -253,7 +253,7 @@ func (c MemberBlog) UpdateTheme(themeId string, isNew int) revel.Result {
 	}
 
 	c.common()
-	c.ViewArgs["title"] = c.Message("Update Theme")
+	c.ViewArgs["title"] = c.Message("updateTheme")
 	c.ViewArgs["isNew"] = isNew
 
 	// 先复制之

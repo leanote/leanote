@@ -348,6 +348,7 @@ Note.genAbstract = function(content, len) {
 	}
 	var isCode = false;
 	var isHTML = false;
+	var isMermaid = false;
 	var n = 0;
 	var result = "";
 	var maxLen = len;
@@ -363,7 +364,7 @@ Note.genAbstract = function(content, len) {
 		} else if (temp == ';' && isHTML) {
 			isHTML = false
 		}
-		if (!isCode && !isHTML) {
+		if (!isCode && !isHTML && !isMermaid) {
 			n = n + 1
 		}
 		result += temp
@@ -1716,6 +1717,7 @@ Note.toggleReadOnly = function(needSave) {
 		return Note.toggleWriteable();
 	}
 
+	$('#left-column').hide();
 	var me = this;
 	var note = me.getCurNote();
 
@@ -1770,7 +1772,7 @@ LEA.toggleWriteable = Note.toggleWriteable = function(isFromNewNote) {
 
 	// markdown
 	$('#mdEditor').removeClass('read-only');
-
+	$('#left-column').show();
 	var note = me.getCurNote();
 	if(!note) {
 		return;

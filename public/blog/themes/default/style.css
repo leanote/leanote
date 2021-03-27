@@ -540,3 +540,6 @@ table tr:nth-child(2n) {
     word-wrap: break-word;
 }
 
+code {
+    white-space: normal;
+}

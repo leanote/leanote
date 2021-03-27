@@ -3,20 +3,23 @@
   "version": "1.0.0",
   "private": true,
   "devDependencies": {
-    "gulp": "^3.8.7",
-    "gulp-uglify": "^1.0.0",
+    "gulp": "^3.9.1",
     "gulp-clean": "^0.3.1",
-    "gulp-util": "^3.0.1",
-    "gulp-rename": "^1.0",
-    "gulp-minify-html": "^1.0",
     "gulp-concat": "",
-    "gulp-replace": "",
     "gulp-inject": "",
-    "gulp-sequence": ""
+    "gulp-minify-html": "^1.0",
+    "gulp-rename": "^1.0",
+    "gulp-replace": "",
+    "gulp-sequence": "",
+    "gulp-uglify": "^1.0.0",
+    "gulp-util": "^3.0.1"
   },
   "author": "life(http://life.leanote.com)",
   "license": "GPL v2",
   "bugs": {
     "url": "https://github.com/leanote/leanote/issues"
+  },
+  "dependencies": {
+    "gulp-minify-css": "^1.2.4"
   }
 }
