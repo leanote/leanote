@@ -49,6 +49,7 @@ define('history', [], function() {
             if (this.note.IsMarkdown) {
                 wrap = '<pre>';
                 wrapEnd = '</pre>';
+                content = trimTitle(content) // for xss
             }
             $historyContent.html(wrap + content + wrapEnd);
 
