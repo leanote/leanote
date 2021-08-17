@@ -20,6 +20,8 @@
 <link href="/public/md/themes/default.css" rel="stylesheet" />
 <!-- context-menu -->
 <link rel="stylesheet" href="/js/contextmenu/css/contextmenu-min.css?id=1" type="text/css" />
+<!-- emoji https://afeld.github.io/emoji-css/emoji.css -->
+<link href="/public/css/emoji.css" rel="stylesheet">
 
 <script>
 var hash = location.hash;
@@ -913,6 +915,7 @@ var GlobalConfigs = {{.globalConfigs|jsonJs}};
 <!-- /dev -->
 
 <!-- pro_app_js -->
+<script src="https://cdn.bootcss.com/mermaid/7.1.2/mermaid.js"></script>
 <script>
 initPage();
 // 当tinymce.dev.js时, 请注释require
@@ -925,7 +928,7 @@ window.require = {
 
 <!-- dev -->
 <script src="/js/require.js"></script>
-<script src="/public/md/main-v2.min.js"></script>
+<script src="/public/md/main-v2.js"></script>
 <!-- /dev -->
 
 <script src="/public/js/plugins/main.js"></script>
