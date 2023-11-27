@@ -21,7 +21,6 @@ import (
 	"github.com/leanote/leanote/app/cmd/parser2"
 	"github.com/revel/cmd/model"
 	"github.com/revel/cmd/parser"
-	_ "github.com/revel/cmd/parser"
 	"github.com/revel/cmd/utils"
 )
 
